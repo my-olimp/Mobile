@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.core.view.WindowCompat
-import com.developement.myolimp.R
+import ramble.sokol.myolimp.R
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
