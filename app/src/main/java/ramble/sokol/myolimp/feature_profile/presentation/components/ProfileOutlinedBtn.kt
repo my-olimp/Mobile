@@ -25,8 +25,6 @@ fun ProfileOutlinedBtn (
     text: String,
     onClick: () -> Unit
 ) {
-
-
     Button(
         modifier = Modifier
             .wrapContentSize()
