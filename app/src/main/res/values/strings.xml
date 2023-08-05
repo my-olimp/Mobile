@@ -52,6 +52,7 @@
     <string name="email">Почта</string>
     <string name="phone_number">Телефон</string>
     <string name="profile_image">Аватарка</string>
+    <string name="personal_info">Личные данные</string>
     <string name="choose_photo">Выбрать фото</string>
     <string name="save">Сохранить</string>
 

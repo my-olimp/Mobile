@@ -87,7 +87,7 @@ fun EditPhotoSheet(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 68.dp)
+                .padding(horizontal = 52.dp)
                 .background(
                     color = White,
                     shape = RoundedCornerShape(size = 16.dp)

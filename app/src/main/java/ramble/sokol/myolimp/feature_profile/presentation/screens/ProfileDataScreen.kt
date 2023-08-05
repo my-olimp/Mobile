@@ -22,7 +22,11 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -70,6 +74,14 @@ fun ProfileDataScreen(
             false
         }
     )
+
+    var isCenter by remember {
+        mutableStateOf(false)
+    }
+
+    var sheetName by remember {
+        mutableStateOf("")
+    }
 
     BottomBarTheme(
         navController = navController
@@ -331,14 +343,17 @@ fun ProfileDataScreen(
 
     BottomSheetLayout(
         sheetState = sheetState,
-        isCenter = true,
-        name = stringResource(R.string.profile_image)
+        isCenter = isCenter,
+        name = sheetName
     ) {
         Crossfade(targetState = SheetRouter.currentSheet, label = "") {
             when (it.value) {
 
                 is SheetNavigation.EditPhoto -> {
                     EditPhotoSheet()
+
+                    isCenter = true
+                    sheetName = stringResource(R.string.profile_image)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
@@ -349,6 +364,9 @@ fun ProfileDataScreen(
 
                 is SheetNavigation.EditPersonalData -> {
                     EditPersonalInfoSheet()
+
+                    isCenter = false
+                    stringResource(R.string.personal_info)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
