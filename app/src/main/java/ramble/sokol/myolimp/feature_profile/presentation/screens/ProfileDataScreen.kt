@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +33,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -67,7 +65,10 @@ fun ProfileDataScreen(
 
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmValueChange = { false }
+        skipHalfExpanded = true,
+        confirmValueChange = {
+            false
+        }
     )
 
     BottomBarTheme(
@@ -329,7 +330,9 @@ fun ProfileDataScreen(
     }
 
     BottomSheetLayout(
-        sheetState = sheetState
+        sheetState = sheetState,
+        isCenter = true,
+        name = stringResource(R.string.profile_image)
     ) {
         Crossfade(targetState = SheetRouter.currentSheet, label = "") {
             when (it.value) {
