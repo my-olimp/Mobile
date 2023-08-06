@@ -91,7 +91,7 @@ fun BeginAuthenticationScreen (
             FilledBtn(
                 text = stringResource(R.string.register)
             ) {
-                navigator.navigate(LoginScreenDestination)
+                navigator.navigate(SignUpScreenDestination)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -99,7 +99,7 @@ fun BeginAuthenticationScreen (
             OutlinedBtn(
                 text = stringResource(R.string.login)
             ) {
-                navigator.navigate(SignUpScreenDestination)
+                navigator.navigate(LoginScreenDestination)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
