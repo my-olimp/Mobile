@@ -1,6 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.utils
 
-import android.graphics.Bitmap
+import android.net.Uri
 
 sealed class ProfileEvent {
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
@@ -9,7 +9,8 @@ sealed class ProfileEvent {
     data class OnDobChanged(val dob: String): ProfileEvent()
     data class OnGenderChanged(val gender: String): ProfileEvent()
     data class OnSnilsChanged(val snils: String): ProfileEvent()
-    data class OnImgChanged(val img: Bitmap): ProfileEvent()
+    data class OnImgChanged(val img: Uri?): ProfileEvent()
     data class OnMarkerClicked(val hasThird: Boolean): ProfileEvent()
     data object OnSave: ProfileEvent()
+    data object OnImgDelete: ProfileEvent()
 }

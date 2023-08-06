@@ -14,7 +14,7 @@ class ProfileViewModel : ViewModel() {
     }
 
     private val _state = mutableStateOf (
-        UserModel(
+        UserModel (
             firstName = "Диана",
             secondName = "Спиридонова",
             thirdName = "Романовна",
@@ -77,6 +77,12 @@ class ProfileViewModel : ViewModel() {
             is ProfileEvent.OnMarkerClicked -> {
                 _state.value = _state.value.copy(
                     hasThird = event.hasThird
+                )
+            }
+
+            is ProfileEvent.OnImgDelete -> {
+                _state.value = _state.value.copy(
+                    profileImg = null
                 )
             }
 

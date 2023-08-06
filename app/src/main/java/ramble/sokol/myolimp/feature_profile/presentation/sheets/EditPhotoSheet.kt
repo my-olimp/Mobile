@@ -1,7 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
-import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,7 +28,6 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -45,6 +42,7 @@ import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.DrawableWrapper
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileFilledBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileOutlinedBtn
+import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.White
 
@@ -54,17 +52,16 @@ fun EditPhotoSheet(
 ) {
 
     var selectedImgUri by remember {
-        mutableStateOf<Uri?>(null)
+        mutableStateOf(viewModel.state.value.profileImg)
     }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
             selectedImgUri = it
+            viewModel.onEvent(ProfileEvent.OnImgChanged(it))
         }
     )
-
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -102,7 +99,6 @@ fun EditPhotoSheet(
                 containerColor = White
             ),
             onClick = {
-
                 // to open window with choosing image
 
                 launcher.launch(
@@ -141,13 +137,13 @@ fun EditPhotoSheet(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ProfileFilledBtn(text = stringResource(R.string.save)) {
-                Toast.makeText(context, "Жду апи от тупого бэка", Toast.LENGTH_SHORT).show()
+                viewModel.onEvent(ProfileEvent.OnSave)
             }
 
             ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-                Toast.makeText(context, "Пока что не могу...", Toast.LENGTH_SHORT).show()
+                selectedImgUri = null
+                viewModel.onEvent(ProfileEvent.OnImgDelete)
             }
         }
-
     }
 }
