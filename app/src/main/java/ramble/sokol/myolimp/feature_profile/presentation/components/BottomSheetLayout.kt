@@ -53,7 +53,7 @@ fun BottomSheetLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(all = 18.dp)
+                    .padding(vertical = 18.dp, horizontal = 32.dp)
             ) {
                 if (isCenter) {
                     DrawableWrapper(
@@ -76,8 +76,6 @@ fun BottomSheetLayout(
                         )
                     }
                 } else {
-
-
 
                     Row (
                         modifier = Modifier
