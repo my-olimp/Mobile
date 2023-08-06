@@ -1,9 +1,17 @@
 buildscript {
+
+    repositories {
+        google()  // Google's Maven repository
+
+        mavenCentral()  // Maven Central repository
+    }
+
     ext {
         koin_compose_version = '3.4.6'
         pager_version = '1.4.3'
         ui_controller = '0.27.0'
         compose_destinations = '1.9.51'
+        nav_version = "2.6.0"
     }
 }
 
