@@ -42,7 +42,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
         compose true
@@ -104,5 +104,13 @@ dependencies {
 
     // to use constraints
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+    // material 3 calendar
+    implementation "com.maxkeppeler.sheets-compose-dialogs:core:1.0.2"
+
+    implementation "com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2"
+
+    // for extended material icons
+    implementation "androidx.compose.material:material-icons-extended"
 
 }

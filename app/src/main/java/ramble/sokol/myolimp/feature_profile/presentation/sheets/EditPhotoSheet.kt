@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.DrawableWrapper
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileFilledBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileOutlinedBtn
@@ -49,7 +50,7 @@ import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
 fun EditPhotoSheet(
-
+    viewModel: ProfileViewModel
 ) {
 
     var selectedImgUri by remember {

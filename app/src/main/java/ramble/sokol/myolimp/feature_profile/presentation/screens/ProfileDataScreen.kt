@@ -39,10 +39,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout
@@ -64,6 +67,8 @@ import ramble.sokol.myolimp.ui.theme.White
 fun ProfileDataScreen(
     navController: NavController
 ) {
+
+    val viewModel = getViewModel<ProfileViewModel>()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -125,7 +130,6 @@ fun ProfileDataScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     ProfileFilledBtn(text = stringResource(R.string.edit)) {
-                        Toast.makeText(context, "Edit Photo", Toast.LENGTH_SHORT).show()
                         SheetRouter.navigateTo(SheetNavigation.EditPhoto)
                     }
 
@@ -350,7 +354,7 @@ fun ProfileDataScreen(
             when (it.value) {
 
                 is SheetNavigation.EditPhoto -> {
-                    EditPhotoSheet()
+                    EditPhotoSheet(viewModel = viewModel)
 
                     isCenter = true
                     sheetName = stringResource(R.string.profile_image)
@@ -363,10 +367,10 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.EditPersonalData -> {
-                    EditPersonalInfoSheet()
+                    EditPersonalInfoSheet(viewModel = viewModel)
 
                     isCenter = false
-                    stringResource(R.string.personal_info)
+                    sheetName = stringResource(R.string.personal_info)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
