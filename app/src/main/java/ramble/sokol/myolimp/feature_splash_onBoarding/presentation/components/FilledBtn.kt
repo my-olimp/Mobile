@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
@@ -23,12 +24,13 @@ import ramble.sokol.myolimp.ui.theme.White
 @Composable
 fun FilledBtn (
     text: String,
+    padding: Dp = 36.dp,
     onClick: () -> Unit
 ) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 36.dp)
+            .padding(horizontal = padding)
             .background(
                 color = BlueStart,
                 shape = RoundedCornerShape(size = 16.dp)

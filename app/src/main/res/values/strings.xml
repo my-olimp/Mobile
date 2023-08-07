@@ -36,6 +36,30 @@
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="achivement">Достижения</string>
-    <string name="with_out_achivement">Unfortunately, Достижений Нет...</string>
+    <string name="personal_data">Личная информация</string>
+    <string name="education">Образование</string>
+    <string name="contacts">Контакты</string>
+    <string name="with_out_achivement">Достижений нет</string>
+    <string name="id">ID</string>
+    <string name="name_surname">ФИО</string>
+    <string name="date_of_birth">Дата рождения</string>
+    <string name="gender">Пол</string>
+    <string name="snils">СНИЛС</string>
+    <string name="region">Регион</string>
+    <string name="city">Город</string>
+    <string name="grade">Класс</string>
+    <string name="school">Учебное заведение</string>
+    <string name="email">Почта</string>
+    <string name="phone_number">Телефон</string>
+    <string name="profile_image">Аватарка</string>
+    <string name="personal_info">Личные данные</string>
+    <string name="choose_photo">Выбрать фото</string>
+    <string name="save">Сохранить</string>
+    <string name="name">Имя</string>
+    <string name="third_name">Отчество</string>
+    <string name="dob">Дата рождения</string>
+    <string name="second_name">Фамилия</string>
+    <string name="star">*</string>
+    <string name="no_third_name">Нет отчества</string>
 
 </resources>
