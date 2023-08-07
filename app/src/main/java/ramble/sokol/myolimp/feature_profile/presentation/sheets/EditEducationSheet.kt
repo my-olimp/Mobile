@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
-import ramble.sokol.myolimp.feature_profile.presentation.components.TextFieldWithDropDown
+import ramble.sokol.myolimp.feature_profile.presentation.components.AutoCompleteTextField
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 
@@ -27,12 +27,12 @@ fun EditEducationSheet (
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        TextFieldWithDropDown (
+        AutoCompleteTextField (
             previousData = viewModel.state.value.region,
             label = stringResource(R.string.region_profile),
             listOf(
                 "Московская область", "Краснодарская область",
-                "Нижегородская область",
+                "Нижегородская область", "Ленинградская область"
             )
         ) {
             viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
@@ -40,7 +40,7 @@ fun EditEducationSheet (
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        TextFieldWithDropDown (
+        AutoCompleteTextField (
             previousData = viewModel.state.value.city,
             label = stringResource(R.string.city_profile),
             listOf(
@@ -53,7 +53,7 @@ fun EditEducationSheet (
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        TextFieldWithDropDown (
+        AutoCompleteTextField (
             previousData = viewModel.state.value.school,
             label = stringResource(R.string.school),
             listOf(
@@ -67,7 +67,7 @@ fun EditEducationSheet (
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        TextFieldWithDropDown (
+        AutoCompleteTextField (
             previousData = viewModel.state.value.grade.toString(),
             label = stringResource(R.string.grade),
             listOf(
@@ -82,9 +82,7 @@ fun EditEducationSheet (
 
             try {
                 viewModel.onEvent(ProfileEvent.OnGradeChanged(it.toInt()))
-            } catch (ex: Exception) {
-
-            }
+            } catch (_: Exception) {}
         }
 
         Spacer(modifier = Modifier.height(34.dp))

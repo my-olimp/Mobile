@@ -12,6 +12,8 @@ data class UserModel (
     val region: String,
     val city: String,
     val school: String,
+    val phone: String,
+    val email: String,
     val grade: Int,
     val profileImg: Uri?,
     val hasThird: Boolean,

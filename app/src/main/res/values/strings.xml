@@ -62,12 +62,8 @@
     <string name="star">*</string>
     <string name="no_third_name">Нет отчества</string>
     <string name="login_to_service">Вход в сервис</string>
-<<<<<<< HEAD
     <string name="region_profile">Субъект</string>
     <string name="city_profile">Населенный пункт</string>
-
-=======
     <string name="password">Пароль</string>
     <string name="number_phone">Номер телефона</string>
->>>>>>> artem_dev
 </resources>

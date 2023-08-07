@@ -24,6 +24,8 @@ class ProfileViewModel : ViewModel() {
             region = "Московская область",
             city = "Чехов",
             school = "МБОУ СОШ №10",
+            email = "aleshka@mail.ru",
+            phone = "+7 123 456 78 90",
             grade = 10,
             profileImg = null,
             hasThird = false
@@ -115,6 +117,18 @@ class ProfileViewModel : ViewModel() {
             is ProfileEvent.OnGradeChanged -> {
                 _state.value = _state.value.copy(
                     grade = event.grade
+                )
+            }
+
+            is ProfileEvent.OnPhoneChanged -> {
+                _state.value = _state.value.copy(
+                    phone = event.phone
+                )
+            }
+
+            is ProfileEvent.OnEmailChanged -> {
+                _state.value = _state.value.copy(
+                    email = event.email
                 )
             }
         }

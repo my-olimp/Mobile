@@ -15,6 +15,8 @@ sealed class ProfileEvent {
     data class OnCityChanged(val city: String): ProfileEvent()
     data class OnSchoolChanged(val school: String): ProfileEvent()
     data class OnGradeChanged(val grade: Int): ProfileEvent()
+    data class OnEmailChanged(val email: String): ProfileEvent()
+    data class OnPhoneChanged(val phone: String): ProfileEvent()
     data object OnSave: ProfileEvent()
     data object OnImgDelete: ProfileEvent()
 }

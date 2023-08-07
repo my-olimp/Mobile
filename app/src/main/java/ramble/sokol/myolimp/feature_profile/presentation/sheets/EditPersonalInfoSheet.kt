@@ -12,10 +12,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.components.AutoCompleteTextField
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckBoxLabel
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
-import ramble.sokol.myolimp.feature_profile.presentation.components.TextFieldWithDropDown
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 
@@ -87,7 +87,7 @@ fun EditPersonalInfoSheet(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        TextFieldWithDropDown (
+        AutoCompleteTextField (
             previousData = viewModel.state.value.gender,
             label = stringResource(id = R.string.gender),
             listOf(
