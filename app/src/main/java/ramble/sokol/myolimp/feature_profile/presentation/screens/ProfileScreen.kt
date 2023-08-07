@@ -53,7 +53,6 @@ fun ProfileScreen(
         navController = navController
     ) {
 
-        val viewModel = getViewModel<ProfileViewModel>()
         val context = LocalContext.current
 
         Column(
@@ -130,7 +129,9 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_data),
                     content = stringResource(R.string.profile_data_content)
                 ) {
-                    navController.navigate(ProfileDataScreenDestination)
+                    navController.navigate(
+                        ProfileDataScreenDestination()
+                    )
                 }
 
                 Spacer(

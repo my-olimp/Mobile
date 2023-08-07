@@ -52,7 +52,14 @@
     <string name="email">Почта</string>
     <string name="phone_number">Телефон</string>
     <string name="profile_image">Аватарка</string>
+    <string name="personal_info">Личные данные</string>
     <string name="choose_photo">Выбрать фото</string>
     <string name="save">Сохранить</string>
+    <string name="name">Имя</string>
+    <string name="third_name">Отчество</string>
+    <string name="dob">Дата рождения</string>
+    <string name="second_name">Фамилия</string>
+    <string name="star">*</string>
+    <string name="no_third_name">Нет отчества</string>
 
 </resources>
