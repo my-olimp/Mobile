@@ -98,7 +98,9 @@ fun TextFieldWithDropDown (
         )
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            onDismissRequest = {
+                expanded = false
+            },
             modifier = Modifier
                 .width(
                     with(

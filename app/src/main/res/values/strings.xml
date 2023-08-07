@@ -63,4 +63,8 @@
     <string name="no_third_name">Нет отчества</string>
     <string name="login_to_service">Вход в сервис</string>
 
+
+    <string name="region_profile">Субъект</string>
+    <string name="city_profile">Населенный пункт</string>
+
 </resources>

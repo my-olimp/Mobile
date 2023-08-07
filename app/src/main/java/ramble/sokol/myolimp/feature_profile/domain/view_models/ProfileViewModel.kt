@@ -21,6 +21,10 @@ class ProfileViewModel : ViewModel() {
             dateOfBirth = "25.05.2007",
             gender = "Женский",
             snils = "123-456-789-99",
+            region = "Московская область",
+            city = "Чехов",
+            school = "МБОУ СОШ №10",
+            grade = 10,
             profileImg = null,
             hasThird = false
             )
@@ -88,6 +92,30 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnSave -> {
                 saveUserData()
+            }
+
+            is ProfileEvent.OnRegionChanged -> {
+                _state.value = _state.value.copy(
+                    region = event.region
+                )
+            }
+
+            is ProfileEvent.OnCityChanged -> {
+                _state.value = _state.value.copy(
+                    city = event.city
+                )
+            }
+
+            is ProfileEvent.OnSchoolChanged -> {
+                _state.value = _state.value.copy(
+                    school = event.school
+                )
+            }
+
+            is ProfileEvent.OnGradeChanged -> {
+                _state.value = _state.value.copy(
+                    grade = event.grade
+                )
             }
         }
     }

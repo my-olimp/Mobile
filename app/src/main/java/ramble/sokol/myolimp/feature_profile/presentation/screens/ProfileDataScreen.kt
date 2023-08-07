@@ -39,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
@@ -123,7 +122,7 @@ fun ProfileDataScreen(
                     contentDescription = "user image"
                 )
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -138,8 +137,10 @@ fun ProfileDataScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             /*
                 Achievements
@@ -147,7 +148,7 @@ fun ProfileDataScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -193,13 +194,15 @@ fun ProfileDataScreen(
 
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             /*
                 Personal Data
             */
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -214,7 +217,6 @@ fun ProfileDataScreen(
                     text = stringResource(R.string.personal_data)
                 ) {
                     SheetRouter.navigateTo(SheetNavigation.EditPersonalData)
-                    Toast.makeText(context, "Edit Personal Data", Toast.LENGTH_SHORT).show()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -241,17 +243,12 @@ fun ProfileDataScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
-                    title = stringResource(R.string.gender),
-                    content = "Женский"
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
                     title = stringResource(R.string.snils),
                     content = "123-456-789-99"
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             /*
                 Education
@@ -259,7 +256,7 @@ fun ProfileDataScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -273,7 +270,6 @@ fun ProfileDataScreen(
                     text = stringResource(R.string.education)
                 ) {
                     SheetRouter.navigateTo(SheetNavigation.EditEducation)
-                    Toast.makeText(context, "Edit Education", Toast.LENGTH_SHORT).show()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -305,13 +301,15 @@ fun ProfileDataScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             /*
                 Contacts
             */
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -342,6 +340,9 @@ fun ProfileDataScreen(
                     content = "+7 123 456 78 90"
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
     }
 
@@ -380,7 +381,10 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.EditEducation -> {
-                    EditEducationSheet()
+                    EditEducationSheet(viewModel = viewModel)
+
+                    isCenter = false
+                    sheetName = stringResource(R.string.education)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
