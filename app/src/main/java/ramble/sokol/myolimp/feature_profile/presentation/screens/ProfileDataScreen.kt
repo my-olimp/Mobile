@@ -322,8 +322,7 @@ fun ProfileDataScreen(
                 ProfileSectionTitle(
                     text = stringResource(R.string.contacts)
                 ) {
-                    SheetRouter.navigateTo(SheetNavigation.EditEducation)
-                    Toast.makeText(context, "Edit Contacts", Toast.LENGTH_SHORT).show()
+                    SheetRouter.navigateTo(SheetNavigation.EditContacts)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -394,7 +393,10 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.EditContacts -> {
-                    EditContactsSheet()
+                    EditContactsSheet(viewModel = viewModel)
+
+                    isCenter = false
+                    sheetName = stringResource(R.string.education)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
