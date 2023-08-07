@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -30,9 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -40,13 +45,20 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.OutlinedBtn
+import ramble.sokol.myolimp.feature_authentication.presentation.components.TextFieldAuthEmail
+import ramble.sokol.myolimp.feature_authentication.presentation.components.TextFieldAuthPassword
+import ramble.sokol.myolimp.feature_authentication.presentation.components.TextFieldAuthPhone
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import ramble.sokol.myolimp.ui.theme.White
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Destination
@@ -58,6 +70,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(White)
                 .padding(top = 24.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -80,119 +93,45 @@ fun LoginScreen(
                     textAlign = TextAlign.Center,
                 )
             )
-        var tabIndex by remember { mutableStateOf(0) } // 1.
-        val tabTitles = listOf("Почта", "Номер телефона")
-        Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                modifier = Modifier
-                    .padding(0.05184.dp)
-                    .width(100.dp)
-                    .height(24.dp),
-                painter = painterResource(id = R.drawable.vector),
-                contentDescription = "image description",
-                //contentScale = ContentScale.None
-            )
-            Text(
-                modifier = Modifier
-                    .width(220.dp)
-                    .height(40.dp),
-                text = "Вход в сервис",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    //fontFamily = FontFamily(Font(R.font.)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF222222),
-                    textAlign = TextAlign.Center,
-                )
-            )
-            TabRow(selectedTabIndex = tabIndex) { // 3.
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
 
-                        selected = tabIndex == index, // 4.
-                        onClick = { tabIndex = index },
-                        text = { Text(text = title,
-                            color = Color.Black) }) // 5.
+
+
+        var tabIndex by remember {
+            mutableIntStateOf(0)
+        } // 1.
+        val tabTitles = listOf("Почта", "Номер телефона")
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start) {
+
+                TabRow(
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    selectedTabIndex = tabIndex
+                ) { // 3.
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            selected = tabIndex == index, // 4.
+                            onClick = { tabIndex = index },
+                            text = { Text(text = title,
+                                color = Color.Black) }) // 5.
+                    }
                 }
+
             }
+
             when (tabIndex) { // 6.
                 0 -> LoginEmailScreen()
                 1 -> LoginPhoneScreen()
             }
-        }
-    }
-}
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
-@Composable
-fun LoginEmailScreen() {
-    OlimpTheme {
-        var name by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.padding(top = 21.dp))
 
-            Text(
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(15.dp),
-                text = "Почта",
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    lineHeight = 15.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF222222),
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
-                modifier = Modifier
-                    .width(331.dp)
-                    .height(45.dp),
-                value = name,
-                singleLine = true,
-                onValueChange = { value -> name = value },
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(15.dp),
-                text = "Пароль",
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    lineHeight = 15.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF222222),
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
-                modifier = Modifier
-                    .width(331.dp)
-                    .height(45.dp),
-                value = password,
-                singleLine = true,
-                onValueChange = { value -> password = value },
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(onClick = {}){
-                Text("Click", fontSize = 25.sp)
+            FilledBtn(
+                text = stringResource(id = R.string.login),
+            ) {
+                // for requset
             }
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -206,7 +145,48 @@ fun LoginEmailScreen() {
                     lineHeight = 15.sp,
                     fontWeight = FontWeight(400),
                     color = Color(0xFF222222),
-                )
+                ),
+            )
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Destination
+@Composable
+fun LoginEmailScreen() {
+    OlimpTheme {
+        val email by remember {
+            mutableStateOf("")
+        }
+        val password by remember {
+            mutableStateOf("")
+        }
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, start = 14.dp, end = 14.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            TextFieldAuthEmail(
+                previousData = email,
+                label = stringResource(id = R.string.email),
+                onTextChanged = {
+
+                }
+            )
+
+            Spacer(modifier = Modifier.padding(top = 10.dp))
+
+            TextFieldAuthPassword(
+                previousData = password,
+                label = stringResource(id = R.string.password),
+                onTextChanged = {
+
+                }
             )
         }
     }
@@ -217,95 +197,38 @@ fun LoginEmailScreen() {
 @Composable
 fun LoginPhoneScreen() {
     OlimpTheme {
+
+        var phone by remember {
+            mutableStateOf("")
+        }
+        val password by remember {
+            mutableStateOf("")
+        }
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, start = 14.dp, end = 14.dp),
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var name by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(15.dp),
-                    text = "Номер телефона",
-                    style = TextStyle(
-                        fontSize = 13.sp,
-                        lineHeight = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF222222),
-                    )
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .width(331.dp)
-                        .height(45.dp),
-                    value = name,
-                    singleLine = true,
-                    onValueChange = { value -> name = value },
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(15.dp),
-                    text = "Пароль",
-                    style = TextStyle(
-                        fontSize = 13.sp,
-                        lineHeight = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF222222),
-                    )
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                TextField(
-                    modifier = Modifier
-                        .width(331.dp)
-                        .height(45.dp),
-                    value = password,
-                    singleLine = true,
-                    onValueChange = { value -> password = value },
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(onClick = {}) {
-                    Text("Click", fontSize = 25.sp)
+            TextFieldAuthPhone(
+                previousData = phone,
+                label = stringResource(id = R.string.number_phone),
+                onTextChanged = {
+                    phone = it.take(10)
                 }
+            )
 
-                Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.padding(top = 10.dp))
 
-                Text(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(15.dp),
-                    text = "Забыли пароль?",
-                    style = TextStyle(
-                        fontSize = 13.sp,
-                        lineHeight = 15.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF222222),
-                    )
-                )
-            }
+            TextFieldAuthPassword(
+                previousData = password,
+                label = stringResource(id = R.string.password),
+                onTextChanged = {
+
+                }
+            )
         }
     }
 }
-
-
-
-/*@Preview
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}*/
