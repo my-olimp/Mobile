@@ -9,6 +9,10 @@ data class UserModel (
     val dateOfBirth: String,
     val gender: String,
     val snils: String,
+    val region: String,
+    val city: String,
+    val school: String,
+    val grade: Int,
     val profileImg: Uri?,
     val hasThird: Boolean,
 )

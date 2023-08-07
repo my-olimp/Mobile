@@ -61,5 +61,7 @@
     <string name="second_name">Фамилия</string>
     <string name="star">*</string>
     <string name="no_third_name">Нет отчества</string>
+    <string name="region_profile">Субъект</string>
+    <string name="city_profile">Населенный пункт</string>
 
 </resources>
