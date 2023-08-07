@@ -1,13 +1,16 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -23,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,13 +43,6 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 fun LoginScreen(
     navigator: DestinationsNavigator
 ) {
-    LoginScreen1()
-}
-
-
-@Destination
-@Composable
-fun LoginScreen1() {
     OlimpTheme {
         var tabIndex by remember { mutableStateOf(0) } // 1.
         val tabTitles = listOf("Почта", "Номер телефона")
@@ -97,58 +95,7 @@ fun LoginScreen1() {
 }
 
 
-@Destination
-@Composable
-fun LoginScreenPhone2() {
-    OlimpTheme {
-        // Подтверждение номера
-    }
-}
 
-
-@Destination
-@Composable
-fun LoginScreenEmail2() {
-    OlimpTheme {
-        // Подтверждение почты
-    }
-}
-
-
-@Destination
-@Composable
-fun LoginScreenData1() {
-    OlimpTheme {
-        // Персональные данные
-    }
-}
-
-
-@Destination
-@Composable
-fun LoginScreenData2() {
-    OlimpTheme {
-        // Образование
-    }
-}
-
-
-@Destination
-@Composable
-fun LoginScreenData3() {
-    OlimpTheme {
-        // Дисциплины
-    }
-}
-
-
-@Destination
-@Composable
-fun LoginScreenData4() {
-    OlimpTheme {
-        // Последний штрих
-    }
-}
 
 
 @Destination
