@@ -40,6 +40,8 @@ fun CalendarInput(
 ) {
 
 //    https://stackoverflow.com/questions/69064137/how-to-create-a-text-field-input-with-mask-in-jetpack-compose
+//    colors
+//    https://stackoverflow.com/questions/75544931/jetpack-compose-add-custom-dark-light-colors?noredirect=1&lq=1
 
     val calendarState = rememberSheetState()
 
@@ -49,16 +51,16 @@ fun CalendarInput(
 
     CalendarDialog(
         state = calendarState,
+        selection = CalendarSelection.Date {
+            val objects = it.toString().split("-")
+
+            textValue.value = "${objects[2]}.${objects[1]}.${objects[0]}"
+        },
         config = CalendarConfig (
             monthSelection = true,
             yearSelection = true,
             style = CalendarStyle.MONTH
         ),
-        selection = CalendarSelection.Date {
-            val objects = it.toString().split("-")
-
-            textValue.value = "${objects[2]}.${objects[1]}.${objects[0]}"
-        }
     )
 
     OutlinedTextField(

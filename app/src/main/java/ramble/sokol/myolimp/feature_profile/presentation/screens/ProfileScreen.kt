@@ -244,20 +244,6 @@ fun HomeScreen(
 
 @Destination
 @Composable
-fun CalendarScreen(
-    navController: NavController
-) {
-    BottomBarTheme(
-        navController = navController
-    ) {
-        Text(
-            modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "CalendarScreen"
-        )
-    }
-}
-
-@Destination
-@Composable
 fun NewsScreen(
     navController: NavController
 ) {

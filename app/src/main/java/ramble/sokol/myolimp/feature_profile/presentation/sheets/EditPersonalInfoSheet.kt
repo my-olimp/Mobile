@@ -87,6 +87,8 @@ fun EditPersonalInfoSheet(
 
         Spacer(modifier = Modifier.height(14.dp))
 
+        Spacer(modifier = Modifier.height(14.dp))
+
         AutoCompleteTextField (
             previousData = viewModel.state.value.gender,
             label = stringResource(id = R.string.gender),
