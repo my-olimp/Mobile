@@ -68,4 +68,6 @@
     <string name="event">Событие</string>
     <string name="task">Задача</string>
     <string name="data_plan">Дата</string>
+    <string name="password">Пароль</string>
+    <string name="number_phone">Номер телефона</string>
 </resources>
