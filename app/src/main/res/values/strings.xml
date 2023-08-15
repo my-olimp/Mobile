@@ -42,7 +42,6 @@
     <string name="with_out_achivement">Достижений нет</string>
     <string name="id">ID</string>
     <string name="name_surname">ФИО</string>
-    <string name="date_of_birth">Дата рождения</string>
     <string name="gender">Пол</string>
     <string name="snils">СНИЛС</string>
     <string name="region">Регион</string>
@@ -64,4 +63,9 @@
     <string name="login_to_service">Вход в сервис</string>
     <string name="region_profile">Субъект</string>
     <string name="city_profile">Населенный пункт</string>
+    <string name="create_plan">Создайте план :)</string>
+    <string name="name_plan">Название</string>
+    <string name="event">Событие</string>
+    <string name="task">Задача</string>
+    <string name="data_plan">Дата</string>
 </resources>
