@@ -3,6 +3,7 @@ package ramble.sokol.myolimp.feature_profile.presentation.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -52,9 +55,9 @@ fun CalendarInput(
     CalendarDialog(
         state = calendarState,
         selection = CalendarSelection.Date {
-            val objects = it.toString().split("-")
+            textValue.value = it.toString()
 
-            textValue.value = "${objects[2]}.${objects[1]}.${objects[0]}"
+            onTextChanged(textValue.value)
         },
         config = CalendarConfig (
             monthSelection = true,
@@ -65,13 +68,13 @@ fun CalendarInput(
 
     OutlinedTextField(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .clickable {
+                calendarState.show()
+            },
         trailingIcon = @Composable {
             Icon(
-                modifier = Modifier
-                    .clickable {
-                        calendarState.show()
-                    },
                 painter = painterResource(id = R.drawable.ic_profile_calendar),
                 contentDescription = "calendar view"
             )
@@ -117,5 +120,6 @@ fun CalendarInput(
             textValue.value = it
             onTextChanged(it)
         },
+        enabled = false
     )
 }

@@ -27,9 +27,9 @@ import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 fun CalendarScreen(
     navController: NavController
 ) {
-    BottomBarTheme(
-        navController = navController
-    ) {
+//    BottomBarTheme(
+//        navController = navController
+//    ) {
 
         val viewModel = getViewModel<PlansViewModel>()
         val state by viewModel.state.collectAsState()
@@ -93,5 +93,5 @@ fun CalendarScreen(
                 onEvent = viewModel::onEvent,
             )
         }
-    }
+//    }
 }

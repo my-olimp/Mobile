@@ -19,12 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.ui.theme.BlueStart
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -57,12 +59,23 @@ fun ListDropDown(
                 label = {
                     Row {
                         Text(
-                            text = "Предмет",
+                            text = stringResource(R.string.subject),
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily(Font(R.font.regular)),
                                 fontWeight = FontWeight(400),
                                 color = Color(0x80222222),
+                                letterSpacing = 0.3.sp,
+                            )
+                        )
+
+                        Text(
+                            text = stringResource(R.string.star),
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontFamily = FontFamily(Font(R.font.medium)),
+                                fontWeight = FontWeight(500),
+                                color = BlueStart,
                                 letterSpacing = 0.3.sp,
                             )
                         )

@@ -12,6 +12,7 @@ buildscript {
         ui_controller = '0.27.0'
         compose_destinations = '1.9.51'
         nav_version = "2.6.0"
+        room_version = "2.5.2"
     }
 }
 

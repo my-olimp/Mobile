@@ -70,4 +70,5 @@
     <string name="data_plan">Дата</string>
     <string name="password">Пароль</string>
     <string name="number_phone">Номер телефона</string>
+    <string name="subject">Предмет</string>
 </resources>
