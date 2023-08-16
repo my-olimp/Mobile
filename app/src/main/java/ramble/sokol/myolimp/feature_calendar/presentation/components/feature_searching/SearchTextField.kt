@@ -53,7 +53,6 @@ fun SearchTextField (
 
     OutlinedTextField(
         modifier = Modifier
-            .wrapContentSize()
             .onFocusChanged {
                 hasFocus = it.isFocused
             },

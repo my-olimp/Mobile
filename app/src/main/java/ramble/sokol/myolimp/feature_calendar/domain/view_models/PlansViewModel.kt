@@ -2,14 +2,18 @@ package ramble.sokol.myolimp.feature_calendar.domain.view_models
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.feature_calendar.data.database.PlansDatabase
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
@@ -48,23 +52,47 @@ class PlansViewModel (
         event: Event
     ) {
         when (event) {
-            Event.CreatePlan -> {
+            is Event.CreatePlan -> {
 
                 when (checkData()) {
                     1 -> {
                         Log.i(TAG, "title is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.name_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     2 -> {
                         Log.i(TAG, "date is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.data_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     3 -> {
                         Log.i(TAG, "color is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.color_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     4 -> {
                         Log.i(TAG, "subject is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.subject_error), Toast.LENGTH_SHORT).show()
+
+                        return
+                    }
+                    5 -> {
+                        Log.i(TAG, "time is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.time_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     else -> {
@@ -87,6 +115,12 @@ class PlansViewModel (
                         }
 
                        setDefaultData()
+
+                        // navigate to calendar screen
+
+                        event.navController.navigate(
+                            CalendarScreenDestination()
+                        )
                     }
                 }
 
@@ -217,6 +251,7 @@ class PlansViewModel (
                     )
                 }
             }
+
         }
     }
 
@@ -225,6 +260,8 @@ class PlansViewModel (
         else if (state.value.date.isBlank()) Status.ERROR_DATE
         else if (state.value.color.isBlank()) Status.ERROR_COLOR
         else if (state.value.subject.isBlank()) Status.ERROR_SUBJECT
+        else if (state.value.startHour > state.value.endHour) Status.ERROR_TIME
+        else if (state.value.startHour == state.value.endHour && state.value.startMinute >= state.value.endMinute) Status.ERROR_TIME
         else Status.SUCCESS
     }
 

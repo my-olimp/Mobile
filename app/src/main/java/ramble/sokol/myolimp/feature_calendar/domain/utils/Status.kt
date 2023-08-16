@@ -6,4 +6,5 @@ object Status {
     const val ERROR_DATE = 2
     const val ERROR_COLOR = 3
     const val ERROR_SUBJECT = 4
+    const val ERROR_TIME = 5
 }

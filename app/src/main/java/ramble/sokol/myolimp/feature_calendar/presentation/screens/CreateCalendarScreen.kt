@@ -236,11 +236,7 @@ fun CreateCalendarScreen (
                 text = stringResource(id = R.string.save),
                 padding = 0.dp
             ) {
-                viewModel.onEvent(Event.CreatePlan)
-
-                navController.navigate(
-                    CalendarScreenDestination()
-                )
+                viewModel.onEvent(Event.CreatePlan(navController = navController))
             }
         }
     }
