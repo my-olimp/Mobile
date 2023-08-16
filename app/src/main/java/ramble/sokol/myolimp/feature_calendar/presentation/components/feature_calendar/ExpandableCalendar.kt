@@ -179,7 +179,8 @@ fun ExpandableCalendar(
                         )
                     },
                     onDayClick = {
-                        onEvent(Event.CancelSearching)
+                        // to set date
+                        onEvent(Event.OnDateUpdated(it.toString()))
 
                         viewModel.onIntent(CalendarIntent.SelectDate(it))
                         onDayClick(it)
@@ -203,7 +204,8 @@ fun ExpandableCalendar(
                         )
                     },
                     onDayClick = {
-                        onEvent(Event.CancelSearching)
+                        // to set date
+                        onEvent(Event.OnDateUpdated(it.toString()))
 
                         viewModel.onIntent(CalendarIntent.SelectDate(it))
                         onDayClick(it)

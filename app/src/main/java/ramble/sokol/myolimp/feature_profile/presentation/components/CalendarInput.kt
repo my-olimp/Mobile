@@ -11,8 +11,10 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -48,16 +50,16 @@ fun CalendarInput(
 
     val calendarState = rememberSheetState()
 
-    val textValue = remember {
+    var textValue by remember {
         mutableStateOf(previousData)
     }
 
     CalendarDialog(
         state = calendarState,
         selection = CalendarSelection.Date {
-            textValue.value = it.toString()
+            textValue = it.toString()
 
-            onTextChanged(textValue.value)
+            onTextChanged(textValue)
         },
         config = CalendarConfig (
             monthSelection = true,
@@ -115,9 +117,9 @@ fun CalendarInput(
         ),
         singleLine = true,
         maxLines = 1,
-        value = textValue.value,
+        value = textValue,
         onValueChange = {
-            textValue.value = it
+            textValue = it
             onTextChanged(it)
         },
         enabled = false

@@ -1,11 +1,5 @@
 package ramble.sokol.myolimp.feature_calendar.domain.view_models
 
-import ramble.sokol.myolimp.feature_calendar.data.database.PlansDatabase
-import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
-import ramble.sokol.myolimp.feature_calendar.domain.events.Event
-import ramble.sokol.myolimp.feature_calendar.domain.repositories.PlansRepository
-import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
-import ramble.sokol.myolimp.feature_calendar.domain.utils.Status
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -16,9 +10,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.feature_calendar.data.database.PlansDatabase
+import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
+import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import ramble.sokol.myolimp.feature_calendar.domain.repositories.PlansRepository
+import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
+import ramble.sokol.myolimp.feature_calendar.domain.utils.Status
+import java.time.LocalDate
 
 class PlansViewModel (
-    context: Context
+    private val context: Context
 ) : ViewModel() {
 
     companion object {
@@ -82,27 +83,21 @@ class PlansViewModel (
                             repository.addPlan(plan = plan)
                         }
 
-                        _state.update {
-                            it.copy(
-                                title = "",
-                                date = "",
-                                color = "",
-                                subject = "",
-                                isFavourite = false,
-                                isAddingPlan = false
-                            )
-                        }
+                       setDefaultData()
                     }
                 }
 
             }
             is Event.OnDateUpdated -> {
+
                 _state.update {
                     it.copy(
-                        date = event.date
+                        date = event.date,
+                        isSearching = false
                     )
                 }
             }
+
             is Event.OnTitleUpdated -> {
                 _state.update {
                     it.copy(
@@ -110,6 +105,7 @@ class PlansViewModel (
                     )
                 }
             }
+
             is Event.DeletePlan -> {
                 viewModelScope.launch {
                     repository.deletePlan(event.plan)
@@ -117,12 +113,9 @@ class PlansViewModel (
             }
 
             Event.HideCreatingSheet -> {
-                _state.update {
-                    it.copy(
-                        isAddingPlan = false
-                    )
-                }
+                setDefaultData()
             }
+
             Event.ShowCreatingSheet -> {
                 _state.update {
                     it.copy(
@@ -130,9 +123,6 @@ class PlansViewModel (
                         isSearching = false
                     )
                 }
-
-                Log.i(TAG, "isAdding - ${_state.value.isAddingPlan}")
-
             }
 
             is Event.OnColorUpdated -> {
@@ -219,6 +209,26 @@ class PlansViewModel (
         else if (state.value.color.isBlank()) Status.ERROR_COLOR
         else if (state.value.subject.isBlank()) Status.ERROR_SUBJECT
         else Status.SUCCESS
+    }
+
+    private fun setDefaultData() {
+        _state.update {
+            it.copy(
+                title = "",
+                date = LocalDate.now().toString(),
+                color = "#FF7E50FF",
+                subject = "",
+                type = "Событие",
+
+                startHour = 0,
+                startMinute = 0,
+                endHour = 0,
+                endMinute = 0,
+
+                isFavourite = false,
+                isAddingPlan = false,
+            )
+        }
     }
 
 }

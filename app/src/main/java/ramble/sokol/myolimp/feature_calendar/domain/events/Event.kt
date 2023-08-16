@@ -3,10 +3,10 @@ package ramble.sokol.myolimp.feature_calendar.domain.events
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 
 sealed interface Event {
-    object CreatePlan: Event
-    object ShowCreatingSheet: Event
-    object HideCreatingSheet: Event
-    object CancelSearching: Event
+    data object CreatePlan: Event
+    data object ShowCreatingSheet: Event
+    data object HideCreatingSheet: Event
+    data object CancelSearching: Event
     data class DeletePlan(val plan: PlanModel): Event
     data class OnTitleUpdated(val title: String): Event
     data class OnDateUpdated(val date: String): Event
