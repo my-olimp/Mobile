@@ -68,6 +68,9 @@ class PlansViewModel (
                         return
                     }
                     else -> {
+
+                        val times = getCorrectTime()
+
                         val plan = PlanModel(
                             title = state.value.title,
                             date = state.value.date,
@@ -75,8 +78,8 @@ class PlansViewModel (
                             subject = state.value.subject,
                             type = state.value.type,
                             isFavourite = state.value.isFavourite,
-                            startTime = "${state.value.startHour}:${state.value.startMinute}",
-                            endTime = "${state.value.endHour}:${state.value.endMinute}",
+                            startTime = times[0],
+                            endTime = times[1],
                         )
 
                         viewModelScope.launch {
@@ -243,6 +246,39 @@ class PlansViewModel (
                 isAddingPlan = false,
             )
         }
+    }
+
+    private fun getCorrectTime() : List<String> {
+
+        val times = listOf(
+            state.value.startHour,
+            state.value.startMinute,
+            state.value.endHour,
+            state.value.endMinute,
+        )
+
+        val resultList = mutableListOf<String>()
+
+
+        for (i in times.indices) {
+
+            if (times[i].toString().length == 1 && times[i] < 10) {
+
+                resultList.add("0${times[i]}")
+
+            } else {
+
+                resultList.add(times[i].toString())
+
+            }
+
+        }
+
+        return listOf(
+            "${resultList[0]}:${resultList[1]}",
+            "${resultList[2]}:${resultList[3]}",
+        )
+
     }
 
 }
