@@ -67,8 +67,9 @@ fun ExpandableCalendar(
         Spacer(modifier = Modifier.height(12.dp))
 
         /*
-     search & bookmarks
-    */
+         search & bookmarks
+        */
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()

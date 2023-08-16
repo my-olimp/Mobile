@@ -61,7 +61,7 @@ fun SearchTextField (
         label = {
             Row {
                 Text(
-                    text = "Найти...",
+                    text = "Найти",
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.regular)),

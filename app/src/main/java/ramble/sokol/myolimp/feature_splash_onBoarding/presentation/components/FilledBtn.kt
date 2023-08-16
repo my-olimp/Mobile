@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,11 +29,8 @@ fun FilledBtn (
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = padding)
-            .background(
-                color = BlueStart,
-                shape = RoundedCornerShape(size = 16.dp)
-            ),
+            .padding(horizontal = padding),
+        shape = RoundedCornerShape(size = 16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = BlueStart
         ),
@@ -42,7 +38,8 @@ fun FilledBtn (
     ) {
         Text(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
             text = text,
             style = TextStyle(
                 fontSize = 20.sp,
