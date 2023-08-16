@@ -40,7 +40,7 @@ fun TimeCard(
                 onClick()
             },
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFEDF4FD),
+            containerColor = Color(0xFFC1D6FE),
         ),
     ) {
         Text(

@@ -1,24 +1,29 @@
 package ramble.sokol.myolimp.feature_calendar.domain.view_models
 
-import ramble.sokol.myolimp.feature_calendar.data.database.PlansDatabase
-import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
-import ramble.sokol.myolimp.feature_calendar.domain.events.Event
-import ramble.sokol.myolimp.feature_calendar.domain.repositories.PlansRepository
-import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
-import ramble.sokol.myolimp.feature_calendar.domain.utils.Status
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.CalendarScreenDestination
+import ramble.sokol.myolimp.feature_calendar.data.database.PlansDatabase
+import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
+import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import ramble.sokol.myolimp.feature_calendar.domain.repositories.PlansRepository
+import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
+import ramble.sokol.myolimp.feature_calendar.domain.utils.Status
+import java.time.LocalDate
 
 class PlansViewModel (
-    context: Context
+    private val context: Context
 ) : ViewModel() {
 
     companion object {
@@ -47,26 +52,53 @@ class PlansViewModel (
         event: Event
     ) {
         when (event) {
-            Event.CreatePlan -> {
+            is Event.CreatePlan -> {
 
                 when (checkData()) {
                     1 -> {
                         Log.i(TAG, "title is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.name_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     2 -> {
                         Log.i(TAG, "date is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.data_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     3 -> {
                         Log.i(TAG, "color is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.color_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     4 -> {
                         Log.i(TAG, "subject is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.subject_error), Toast.LENGTH_SHORT).show()
+
+                        return
+                    }
+                    5 -> {
+                        Log.i(TAG, "time is not valid")
+
+                        Toast.makeText(context,
+                            context.getString(R.string.time_error), Toast.LENGTH_SHORT).show()
+
                         return
                     }
                     else -> {
+
+                        val times = getCorrectTime()
+
                         val plan = PlanModel(
                             title = state.value.title,
                             date = state.value.date,
@@ -74,35 +106,35 @@ class PlansViewModel (
                             subject = state.value.subject,
                             type = state.value.type,
                             isFavourite = state.value.isFavourite,
-                            startTime = "${state.value.startHour}:${state.value.startMinute}",
-                            endTime = "${state.value.endHour}:${state.value.endMinute}",
+                            startTime = times[0],
+                            endTime = times[1],
                         )
 
                         viewModelScope.launch {
                             repository.addPlan(plan = plan)
                         }
 
-                        _state.update {
-                            it.copy(
-                                title = "",
-                                date = "",
-                                color = "",
-                                subject = "",
-                                isFavourite = false,
-                                isAddingPlan = false
-                            )
-                        }
+                       setDefaultData()
+
+                        // navigate to calendar screen
+
+                        event.navController.navigate(
+                            CalendarScreenDestination()
+                        )
                     }
                 }
 
             }
             is Event.OnDateUpdated -> {
+
                 _state.update {
                     it.copy(
-                        date = event.date
+                        date = event.date,
+                        isSearching = false
                     )
                 }
             }
+
             is Event.OnTitleUpdated -> {
                 _state.update {
                     it.copy(
@@ -110,6 +142,7 @@ class PlansViewModel (
                     )
                 }
             }
+
             is Event.DeletePlan -> {
                 viewModelScope.launch {
                     repository.deletePlan(event.plan)
@@ -117,12 +150,9 @@ class PlansViewModel (
             }
 
             Event.HideCreatingSheet -> {
-                _state.update {
-                    it.copy(
-                        isAddingPlan = false
-                    )
-                }
+                setDefaultData()
             }
+
             Event.ShowCreatingSheet -> {
                 _state.update {
                     it.copy(
@@ -130,9 +160,6 @@ class PlansViewModel (
                         isSearching = false
                     )
                 }
-
-                Log.i(TAG, "isAdding - ${_state.value.isAddingPlan}")
-
             }
 
             is Event.OnColorUpdated -> {
@@ -193,23 +220,38 @@ class PlansViewModel (
                 }
             }
 
-            is Event.OnEndTimeUpdated -> {
+            is Event.OnEndHourUpdated -> {
                 _state.update {
                     it.copy(
-                        endHour = event.endHour,
+                        endHour = event.endHour
+                    )
+                }
+            }
+
+            is Event.OnEndMinUpdated -> {
+                _state.update {
+                    it.copy(
                         endMinute = event.endMin
                     )
                 }
             }
 
-            is Event.OnStartTimeUpdated -> {
+            is Event.OnStartHourUpdated -> {
                 _state.update {
                     it.copy(
-                        startHour = event.startHour,
+                        startHour = event.startHour
+                    )
+                }
+            }
+
+            is Event.OnStartMinUpdated -> {
+                _state.update {
+                    it.copy(
                         startMinute = event.startMin
                     )
                 }
             }
+
         }
     }
 
@@ -218,7 +260,62 @@ class PlansViewModel (
         else if (state.value.date.isBlank()) Status.ERROR_DATE
         else if (state.value.color.isBlank()) Status.ERROR_COLOR
         else if (state.value.subject.isBlank()) Status.ERROR_SUBJECT
+        else if (state.value.startHour > state.value.endHour) Status.ERROR_TIME
+        else if (state.value.startHour == state.value.endHour && state.value.startMinute >= state.value.endMinute) Status.ERROR_TIME
         else Status.SUCCESS
+    }
+
+    private fun setDefaultData() {
+        _state.update {
+            it.copy(
+                title = "",
+                date = LocalDate.now().toString(),
+                color = "#FF7E50FF",
+                subject = "",
+                type = "Событие",
+
+                startHour = 0,
+                startMinute = 0,
+                endHour = 0,
+                endMinute = 0,
+
+                isFavourite = false,
+                isAddingPlan = false,
+            )
+        }
+    }
+
+    private fun getCorrectTime() : List<String> {
+
+        val times = listOf(
+            state.value.startHour,
+            state.value.startMinute,
+            state.value.endHour,
+            state.value.endMinute,
+        )
+
+        val resultList = mutableListOf<String>()
+
+
+        for (i in times.indices) {
+
+            if (times[i].toString().length == 1 && times[i] < 10) {
+
+                resultList.add("0${times[i]}")
+
+            } else {
+
+                resultList.add(times[i].toString())
+
+            }
+
+        }
+
+        return listOf(
+            "${resultList[0]}:${resultList[1]}",
+            "${resultList[2]}:${resultList[3]}",
+        )
+
     }
 
 }

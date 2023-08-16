@@ -53,7 +53,6 @@ fun SearchTextField (
 
     OutlinedTextField(
         modifier = Modifier
-            .wrapContentSize()
             .onFocusChanged {
                 hasFocus = it.isFocused
             },
@@ -61,7 +60,7 @@ fun SearchTextField (
         label = {
             Row {
                 Text(
-                    text = "Найти...",
+                    text = "Найти",
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.regular)),

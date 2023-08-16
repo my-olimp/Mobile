@@ -73,6 +73,45 @@ fun BottomBarTheme(
 }
 
 @Composable
+fun CalendarTheme(
+    navController: NavController,
+    fab: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
+) {
+
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = !isSystemInDarkTheme()
+
+    DisposableEffect(systemUiController, useDarkIcons) {
+
+        systemUiController.setNavigationBarColor(
+            color = Transparent,
+            darkIcons = useDarkIcons
+        )
+        systemUiController.setStatusBarColor(
+            BackgroundMain,
+            darkIcons = useDarkIcons
+        )
+
+        onDispose {}
+    }
+
+    MaterialTheme(
+        content = {
+            Scaffold(
+                bottomBar = {
+                    BottomNavigationBar(navController = navController)
+                },
+                content = content,
+                backgroundColor = BackgroundMain,
+                floatingActionButton = fab
+            )
+        },
+    )
+
+}
+
+@Composable
 fun GradientBackground(
     content: @Composable () -> Unit
 ) {
