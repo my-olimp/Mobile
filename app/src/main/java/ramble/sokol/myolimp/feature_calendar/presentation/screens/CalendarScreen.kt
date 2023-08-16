@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_calendar.presentation.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -65,7 +66,8 @@ fun CalendarScreen(
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(bottom = 50.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
 
