@@ -70,19 +70,28 @@ fun TimerPicker(
             when (selectedPart) {
                 TimePart.StartHour -> {
                     selectedHour = it
-                    onEvent(Event.OnStartTimeUpdated(selectedHour, selectedMinute))
+                    onEvent(Event.OnStartHourUpdated(selectedHour))
+
+                    // next part
+                    selectedPart = TimePart.StartMinute
                 }
                 TimePart.StartMinute -> {
                     selectedMinute = it * 5
-                    onEvent(Event.OnStartTimeUpdated(selectedHour, selectedMinute))
+                    onEvent(Event.OnStartMinUpdated(selectedMinute))
+
+                    // next part
+                    selectedPart = TimePart.EndHour
                 }
                 TimePart.EndHour -> {
                     selectedEndHour = it
-                    onEvent(Event.OnEndTimeUpdated(selectedEndHour, selectedEndMinute))
+                    onEvent(Event.OnEndHourUpdated(selectedEndHour))
+
+                    // next part
+                    selectedPart = TimePart.EndMinute
                 }
                 TimePart.EndMinute -> {
                     selectedEndMinute = it * 5
-                    onEvent(Event.OnEndTimeUpdated(selectedEndHour, selectedEndMinute))
+                    onEvent(Event.OnEndMinUpdated(selectedEndMinute))
                 }
             }
         }

@@ -183,19 +183,33 @@ class PlansViewModel (
                 }
             }
 
-            is Event.OnEndTimeUpdated -> {
+            is Event.OnEndHourUpdated -> {
                 _state.update {
                     it.copy(
-                        endHour = event.endHour,
+                        endHour = event.endHour
+                    )
+                }
+            }
+
+            is Event.OnEndMinUpdated -> {
+                _state.update {
+                    it.copy(
                         endMinute = event.endMin
                     )
                 }
             }
 
-            is Event.OnStartTimeUpdated -> {
+            is Event.OnStartHourUpdated -> {
                 _state.update {
                     it.copy(
-                        startHour = event.startHour,
+                        startHour = event.startHour
+                    )
+                }
+            }
+
+            is Event.OnStartMinUpdated -> {
+                _state.update {
+                    it.copy(
                         startMinute = event.startMin
                     )
                 }
