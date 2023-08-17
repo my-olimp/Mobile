@@ -92,22 +92,25 @@ fun OnBoardingScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                modifier = Modifier
-                    .clickable {
-                        navigator.popBackStack()
+            if (pagerState.currentPage != 3) {
 
-                        navigator.navigate(BeginAuthenticationScreenDestination)
-                    },
-                text = stringResource(R.string.skip),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.regular)),
-                    fontWeight = FontWeight(500),
-                    color = GreyDark,
-                    letterSpacing = 0.3.sp,
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            navigator.popBackStack()
+
+                            navigator.navigate(BeginAuthenticationScreenDestination)
+                        },
+                    text = stringResource(R.string.skip),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(500),
+                        color = GreyDark,
+                        letterSpacing = 0.3.sp,
+                    )
                 )
-            )
+            }
         }
     }
 }
