@@ -15,7 +15,9 @@ data class PlanModel (
     val subject: String,
     val color: String,
     val type: String,
-    val startTime: String,
-    val endTime: String,
+    val startHour: Int,
+    val startMinute: Int,
+    val endHour: Int,
+    val endMinute: Int,
     val isFavourite: Boolean,
 ) : Serializable

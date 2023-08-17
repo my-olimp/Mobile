@@ -33,6 +33,11 @@ fun PlanItem  (
     item: PlanModel,
     onEdit: (PlanModel) -> Unit
 ){
+
+    val times = getCorrectTime(
+        item = item
+    )
+
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +66,7 @@ fun PlanItem  (
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "${item.startTime} - ${item.endTime}",
+                text = "${times[0]} - ${times[1]}",
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.medium)),
@@ -111,3 +116,39 @@ fun PlanItem  (
         }
     }
 }
+
+private fun getCorrectTime(
+    item: PlanModel
+) : List<String> {
+
+    val times = listOf(
+        item.startHour,
+        item.startMinute,
+        item.endHour,
+        item.endMinute,
+    )
+
+    val resultList = mutableListOf<String>()
+
+    for (i in times.indices) {
+
+        if (times[i].toString().length == 1 && times[i] < 10) {
+
+            resultList.add("0${times[i]}")
+
+        } else {
+
+            resultList.add(times[i].toString())
+
+        }
+
+    }
+
+    return listOf(
+        "${resultList[0]}:${resultList[1]}",
+        "${resultList[2]}:${resultList[3]}",
+    )
+
+}
+
+

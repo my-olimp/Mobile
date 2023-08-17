@@ -32,6 +32,7 @@ import ramble.sokol.myolimp.ui.theme.BlueStart
 @Composable
 fun ListDropDown(
     subjects: List<String>,
+    previousData: String = "",
     onTextChanged: (String) -> Unit
 ) {
 
@@ -39,7 +40,7 @@ fun ListDropDown(
         mutableStateOf(false)
     }
     val textValue = remember {
-        mutableStateOf("")
+        mutableStateOf(previousData)
     }
 
     Box(

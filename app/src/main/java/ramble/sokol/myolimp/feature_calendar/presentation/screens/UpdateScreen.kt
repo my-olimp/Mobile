@@ -43,6 +43,7 @@ import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
+import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ColorsBox
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ListDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.SelectableText
@@ -61,6 +62,23 @@ fun UpdateScreen (
     val viewModel = getViewModel<PlansViewModel>()
     val state by viewModel.state.collectAsState()
     val scroll = rememberScrollState()
+
+    // to set previous data
+
+    viewModel.onEvent(Event.OnTitleUpdated(plan.title))
+
+    viewModel.onEvent(Event.OnTypeUpdated(plan.type))
+
+    viewModel.onEvent(Event.OnFavouriteClick(plan.isFavourite))
+
+    viewModel.onEvent(Event.OnDateUpdated(plan.date))
+
+    viewModel.onEvent(Event.OnStartHourUpdated(plan.startHour))
+    viewModel.onEvent(Event.OnStartMinUpdated(plan.startMinute))
+    viewModel.onEvent(Event.OnEndHourUpdated(plan.endHour))
+    viewModel.onEvent(Event.OnEndMinUpdated(plan.endMinute))
+
+    viewModel.onEvent(Event.OnSubjectUpdated(plan.subject))
 
     OlimpTheme {
         Column(
@@ -150,11 +168,11 @@ fun UpdateScreen (
                     modifier = Modifier
                         .heightIn(max = 46.dp)
                         .background(
-                            color = if (plan.isFavourite) Color(0xFF3579F8) else Color(0xFFFFFFFF),
+                            color = if (state.isFavourite) Color(0xFF3579F8) else Color(0xFFFFFFFF),
                             shape = RoundedCornerShape(size = 8.dp)
                         )
                         .clickable {
-                            viewModel.onEvent(Event.OnFavouriteClick(!plan.isFavourite))
+                            viewModel.onEvent(Event.OnFavouriteClick(!state.isFavourite))
                         },
 
                     ) {
@@ -163,7 +181,7 @@ fun UpdateScreen (
                             .padding(12.dp),
                         painter = painterResource(id = R.drawable.ic_calendar_favourite),
                         contentDescription = "bookmark",
-                        tint = if (plan.isFavourite) Color(0xFFFFFFFF) else Color(0xFF757575),
+                        tint = if (state.isFavourite) Color(0xFFFFFFFF) else Color(0xFF757575),
                     )
                 }
             }
@@ -181,10 +199,13 @@ fun UpdateScreen (
 
             Spacer(modifier = Modifier.height(8.dp))
 
-//            TimerPicker(
-//                state = state,
-//                onEvent = viewModel::onEvent
-//            )
+            TimerPicker(
+                startHour = plan.startHour,
+                startMinute = plan.startMinute,
+                endHour = plan.endHour,
+                endMinute = plan.endMinute,
+                onEvent = viewModel::onEvent
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -201,7 +222,8 @@ fun UpdateScreen (
             )
 
             ListDropDown(
-                subjects = subjects
+                subjects = subjects,
+                previousData = plan.subject
             ) {
                 viewModel.onEvent(Event.OnSubjectUpdated(it))
             }
@@ -228,10 +250,13 @@ fun UpdateScreen (
             Spacer(modifier = Modifier.height(32.dp))
 
             FilledBtn(
-                text = stringResource(id = R.string.save),
+                text = stringResource(id = R.string.update),
                 padding = 0.dp
             ) {
-                viewModel.onEvent(Event.CreatePlan(navController = navController))
+                viewModel.onEvent(Event.UpdatePlan(
+                    navController = navController,
+                    id = plan.id
+                ))
             }
         }
     }

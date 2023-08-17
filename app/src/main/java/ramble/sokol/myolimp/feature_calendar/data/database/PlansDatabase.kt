@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [PlanModel::class],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class PlansDatabase : RoomDatabase() {
