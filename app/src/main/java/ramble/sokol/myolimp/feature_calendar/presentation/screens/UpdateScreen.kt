@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -51,6 +50,7 @@ import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInpu
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import androidx.compose.material.Icon as Icon
 
 @Destination
 @Composable
@@ -222,8 +222,15 @@ fun UpdateScreen (
             )
 
             ListDropDown(
-                subjects = subjects,
-                previousData = plan.subject
+                values = subjects,
+                label = stringResource(R.string.subject),
+                previousData = plan.subject,
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_calendar_subjects),
+                        contentDescription = "subjects"
+                    )
+                }
             ) {
                 viewModel.onEvent(Event.OnSubjectUpdated(it))
             }

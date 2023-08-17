@@ -209,7 +209,14 @@ fun CreateCalendarScreen (
             )
 
             ListDropDown(
-                subjects = subjects
+                values = subjects,
+                label = stringResource(R.string.subject),
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_calendar_subjects),
+                        contentDescription = "subjects"
+                    )
+                }
             ) {
                 viewModel.onEvent(Event.OnSubjectUpdated(it))
             }
