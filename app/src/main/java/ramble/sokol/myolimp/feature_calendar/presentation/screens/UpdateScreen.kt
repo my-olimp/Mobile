@@ -40,9 +40,9 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
+import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
-import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ColorsBox
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ListDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.SelectableText
@@ -53,17 +53,14 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
 @Destination
 @Composable
-fun CreateCalendarScreen (
-    date: String,
-    navController: NavController
+fun UpdateScreen (
+    navController: NavController,
+    plan: PlanModel
 ) {
 
     val viewModel = getViewModel<PlansViewModel>()
     val state by viewModel.state.collectAsState()
-
     val scroll = rememberScrollState()
-
-    viewModel.onEvent(Event.OnDateUpdated(date = date))
 
     OlimpTheme {
         Column(
@@ -83,7 +80,7 @@ fun CreateCalendarScreen (
             ) {
 
                 Text(
-                    text = stringResource(R.string.create_plan),
+                    text = stringResource(R.string.update_plan),
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.medium)),
@@ -109,9 +106,8 @@ fun CreateCalendarScreen (
             Spacer(modifier = Modifier.height(8.dp))
 
             // Name
-
             OutlinedText(
-                previousData = state.title,
+                previousData = plan.title,
                 label = stringResource(R.string.name_plan),
                 onTextChanged = {
                     viewModel.onEvent(Event.OnTitleUpdated(it))
@@ -121,7 +117,6 @@ fun CreateCalendarScreen (
             Spacer(modifier = Modifier.height(8.dp))
 
             // Type
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -155,11 +150,11 @@ fun CreateCalendarScreen (
                     modifier = Modifier
                         .heightIn(max = 46.dp)
                         .background(
-                            color = if (state.isFavourite) Color(0xFF3579F8) else Color(0xFFFFFFFF),
+                            color = if (plan.isFavourite) Color(0xFF3579F8) else Color(0xFFFFFFFF),
                             shape = RoundedCornerShape(size = 8.dp)
                         )
                         .clickable {
-                            viewModel.onEvent(Event.OnFavouriteClick(!state.isFavourite))
+                            viewModel.onEvent(Event.OnFavouriteClick(!plan.isFavourite))
                         },
 
                     ) {
@@ -168,7 +163,7 @@ fun CreateCalendarScreen (
                             .padding(12.dp),
                         painter = painterResource(id = R.drawable.ic_calendar_favourite),
                         contentDescription = "bookmark",
-                        tint = if (state.isFavourite) Color(0xFFFFFFFF) else Color(0xFF757575),
+                        tint = if (plan.isFavourite) Color(0xFFFFFFFF) else Color(0xFF757575),
                     )
                 }
             }
@@ -177,7 +172,7 @@ fun CreateCalendarScreen (
 
             // Data
             CalendarInput(
-                previousData = date,
+                previousData = plan.date,
                 label = stringResource(R.string.data_plan),
                 onTextChanged = {
                     viewModel.onEvent(Event.OnDateUpdated(it))
@@ -186,13 +181,10 @@ fun CreateCalendarScreen (
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            TimerPicker(
-                startHour = state.startHour,
-                startMinute = state.startMinute,
-                endHour = state.endHour,
-                endMinute = state.endMinute,
-                onEvent = viewModel::onEvent
-            )
+//            TimerPicker(
+//                state = state,
+//                onEvent = viewModel::onEvent
+//            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -227,7 +219,7 @@ fun CreateCalendarScreen (
             )
 
             ColorsBox(
-                previousData = state.color,
+                previousData = plan.color,
                 colorsHex = colorsHex
             ) {
                 viewModel.onEvent(Event.OnColorUpdated(it))

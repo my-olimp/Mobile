@@ -8,6 +8,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
@@ -25,20 +29,26 @@ import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
 fun SelectableText (
-    text: String,
     state: PlanState,
+    text: String,
     onTextClick: (String) -> Unit
 ){
+
+    var type by remember {
+        mutableStateOf(state.type)
+    }
 
     Box(
         modifier = Modifier
             .background(
-                color = if (state.type == text) CalendarSelecatableText else White,
+                color = if (type == text) CalendarSelecatableText else White,
                 shape = RoundedCornerShape(size = 16.dp)
             )
             .padding(14.dp)
             .clip(CircleShape)
             .clickable {
+                type = text
+
                 onTextClick(text)
             }
     ) {
@@ -48,7 +58,7 @@ fun SelectableText (
                 fontSize = 16.sp,
                 fontFamily = FontFamily(Font(R.font.regular)),
                 fontWeight = FontWeight(400),
-                color = if (state.type == text) CalendarFocusedText else CalendarUnFocusedText,
+                color = if (type == text) CalendarFocusedText else CalendarUnFocusedText,
                 letterSpacing = 0.28.sp,
             )
         )

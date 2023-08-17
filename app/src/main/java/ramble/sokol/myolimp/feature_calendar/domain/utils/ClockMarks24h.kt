@@ -4,7 +4,11 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clo
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ClockMarks24h(selectedPart: TimePart, selectedTime: Int, onTime: (Int) -> Unit) {
+fun ClockMarks24h(
+    selectedPart: TimePart,
+    selectedTime: Int,
+    onTime: (Int) -> Unit
+) {
     if (selectedPart == TimePart.StartHour || selectedPart == TimePart.EndHour) {
         Mark(text = "00", index = 0, isSelected = selectedTime == 0, onIndex = onTime)
         Mark(text = "01", index = 1, isSelected = selectedTime == 1, onIndex = onTime)

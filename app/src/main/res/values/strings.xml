@@ -64,6 +64,7 @@
     <string name="region_profile">Субъект</string>
     <string name="city_profile">Населенный пункт</string>
     <string name="create_plan">Создайте план :)</string>
+    <string name="update_plan">Обновите план :)</string>
     <string name="name_plan">Название</string>
     <string name="event">Событие</string>
     <string name="task">Задача</string>

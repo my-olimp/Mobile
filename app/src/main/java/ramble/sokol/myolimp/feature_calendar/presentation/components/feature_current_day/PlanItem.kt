@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,7 +31,7 @@ import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 @Composable
 fun PlanItem  (
     item: PlanModel,
-    onDelete: (PlanModel) -> Unit
+    onEdit: (PlanModel) -> Unit
 ){
     Row (
         modifier = Modifier
@@ -43,7 +43,7 @@ fun PlanItem  (
             )
             .padding(12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Top
     ) {
         Column {
 
@@ -100,12 +100,12 @@ fun PlanItem  (
 
         IconButton(
             onClick = {
-                onDelete(item)
+                onEdit(item)
             },
         ) {
             Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "delete plan",
+                imageVector = Icons.Default.Edit,
+                contentDescription = "edit plan",
                 tint = Color.White
             )
         }

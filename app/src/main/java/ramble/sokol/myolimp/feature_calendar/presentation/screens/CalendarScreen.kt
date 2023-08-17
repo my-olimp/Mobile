@@ -94,7 +94,7 @@ fun CalendarScreen(
                 item {
                     Searching(
                         state = state,
-                        onEvent = viewModel::onEvent
+                        navController = navController
                     )
                 }
 
@@ -107,7 +107,7 @@ fun CalendarScreen(
                 item {
                     Favourites(
                         state = state,
-                        onEvent = viewModel::onEvent
+                        navController = navController
                     )
                 }
 
@@ -121,7 +121,7 @@ fun CalendarScreen(
                     CurrentDay(
                         currentDate = currentDate,
                         state = state,
-                        onEvent = viewModel::onEvent
+                        navController = navController
                     )
                 }
             }
