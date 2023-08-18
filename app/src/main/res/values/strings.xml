@@ -80,4 +80,5 @@
     <string name="time_error">Время начала и конца некорректно</string>
     <string name="pick_date">Выберите дату</string>
     <string name="time">Время</string>
+    <string name="today_plan">План на сегодня</string>
 </resources>

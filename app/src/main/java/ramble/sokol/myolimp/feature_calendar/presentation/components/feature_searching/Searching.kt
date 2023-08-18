@@ -3,6 +3,7 @@ package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_se
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
+import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
@@ -22,7 +23,8 @@ fun Searching (
     if (searchingPlans.isEmpty()) {
 
         ImageWithText (
-            "По запросу '${state.searchQuery}' ничего не найдено"
+            drawable = R.drawable.ic_calendar_no_plans,
+            text = "По запросу '${state.searchQuery}' ничего не найдено"
         )
 
     } else {

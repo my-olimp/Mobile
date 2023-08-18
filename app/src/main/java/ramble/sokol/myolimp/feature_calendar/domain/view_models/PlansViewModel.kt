@@ -108,6 +108,7 @@ class PlansViewModel (
                             endMinute = state.value.endMinute,
                             startHour = state.value.startHour,
                             endHour = state.value.endHour,
+                            isCompleted = false
                         )
 
                         viewModelScope.launch {
@@ -239,6 +240,18 @@ class PlansViewModel (
                 }
             }
 
+            is Event.OnCompletedPlan -> {
+                viewModelScope.launch {
+                    repository.updatePlan(
+                        plan = event.plan.copy(
+                            isCompleted = true
+                        )
+                    )
+
+                    Log.i(TAG, "plan - ${event.plan}")
+                }
+            }
+
             is Event.UpdatePlan -> {
 
                 when (checkData()) {
@@ -311,6 +324,7 @@ class PlansViewModel (
                             endMinute = state.value.endMinute,
                             startHour = state.value.startHour,
                             endHour = state.value.endHour,
+                            isCompleted = false
                         )
 
                         Log.i(TAG, "Update plan - $plan")
@@ -337,6 +351,7 @@ class PlansViewModel (
                     )
                 }
             }
+
         }
     }
 

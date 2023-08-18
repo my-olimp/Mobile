@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
+import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
@@ -23,7 +24,8 @@ fun CurrentDay (
     if (currentPlans.isEmpty()) {
 
         ImageWithText (
-            "Планов нет..."
+            drawable = R.drawable.ic_calendar_no_plans,
+            text = "Планов нет..."
         )
 
     } else {

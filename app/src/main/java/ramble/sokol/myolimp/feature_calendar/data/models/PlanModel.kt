@@ -20,4 +20,5 @@ data class PlanModel (
     val endHour: Int,
     val endMinute: Int,
     val isFavourite: Boolean,
+    val isCompleted: Boolean,
 ) : Serializable
