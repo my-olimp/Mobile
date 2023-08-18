@@ -12,7 +12,7 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cur
 @Composable
 fun Favourites (
     state: PlanState,
-    navController: NavController
+    navController: NavController,
 ) {
     val favouritesPlans = state.plans.filter {
         it.subject.contains(state.searchQuery, ignoreCase = true) ||

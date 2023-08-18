@@ -133,8 +133,6 @@ class PlansViewModel (
                         isSearching = false
                     )
                 }
-
-                Toast.makeText(context, "da - ${_state.value.date}", Toast.LENGTH_SHORT).show()
             }
 
             is Event.OnTitleUpdated -> {

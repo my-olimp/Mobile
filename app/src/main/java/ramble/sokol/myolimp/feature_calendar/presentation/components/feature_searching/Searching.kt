@@ -11,7 +11,7 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cur
 @Composable
 fun Searching (
     state: PlanState,
-    navController: NavController
+    navController: NavController,
 ) {
 
     val searchingPlans = state.plans.filter {
@@ -30,11 +30,12 @@ fun Searching (
         searchingPlans.forEach {
             PlanItem(
                 item = it,
-            ) { plan->
-                navController.navigate(
-                    UpdateScreenDestination(plan = plan)
-                )
-            }
+                onEdit = { plan->
+                    navController.navigate(
+                        UpdateScreenDestination(plan = plan)
+                    )
+                }
+            )
         }
 
     }

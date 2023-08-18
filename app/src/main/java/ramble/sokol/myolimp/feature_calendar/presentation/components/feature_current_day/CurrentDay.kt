@@ -29,7 +29,7 @@ fun CurrentDay (
     } else {
         currentPlans.forEach {
             PlanItem(
-                item = it
+                item = it,
             ) { plan->
                 navController.navigate(
                     UpdateScreenDestination(plan = plan)

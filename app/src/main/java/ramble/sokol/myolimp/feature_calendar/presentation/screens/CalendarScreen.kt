@@ -94,7 +94,7 @@ fun CalendarScreen(
                 item {
                     Searching(
                         state = state,
-                        navController = navController
+                        navController = navController,
                     )
                 }
 
@@ -107,7 +107,7 @@ fun CalendarScreen(
                 item {
                     Favourites(
                         state = state,
-                        navController = navController
+                        navController = navController,
                     )
                 }
 
