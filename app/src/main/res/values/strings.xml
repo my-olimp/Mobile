@@ -81,4 +81,9 @@
     <string name="pick_date">Выберите дату</string>
     <string name="time">Время</string>
     <string name="today_plan">План на сегодня</string>
+    <string name="first_step">С чего начать?</string>
+    <string name="probnik">Пробник</string>
+    <string name="test">Тест</string>
+    <string name="math">Математика</string>
+    <string name="trial_version">Пробный вариант</string>
 </resources>
