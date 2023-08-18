@@ -133,6 +133,8 @@ class PlansViewModel (
                         isSearching = false
                     )
                 }
+
+                Toast.makeText(context, "da - ${_state.value.date}", Toast.LENGTH_SHORT).show()
             }
 
             is Event.OnTitleUpdated -> {
@@ -146,19 +148,6 @@ class PlansViewModel (
             is Event.DeletePlan -> {
                 viewModelScope.launch {
                     repository.deletePlan(event.plan)
-                }
-            }
-
-            Event.HideCreatingSheet -> {
-                setDefaultData()
-            }
-
-            Event.ShowCreatingSheet -> {
-                _state.update {
-                    it.copy(
-                        isAddingPlan = true,
-                        isSearching = false
-                    )
                 }
             }
 
@@ -342,6 +331,24 @@ class PlansViewModel (
                     }
                 }
             }
+
+            is Event.OnDatePickerShowing -> {
+                _state.update {
+                    it.copy(
+                        isShowingTime = false,
+                        isShowingCalendar = event.isShowing
+                    )
+                }
+            }
+            is Event.OnTimePickerShowing -> {
+                _state.update {
+                    it.copy(
+                        isShowingCalendar = false,
+
+                        isShowingTime = event.isShowing
+                    )
+                }
+            }
         }
     }
 
@@ -370,7 +377,6 @@ class PlansViewModel (
                 endMinute = 0,
 
                 isFavourite = false,
-                isAddingPlan = false,
             )
         }
     }

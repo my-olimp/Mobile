@@ -78,4 +78,5 @@
     <string name="color_error">Цвет не выбран</string>
     <string name="subject_error">Предмет не выбран</string>
     <string name="time_error">Время начала и конца некорректно</string>
+    <string name="pick_date">Выберите дату</string>
 </resources>

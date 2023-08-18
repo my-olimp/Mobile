@@ -47,7 +47,7 @@ fun SearchTextField (
 
     val focusManager = LocalFocusManager.current
 
-    if (!state.isSearching && !state.isAddingPlan) {
+    if (!state.isSearching) {
         focusManager.clearFocus()
     }
 

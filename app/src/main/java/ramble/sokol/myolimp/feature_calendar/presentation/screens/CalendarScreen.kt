@@ -20,6 +20,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
+import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_calendar.ExpandableCalendar
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_current_day.CurrentDay
@@ -45,10 +46,9 @@ fun CalendarScreen(
             FloatingActionButton(
                 onClick = {
                     navController.navigate(
-                        CreateCalendarScreenDestination(
-                            date = state.date
-                        )
+                        CreateCalendarScreenDestination()
                     )
+                    viewModel.onEvent(Event.OnDateUpdated(date = state.date))
                 },
                 containerColor = BlueStart,
                 contentColor = White
