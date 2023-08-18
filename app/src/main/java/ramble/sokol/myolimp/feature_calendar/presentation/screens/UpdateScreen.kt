@@ -47,6 +47,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
+import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
@@ -62,16 +63,36 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
-fun CreateCalendarScreen (
-    navController: NavController
+fun UpdateScreen (
+    navController: NavController,
+    plan: PlanModel
 ) {
 
     val viewModel = getViewModel<PlansViewModel>()
     val state by viewModel.state.collectAsState()
-
     val scroll = rememberScrollState()
-
     val context = LocalContext.current
+
+    // to launch only once
+    LaunchedEffect(key1 = true, block = {
+        // to set previous data
+
+        viewModel.onEvent(Event.OnTitleUpdated(plan.title))
+
+        viewModel.onEvent(Event.OnTypeUpdated(plan.type))
+
+        viewModel.onEvent(Event.OnFavouriteClick(plan.isFavourite))
+        viewModel.onEvent(Event.OnDateUpdated(plan.date))
+
+        viewModel.onEvent(Event.OnStartHourUpdated(plan.startHour))
+        viewModel.onEvent(Event.OnStartMinUpdated(plan.startMinute))
+        viewModel.onEvent(Event.OnEndHourUpdated(plan.endHour))
+        viewModel.onEvent(Event.OnEndMinUpdated(plan.endMinute))
+
+        viewModel.onEvent(Event.OnSubjectUpdated(plan.subject))
+
+        viewModel.onEvent(Event.OnDateUpdated(plan.date))
+    })
 
     val bottomState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -91,7 +112,6 @@ fun CreateCalendarScreen (
     }
 
     OlimpTheme {
-
         ModalBottomSheetLayout(
             sheetState = bottomState,
             sheetShape = RoundedCornerShape(
@@ -110,7 +130,6 @@ fun CreateCalendarScreen (
                 }
             },
         ) {
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,7 +147,7 @@ fun CreateCalendarScreen (
                 ) {
 
                     Text(
-                        text = stringResource(R.string.create_plan),
+                        text = stringResource(R.string.update_plan),
                         style = TextStyle(
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.medium)),
@@ -154,9 +173,8 @@ fun CreateCalendarScreen (
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Name
-
                 OutlinedText(
-                    previousData = state.title,
+                    previousData = plan.title,
                     label = stringResource(R.string.name_plan),
                     onTextChanged = {
                         viewModel.onEvent(Event.OnTitleUpdated(it))
@@ -166,7 +184,6 @@ fun CreateCalendarScreen (
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Type
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -223,7 +240,6 @@ fun CreateCalendarScreen (
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Data
-
                 DateInput(
                     label = stringResource(R.string.data_plan),
                     state = state,
@@ -233,10 +249,10 @@ fun CreateCalendarScreen (
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TimerPicker(
-                    startHour = state.startHour,
-                    startMinute = state.startMinute,
-                    endHour = state.endHour,
-                    endMinute = state.endMinute,
+                    startHour = plan.startHour,
+                    startMinute = plan.startMinute,
+                    endHour = plan.endHour,
+                    endMinute = plan.endMinute,
                     onEvent = viewModel::onEvent
                 )
 
@@ -257,6 +273,7 @@ fun CreateCalendarScreen (
                 ListDropDown(
                     values = subjects,
                     label = stringResource(R.string.subject),
+                    previousData = plan.subject,
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_calendar_subjects),
@@ -280,7 +297,7 @@ fun CreateCalendarScreen (
                 )
 
                 ColorsBox(
-                    previousData = state.color,
+                    previousData = plan.color,
                     colorsHex = colorsHex
                 ) {
                     viewModel.onEvent(Event.OnColorUpdated(it))
@@ -289,10 +306,15 @@ fun CreateCalendarScreen (
                 Spacer(modifier = Modifier.height(32.dp))
 
                 FilledBtn(
-                    text = stringResource(id = R.string.save),
+                    text = stringResource(id = R.string.update),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(Event.CreatePlan(navController = navController))
+                    viewModel.onEvent(
+                        Event.UpdatePlan(
+                            navController = navController,
+                            id = plan.id
+                        )
+                    )
                 }
             }
         }

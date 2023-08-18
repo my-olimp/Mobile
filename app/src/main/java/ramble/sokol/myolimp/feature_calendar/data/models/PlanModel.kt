@@ -2,11 +2,12 @@ package ramble.sokol.myolimp.feature_calendar.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(
     tableName = "plans"
 )
-data class PlanModel(
+data class PlanModel (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
@@ -14,7 +15,10 @@ data class PlanModel(
     val subject: String,
     val color: String,
     val type: String,
-    val startTime: String,
-    val endTime: String,
+    val startHour: Int,
+    val startMinute: Int,
+    val endHour: Int,
+    val endMinute: Int,
     val isFavourite: Boolean,
-)
+    val isCompleted: Boolean,
+) : Serializable

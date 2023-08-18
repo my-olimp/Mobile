@@ -1,7 +1,10 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_searching
 
 import androidx.compose.runtime.Composable
-import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import androidx.navigation.NavController
+import com.ramcosta.composedestinations.navigation.navigate
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_current_day.PlanItem
@@ -9,7 +12,7 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cur
 @Composable
 fun Searching (
     state: PlanState,
-    onEvent: (Event) -> Unit
+    navController: NavController,
 ) {
 
     val searchingPlans = state.plans.filter {
@@ -20,7 +23,8 @@ fun Searching (
     if (searchingPlans.isEmpty()) {
 
         ImageWithText (
-            "По запросу '${state.searchQuery}' ничего не найдено"
+            drawable = R.drawable.ic_calendar_no_plans,
+            text = "По запросу '${state.searchQuery}' ничего не найдено"
         )
 
     } else {
@@ -28,9 +32,12 @@ fun Searching (
         searchingPlans.forEach {
             PlanItem(
                 item = it,
-            ) { plan->
-                onEvent(Event.DeletePlan(plan))
-            }
+                onEdit = { plan->
+                    navController.navigate(
+                        UpdateScreenDestination(plan = plan)
+                    )
+                }
+            )
         }
 
     }

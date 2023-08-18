@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -92,22 +91,25 @@ fun OnBoardingScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                modifier = Modifier
-                    .clickable {
-                        navigator.popBackStack()
+            if (pagerState.currentPage != 3) {
 
-                        navigator.navigate(BeginAuthenticationScreenDestination)
-                    },
-                text = stringResource(R.string.skip),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.regular)),
-                    fontWeight = FontWeight(500),
-                    color = GreyDark,
-                    letterSpacing = 0.3.sp,
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            navigator.popBackStack()
+
+                            navigator.navigate(BeginAuthenticationScreenDestination)
+                        },
+                    text = stringResource(R.string.skip),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(500),
+                        color = GreyDark,
+                        letterSpacing = 0.3.sp,
+                    )
                 )
-            )
+            }
         }
     }
 }
@@ -118,37 +120,36 @@ private fun getFragments() : List<FragmentImg> {
     Add all images with text
 */
     val items = mutableListOf<FragmentImg>()
-    val context = LocalContext.current
 
     items.add(
         FragmentImg(
             img = R.drawable.onboarding_1st,
-            textTitle = context.getString(R.string.text_title_1_onboarding),
-            textContent = context.getString(R.string.text_content_1_onboarding)
+            textTitle = stringResource(R.string.text_title_1_onboarding),
+            textContent = stringResource(R.string.text_content_1_onboarding)
         )
     )
 
     items.add(
         FragmentImg(
             img = R.drawable.onboarding_2nd,
-            textTitle = context.getString(R.string.text_title_2_onboarding),
-            textContent = context.getString(R.string.text_content_2_onboarding)
+            textTitle = stringResource(R.string.text_title_2_onboarding),
+            textContent = stringResource(R.string.text_content_2_onboarding)
         )
     )
 
     items.add(
         FragmentImg(
             img = R.drawable.onboarding_3rd,
-            textTitle = context.getString(R.string.text_title_3_onboarding),
-            textContent = context.getString(R.string.text_content_3_onboarding)
+            textTitle = stringResource(R.string.text_title_3_onboarding),
+            textContent = stringResource(R.string.text_content_3_onboarding)
         )
     )
 
     items.add(
         FragmentImg(
             img = R.drawable.onboarding_4th,
-            textTitle = context.getString(R.string.text_title_4_onboarding),
-            textContent = context.getString(R.string.text_content_4_onboarding)
+            textTitle = stringResource(R.string.text_title_4_onboarding),
+            textContent = stringResource(R.string.text_content_4_onboarding)
         )
     )
 

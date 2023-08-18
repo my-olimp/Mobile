@@ -18,7 +18,8 @@ data class PlanState(
     val endHour: Int = 0,
     val endMinute: Int = 0,
 
-    val isAddingPlan: Boolean = false,
+    val isShowingCalendar: Boolean = false,
+
     var isSearching: Boolean = false,
     val isShowingFavourites: Boolean = false,
 

@@ -230,20 +230,6 @@ fun ProfileScreen(
 
 @Destination
 @Composable
-fun HomeScreen(
-    navController: NavController
-) {
-    BottomBarTheme(
-        navController = navController
-    ) {
-        Text(
-            modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "HomeScreen"
-        )
-    }
-}
-
-@Destination
-@Composable
 fun NewsScreen(
     navController: NavController
 ) {

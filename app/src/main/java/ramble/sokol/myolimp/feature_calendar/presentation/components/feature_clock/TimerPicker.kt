@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,32 +27,39 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
-import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.domain.utils.ClockMarks24h
 import ramble.sokol.myolimp.feature_calendar.domain.utils.TimePart
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun TimerPicker(
-    state: PlanState,
+    startHour: Int,
+    startMinute: Int,
+    endHour: Int,
+    endMinute: Int,
     onEvent: (Event) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     var selectedPart by remember {
         mutableStateOf(TimePart.StartHour)
     }
 
     var selectedHour by remember {
-        mutableIntStateOf(state.startHour)
+        mutableIntStateOf(startHour)
     }
     var selectedMinute by remember {
-        mutableIntStateOf(state.startMinute)
+        mutableIntStateOf(startMinute)
     }
     var selectedEndHour by remember {
-        mutableIntStateOf(state.endHour)
+        mutableIntStateOf(endHour)
     }
     var selectedEndMinute by remember {
-        mutableIntStateOf(state.endMinute)
+        mutableIntStateOf(endMinute)
     }
 
     val selectedTime by remember {
@@ -73,21 +81,30 @@ fun TimerPicker(
                     onEvent(Event.OnStartHourUpdated(selectedHour))
 
                     // next part
-                    selectedPart = TimePart.StartMinute
+                    coroutineScope.launch {
+                        delay(0.5.seconds)
+                        selectedPart = TimePart.StartMinute
+                    }
                 }
                 TimePart.StartMinute -> {
                     selectedMinute = it * 5
                     onEvent(Event.OnStartMinUpdated(selectedMinute))
 
                     // next part
-                    selectedPart = TimePart.EndHour
+                    coroutineScope.launch {
+                        delay(0.5.seconds)
+                        selectedPart = TimePart.EndHour
+                    }
                 }
                 TimePart.EndHour -> {
                     selectedEndHour = it
                     onEvent(Event.OnEndHourUpdated(selectedEndHour))
 
                     // next part
-                    selectedPart = TimePart.EndMinute
+                    coroutineScope.launch {
+                        delay(0.5.seconds)
+                        selectedPart = TimePart.EndMinute
+                    }
                 }
                 TimePart.EndMinute -> {
                     selectedEndMinute = it * 5

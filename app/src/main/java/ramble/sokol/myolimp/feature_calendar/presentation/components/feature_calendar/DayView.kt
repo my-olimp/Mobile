@@ -3,7 +3,13 @@ package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_ca
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -22,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
+import ramble.sokol.myolimp.ui.theme.BlackProfile
+import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.White
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -50,7 +59,7 @@ fun DayView(
 
         if (isCurrentDay) {
             modifier.background(
-                color = Color(0xFF3579F8).copy(alpha = 0.75f),
+                color = BlueStart.copy(alpha = 0.75f),
                 shape = CircleShape
             )
         }
@@ -59,7 +68,7 @@ fun DayView(
 
         else if (isSelected) {
             modifier.background(
-                color = Color(0xFF3579F8),
+                color = BlueStart,
                 shape = CircleShape
             )
         }
@@ -68,7 +77,7 @@ fun DayView(
 
         else {
             modifier.background(
-                color = Color.White,
+                color = White,
                 shape = CircleShape
             )
         }
@@ -132,7 +141,7 @@ fun DayView(
                         if (isSelected || isCurrentDay) {
                             Color.White
                         } else {
-                            Color(0xFF222222)
+                            BlackProfile
                         },
                         letterSpacing = 0.2.sp,
                         textAlign = TextAlign.Center

@@ -25,8 +25,8 @@ import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
 fun SelectableText (
-    text: String,
     state: PlanState,
+    text: String,
     onTextClick: (String) -> Unit
 ){
 

@@ -2,7 +2,10 @@ package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cu
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import androidx.navigation.NavController
+import com.ramcosta.composedestinations.navigation.navigate
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import java.time.LocalDate
@@ -11,7 +14,7 @@ import java.time.LocalDate
 fun CurrentDay (
     currentDate: MutableState<LocalDate>,
     state: PlanState,
-    onEvent: (Event) -> Unit
+    navController: NavController
 ) {
 
     val currentPlans = state.plans.filter {
@@ -21,18 +24,20 @@ fun CurrentDay (
     if (currentPlans.isEmpty()) {
 
         ImageWithText (
-            "Планов нет..."
+            drawable = R.drawable.ic_calendar_no_plans,
+            text = "Планов нет..."
         )
 
     } else {
         currentPlans.forEach {
             PlanItem(
-                item = it
+                item = it,
             ) { plan->
-                onEvent(Event.DeletePlan(plan))
+                navController.navigate(
+                    UpdateScreenDestination(plan = plan)
+                )
             }
         }
     }
-
 
 }

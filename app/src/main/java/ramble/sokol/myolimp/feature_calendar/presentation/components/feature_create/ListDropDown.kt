@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -18,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -31,7 +29,10 @@ import ramble.sokol.myolimp.ui.theme.BlueStart
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListDropDown(
-    subjects: List<String>,
+    values: List<String>,
+    previousData: String = "",
+    label: String,
+    icon: @Composable () -> Unit,
     onTextChanged: (String) -> Unit
 ) {
 
@@ -39,7 +40,7 @@ fun ListDropDown(
         mutableStateOf(false)
     }
     val textValue = remember {
-        mutableStateOf("")
+        mutableStateOf(previousData)
     }
 
     Box(
@@ -59,7 +60,7 @@ fun ListDropDown(
                 label = {
                     Row {
                         Text(
-                            text = stringResource(R.string.subject),
+                            text = label,
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily(Font(R.font.regular)),
@@ -97,12 +98,7 @@ fun ListDropDown(
                     textValue.value = it
                     onTextChanged(it)
                 },
-                trailingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_calendar_subjects),
-                        contentDescription = "subjects"
-                    )
-                },
+                trailingIcon = icon,
                 readOnly = true
             )
 
@@ -112,7 +108,7 @@ fun ListDropDown(
                     expanded = false
                 }
             ) {
-                subjects.forEach {
+                values.forEach {
                     DropdownMenuItem(
                         text = {
                             Text(text = it)

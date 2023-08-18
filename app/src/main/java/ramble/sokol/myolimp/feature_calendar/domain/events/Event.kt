@@ -1,13 +1,11 @@
 package ramble.sokol.myolimp.feature_calendar.domain.events
 
 import androidx.navigation.NavController
-import ramble.sokol.myolimp.NavGraph
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 
 sealed interface Event {
-    data object ShowCreatingSheet: Event
-    data object HideCreatingSheet: Event
     data object CancelSearching: Event
+    data class OnCompletedPlan(val plan: PlanModel): Event
     data class DeletePlan(val plan: PlanModel): Event
     data class OnTitleUpdated(val title: String): Event
     data class OnDateUpdated(val date: String): Event
@@ -21,6 +19,11 @@ sealed interface Event {
     data class OnEndMinUpdated(val endMin: Int): Event
     data class OnFavouriteClick(val isFavourite: Boolean): Event
     data class OnFavouritesShowing(val isShowing: Boolean): Event
+    data class OnDatePickerShowing(val isShowing: Boolean): Event
     data class CreatePlan(val navController: NavController): Event
+    data class UpdatePlan(
+        val navController: NavController,
+        val id: Int
+    ): Event
 
 }

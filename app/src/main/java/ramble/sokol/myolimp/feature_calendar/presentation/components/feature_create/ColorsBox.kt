@@ -19,17 +19,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
-import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 
 @Composable
 fun ColorsBox (
-    state: PlanState,
+    previousData: String,
     colorsHex: List<String>,
     onValueChanged: (String) -> Unit
 ) {
 
     var chosenColorHex by remember {
-        mutableStateOf(state.color)
+        mutableStateOf(previousData)
     }
 
     Row (

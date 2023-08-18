@@ -97,8 +97,6 @@ class PlansViewModel (
                     }
                     else -> {
 
-                        val times = getCorrectTime()
-
                         val plan = PlanModel(
                             title = state.value.title,
                             date = state.value.date,
@@ -106,8 +104,11 @@ class PlansViewModel (
                             subject = state.value.subject,
                             type = state.value.type,
                             isFavourite = state.value.isFavourite,
-                            startTime = times[0],
-                            endTime = times[1],
+                            startMinute = state.value.startMinute,
+                            endMinute = state.value.endMinute,
+                            startHour = state.value.startHour,
+                            endHour = state.value.endHour,
+                            isCompleted = false
                         )
 
                         viewModelScope.launch {
@@ -146,19 +147,6 @@ class PlansViewModel (
             is Event.DeletePlan -> {
                 viewModelScope.launch {
                     repository.deletePlan(event.plan)
-                }
-            }
-
-            Event.HideCreatingSheet -> {
-                setDefaultData()
-            }
-
-            Event.ShowCreatingSheet -> {
-                _state.update {
-                    it.copy(
-                        isAddingPlan = true,
-                        isSearching = false
-                    )
                 }
             }
 
@@ -252,6 +240,118 @@ class PlansViewModel (
                 }
             }
 
+            is Event.OnCompletedPlan -> {
+                viewModelScope.launch {
+                    repository.updatePlan(
+                        plan = event.plan.copy(
+                            isCompleted = true
+                        )
+                    )
+
+                    Log.i(TAG, "plan - ${event.plan}")
+                }
+            }
+
+            is Event.UpdatePlan -> {
+
+                when (checkData()) {
+                    1 -> {
+                        Log.i(TAG, "title is not valid")
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.name_error), Toast.LENGTH_SHORT
+                        ).show()
+
+                        return
+                    }
+
+                    2 -> {
+                        Log.i(TAG, "date is not valid")
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.data_error), Toast.LENGTH_SHORT
+                        ).show()
+
+                        return
+                    }
+
+                    3 -> {
+                        Log.i(TAG, "color is not valid")
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.color_error), Toast.LENGTH_SHORT
+                        ).show()
+
+                        return
+                    }
+
+                    4 -> {
+                        Log.i(TAG, "subject is not valid")
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.subject_error), Toast.LENGTH_SHORT
+                        ).show()
+
+                        return
+                    }
+
+                    5 -> {
+                        Log.i(TAG, "time is not valid")
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.time_error), Toast.LENGTH_SHORT
+                        ).show()
+
+                        return
+                    }
+
+                    else -> {
+
+                        val plan = PlanModel(
+                            id = event.id,
+                            title = state.value.title,
+                            date = state.value.date,
+                            color = state.value.color,
+                            subject = state.value.subject,
+                            type = state.value.type,
+                            isFavourite = state.value.isFavourite,
+                            startMinute = state.value.startMinute,
+                            endMinute = state.value.endMinute,
+                            startHour = state.value.startHour,
+                            endHour = state.value.endHour,
+                            isCompleted = false
+                        )
+
+                        Log.i(TAG, "Update plan - $plan")
+
+                        viewModelScope.launch {
+                            repository.updatePlan(plan = plan)
+                        }
+
+                        setDefaultData()
+
+                        // navigate to calendar screen
+
+                        event.navController.navigate(
+                            CalendarScreenDestination()
+                        )
+                    }
+                }
+            }
+
+            is Event.OnDatePickerShowing -> {
+                _state.update {
+                    it.copy(
+                        isShowingCalendar = event.isShowing
+                    )
+                }
+            }
+
         }
     }
 
@@ -280,42 +380,7 @@ class PlansViewModel (
                 endMinute = 0,
 
                 isFavourite = false,
-                isAddingPlan = false,
             )
         }
     }
-
-    private fun getCorrectTime() : List<String> {
-
-        val times = listOf(
-            state.value.startHour,
-            state.value.startMinute,
-            state.value.endHour,
-            state.value.endMinute,
-        )
-
-        val resultList = mutableListOf<String>()
-
-
-        for (i in times.indices) {
-
-            if (times[i].toString().length == 1 && times[i] < 10) {
-
-                resultList.add("0${times[i]}")
-
-            } else {
-
-                resultList.add(times[i].toString())
-
-            }
-
-        }
-
-        return listOf(
-            "${resultList[0]}:${resultList[1]}",
-            "${resultList[2]}:${resultList[3]}",
-        )
-
-    }
-
 }

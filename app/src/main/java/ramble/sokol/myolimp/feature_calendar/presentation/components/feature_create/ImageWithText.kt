@@ -18,10 +18,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.ui.theme.GreySecondary
+import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
 
 @Composable
 fun ImageWithText (
+    drawable: Int,
     text: String
 ){
     Column (
@@ -32,7 +33,7 @@ fun ImageWithText (
         Image(
             modifier = Modifier
                 .fillMaxWidth(),
-            painter = painterResource(id = R.drawable.ic_calendar_no_plans),
+            painter = painterResource(id = drawable),
             contentDescription = "no plans",
             alignment = Alignment.Center
         )
@@ -44,11 +45,10 @@ fun ImageWithText (
                 .fillMaxWidth(),
             text = text,
             style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 14.sp,
-                fontFamily = FontFamily(Font(R.font.medium)),
-                fontWeight = FontWeight(500),
-                color = GreySecondary,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.regular)),
+                fontWeight = FontWeight(400),
+                color = GreyProfileAchivement,
                 textAlign = TextAlign.Center,
                 letterSpacing = 0.5.sp,
             )
