@@ -19,7 +19,6 @@ sealed interface Event {
     data class OnFavouriteClick(val isFavourite: Boolean): Event
     data class OnFavouritesShowing(val isShowing: Boolean): Event
     data class OnDatePickerShowing(val isShowing: Boolean): Event
-    data class OnTimePickerShowing(val isShowing: Boolean): Event
     data class CreatePlan(val navController: NavController): Event
     data class UpdatePlan(
         val navController: NavController,

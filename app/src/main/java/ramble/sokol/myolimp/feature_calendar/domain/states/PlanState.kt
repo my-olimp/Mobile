@@ -19,7 +19,6 @@ data class PlanState(
     val endMinute: Int = 0,
 
     val isShowingCalendar: Boolean = false,
-    val isShowingTime: Boolean = false,
 
     var isSearching: Boolean = false,
     val isShowingFavourites: Boolean = false,

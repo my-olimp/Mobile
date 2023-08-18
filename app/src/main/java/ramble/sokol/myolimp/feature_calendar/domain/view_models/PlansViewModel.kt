@@ -335,17 +335,7 @@ class PlansViewModel (
             is Event.OnDatePickerShowing -> {
                 _state.update {
                     it.copy(
-                        isShowingTime = false,
                         isShowingCalendar = event.isShowing
-                    )
-                }
-            }
-            is Event.OnTimePickerShowing -> {
-                _state.update {
-                    it.copy(
-                        isShowingCalendar = false,
-
-                        isShowingTime = event.isShowing
                     )
                 }
             }

@@ -83,7 +83,7 @@ fun CreateCalendarScreen (
         skipHalfExpanded = true
     )
 
-    if (state.isShowingCalendar || state.isShowingTime) {
+    if (state.isShowingCalendar) {
         LaunchedEffect(key1 = Unit, block = {
             bottomState.hide()
             bottomState.show()
@@ -107,16 +107,6 @@ fun CreateCalendarScreen (
                         onEvent = viewModel::onEvent
                     )
 
-                } else if (state.isShowingTime) {
-                    // showing time picker
-
-                    TimerPicker(
-                        startHour = 0,
-                        startMinute = 0,
-                        endHour = 0,
-                        endMinute = 0,
-                        onEvent = viewModel::onEvent
-                    )
                 }
             },
         ) {
