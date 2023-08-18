@@ -63,7 +63,8 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 @Destination
 @Composable
 fun CreateCalendarScreen (
-    navController: NavController
+    navController: NavController,
+    date: String
 ) {
 
     val viewModel = getViewModel<PlansViewModel>()
@@ -82,6 +83,10 @@ fun CreateCalendarScreen (
         },
         skipHalfExpanded = true
     )
+
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onEvent(Event.OnDateUpdated(date))
+    })
 
     if (state.isShowingCalendar) {
         LaunchedEffect(key1 = Unit, block = {

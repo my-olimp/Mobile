@@ -1,7 +1,5 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.screens
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,7 +9,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,9 +46,13 @@ fun CalendarScreen(
             FloatingActionButton(
                 onClick = {
                     navController.navigate(
-                        CreateCalendarScreenDestination()
+                        CreateCalendarScreenDestination(
+                            date = state.date
+                        )
                     )
-                    viewModel.onEvent(Event.OnDateUpdated(date = state.date))
+//                    viewModel.onEvent(
+//                        Event.OnDateUpdated(date = state.date)
+//                    )
                 },
                 containerColor = BlueStart,
                 contentColor = White

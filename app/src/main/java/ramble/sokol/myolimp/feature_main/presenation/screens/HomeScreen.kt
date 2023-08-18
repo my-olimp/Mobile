@@ -125,7 +125,9 @@ fun HomeScreen(
                                 }
 
                                 // show creating sheet
-                                navController.navigate(CreateCalendarScreenDestination)
+                                navController.navigate(
+                                    CreateCalendarScreenDestination(date = LocalDate.now().toString())
+                                )
                             },
                         painter = painterResource(id = R.drawable.ic_main_add_plan),
                         contentDescription = "add plan",
