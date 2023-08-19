@@ -11,8 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
+import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
-import ramble.sokol.myolimp.feature_profile.presentation.components.AutoCompleteTextField
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 
@@ -27,25 +28,25 @@ fun EditEducationSheet (
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        AutoCompleteTextField (
-            previousData = viewModel.state.value.region,
-            label = stringResource(R.string.region_profile),
-            listOf(
+        EditableDropDown (
+            options = listOf(
                 "Московская область", "Краснодарская область",
                 "Нижегородская область", "Ленинградская область"
-            )
+            ),
+            previousData = viewModel.state.value.region,
+            label = stringResource(R.string.region_profile),
         ) {
             viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        AutoCompleteTextField (
+        EditableDropDown (
             previousData = viewModel.state.value.city,
             label = stringResource(R.string.city_profile),
             listOf(
                 "Балашиха", "Москва",
-                "Санкт-Петербург",
+                "Санкт-Петербург", "Чехов"
             )
         ) {
             viewModel.onEvent(ProfileEvent.OnCityChanged(it))
@@ -53,7 +54,7 @@ fun EditEducationSheet (
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        AutoCompleteTextField (
+        EditableDropDown (
             previousData = viewModel.state.value.school,
             label = stringResource(R.string.school),
             listOf(
@@ -67,10 +68,10 @@ fun EditEducationSheet (
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        AutoCompleteTextField (
+        ReadOnlyDropDown (
             previousData = viewModel.state.value.grade.toString(),
             label = stringResource(R.string.grade),
-            listOf(
+            options = listOf(
                 "1", "2",
                 "3", "4",
                 "5", "6",
@@ -79,7 +80,6 @@ fun EditEducationSheet (
                 "11",
             )
         ) {
-
             try {
                 viewModel.onEvent(ProfileEvent.OnGradeChanged(it.toInt()))
             } catch (_: Exception) {}

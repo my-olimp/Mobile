@@ -3,7 +3,7 @@ package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cr
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
@@ -88,7 +89,7 @@ fun ReadOnlyDropDown (
                 focusedBorderColor = Color(0xFF3579F8),
                 focusedLabelColor = Color(0xFF3579F8),
                 cursorColor = Color(0xFF3579F8),
-                backgroundColor = Color.White
+                backgroundColor = White
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -107,7 +108,10 @@ fun ReadOnlyDropDown (
 
         ExposedDropdownMenu(
             modifier = Modifier
-                .background(White),
+                .background(White)
+                .heightIn(
+                    max = 150.dp
+                ),
             expanded = expanded,
             onDismissRequest = {
                 expanded = false

@@ -52,7 +52,7 @@ import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ColorsBox
-import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ListDropDown
+import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.SelectableText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_date_picker.CalendarSheet
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_date_picker.DateInput
@@ -270,16 +270,10 @@ fun UpdateScreen (
                     "Другое"
                 )
 
-                ListDropDown(
-                    values = subjects,
+                ReadOnlyDropDown(
+                    options = subjects,
                     label = stringResource(R.string.subject),
                     previousData = plan.subject,
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_calendar_subjects),
-                            contentDescription = "subjects"
-                        )
-                    }
                 ) {
                     viewModel.onEvent(Event.OnSubjectUpdated(it))
                 }

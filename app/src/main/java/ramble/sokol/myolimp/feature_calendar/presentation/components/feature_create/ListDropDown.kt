@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
 
+/*
+    Deprecated
+*/
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListDropDown(
