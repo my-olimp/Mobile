@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ListDropDown
+import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckBoxLabel
@@ -107,6 +108,16 @@ fun EditPersonalInfoSheet(
                         .clip(CircleShape)
                 )
             }
+        ) {
+            viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
+        }
+
+        ReadOnlyDropDown(
+           options =  listOf(
+               "Мужской", "Женский"
+           ),
+            previousData = viewModel.state.value.gender,
+            label = stringResource(id = R.string.gender)
         ) {
             viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
         }

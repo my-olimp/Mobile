@@ -99,7 +99,8 @@ fun ListDropDown(
                     onTextChanged(it)
                 },
                 trailingIcon = icon,
-                readOnly = true
+                readOnly = true,
+                enabled = false
             )
 
             ExposedDropdownMenu(
