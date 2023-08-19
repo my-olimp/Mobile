@@ -50,7 +50,9 @@ fun PlanItem  (
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top
     ) {
-        Column {
+        Column (
+            Modifier.weight(0.9f)
+        ) {
 
             Text(
                 text = item.title,
@@ -104,6 +106,7 @@ fun PlanItem  (
         }
 
         IconButton(
+            modifier = Modifier.weight(0.1f),
             onClick = {
                 onEdit(item)
             },
