@@ -86,6 +86,7 @@ fun UpdateScreen (
 
         viewModel.onEvent(Event.OnFavouriteClick(plan.isFavourite))
         viewModel.onEvent(Event.OnDateUpdated(plan.date))
+        viewModel.onEvent(Event.OnColorUpdated(plan.color))
 
         viewModel.onEvent(Event.OnStartHourUpdated(plan.startHour))
         viewModel.onEvent(Event.OnStartMinUpdated(plan.startMinute))
