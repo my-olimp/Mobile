@@ -32,16 +32,26 @@ import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.White
+import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarSheet (
-    onEvent: (Event) -> Unit
+fun CalendarSheet(
+    onEvent: (Event) -> Unit,
 ) {
 
     val pickerState = rememberDatePickerState()
 
-    val currentTimeStamp = System.currentTimeMillis()
+    // Get today's date and time
+    val today = Date()
+    // Subtract one day to get yesterday's date
+    val cal: Calendar = Calendar.getInstance()
+    cal.time = today
+    cal.add(Calendar.DAY_OF_YEAR, -1)
+    val yesterday: Date = cal.time
+    // Get yesterday's date in milliseconds
+    val yesterdayMillis: Long = yesterday.time
 
     Column (
         modifier = Modifier
@@ -53,7 +63,7 @@ fun CalendarSheet (
         DatePicker (
             state = pickerState,
             dateValidator = {
-                it >= currentTimeStamp
+                it >= yesterdayMillis
             },
             colors = DatePickerDefaults.colors(
                 todayDateBorderColor = BlueStart.copy(alpha = 0.75f),

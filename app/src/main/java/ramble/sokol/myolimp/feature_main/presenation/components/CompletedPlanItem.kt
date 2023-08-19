@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -45,7 +46,8 @@ fun CompletedPlanItem (
             .padding(
                 horizontal = 12.dp,
                 vertical = 8.dp
-            )
+            ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         Image (
