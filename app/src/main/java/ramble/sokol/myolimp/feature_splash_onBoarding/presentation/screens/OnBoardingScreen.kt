@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -33,6 +34,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FragmentImage
 import ramble.sokol.myolimp.ui.theme.GreyDark
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import ramble.sokol.myolimp.ui.theme.White
 
 @SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
@@ -91,25 +93,22 @@ fun OnBoardingScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (pagerState.currentPage != 3) {
+            Text(
+                modifier = Modifier
+                    .clickable {
+                        navigator.popBackStack()
 
-                Text(
-                    modifier = Modifier
-                        .clickable {
-                            navigator.popBackStack()
-
-                            navigator.navigate(BeginAuthenticationScreenDestination)
-                        },
-                    text = stringResource(R.string.skip),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(500),
-                        color = GreyDark,
-                        letterSpacing = 0.3.sp,
-                    )
+                        navigator.navigate(BeginAuthenticationScreenDestination)
+                    },
+                text = stringResource(R.string.skip),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Font(R.font.regular)),
+                    fontWeight = FontWeight(500),
+                    color = if (pagerState.currentPage != 3) GreyDark else Color.Transparent,
+                    letterSpacing = 0.3.sp,
                 )
-            }
+            )
         }
     }
 }
