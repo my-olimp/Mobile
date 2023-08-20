@@ -42,7 +42,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
@@ -50,7 +49,6 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
-import ramble.sokol.myolimp.feature_calendar.domain.view_models.CalendarViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ColorsBox
@@ -61,6 +59,7 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_dat
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
@@ -69,9 +68,6 @@ fun CreateCalendarScreen (
     navController: NavController,
     date: String
 ) {
-
-//    val d = LocalDate.parse(date)
-    val calendarVM: CalendarViewModel = viewModel()
 
     val viewModel = getViewModel<PlansViewModel>()
     val state by viewModel.state.collectAsState()
@@ -93,7 +89,9 @@ fun CreateCalendarScreen (
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = Unit, block = {
-        viewModel.onEvent(Event.OnDateUpdated(date))
+        viewModel.onEvent(Event.OnDateUpdated(
+            if (!LocalDate.parse(date).isBefore(LocalDate.now())) date else LocalDate.now().toString())
+        )
     })
 
     if (state.isShowingCalendar) {

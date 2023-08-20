@@ -376,6 +376,14 @@ class PlansViewModel (
                 }
             }
 
+            is Event.IsShowingCreatedPlan -> {
+                _state.update {
+                    it.copy(
+                        isShowingCreatedPlan = event.isShowing
+                    )
+                }
+            }
+
             Event.GetPreviousDate -> {
 
                 viewModelScope.launch {
@@ -392,7 +400,8 @@ class PlansViewModel (
                                 date = dataStoreRepository
                                     .getPreviousDate(
                                         key = PREVIOUS_DATE,
-                                    )
+                                    ),
+                                isShowingCreatedPlan = true
                             )
                         }
 

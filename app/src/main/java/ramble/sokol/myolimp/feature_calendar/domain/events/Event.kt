@@ -2,7 +2,6 @@ package ramble.sokol.myolimp.feature_calendar.domain.events
 
 import androidx.navigation.NavController
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
-import java.time.LocalDate
 
 sealed interface Event {
     data object CancelSearching: Event
@@ -31,5 +30,7 @@ sealed interface Event {
     data class DeletePlan(
         val plan: PlanModel
     ): Event
-
+    data class IsShowingCreatedPlan(
+        val isShowing: Boolean
+    ): Event
 }

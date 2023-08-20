@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_calendar.presentation.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,14 +11,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
@@ -76,8 +74,7 @@ fun CalendarScreen(
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 50.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
 
@@ -86,7 +83,7 @@ fun CalendarScreen(
                 /*
                     Calendar
                 */
-                ExpandableCalendar (
+                ExpandableCalendar(
                     state = state,
                     onDayClick = {
                         currentDate.value = it
@@ -94,48 +91,48 @@ fun CalendarScreen(
                     onEvent = viewModel::onEvent
                 )
             }
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 100.dp),
+                ) {
 
-            if (state.isSearching) {
+
+                    if (state.isSearching) {
 
                 /*
                     Searching
                 */
 
-                item {
                     Searching(
                         state = state,
                         navController = navController,
                     )
-                }
 
-            } else if (state.isShowingFavourites) {
+
+                    } else if (state.isShowingFavourites) {
 
                 /*
                     Favourites
                 */
+                        Favourites(
+                            state = state,
+                            navController = navController,
+                        )
 
-                item {
-                    Favourites(
-                        state = state,
-                        navController = navController,
-                    )
-                }
-
-            } else  {
+                    } else {
 
                 /*
                     Chosen Day
                 */
-
-                item {
-                    CurrentDay(
-                        currentDate = currentDate,
-                        state = state,
-                        navController = navController
-                    )
+                        CurrentDay(
+                            currentDate = currentDate,
+                            state = state,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
-
     }
 }

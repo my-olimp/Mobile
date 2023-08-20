@@ -22,6 +22,8 @@ data class PlanState(
 
     val previousDate: LocalDate = LocalDate.now(),
 
+    val isShowingCreatedPlan: Boolean = false,
+
     var isSearching: Boolean = false,
     val isShowingFavourites: Boolean = false,
 
