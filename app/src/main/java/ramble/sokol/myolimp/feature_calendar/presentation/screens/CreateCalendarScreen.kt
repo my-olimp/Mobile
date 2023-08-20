@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
@@ -49,6 +50,7 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import ramble.sokol.myolimp.feature_calendar.domain.view_models.CalendarViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ColorsBox
@@ -67,6 +69,9 @@ fun CreateCalendarScreen (
     navController: NavController,
     date: String
 ) {
+
+//    val d = LocalDate.parse(date)
+    val calendarVM: CalendarViewModel = viewModel()
 
     val viewModel = getViewModel<PlansViewModel>()
     val state by viewModel.state.collectAsState()
@@ -299,7 +304,9 @@ fun CreateCalendarScreen (
                     text = stringResource(id = R.string.save),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(Event.CreatePlan(navController = navController))
+                    viewModel.onEvent(Event.CreatePlan(
+                        navController = navController
+                    ))
                 }
             }
         }

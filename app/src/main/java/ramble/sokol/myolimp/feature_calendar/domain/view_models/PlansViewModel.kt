@@ -14,13 +14,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
+import ramble.sokol.myolimp.feature_calendar.data.Constants.IS_CREATED
+import ramble.sokol.myolimp.feature_calendar.data.Constants.PREVIOUS_DATE
 import ramble.sokol.myolimp.feature_calendar.data.database.PlansDatabase
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import ramble.sokol.myolimp.feature_calendar.domain.repositories.CalendarDataRepository
 import ramble.sokol.myolimp.feature_calendar.domain.repositories.PlansRepository
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.domain.utils.Status
-import java.time.LocalDate
 
 class PlansViewModel (
     private val context: Context
@@ -47,6 +49,9 @@ class PlansViewModel (
         SharingStarted.WhileSubscribed(),
         PlanState()
     )
+
+
+    private val dataStoreRepository = CalendarDataRepository(context = context)
 
     fun onEvent(
         event: Event
@@ -113,15 +118,34 @@ class PlansViewModel (
 
                         viewModelScope.launch {
                             repository.addPlan(plan = plan)
+
+                            // save data in data store
+                            dataStoreRepository.setPreviousDate(
+                                key = PREVIOUS_DATE,
+                                value = plan.date
+                            )
+
+                            Log.i(TAG, "get data = ${dataStoreRepository.getPreviousDate(
+                                key = PREVIOUS_DATE,
+                            )}")
+
+                            dataStoreRepository.isCreatedPlan(
+                                key = IS_CREATED,
+                                value = true
+                            )
+
+                            Log.i(TAG, "get created = ${dataStoreRepository.getStatusCreating(
+                                key = IS_CREATED,
+                            )}")
+
+                            setDefaultData()
+
+                            // navigate to calendar screen
+
+                            event.navController.navigate(
+                                CalendarScreenDestination()
+                            )
                         }
-
-                       setDefaultData()
-
-                        // navigate to calendar screen
-
-                        event.navController.navigate(
-                            CalendarScreenDestination()
-                        )
                     }
                 }
 
@@ -352,6 +376,39 @@ class PlansViewModel (
                 }
             }
 
+            Event.GetPreviousDate -> {
+
+                viewModelScope.launch {
+
+                    val status = dataStoreRepository.getStatusCreating(
+                        key = IS_CREATED
+                    )
+
+                    Log.i(TAG, "is created plan - $status")
+
+                    if (status) {
+                        _state.update {
+                            it.copy(
+                                date = dataStoreRepository
+                                    .getPreviousDate(
+                                        key = PREVIOUS_DATE,
+                                    )
+                            )
+                        }
+
+                        Log.i(TAG, "date plan - ${_state.value.date}")
+
+                        dataStoreRepository.isCreatedPlan(
+                            key = IS_CREATED,
+                            value = false
+                        )
+
+                        Log.i(TAG, "is created plan after - ${dataStoreRepository.getStatusCreating(key = IS_CREATED)}")
+
+                    }
+                }
+
+            }
         }
     }
 
@@ -369,7 +426,6 @@ class PlansViewModel (
         _state.update {
             it.copy(
                 title = "",
-                date = LocalDate.now().toString(),
                 color = "#FF7E50FF",
                 subject = "",
                 type = "Событие",
@@ -383,4 +439,5 @@ class PlansViewModel (
             )
         }
     }
+
 }

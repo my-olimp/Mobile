@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.ui.presentation.bottom_navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
@@ -65,7 +64,7 @@ fun BottomNavigationBar(
                         return@BottomNavigationItem
                     }
 
-                    navController.navigate(it.direction) {
+                    navController.navigate(it.direction.route) {
 
                         // Pop up to the root of the graph to
                         // avoid building up a large stack of destinations

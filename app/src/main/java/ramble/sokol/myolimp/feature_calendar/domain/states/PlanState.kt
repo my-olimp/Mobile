@@ -20,6 +20,8 @@ data class PlanState(
 
     val isShowingCalendar: Boolean = false,
 
+    val previousDate: LocalDate = LocalDate.now(),
+
     var isSearching: Boolean = false,
     val isShowingFavourites: Boolean = false,
 

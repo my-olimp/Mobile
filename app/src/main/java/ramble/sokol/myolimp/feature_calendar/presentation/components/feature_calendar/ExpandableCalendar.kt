@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +51,7 @@ import java.time.LocalDate
 fun ExpandableCalendar(
     state: PlanState,
     onDayClick: (LocalDate) -> Unit,
-    onEvent: (Event) -> Unit,
+    onEvent: (Event) -> Unit
 ) {
 
     val viewModel: CalendarViewModel = viewModel()
@@ -58,6 +59,36 @@ fun ExpandableCalendar(
     val selectedDate = viewModel.selectedDate.collectAsState()
     val calendarExpanded = viewModel.calendarExpanded.collectAsState()
     val currentMonth = viewModel.currentMonth.collectAsState()
+
+    // to set current day
+
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onIntent(CalendarIntent.ExpandCalendar)
+    })
+
+    // choose day of created plan
+    viewModel.onIntent(CalendarIntent.SelectDate(LocalDate.parse(state.date)))
+
+    // show plans of chosen day
+    onDayClick(LocalDate.parse(state.date))
+
+    // open month of creating plan
+    if (
+        currentMonth.value.monthValue < LocalDate.parse(state.date).monthValue
+        || currentMonth.value.year < LocalDate.parse(state.date).year
+    ) {
+        for(i in 0..(LocalDate.parse(state.date).monthValue - currentMonth.value.monthValue)
+            + (LocalDate.parse(state.date).year - currentMonth.value.year) * 12) {
+            viewModel.onIntent(
+                CalendarIntent.LoadNextDates(
+                    currentMonth.value.atDay(
+                        1
+                    ),
+                    period = Period.MONTH
+                )
+            )
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.Start,

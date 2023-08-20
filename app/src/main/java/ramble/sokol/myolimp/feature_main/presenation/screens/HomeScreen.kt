@@ -45,6 +45,7 @@ import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
 import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
+import ramble.sokol.myolimp.feature_calendar.domain.states.CalendarScreenNavArgs
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import ramble.sokol.myolimp.feature_main.data.models.AdviceArticle
@@ -116,7 +117,9 @@ fun HomeScreen(
                             .clip(CircleShape)
                             .clickable {
                                 // update destination
-                                navController.navigate(CalendarScreenDestination) {
+                                navController.navigate(
+                                    CalendarScreenDestination()
+                                ) {
                                     popUpTo(NavGraphs.root) {
                                         saveState = true
                                     }
