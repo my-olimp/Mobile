@@ -21,9 +21,16 @@ fun CurrentDay (
         .filter {
             it.date == currentDate.value.toString()
         }
-        .sortedBy {
-            it.startHour
-        }
+        .sortedWith(
+            compareBy(
+                {
+                    it.startHour
+                },
+                {
+                    it.startMinute
+                }
+            )
+        )
 
     if (currentPlans.isEmpty()) {
 
