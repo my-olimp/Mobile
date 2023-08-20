@@ -16,9 +16,16 @@ fun Favourites (
     navController: NavController,
 ) {
 
-    val favouritesPlans = state.plans.filter {
-        it.isFavourite
-    }
+    val favouritesPlans = state.plans
+        .filter {
+            it.isFavourite
+        }
+        .sortedBy {
+            it.date
+        }
+        .sortedBy {
+            it.startHour
+        }
 
     if (favouritesPlans.isEmpty()) {
 

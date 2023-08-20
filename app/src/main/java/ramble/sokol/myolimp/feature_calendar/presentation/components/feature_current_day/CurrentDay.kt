@@ -17,9 +17,13 @@ fun CurrentDay (
     navController: NavController
 ) {
 
-    val currentPlans = state.plans.filter {
-        it.date == currentDate.value.toString()
-    }
+    val currentPlans = state.plans
+        .filter {
+            it.date == currentDate.value.toString()
+        }
+        .sortedBy {
+            it.startHour
+        }
 
     if (currentPlans.isEmpty()) {
 
