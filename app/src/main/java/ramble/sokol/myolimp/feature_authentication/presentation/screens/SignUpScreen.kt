@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.SignUpScreenDestination
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -47,7 +50,8 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 fun SignUpScreen(
     navigator: DestinationsNavigator
 ) {
-    SignUpScreen1()
+    //SignUpScreen1()
+    SignUpScreenData3()
 }
 
 
@@ -219,7 +223,7 @@ fun SignUpPhoneScreen() {
 
 @Destination
 @Composable
-fun LoginScreenPhone2() {
+fun SignUpScreenPhone2() {
     OlimpTheme {
         Column (
             modifier = Modifier.fillMaxSize(),
@@ -283,7 +287,7 @@ fun LoginScreenPhone2() {
 
 @Destination
 @Composable
-fun LoginScreenEmail2() {
+fun SignUpScreenEmail2() {
     OlimpTheme {
         // Подтверждение почты
     }
@@ -292,7 +296,7 @@ fun LoginScreenEmail2() {
 
 @Destination
 @Composable
-fun LoginScreenData1() {
+fun SignUpScreenData1() {
     OlimpTheme {
         // Персональные данные
     }
@@ -301,7 +305,7 @@ fun LoginScreenData1() {
 
 @Destination
 @Composable
-fun LoginScreenData2() {
+fun SignUpScreenData2() {
     OlimpTheme {
         // Образование
     }
@@ -310,11 +314,12 @@ fun LoginScreenData2() {
 
 @Destination
 @Composable
-fun LoginScreenData3() {
+fun SignUpScreenData3() {
+    var findvalue by remember { mutableStateOf("") }
     OlimpTheme {
         Column (
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -328,6 +333,87 @@ fun LoginScreenData3() {
             )
 
             Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.Start),
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(
+                    text = "Дисциплины",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xD91A0710),
+                        letterSpacing = 0.36.sp,
+                    )
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
+                    text = "3 из 4",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF6BC62D),
+                        letterSpacing = 0.28.sp,
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.Start),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    modifier = Modifier
+                        .padding(1.dp)
+                        .width(20.dp)
+                        .height(20.dp),
+                    painter = painterResource(id = R.drawable.iconsearch),
+                    contentDescription = "image description",
+                )
+
+                TextField(
+                    modifier = Modifier
+                        .width(331.dp)
+                        .height(45.dp),
+                    value = findvalue,
+                    singleLine = true,
+                    onValueChange = { value -> findvalue = value },
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Выберите или введите в поиск предметы, к которым готовите",
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight(400),
+                    color = Color(0xA61A0710),
+                    letterSpacing = 0.22.sp,
+                )
+            )
+
+            Text(
+                text = "Популярные дисциплины",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(500),
+                    color = Color(0xD91A0710),
+                    letterSpacing = 0.32.sp,
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            FilledBtn(
+                text = "Дальше"
+            ) {
+                //navigator
+            }
         }
     }
 }
@@ -335,12 +421,14 @@ fun LoginScreenData3() {
 
 @Destination
 @Composable
-fun LoginScreenData4() {
+fun SignUpScreenData4() {
     var snils by remember { mutableStateOf("") }
     OlimpTheme {
         Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -352,8 +440,56 @@ fun LoginScreenData4() {
                 contentDescription = "image description",
                 //contentScale = ContentScale.None
             )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.Start),
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Text(
+                    modifier = Modifier
+                        .width(146.dp)
+                        .height(21.dp),
+                    text = "Фото",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xD91A0710),
+                    )
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(17.dp),
+                    text = "4 из 4",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF6BC62D),
+                        letterSpacing = 0.28.sp,
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Image(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(150.dp),
+                painter = painterResource(id = R.drawable.ic_default_img),
+                contentDescription = "user image"
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            FilledBtn(
+                text = "Дальше"
+            ) {
+                //navigator
+            }
         }
-        Row(
+        /*Row(
             horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.Start),
             verticalAlignment = Alignment.Bottom,
         ) {
@@ -431,7 +567,7 @@ fun LoginScreenData4() {
                     color = Color(0xFFFFFFFF),
                 )
             )
-        }
+        }*/
     }
 }
 
