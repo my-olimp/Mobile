@@ -2,16 +2,14 @@ package ramble.sokol.myolimp.ui.presentation.bottom_navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.ramcosta.composedestinations.utils.startDestination
+import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.destinations.DirectionDestination
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.destinations.NewsScreenDestination
-import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
-import ramble.sokol.myolimp.destinations.SplashScreenDestination
 
 enum class BottomNavigationDestinations (
     val direction: DirectionDestination,

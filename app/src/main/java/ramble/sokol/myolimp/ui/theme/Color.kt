@@ -26,3 +26,4 @@ val CalendarUnFocusedText = Color(0xE5222222)
 val MainPageBlue = Color(0xFF5E96FF)
 val MainBackground = Color(0x33FFFFFF)
 val ErrorAccent = Color(0xFFE64646)
+

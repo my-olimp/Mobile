@@ -1,6 +1,8 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,14 +33,18 @@ import ramble.sokol.myolimp.ui.theme.CalendarTheme
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
-@Destination
 @Composable
+@Destination
 fun CalendarScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PlansViewModel = getViewModel()
 ) {
 
-    val viewModel = getViewModel<PlansViewModel>()
     val state by viewModel.state.collectAsState()
+
+    viewModel.onEvent(Event.GetPreviousDate)
+
+    Log.i(PlansViewModel.TAG, "get date from view model - ${state.date}")
 
     CalendarTheme(
         navController = navController,
@@ -50,9 +56,6 @@ fun CalendarScreen(
                             date = state.date
                         )
                     )
-//                    viewModel.onEvent(
-//                        Event.OnDateUpdated(date = state.date)
-//                    )
                 },
                 containerColor = BlueStart,
                 contentColor = White
@@ -64,14 +67,14 @@ fun CalendarScreen(
             }
         }
     ) {
+
         val currentDate = remember {
             mutableStateOf(LocalDate.now())
         }
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 50.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
 
@@ -80,7 +83,7 @@ fun CalendarScreen(
                 /*
                     Calendar
                 */
-                ExpandableCalendar (
+                ExpandableCalendar(
                     state = state,
                     onDayClick = {
                         currentDate.value = it
@@ -88,48 +91,48 @@ fun CalendarScreen(
                     onEvent = viewModel::onEvent
                 )
             }
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 100.dp),
+                ) {
 
-            if (state.isSearching) {
+
+                    if (state.isSearching) {
 
                 /*
                     Searching
                 */
 
-                item {
                     Searching(
                         state = state,
                         navController = navController,
                     )
-                }
 
-            } else if (state.isShowingFavourites) {
+
+                    } else if (state.isShowingFavourites) {
 
                 /*
                     Favourites
                 */
+                        Favourites(
+                            state = state,
+                            navController = navController,
+                        )
 
-                item {
-                    Favourites(
-                        state = state,
-                        navController = navController,
-                    )
-                }
-
-            } else  {
+                    } else {
 
                 /*
                     Chosen Day
                 */
-
-                item {
-                    CurrentDay(
-                        currentDate = currentDate,
-                        state = state,
-                        navController = navController
-                    )
+                        CurrentDay(
+                            currentDate = currentDate,
+                            state = state,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
-
     }
 }

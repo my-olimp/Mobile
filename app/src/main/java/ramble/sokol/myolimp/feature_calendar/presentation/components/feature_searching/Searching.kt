@@ -15,10 +15,14 @@ fun Searching (
     navController: NavController,
 ) {
 
-    val searchingPlans = state.plans.filter {
-        it.subject.contains(state.searchQuery, ignoreCase = true) ||
-                it.title.contains(state.searchQuery, ignoreCase = true)
-    }
+    val searchingPlans = state.plans
+        .filter {
+            it.subject.contains(state.searchQuery, ignoreCase = true) ||
+                    it.title.contains(state.searchQuery, ignoreCase = true)
+        }
+        .sortedBy {
+            it.startHour
+        }
 
     if (searchingPlans.isEmpty()) {
 

@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_date_picker
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -34,6 +37,9 @@ fun DateInput (
     state: PlanState,
     onEvent: (Event) -> Unit,
 ) {
+
+    val context = LocalContext.current
+
 
     OutlinedTextField(
         modifier = Modifier
@@ -77,7 +83,9 @@ fun DateInput (
             focusedBorderColor = BlueStart,
             focusedLabelColor = BlueStart,
             cursorColor = BlueStart,
-            backgroundColor = White
+            backgroundColor = White,
+            disabledTextColor = Color.Black,
+            disabledTrailingIconColor = Color.Black
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
@@ -85,9 +93,14 @@ fun DateInput (
         singleLine = true,
         maxLines = 1,
         value = state.date,
+        enabled = false,
         onValueChange = {
-            onEvent(Event.OnDateUpdated(it))
-        },
-        enabled = false
+            Toast.makeText(
+                context,
+                "Нажмите на иконку, чтобы выбрать дату )",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     )
+
 }

@@ -9,7 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,13 +19,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
+import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
 @RootNavGraph(start = true)
@@ -35,6 +44,8 @@ fun SplashScreen(
     OlimpTheme (
         isSplashScreen = true
     ) {
+
+        val version = "v.0.3.1"
 
         val transition = rememberInfiniteTransition(label = "")
         val alpha by transition.animateFloat(
@@ -65,17 +76,47 @@ fun SplashScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
+
+            Column (
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(horizontal = 64.dp)
-                    .alpha(alpha = alpha),
-                painter = painterResource(R.drawable.splash_screen_name),
-                contentDescription = "app image name"
-            )
+                    .weight(0.5f),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(alpha = alpha),
+                    painter = painterResource(R.drawable.splash_screen_name),
+                    contentDescription = "app image name"
+                )
+            }
+
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.5f)
+                    .padding(bottom = 32.dp),
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = version,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(300),
+                        color = GreyNavigationText,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.5.sp,
+                    ),
+                )
+            }
         }
     }
 }

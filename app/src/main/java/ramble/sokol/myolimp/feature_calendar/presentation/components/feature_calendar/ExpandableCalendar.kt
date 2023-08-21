@@ -16,11 +16,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,7 +55,7 @@ import java.time.LocalDate
 fun ExpandableCalendar(
     state: PlanState,
     onDayClick: (LocalDate) -> Unit,
-    onEvent: (Event) -> Unit,
+    onEvent: (Event) -> Unit
 ) {
 
     val viewModel: CalendarViewModel = viewModel()
@@ -59,6 +63,40 @@ fun ExpandableCalendar(
     val selectedDate = viewModel.selectedDate.collectAsState()
     val calendarExpanded = viewModel.calendarExpanded.collectAsState()
     val currentMonth = viewModel.currentMonth.collectAsState()
+    var isShouldFlipping by remember {
+        mutableStateOf(true)
+    }
+
+    // to set current day
+
+    LaunchedEffect(key1 = Unit) {
+        // expand calendar
+        viewModel.onIntent(CalendarIntent.ExpandCalendar)
+    }
+
+    // choose day of created plan
+    viewModel.onIntent(CalendarIntent.SelectDate(LocalDate.parse(state.date)))
+
+    // show plans of chosen day
+    onDayClick(LocalDate.parse(state.date))
+
+    // open month of creating plan
+    if (
+        (currentMonth.value.monthValue < LocalDate.parse(state.date).monthValue && isShouldFlipping)
+        || (currentMonth.value.year < LocalDate.parse(state.date).year && isShouldFlipping)
+    ) {
+        for(i in 0..(LocalDate.parse(state.date).monthValue - currentMonth.value.monthValue)
+            + (LocalDate.parse(state.date).year - currentMonth.value.year) * 12) {
+            viewModel.onIntent(
+                CalendarIntent.LoadNextDates(
+                    currentMonth.value.atDay(
+                        1
+                    ),
+                    period = Period.MONTH
+                )
+            )
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -181,9 +219,18 @@ fun ExpandableCalendar(
                                 period = Period.MONTH
                             )
                         )
+
+                        // change permission
+                        isShouldFlipping = false
                     },
                     onDayClick = {
                         // to set date
+                        // if this day before today, we will set today,
+                        // unless set this day
+//                        onEvent(Event.OnDateUpdated(
+//                            if (!it.isBefore(LocalDate.now())) it.toString() else LocalDate.now().toString())
+//                        )
+
                         onEvent(Event.OnDateUpdated(it.toString()))
 
                         viewModel.onIntent(CalendarIntent.SelectDate(it))
@@ -199,6 +246,9 @@ fun ExpandableCalendar(
                         viewModel.onIntent(
                             CalendarIntent.LoadNextDates(nextWeekDate)
                         )
+
+                        // change permission
+                        isShouldFlipping = false
                     },
                     loadPrevWeek = { endWeekDate ->
                         viewModel.onIntent(
@@ -206,12 +256,22 @@ fun ExpandableCalendar(
                                 endWeekDate.minusDays(1).getWeekStartDate()
                             )
                         )
+
+                        // change permission
+                        isShouldFlipping = false
                     },
                     onDayClick = {
                         // to set date
+                        // if this day before today, we will set today,
+                        // unless set this day
+//                        onEvent(Event.OnDateUpdated(
+//                            if (!it.isBefore(LocalDate.now())) it.toString() else LocalDate.now().toString())
+//                        )
+
                         onEvent(Event.OnDateUpdated(it.toString()))
 
                         viewModel.onIntent(CalendarIntent.SelectDate(it))
+
                         onDayClick(it)
                     },
                     state = state,

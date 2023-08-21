@@ -116,7 +116,9 @@ fun HomeScreen(
                             .clip(CircleShape)
                             .clickable {
                                 // update destination
-                                navController.navigate(CalendarScreenDestination) {
+                                navController.navigate(
+                                    CalendarScreenDestination()
+                                ) {
                                     popUpTo(NavGraphs.root) {
                                         saveState = true
                                     }
@@ -147,8 +149,11 @@ fun HomeScreen(
                     currentPlans.forEach {
                         CompletedPlanItem(
                             item = it,
-                            onComplete = { plan ->
-                                viewModel.onEvent(Event.OnCompletedPlan(plan = plan))
+                            onComplete = { plan, isCompleted ->
+                                viewModel.onEvent(Event.OnCompletedPlan(
+                                    plan = plan,
+                                    isCompleted = isCompleted
+                                ))
                             }
                         )
                     }

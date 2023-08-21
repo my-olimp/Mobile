@@ -59,6 +59,7 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_dat
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
@@ -88,7 +89,9 @@ fun CreateCalendarScreen (
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = Unit, block = {
-        viewModel.onEvent(Event.OnDateUpdated(date))
+        viewModel.onEvent(Event.OnDateUpdated(
+            if (!LocalDate.parse(date).isBefore(LocalDate.now())) date else LocalDate.now().toString())
+        )
     })
 
     if (state.isShowingCalendar) {
@@ -299,7 +302,9 @@ fun CreateCalendarScreen (
                     text = stringResource(id = R.string.save),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(Event.CreatePlan(navController = navController))
+                    viewModel.onEvent(Event.CreatePlan(
+                        navController = navController
+                    ))
                 }
             }
         }

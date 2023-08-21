@@ -38,6 +38,10 @@ fun PlanItem  (
         item = item
     )
 
+    val date = getCorrectDate(
+        date = item.date
+    )
+
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -81,7 +85,7 @@ fun PlanItem  (
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = item.date,
+                text = date,
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.regular)),
@@ -154,4 +158,12 @@ private fun getCorrectTime(
 
 }
 
+private fun getCorrectDate(
+    date: String
+) : String {
 
+    val items = date.split("-")
+
+    return "${items[2]}.${items[1]}.${items[0]}"
+
+}
