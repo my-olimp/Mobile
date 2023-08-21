@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
@@ -7,16 +8,22 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.White
@@ -29,7 +36,7 @@ fun OutlinedText (
     onTextChanged: (String) -> Unit,
 ) {
 
-    val textValue = remember {
+    var textValue by remember {
         mutableStateOf(previousData)
     }
 
@@ -72,9 +79,9 @@ fun OutlinedText (
         ),
         singleLine = true,
         maxLines = 1,
-        value = textValue.value,
+        value = textValue,
         onValueChange = {
-            textValue.value = it
+            textValue = it
             onTextChanged(it)
         },
         enabled = isEnabled

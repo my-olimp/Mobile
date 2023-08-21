@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -31,6 +32,8 @@ import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,8 +42,12 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
+<<<<<<< HEAD
 import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
+=======
+import ramble.sokol.myolimp.ui.theme.BlackProfile
+>>>>>>> origin
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -59,65 +66,14 @@ fun SignUpScreen(
 @Composable
 fun SignUpScreen1() {
     OlimpTheme {
-        var tabIndex by remember { mutableStateOf(0) } // 1.
-        val tabTitles = listOf("Почта", "Номер телефона")
-        Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                modifier = Modifier
-                    .padding(0.05184.dp)
-                    .width(100.dp)
-                    .height(24.dp),
-                painter = painterResource(id = R.drawable.vector),
-                contentDescription = "image description",
-                //contentScale = ContentScale.None
-            )
-            Text(
-                modifier = Modifier
-                    .width(220.dp)
-                    .height(40.dp),
-                text = "Для создания учетной записи укажите свои данные:",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    //fontFamily = FontFamily(Font(R.font.)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF222222),
-                    textAlign = TextAlign.Center,
-                )
-            )
-            TabRow(selectedTabIndex = tabIndex) { // 3.
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(selected = tabIndex == index, // 4.
-                        onClick = { tabIndex = index },
-                        text = { Text(text = title) }) // 5.
-                }
-            }
-            when (tabIndex) { // 6.
-                0 -> SignUpEmailScreen()
-                1 -> SignUpPhoneScreen()
-            }
-
-
-        }
-    }
-}
-
-@Destination
-@Composable
-fun SignUpEmailScreen() {
-    OlimpTheme {
-        var name by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var checked_password by remember { mutableStateOf("") }
-        Column (
-            modifier = Modifier.fillMaxSize(),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 24.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+<<<<<<< HEAD
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -230,45 +186,17 @@ fun SignUpScreenPhone2() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+=======
+>>>>>>> origin
             Image(
-                modifier = Modifier
-                    .padding(0.05184.dp)
-                    .width(100.dp)
-                    .height(24.dp),
-                painter = painterResource(id = R.drawable.vector),
-                contentDescription = "image description",
-                //contentScale = ContentScale.None
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                modifier = Modifier
-                    .width(195.dp)
-                    .height(21.dp),
-                text = "Персональные данные",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xD91A0710),
-                    letterSpacing = 0.36.sp,
-                )
-            )
-            Text(
-                modifier = Modifier
-                    .width(37.dp)
-                    .height(17.dp),
-                text = "1 из 4",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF6BC62D),
-                    letterSpacing = 0.28.sp,
-                )
+                painter = painterResource(id = R.drawable.auth_my_olimp),
+                contentDescription = "image auth my olimp"
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.padding(top = 9.dp))
 
             Text(
+<<<<<<< HEAD
                 modifier = Modifier
                     .width(320.dp)
                     .height(16.dp),
@@ -510,70 +438,18 @@ fun SignUpScreenData4() {
                     .width(40.dp)
                     .height(17.dp),
                 text = "4 из 4",
+=======
+
+                text = stringResource(id = R.string.login_to_service),
+>>>>>>> origin
                 style = TextStyle(
                     fontSize = 14.sp,
-                    fontWeight = FontWeight(500),
-                    color = Color(0xFF6BC62D),
-                    letterSpacing = 0.28.sp,
-                )
-            )
-        }
-        Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(16.dp),
-                text = "СНИЛС *",
-                style = TextStyle(
-                    fontSize = 13.sp,
+                    fontFamily = FontFamily(Font(R.font.regular)),
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF222222),
-                    letterSpacing = 0.26.sp,
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            TextField(
-                modifier = Modifier
-                    .width(331.dp)
-                    .height(45.dp),
-                value = snils,
-                singleLine = true,
-                onValueChange = { value -> snils = value },
-            )
-
-        }
-        Row(
-            modifier = Modifier
-                .width(328.dp)
-                .height(49.dp)
-                .background(color = Color(0xFF8CB2FB), shape = RoundedCornerShape(size = 15.dp))
-                .padding(start = 123.dp, top = 14.dp, end = 123.dp, bottom = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                modifier = Modifier
-                    .width(67.dp)
-                    .height(21.dp),
-                text = "Дальше",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFFFFFFFF),
+                    color = BlackProfile,
+                    textAlign = TextAlign.Center,
                 )
             )
         }*/
     }
 }
-
-
-/*@Preview
-@Composable
-fun SignUpScreenPreview() {
-    SignUpScreen()
-}*/

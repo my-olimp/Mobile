@@ -4,9 +4,9 @@
     <string name="skip">Пропустить</string>
     <string name="text_title_1_onboarding">Регистрируйтесь на олимпиады одним кликом</string>
     <string name="text_content_1_onboarding">Теперь не нужно вводить одни и те же данные на разных сайтах</string>
-    <string name="text_title_2_onboarding">Готовьтесь к олимпиадам с помощью Библиотеки</string>
+    <string name="text_title_2_onboarding">Готовьтесь к олимпиадам с помощью библиотеки</string>
     <string name="text_content_2_onboarding">Все необходимое для подготовки на максимальное количество баллов</string>
-    <string name="text_title_3_onboarding">Сохраняйте все нужные даты и ссылки в Календаре</string>
+    <string name="text_title_3_onboarding">Сохраняйте все нужные даты и ссылки в календаре</string>
     <string name="text_content_3_onboarding">Уведомления точно не дадут вам забыть про вебинары и олимпиады</string>
     <string name="text_title_4_onboarding">Следите за всеми новостями мира олимпиад</string>
     <string name="text_content_4_onboarding">В новостной ленте вы найдете только самое актуальное и интересное</string>
@@ -30,7 +30,7 @@
     <string name="profile_watch">Хочу посмотреть</string>
     <string name="profile_watch_content">Чтобы ничего не потерять</string>
     <string name="profile_result">Результаты</string>
-    <string name="profile_result_content">Статусы, дипломы и баллыь</string>
+    <string name="profile_result_content">Статусы, дипломы и баллы</string>
     <string name="profile_logout">Выйти из аккаунта</string>
     <string name="profile_logout_content">Уверены?</string>
     <string name="edit">Изменить</string>
@@ -42,7 +42,6 @@
     <string name="with_out_achivement">Достижений нет</string>
     <string name="id">ID</string>
     <string name="name_surname">ФИО</string>
-    <string name="date_of_birth">Дата рождения</string>
     <string name="gender">Пол</string>
     <string name="snils">СНИЛС</string>
     <string name="region">Регион</string>
@@ -55,11 +54,37 @@
     <string name="personal_info">Личные данные</string>
     <string name="choose_photo">Выбрать фото</string>
     <string name="save">Сохранить</string>
+    <string name="update">Обновить</string>
     <string name="name">Имя</string>
     <string name="third_name">Отчество</string>
     <string name="dob">Дата рождения</string>
     <string name="second_name">Фамилия</string>
     <string name="star">*</string>
     <string name="no_third_name">Нет отчества</string>
-
+    <string name="login_to_service">Вход в сервис</string>
+    <string name="region_profile">Субъект</string>
+    <string name="city_profile">Населенный пункт</string>
+    <string name="create_plan">Создайте план :)</string>
+    <string name="update_plan">Обновите план :)</string>
+    <string name="name_plan">Название</string>
+    <string name="event">Событие</string>
+    <string name="task">Задача</string>
+    <string name="data_plan">Дата</string>
+    <string name="password">Пароль</string>
+    <string name="number_phone">Номер телефона</string>
+    <string name="subject">Предмет</string>
+    <string name="name_error">Название некорректно</string>
+    <string name="data_error">Дата некорректна</string>
+    <string name="color_error">Цвет не выбран</string>
+    <string name="subject_error">Предмет не выбран</string>
+    <string name="time_error">Время начала и конца некорректно</string>
+    <string name="pick_date">Выберите дату</string>
+    <string name="time">Время</string>
+    <string name="today_plan">План на сегодня</string>
+    <string name="first_step">С чего начать?</string>
+    <string name="probnik">Пробник</string>
+    <string name="test">Тест</string>
+    <string name="math">Математика</string>
+    <string name="trial_version">Пробный вариант</string>
+    <string name="no_favourites">Здесь пока пусто :(</string>
 </resources>

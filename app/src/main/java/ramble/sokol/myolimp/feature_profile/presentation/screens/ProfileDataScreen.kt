@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.presentation.screens
 
-import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
@@ -29,7 +30,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,8 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -57,6 +59,7 @@ import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditContactsShee
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditEducationSheet
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPersonalInfoSheet
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPhotoSheet
+import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
 import ramble.sokol.myolimp.ui.theme.White
@@ -88,11 +91,13 @@ fun ProfileDataScreen(
         mutableStateOf("")
     }
 
+    var selectedImgUri by remember {
+        mutableStateOf(viewModel.state.value.profileImg)
+    }
+
     BottomBarTheme(
         navController = navController
     ) {
-
-        val context = LocalContext.current
 
         Column(
             modifier = Modifier
@@ -117,13 +122,18 @@ fun ProfileDataScreen(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Image(
-                    modifier = Modifier.padding(top = 8.dp),
-                    painter = painterResource(id = R.drawable.ic_default_img),
-                    contentDescription = "user image"
+                AsyncImage(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .size(95.dp)
+                        .align(CenterHorizontally)
+                        .clip(CircleShape),
+                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
+                    contentDescription = "user logo",
+                    contentScale = ContentScale.Crop
                 )
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -134,12 +144,15 @@ fun ProfileDataScreen(
                     }
 
                     ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-                        Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                        selectedImgUri = null
+                        viewModel.onEvent(ProfileEvent.OnImgDelete)
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             /*
                 Achievements
@@ -147,7 +160,7 @@ fun ProfileDataScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -193,13 +206,15 @@ fun ProfileDataScreen(
 
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             /*
                 Personal Data
             */
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -214,7 +229,6 @@ fun ProfileDataScreen(
                     text = stringResource(R.string.personal_data)
                 ) {
                     SheetRouter.navigateTo(SheetNavigation.EditPersonalData)
-                    Toast.makeText(context, "Edit Personal Data", Toast.LENGTH_SHORT).show()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -241,17 +255,12 @@ fun ProfileDataScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
-                    title = stringResource(R.string.gender),
-                    content = "Женский"
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
                     title = stringResource(R.string.snils),
                     content = "123-456-789-99"
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             /*
                 Education
@@ -259,7 +268,7 @@ fun ProfileDataScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -273,7 +282,6 @@ fun ProfileDataScreen(
                     text = stringResource(R.string.education)
                 ) {
                     SheetRouter.navigateTo(SheetNavigation.EditEducation)
-                    Toast.makeText(context, "Edit Education", Toast.LENGTH_SHORT).show()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -305,13 +313,15 @@ fun ProfileDataScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             /*
                 Contacts
             */
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(all = 16.dp)
+                    .padding(horizontal = 16.dp)
                     .background(
                         color = White,
                         shape = RoundedCornerShape(size = 25.dp)
@@ -324,8 +334,7 @@ fun ProfileDataScreen(
                 ProfileSectionTitle(
                     text = stringResource(R.string.contacts)
                 ) {
-                    SheetRouter.navigateTo(SheetNavigation.EditEducation)
-                    Toast.makeText(context, "Edit Contacts", Toast.LENGTH_SHORT).show()
+                    SheetRouter.navigateTo(SheetNavigation.EditContacts)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -342,6 +351,9 @@ fun ProfileDataScreen(
                     content = "+7 123 456 78 90"
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
         }
     }
 
@@ -380,7 +392,10 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.EditEducation -> {
-                    EditEducationSheet()
+                    EditEducationSheet(viewModel = viewModel)
+
+                    isCenter = false
+                    sheetName = stringResource(R.string.education)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
@@ -390,7 +405,10 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.EditContacts -> {
-                    EditContactsSheet()
+                    EditContactsSheet(viewModel = viewModel)
+
+                    isCenter = false
+                    sheetName = stringResource(R.string.education)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {

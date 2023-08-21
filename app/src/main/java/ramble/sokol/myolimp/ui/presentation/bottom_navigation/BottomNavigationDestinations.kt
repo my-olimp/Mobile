@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.ui.presentation.bottom_navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.ramcosta.composedestinations.utils.startDestination
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.destinations.DirectionDestination

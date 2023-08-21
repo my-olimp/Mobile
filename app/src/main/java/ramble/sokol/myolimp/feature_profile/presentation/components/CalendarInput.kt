@@ -3,6 +3,7 @@ package ramble.sokol.myolimp.feature_profile.presentation.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -10,9 +11,12 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -20,6 +24,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -40,36 +45,38 @@ fun CalendarInput(
 ) {
 
 //    https://stackoverflow.com/questions/69064137/how-to-create-a-text-field-input-with-mask-in-jetpack-compose
+//    colors
+//    https://stackoverflow.com/questions/75544931/jetpack-compose-add-custom-dark-light-colors?noredirect=1&lq=1
 
     val calendarState = rememberSheetState()
 
-    val textValue = remember {
+    var textValue by remember {
         mutableStateOf(previousData)
     }
 
     CalendarDialog(
         state = calendarState,
+        selection = CalendarSelection.Date {
+            textValue = it.toString()
+
+            onTextChanged(textValue)
+        },
         config = CalendarConfig (
             monthSelection = true,
             yearSelection = true,
             style = CalendarStyle.MONTH
         ),
-        selection = CalendarSelection.Date {
-            val objects = it.toString().split("-")
-
-            textValue.value = "${objects[2]}.${objects[1]}.${objects[0]}"
-        }
     )
 
     OutlinedTextField(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(4.dp))
+            .clickable {
+                calendarState.show()
+            },
         trailingIcon = @Composable {
             Icon(
-                modifier = Modifier
-                    .clickable {
-                        calendarState.show()
-                    },
                 painter = painterResource(id = R.drawable.ic_profile_calendar),
                 contentDescription = "calendar view"
             )
@@ -110,10 +117,11 @@ fun CalendarInput(
         ),
         singleLine = true,
         maxLines = 1,
-        value = textValue.value,
+        value = textValue,
         onValueChange = {
-            textValue.value = it
+            textValue = it
             onTextChanged(it)
         },
+        enabled = false
     )
 }
