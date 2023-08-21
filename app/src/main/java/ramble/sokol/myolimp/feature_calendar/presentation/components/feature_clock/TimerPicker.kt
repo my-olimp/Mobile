@@ -76,22 +76,61 @@ fun TimerPicker(
     val onTime: (Int) -> Unit = remember {
         {
             when (selectedPart) {
+
                 TimePart.StartHour -> {
                     selectedHour = it
                     onEvent(Event.OnStartHourUpdated(selectedHour))
 
                     // next part
                     coroutineScope.launch {
+
                         delay(0.5.seconds)
                         selectedPart = TimePart.StartMinute
                     }
                 }
+
                 TimePart.StartMinute -> {
                     selectedMinute = it * 5
                     onEvent(Event.OnStartMinUpdated(selectedMinute))
 
                     // next part
                     coroutineScope.launch {
+
+                        // set probably time
+
+                        if (selectedMinute < 15 && selectedHour < 24) {
+
+                            // if XX:00, 05, 10
+
+                            selectedEndMinute = selectedMinute + 45
+
+                            selectedEndHour = selectedHour
+
+                        } else {
+
+                            // if XX:15, 20, 25, .. , 55
+
+                            if (selectedHour < 23) {
+
+                                // 00, 01, .. , 22:15, 20, 25, .. , 55
+
+                                selectedEndHour += 1
+
+                                selectedEndMinute = 45 - selectedMinute
+
+                            } else {
+
+                                // 23:15, 20, 25, .. , 55
+
+                                selectedEndMinute = 0
+                                selectedEndHour = 0
+
+                            }
+                        }
+
+                        onEvent(Event.OnEndHourUpdated(selectedEndHour))
+                        onEvent(Event.OnEndMinUpdated(selectedEndMinute))
+
                         delay(0.5.seconds)
                         selectedPart = TimePart.EndHour
                     }
@@ -102,6 +141,7 @@ fun TimerPicker(
 
                     // next part
                     coroutineScope.launch {
+
                         delay(0.5.seconds)
                         selectedPart = TimePart.EndMinute
                     }

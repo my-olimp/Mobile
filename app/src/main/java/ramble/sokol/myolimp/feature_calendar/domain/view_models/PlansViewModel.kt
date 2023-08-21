@@ -422,12 +422,32 @@ class PlansViewModel (
     }
 
     private fun checkData() : Int {
+
+        val startHour = if (state.value.startHour == 0) 12 else if (state.value.startHour < 24) state.value.startHour - 12 else  state.value.startHour
+        val startMin = state.value.startMinute
+        val endHour = if (state.value.endHour == 0) 12 else if (state.value.endHour < 24) state.value.endHour - 12 else  state.value.endHour
+        val endMin = state.value.endMinute
+
+        Log.i(TAG, "$startHour:$startMin - $endHour:$endMin - ${state.value.startHour}")
+
         return if (state.value.title.isBlank()) Status.ERROR_TITLE
         else if (state.value.date.isBlank()) Status.ERROR_DATE
         else if (state.value.color.isBlank()) Status.ERROR_COLOR
+        else if (startHour > endHour) {
+            Log.i(TAG, "1 time")
+            Status.ERROR_TIME
+        }
+        else if (startHour == endHour && startMin >= endMin) {
+            Log.i(TAG, "2 time")
+
+            Status.ERROR_TIME
+        }
+        else if (endHour == 12 && endMin != 0) {
+            Log.i(TAG, "3 time")
+
+            Status.ERROR_TIME
+        }
         else if (state.value.subject.isBlank()) Status.ERROR_SUBJECT
-        else if (state.value.startHour > state.value.endHour) Status.ERROR_TIME
-        else if (state.value.startHour == state.value.endHour && state.value.startMinute >= state.value.endMinute) Status.ERROR_TIME
         else Status.SUCCESS
     }
 
