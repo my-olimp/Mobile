@@ -28,11 +28,12 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BlackProfile
+import ramble.sokol.myolimp.ui.theme.GreyProfileData
 
 @Composable
 fun CompletedPlanItem (
     item: PlanModel,
-    onComplete: (PlanModel) -> Unit
+    onComplete: (PlanModel, Boolean) -> Unit
 ) {
 
     Row (
@@ -55,7 +56,10 @@ fun CompletedPlanItem (
                 .size(20.dp)
                 .clip(CircleShape)
                 .clickable {
-                    onComplete(item)
+                    onComplete(
+                        item,
+                        !item.isCompleted
+                    )
                 },
             painter = painterResource(
                 if (item.isCompleted) R.drawable.ic_main_completed_plan else  R.drawable.ic_main_plan_not_completed
@@ -71,7 +75,7 @@ fun CompletedPlanItem (
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.regular)),
                 fontWeight = FontWeight(400),
-                color = BlackProfile,
+                color = if (item.isCompleted) GreyProfileData else BlackProfile,
                 textDecoration = if (item.isCompleted) TextDecoration.LineThrough else null,
             )
         )

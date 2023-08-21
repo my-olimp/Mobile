@@ -268,7 +268,7 @@ class PlansViewModel (
                 viewModelScope.launch {
                     repository.updatePlan(
                         plan = event.plan.copy(
-                            isCompleted = true
+                            isCompleted = event.isCompleted
                         )
                     )
 

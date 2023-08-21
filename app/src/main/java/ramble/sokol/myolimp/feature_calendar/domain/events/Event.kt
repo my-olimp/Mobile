@@ -6,7 +6,6 @@ import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 sealed interface Event {
     data object CancelSearching: Event
     data object GetPreviousDate: Event
-    data class OnCompletedPlan(val plan: PlanModel): Event
     data class OnTitleUpdated(val title: String): Event
     data class OnDateUpdated(val date: String): Event
     data class OnSubjectUpdated(val subject: String): Event
@@ -32,5 +31,9 @@ sealed interface Event {
     ): Event
     data class IsShowingCreatedPlan(
         val isShowing: Boolean
+    ): Event
+    data class OnCompletedPlan(
+        val plan: PlanModel,
+        val isCompleted: Boolean
     ): Event
 }

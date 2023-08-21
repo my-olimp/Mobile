@@ -45,7 +45,6 @@ import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
 import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
-import ramble.sokol.myolimp.feature_calendar.domain.states.CalendarScreenNavArgs
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import ramble.sokol.myolimp.feature_main.data.models.AdviceArticle
@@ -150,8 +149,11 @@ fun HomeScreen(
                     currentPlans.forEach {
                         CompletedPlanItem(
                             item = it,
-                            onComplete = { plan ->
-                                viewModel.onEvent(Event.OnCompletedPlan(plan = plan))
+                            onComplete = { plan, isCompleted ->
+                                viewModel.onEvent(Event.OnCompletedPlan(
+                                    plan = plan,
+                                    isCompleted = isCompleted
+                                ))
                             }
                         )
                     }
