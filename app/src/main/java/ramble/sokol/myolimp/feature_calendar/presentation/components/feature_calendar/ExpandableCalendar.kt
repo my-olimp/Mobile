@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +38,9 @@ import ramble.sokol.myolimp.feature_calendar.domain.view_models.CalendarViewMode
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_searching.SearchTextField
 import ramble.sokol.myolimp.feature_calendar.presentation.core.CalendarIntent
 import ramble.sokol.myolimp.feature_calendar.presentation.core.Period
+import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.GreyProfileData
+import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
 /**
@@ -141,9 +143,7 @@ fun ExpandableCalendar(
                     .padding(top = 8.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(
-                        color = if (state.isShowingFavourites) Color(0xFF3579F8) else Color(
-                            0xFFFFFFFF
-                        ),
+                        color = if (state.isShowingFavourites) BlueStart else White,
                         shape = RoundedCornerShape(size = 8.dp)
                     )
                     .clickable {
@@ -156,9 +156,7 @@ fun ExpandableCalendar(
                         .padding(12.dp),
                     painter = painterResource(id = R.drawable.ic_calendar_favourite),
                     contentDescription = "bookmark",
-                    tint = if (state.isShowingFavourites) Color(0xFFFFFFFF) else Color(
-                        0xFF757575
-                    ),
+                    tint = if (state.isShowingFavourites) White else GreyProfileData,
                 )
             }
         }
@@ -173,7 +171,7 @@ fun ExpandableCalendar(
                     }
                 )
                 .background(
-                    color = Color(0xFFFFFFFF),
+                    color = White,
                     shape = RoundedCornerShape(
                         size = 40.dp
                     )
@@ -205,7 +203,7 @@ fun ExpandableCalendar(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
 
             if (calendarExpanded.value) {
                 MonthViewCalendar(
