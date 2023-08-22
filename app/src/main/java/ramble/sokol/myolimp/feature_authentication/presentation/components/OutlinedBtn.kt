@@ -1,7 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,16 +32,12 @@ fun OutlinedBtn (
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = padding)
-            .background(
-                color = White,
-                shape = RoundedCornerShape(size = 16.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = accentColor,
-                shape = RoundedCornerShape(size = 16.dp)
-            ),
+            .padding(horizontal = padding),
+        shape = RoundedCornerShape(size = 16.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = accentColor,
+        ),
         colors = ButtonDefaults.buttonColors(
             containerColor = White
         ),
@@ -50,7 +45,8 @@ fun OutlinedBtn (
     ) {
         Text(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
             text = text,
             style = TextStyle(
                 fontSize = 20.sp,
