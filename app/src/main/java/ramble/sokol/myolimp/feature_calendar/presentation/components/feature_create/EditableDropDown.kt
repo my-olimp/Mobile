@@ -120,6 +120,7 @@ fun EditableDropDown(
                         .clip(CircleShape)
                         .clickable {
                             expanded = !expanded
+                            dropDownOptions = options
                         }
                         .rotate(
                             if (expanded) 180f else 0f
