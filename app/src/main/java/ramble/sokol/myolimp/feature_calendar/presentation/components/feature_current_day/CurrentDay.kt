@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
@@ -45,7 +46,7 @@ fun CurrentDay (
 
         ImageWithText (
             drawable = R.drawable.ic_calendar_no_plans,
-            text = "Планов нет..."
+            text = stringResource(R.string.no_plans)
         )
 
     } else {
@@ -75,7 +76,7 @@ fun CurrentDay (
                 if (nextPlans.isNotEmpty()) {
 
                     CommentText(
-                        text = "Предстоящие события"
+                        text = stringResource(R.string.next_events)
                     )
 
                     nextPlans.forEach {
@@ -102,7 +103,7 @@ fun CurrentDay (
                 if (previousPlans.isNotEmpty()) {
 
                     CommentText(
-                        text = "Прошедшие события"
+                        text = stringResource(R.string.previous_events)
                     )
 
                     previousPlans.forEach {
@@ -122,7 +123,7 @@ fun CurrentDay (
         } else if (currentDate.value.isBefore(LocalDate.now())) {
 
             CommentText(
-                text = "Прошедшие события"
+                text = stringResource(R.string.previous_events)
             )
 
             currentPlans.forEach {
@@ -139,7 +140,7 @@ fun CurrentDay (
 
         } else {
             CommentText(
-                text = "Предстоящие события"
+                text = stringResource(R.string.next_events)
             )
 
             currentPlans.forEach {

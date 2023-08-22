@@ -2,7 +2,6 @@ package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_fa
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -70,13 +69,11 @@ fun Favourites (
                 .fillMaxSize()
         ) {
 
-            Text(text = "${favouritesPlans.size} - ${previousPlans.size} - ${nextPlans.size}")
-            
             // show next
             if (nextPlans.isNotEmpty()) {
 
                 CommentText(
-                    text = "Предстоящие события"
+                    text = stringResource(R.string.next_events)
                 )
 
                 nextPlans.forEach {
@@ -90,10 +87,11 @@ fun Favourites (
                 }
             }
 
+            // show previous
             if (previousPlans.isNotEmpty()) {
 
                 CommentText(
-                    text = "Прошедшие события"
+                    text = stringResource(R.string.previous_events)
                 )
 
                 previousPlans.forEach {
