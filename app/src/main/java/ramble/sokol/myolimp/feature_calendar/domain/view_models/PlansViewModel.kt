@@ -433,7 +433,7 @@ class PlansViewModel (
         return if (state.value.title.isBlank()) Status.ERROR_TITLE
         else if (state.value.date.isBlank()) Status.ERROR_DATE
         else if (state.value.color.isBlank()) Status.ERROR_COLOR
-        else if (startHour > endHour) {
+        else if (startHour > endHour && startHour != 12) {
             Log.i(TAG, "1 time")
             Status.ERROR_TIME
         }
@@ -442,7 +442,7 @@ class PlansViewModel (
 
             Status.ERROR_TIME
         }
-        else if (endHour == 12 && endMin != 0) {
+        else if (endHour == 12 && endMin != 0 && startHour != 12) {
             Log.i(TAG, "3 time")
 
             Status.ERROR_TIME

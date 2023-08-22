@@ -89,7 +89,6 @@ fun CurrentDay (
                     }
                 }
 
-
                 val previousPlans = currentPlans
                     .filter {
                         Log.i(
@@ -117,16 +116,6 @@ fun CurrentDay (
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-
-//            currentPlans.forEach {
-//                PlanItem(
-//                    item = it,
-//                ) { plan->
-//                    navController.navigate(
-//                        UpdateScreenDestination(plan = plan)
-//                    )
-//                }
-//            }
             }
 
             // before today
@@ -145,6 +134,7 @@ fun CurrentDay (
                     )
                 }
             }
+
         // after
 
         } else {
