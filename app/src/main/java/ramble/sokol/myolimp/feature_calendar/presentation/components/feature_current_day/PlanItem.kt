@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
+import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
 fun PlanItem  (
@@ -55,7 +56,8 @@ fun PlanItem  (
         verticalAlignment = Alignment.Top
     ) {
         Column (
-            Modifier.weight(0.9f)
+            modifier = Modifier
+                .weight(0.9f)
         ) {
 
             Text(
@@ -64,7 +66,7 @@ fun PlanItem  (
                     fontSize = 20.sp,
                     fontFamily = FontFamily(Font(R.font.medium)),
                     fontWeight = FontWeight(500),
-                    color = Color(0xFFFFFFFF),
+                    color = White,
                     letterSpacing = 0.24.sp,
                 )
             )
@@ -77,7 +79,7 @@ fun PlanItem  (
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.medium)),
                     fontWeight = FontWeight(600),
-                    color = Color(0xFFFFFFFF),
+                    color = White,
                     letterSpacing = 0.24.sp,
                 )
             )
@@ -90,7 +92,7 @@ fun PlanItem  (
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.regular)),
                     fontWeight = FontWeight(500),
-                    color = Color(0xFFFFFFFF),
+                    color = White,
                     letterSpacing = 0.24.sp,
                 )
             )
@@ -103,23 +105,26 @@ fun PlanItem  (
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.regular)),
                     fontWeight = FontWeight(500),
-                    color = Color(0xFFFFFFFF),
+                    color = White,
                     letterSpacing = 0.24.sp,
                 )
             )
         }
-
-        IconButton(
-            modifier = Modifier.weight(0.1f),
-            onClick = {
-                onEdit(item)
-            },
+        Column (
+            modifier = Modifier
+                .weight(0.1f)
         ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "edit plan",
-                tint = Color.White
-            )
+            IconButton(
+                onClick = {
+                    onEdit(item)
+                },
+            ) {
+                Icon (
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "edit plan",
+                    tint = Color.White,
+                )
+            }
         }
     }
 }

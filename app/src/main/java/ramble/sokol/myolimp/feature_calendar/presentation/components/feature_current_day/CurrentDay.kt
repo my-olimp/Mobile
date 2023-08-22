@@ -17,7 +17,9 @@ import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
+import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.Calendar
 
 @Composable
@@ -26,6 +28,27 @@ fun CurrentDay (
     state: PlanState,
     navController: NavController
 ) {
+
+    timeInFrame(
+        startHour = 15,
+        startMin = 0,
+        endHour = 15,
+        endMin = 45
+    )
+
+    timeInFrame(
+        startHour = 23,
+        startMin = 0,
+        endHour = 23,
+        endMin = 45
+    )
+
+    timeInFrame(
+        startHour = 22,
+        startMin = 0,
+        endHour = 22,
+        endMin = 45
+    )
 
     val currentPlans = state.plans
         .filter {
@@ -56,22 +79,48 @@ fun CurrentDay (
 
             val rightNow = Calendar.getInstance()
             val currentHour: Int = rightNow.get(Calendar.HOUR_OF_DAY) // 0..23
+            val currentMin: Int = rightNow.get(Calendar.MINUTE) // 0..60
+
+            val nextPlans = currentPlans
+                .filter {
+                    it.startHour > currentHour
+                        || (it.endHour == 0 && it.endMinute == 0)
+                            || (it.startHour == currentHour && it.startMinute > currentMin)
+                }
+
+            val previousPlans = currentPlans
+                .filter {
+                    it.endHour < currentHour && (it.endHour != it.endMinute && it.endHour != 0)
+                        || (it.endHour == currentHour && it.endMinute < currentMin)
+                }
+
+            val curPlans = currentPlans
+                .filter {
+                    (it.endHour == currentHour && it.endMinute <= currentMin)
+                            || (it.startHour == currentHour && it.startMinute >= currentMin)
+                }
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
 
-                val nextPlans = currentPlans
-                    .filter {
+                if (curPlans.isNotEmpty()) {
 
-                        Log.i(
-                            PlansViewModel.TAG,
-                            "$currentHour - ${it.startHour} - ${it.startHour < currentHour}"
-                        )
+                    CommentText(
+                        text = stringResource(R.string.current_events)
+                    )
 
-                        it.startHour > currentHour
+                    curPlans.forEach {
+                        PlanItem(
+                            item = it,
+                        ) { plan ->
+                            navController.navigate(
+                                UpdateScreenDestination(plan = plan)
+                            )
+                        }
                     }
+                }
 
                 if (nextPlans.isNotEmpty()) {
 
@@ -90,16 +139,6 @@ fun CurrentDay (
                     }
                 }
 
-                val previousPlans = currentPlans
-                    .filter {
-                        Log.i(
-                            PlansViewModel.TAG,
-                            "$currentHour - ${it.endHour} - ${it.endHour < currentHour}"
-                        )
-
-                        it.endHour < currentHour
-                    }
-
                 if (previousPlans.isNotEmpty()) {
 
                     CommentText(
@@ -117,6 +156,16 @@ fun CurrentDay (
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
+
+                currentPlans.forEach {
+                    PlanItem(
+                        item = it,
+                    ) { plan ->
+                        navController.navigate(
+                            UpdateScreenDestination(plan = plan)
+                        )
+                    }
+                }
             }
 
             // before today
@@ -155,3 +204,78 @@ fun CurrentDay (
         }
     }
 }
+
+@Composable
+private fun timeInFrame(
+    startHour: Int,
+    startMin: Int,
+    endHour: Int,
+    endMin: Int,
+) {
+
+    val rightNow = Calendar.getInstance()
+    val currentHour: Int = rightNow.get(Calendar.HOUR_OF_DAY) // 0..23
+    val currentMin: Int = rightNow.get(Calendar.MINUTE) // 0..60
+
+    val differenceStartWithCurrent = differenceBetweenTime(
+        start = "${addZeroIfNeeded(startHour)}:${addZeroIfNeeded(startMin)}",
+        end = "${addZeroIfNeeded(currentHour)}:${addZeroIfNeeded(currentMin)}"
+    )
+
+    val differenceEndWithCurrent = differenceBetweenTime(
+        start = "${addZeroIfNeeded(endHour)}:${addZeroIfNeeded(endMin)}",
+        end = "${addZeroIfNeeded(currentHour)}:${addZeroIfNeeded(currentMin)}"
+    )
+
+
+    Log.i(PlansViewModel.TAG, "differenceStartWithCurrent - ${differenceStartWithCurrent.toMinutes()}")
+    Log.i(PlansViewModel.TAG, "differenceEndWithCurrent - ${differenceEndWithCurrent.toMinutes()}")
+
+    if (differenceStartWithCurrent.toMinutes() < 0L && differenceEndWithCurrent.toMinutes() < 0L) {
+        // next
+
+        Log.i(PlansViewModel.TAG, "next")
+
+    } else if (differenceStartWithCurrent.toMinutes() > 0L && differenceEndWithCurrent.toMinutes() > 0L) {
+        // previous
+
+        Log.i(PlansViewModel.TAG, "previous")
+
+    } else if ((differenceStartWithCurrent.toMinutes() > 0L && differenceEndWithCurrent.toMinutes() < 0L) || differenceStartWithCurrent.toMinutes() < 0L && differenceEndWithCurrent.toMinutes() > 0L) {
+        // current
+
+        Log.i(PlansViewModel.TAG, "current")
+
+    } else {
+        // warning
+
+        Log.i(PlansViewModel.TAG, "warning")
+
+    }
+
+}
+
+@Composable
+private fun addZeroIfNeeded (
+    num: Int
+) : String {
+
+    if (num.toString().length == 1) {
+        return "0$num"
+    }
+
+    return num.toString()
+}
+
+@Composable
+private fun differenceBetweenTime (
+    start: String,
+    end: String
+): Duration {
+
+    val startInclusive = LocalTime.parse(start)
+    val endInclusive = LocalTime.parse(end)
+
+    return Duration.between(startInclusive, endInclusive)
+}
+

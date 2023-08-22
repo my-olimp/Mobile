@@ -51,17 +51,22 @@ fun Favourites (
 
         val rightNow = Calendar.getInstance()
         val currentHour: Int = rightNow.get(Calendar.HOUR_OF_DAY) // 0..23
+        val currentMin: Int = rightNow.get(Calendar.MINUTE) // 0..60
 
         val nextPlans = favouritesPlans
             .filter {
                 LocalDate.parse(it.date).isAfter(LocalDate.now())
-                        || (LocalDate.parse(it.date).isEqual(LocalDate.now()) && it.startHour > currentHour)
+                    || (LocalDate.parse(it.date).isEqual(LocalDate.now())
+                            && it.startHour >= currentHour
+                                && it.startMinute >= currentMin)
             }
 
         val previousPlans = favouritesPlans
             .filter {
                 LocalDate.parse(it.date).isBefore(LocalDate.now())
-                        || (LocalDate.parse(it.date).isEqual(LocalDate.now()) && it.startHour <= currentHour)
+                        || (LocalDate.parse(it.date).isEqual(LocalDate.now())
+                            && ((it.endHour < currentHour) || ((it.endHour == currentHour) && (it.endMinute < currentMin))
+                                    ))
             }
         
         Column (

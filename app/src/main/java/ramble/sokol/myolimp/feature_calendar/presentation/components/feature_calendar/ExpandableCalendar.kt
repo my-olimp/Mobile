@@ -165,6 +165,9 @@ fun ExpandableCalendar(
 
         Column(
             modifier = Modifier
+                .clip(
+                    RoundedCornerShape(40.dp)
+                )
                 .clickable(
                     onClick = {
                         onEvent(Event.CancelSearching)

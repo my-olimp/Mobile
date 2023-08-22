@@ -423,9 +423,9 @@ class PlansViewModel (
 
     private fun checkData() : Int {
 
-        val startHour = if (state.value.startHour == 0) 12 else if (state.value.startHour < 24) state.value.startHour - 12 else  state.value.startHour
+        val startHour = if (state.value.startHour == 0) 12 else if (state.value.startHour < 24) state.value.startHour - 12 else state.value.startHour
         val startMin = state.value.startMinute
-        val endHour = if (state.value.endHour == 0) 12 else if (state.value.endHour < 24) state.value.endHour - 12 else  state.value.endHour
+        val endHour = if (state.value.endHour == 0) 12 else if (state.value.endHour < 24) state.value.endHour - 12 else state.value.endHour
         val endMin = state.value.endMinute
 
         Log.i(TAG, "$startHour:$startMin - $endHour:$endMin - ${state.value.startHour}")
