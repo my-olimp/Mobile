@@ -55,9 +55,9 @@ fun DayView(
 
     val dayValueModifier =
 
-        // if current day and not showing favourites
+        // if current day
 
-        if (isCurrentDay && !state.isShowingFavourites) {
+        if (isCurrentDay) {
             modifier.background(
                 color = BlueStart.copy(alpha = 0.75f),
                 shape = CircleShape
@@ -138,7 +138,7 @@ fun DayView(
                         fontFamily = FontFamily(Font(ramble.sokol.myolimp.R.font.regular)),
                         fontWeight = FontWeight(400),
                         color =
-                        if ((isSelected && !state.isShowingFavourites) || (isCurrentDay && !state.isShowingFavourites )) {
+                        if ((isSelected && !state.isShowingFavourites) || isCurrentDay) {
                             Color.White
                         } else {
                             BlackProfile

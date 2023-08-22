@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -138,6 +139,7 @@ fun ExpandableCalendar(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(top = 8.dp)
+                    .clip(RoundedCornerShape(8.dp))
                     .background(
                         color = if (state.isShowingFavourites) Color(0xFF3579F8) else Color(
                             0xFFFFFFFF
