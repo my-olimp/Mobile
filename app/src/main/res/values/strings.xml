@@ -87,4 +87,8 @@
     <string name="math">Математика</string>
     <string name="trial_version">Пробный вариант</string>
     <string name="no_favourites">Здесь пока пусто :(</string>
+    <string name="previous_events">Прошедшие события</string>
+    <string name="next_events">Предстоящие события</string>
+    <string name="no_plans">Планов нет...</string>
+    <string name="nothing_was_found">По запросу \'%1$s\' ничего не найдено</string>
 </resources>

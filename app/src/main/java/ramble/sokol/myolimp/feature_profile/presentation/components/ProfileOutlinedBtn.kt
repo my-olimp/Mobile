@@ -1,7 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,16 +27,12 @@ fun ProfileOutlinedBtn (
     Button(
         modifier = Modifier
             .wrapContentSize()
-            .height(40.dp)
-            .background(
-                color = White,
-                shape = RoundedCornerShape(size = 16.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = BlueStart,
-                shape = RoundedCornerShape(size = 16.dp)
-            ),
+            .height(40.dp),
+        shape = RoundedCornerShape(size = 16.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = BlueStart,
+        ),
         colors = ButtonDefaults.buttonColors(
             containerColor = White
         ),
