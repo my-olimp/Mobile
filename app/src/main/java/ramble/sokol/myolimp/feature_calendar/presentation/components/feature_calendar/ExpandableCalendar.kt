@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,12 +66,9 @@ fun ExpandableCalendar(
         mutableStateOf(true)
     }
 
-    // to set current day
-
-    LaunchedEffect(key1 = Unit) {
-        // expand calendar
-        viewModel.onIntent(CalendarIntent.ExpandCalendar)
-    }
+    /*
+        to set current day
+    */
 
     // choose day of created plan
     viewModel.onIntent(CalendarIntent.SelectDate(LocalDate.parse(state.date)))
@@ -85,6 +81,10 @@ fun ExpandableCalendar(
         (currentMonth.value.monthValue < LocalDate.parse(state.date).monthValue && isShouldFlipping)
         || (currentMonth.value.year < LocalDate.parse(state.date).year && isShouldFlipping)
     ) {
+
+        // expand calendar
+        viewModel.onIntent(CalendarIntent.ExpandCalendar)
+
         for(i in 0..(LocalDate.parse(state.date).monthValue - currentMonth.value.monthValue)
             + (LocalDate.parse(state.date).year - currentMonth.value.year) * 12) {
             viewModel.onIntent(

@@ -116,7 +116,7 @@ fun TimerPicker(
 
                                 selectedEndHour =  selectedHour + 1
 
-                                selectedEndMinute = 45 - selectedMinute
+                                selectedEndMinute = kotlin.math.abs(45 - selectedMinute)
 
                             } else {
 
