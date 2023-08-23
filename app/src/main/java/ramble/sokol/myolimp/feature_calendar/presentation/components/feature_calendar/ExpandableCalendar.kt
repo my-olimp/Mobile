@@ -72,13 +72,17 @@ fun ExpandableCalendar(
     /*
         to set current day
     */
+    if (state.isShowingCreatedPlan) {
+        // choose day of created plan
+        viewModel.onIntent(CalendarIntent.SelectDate(LocalDate.parse(state.date)))
 
-    // choose day of created plan
-    viewModel.onIntent(CalendarIntent.SelectDate(LocalDate.parse(state.date)))
+        // show plans of chosen day
+        onDayClick(LocalDate.parse(state.date))
 
-    // show plans of chosen day
-    onDayClick(LocalDate.parse(state.date))
-
+        onEvent(
+            Event.IsShowingCreatedPlan(false)
+        )
+    }
     // open month of creating plan
     if (
         (currentMonth.value.monthValue < LocalDate.parse(state.date).monthValue && isShouldFlipping)

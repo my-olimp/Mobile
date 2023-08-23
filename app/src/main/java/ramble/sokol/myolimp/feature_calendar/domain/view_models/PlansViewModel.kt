@@ -389,6 +389,7 @@ class PlansViewModel (
             }
 
             is Event.SaveDate -> {
+
                 viewModelScope.launch {
 
                     // save date in data store

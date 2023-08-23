@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -160,6 +161,13 @@ fun CreateCalendarScreen (
                         contentDescription = "close",
                         modifier = Modifier
                             .clickable {
+
+                                Log.i(PlansViewModel.TAG, "${state.date} - $date")
+
+                                viewModel.onEvent(
+                                    Event.SaveDate(date)
+                                )
+
                                 navController.navigate(
                                     CalendarScreenDestination()
                                 )
