@@ -119,24 +119,16 @@ class PlansViewModel (
                         viewModelScope.launch {
                             repository.addPlan(plan = plan)
 
-                            // save data in data store
+                            // save date in data store
                             dataStoreRepository.setPreviousDate(
                                 key = PREVIOUS_DATE,
                                 value = plan.date
                             )
 
-                            Log.i(TAG, "get data = ${dataStoreRepository.getPreviousDate(
-                                key = PREVIOUS_DATE,
-                            )}")
-
                             dataStoreRepository.isCreatedPlan(
                                 key = IS_CREATED,
                                 value = true
                             )
-
-                            Log.i(TAG, "get created = ${dataStoreRepository.getStatusCreating(
-                                key = IS_CREATED,
-                            )}")
 
                             setDefaultData()
 
@@ -355,6 +347,18 @@ class PlansViewModel (
 
                         viewModelScope.launch {
                             repository.updatePlan(plan = plan)
+
+
+                            // save date in data store
+                            dataStoreRepository.setPreviousDate(
+                                key = PREVIOUS_DATE,
+                                value = plan.date
+                            )
+
+                            dataStoreRepository.isCreatedPlan(
+                                key = IS_CREATED,
+                                value = true
+                            )
                         }
 
                         setDefaultData()
@@ -380,6 +384,23 @@ class PlansViewModel (
                 _state.update {
                     it.copy(
                         isShowingCreatedPlan = event.isShowing
+                    )
+                }
+            }
+
+            is Event.SaveDate -> {
+
+                viewModelScope.launch {
+
+                    // save date in data store
+                    dataStoreRepository.setPreviousDate(
+                        key = PREVIOUS_DATE,
+                        value = event.date
+                    )
+
+                    dataStoreRepository.isCreatedPlan(
+                        key = IS_CREATED,
+                        value = true
                     )
                 }
             }
@@ -423,9 +444,9 @@ class PlansViewModel (
 
     private fun checkData() : Int {
 
-        val startHour = if (state.value.startHour == 0) 12 else if (state.value.startHour < 24) state.value.startHour - 12 else  state.value.startHour
+        val startHour = if (state.value.startHour == 0) 12 else if (state.value.startHour < 24) state.value.startHour - 12 else state.value.startHour
         val startMin = state.value.startMinute
-        val endHour = if (state.value.endHour == 0) 12 else if (state.value.endHour < 24) state.value.endHour - 12 else  state.value.endHour
+        val endHour = if (state.value.endHour == 0) 12 else if (state.value.endHour < 24) state.value.endHour - 12 else state.value.endHour
         val endMin = state.value.endMinute
 
         Log.i(TAG, "$startHour:$startMin - $endHour:$endMin - ${state.value.startHour}")

@@ -40,7 +40,6 @@ fun DateInput (
 
     val context = LocalContext.current
 
-
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()

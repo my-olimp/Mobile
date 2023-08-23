@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -119,7 +120,8 @@ fun CreateCalendarScreen (
 //                     showing date picker
 
                     CalendarSheet(
-                        onEvent = viewModel::onEvent
+                        onEvent = viewModel::onEvent,
+//                        selectedDate = LocalDate.now().toString()
                     )
 
                 }
@@ -159,6 +161,13 @@ fun CreateCalendarScreen (
                         contentDescription = "close",
                         modifier = Modifier
                             .clickable {
+
+                                Log.i(PlansViewModel.TAG, "${state.date} - $date")
+
+                                viewModel.onEvent(
+                                    Event.SaveDate(date)
+                                )
+
                                 navController.navigate(
                                     CalendarScreenDestination()
                                 )
@@ -242,7 +251,7 @@ fun CreateCalendarScreen (
                 DateInput(
                     label = stringResource(R.string.data_plan),
                     state = state,
-                    onEvent = viewModel::onEvent
+                    onEvent = viewModel::onEvent,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

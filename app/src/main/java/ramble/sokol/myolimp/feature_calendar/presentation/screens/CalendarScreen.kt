@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -60,7 +61,9 @@ fun CalendarScreen(
                 containerColor = BlueStart,
                 contentColor = White
             ) {
-                Icon(
+                Icon (
+                    modifier = Modifier
+                        .size(32.dp),
                     imageVector = Icons.Default.Add,
                     contentDescription = "add plan"
                 )

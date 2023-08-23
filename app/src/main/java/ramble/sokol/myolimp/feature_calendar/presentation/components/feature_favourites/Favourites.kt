@@ -10,11 +10,12 @@ import com.ramcosta.composedestinations.navigation.navigate
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
+import ramble.sokol.myolimp.feature_calendar.domain.utils.PlanTimeStatus
+import ramble.sokol.myolimp.feature_calendar.domain.utils.getPlanTimeStatus
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_current_day.CommentText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_current_day.PlanItem
 import java.time.LocalDate
-import java.util.Calendar
 
 @Composable
 fun Favourites (
@@ -49,25 +50,72 @@ fun Favourites (
 
     } else {
 
-        val rightNow = Calendar.getInstance()
-        val currentHour: Int = rightNow.get(Calendar.HOUR_OF_DAY) // 0..23
+        val currentPlans = favouritesPlans
+            .filter {
+                (LocalDate.parse(it.date).isEqual(LocalDate.now())
+                    && getPlanTimeStatus(
+                        it.startHour,
+                        it.startMinute,
+                        it.endHour,
+                        it.endMinute,
+                    ) == PlanTimeStatus.CURRENT
+                )
+            }
 
         val nextPlans = favouritesPlans
             .filter {
+                // after today
                 LocalDate.parse(it.date).isAfter(LocalDate.now())
-                        || (LocalDate.parse(it.date).isEqual(LocalDate.now()) && it.startHour > currentHour)
+
+                // today
+                    || (LocalDate.parse(it.date).isEqual(LocalDate.now())
+                        && getPlanTimeStatus(
+                            it.startHour,
+                            it.startMinute,
+                            it.endHour,
+                            it.endMinute,
+                        ) == PlanTimeStatus.NEXT
+                    )
             }
 
         val previousPlans = favouritesPlans
             .filter {
+                // before
                 LocalDate.parse(it.date).isBefore(LocalDate.now())
-                        || (LocalDate.parse(it.date).isEqual(LocalDate.now()) && it.startHour <= currentHour)
+
+                // today
+                    || (LocalDate.parse(it.date).isEqual(LocalDate.now())
+                        && getPlanTimeStatus(
+                            it.startHour,
+                            it.startMinute,
+                            it.endHour,
+                            it.endMinute,
+                        ) == PlanTimeStatus.PREVIOUS
+                    )
             }
         
         Column (
             modifier = Modifier
                 .fillMaxSize()
         ) {
+
+            // show current
+            if (currentPlans.isNotEmpty()) {
+
+                CommentText(
+                    text = stringResource(R.string.current_events)
+                )
+
+                currentPlans.forEach {
+                    PlanItem(
+                        item = it,
+                    ) { plan ->
+                        navController.navigate(
+                            UpdateScreenDestination(plan = plan)
+                        )
+                    }
+                }
+            }
 
             // show next
             if (nextPlans.isNotEmpty()) {

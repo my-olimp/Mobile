@@ -36,4 +36,7 @@ sealed interface Event {
         val plan: PlanModel,
         val isCompleted: Boolean
     ): Event
+    data class SaveDate(
+        val date: String
+    ): Event
 }

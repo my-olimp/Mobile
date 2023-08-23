@@ -1,13 +1,10 @@
 package ramble.sokol.myolimp.feature_calendar.domain.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import java.time.LocalDate
 import java.time.YearMonth
 
-@RequiresApi(Build.VERSION_CODES.O)
 internal fun Modifier.dayViewModifier(
     date: LocalDate,
     currentMonth: YearMonth? = null,

@@ -1,24 +1,20 @@
 package ramble.sokol.myolimp.feature_calendar.presentation.components.feature_current_day
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.UpdateScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
-import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
+import ramble.sokol.myolimp.feature_calendar.domain.utils.PlanTimeStatus
+import ramble.sokol.myolimp.feature_calendar.domain.utils.getPlanTimeStatus
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import java.time.LocalDate
-import java.util.Calendar
 
 @Composable
 fun CurrentDay (
@@ -27,7 +23,7 @@ fun CurrentDay (
     navController: NavController
 ) {
 
-    val currentPlans = state.plans
+    val plans = state.plans
         .filter {
             it.date == currentDate.value.toString()
         }
@@ -42,7 +38,7 @@ fun CurrentDay (
             )
         )
 
-    if (currentPlans.isEmpty()) {
+    if (plans.isEmpty()) {
 
         ImageWithText (
             drawable = R.drawable.ic_calendar_no_plans,
@@ -54,25 +50,60 @@ fun CurrentDay (
         // today
         if (currentDate.value == LocalDate.now()) {
 
-            val rightNow = Calendar.getInstance()
-            val currentHour: Int = rightNow.get(Calendar.HOUR_OF_DAY) // 0..23
+            val nextPlans = plans
+                .filter {
+                    getPlanTimeStatus(
+                        it.startHour,
+                        it.startMinute,
+                        it.endHour,
+                        it.endMinute,
+                    ) == PlanTimeStatus.NEXT
+                }
+
+            val previousPlans = plans
+                .filter {
+                    getPlanTimeStatus(
+                        it.startHour,
+                        it.startMinute,
+                        it.endHour,
+                        it.endMinute,
+                    ) == PlanTimeStatus.PREVIOUS
+                }
+
+            val currentPlans = plans
+                .filter {
+                        getPlanTimeStatus(
+                            it.startHour,
+                            it.startMinute,
+                            it.endHour,
+                            it.endMinute,
+                        ) == PlanTimeStatus.CURRENT
+                    }
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
 
-                val nextPlans = currentPlans
-                    .filter {
+                // show current
+                if (currentPlans.isNotEmpty()) {
 
-                        Log.i(
-                            PlansViewModel.TAG,
-                            "$currentHour - ${it.startHour} - ${it.startHour < currentHour}"
-                        )
+                    CommentText(
+                        text = stringResource(R.string.current_events)
+                    )
 
-                        it.startHour > currentHour
+                    currentPlans.forEach {
+                        PlanItem(
+                            item = it,
+                        ) { plan ->
+                            navController.navigate(
+                                UpdateScreenDestination(plan = plan)
+                            )
+                        }
                     }
+                }
 
+                // show next
                 if (nextPlans.isNotEmpty()) {
 
                     CommentText(
@@ -90,16 +121,7 @@ fun CurrentDay (
                     }
                 }
 
-                val previousPlans = currentPlans
-                    .filter {
-                        Log.i(
-                            PlansViewModel.TAG,
-                            "$currentHour - ${it.endHour} - ${it.endHour < currentHour}"
-                        )
-
-                        it.endHour < currentHour
-                    }
-
+                // show previous
                 if (previousPlans.isNotEmpty()) {
 
                     CommentText(
@@ -116,34 +138,12 @@ fun CurrentDay (
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
             }
-
-            // before today
-        } else if (currentDate.value.isBefore(LocalDate.now())) {
-
-            CommentText(
-                text = stringResource(R.string.previous_events)
-            )
-
-            currentPlans.forEach {
-                PlanItem(
-                    item = it,
-                ) { plan ->
-                    navController.navigate(
-                        UpdateScreenDestination(plan = plan)
-                    )
-                }
-            }
-
-        // after
 
         } else {
-            CommentText(
-                text = stringResource(R.string.next_events)
-            )
+            // before or after today
 
-            currentPlans.forEach {
+            plans.forEach {
                 PlanItem(
                     item = it,
                 ) { plan ->
