@@ -16,15 +16,26 @@ fun getPlanTimeStatus(
     val currentMin: Int = rightNow.get(Calendar.MINUTE) // 0..60
 
     val differenceStartWithCurrent = differenceBetweenTime(
-            start = "${addZeroIfNeeded(startHour)}:${addZeroIfNeeded(startMin)}",
-            end = "${addZeroIfNeeded(currentHour)}:${addZeroIfNeeded(currentMin)}"
-        )
+            start = getCorrectTime(
+                hour = startHour,
+                minute = startMin
+            ),
+            end = getCorrectTime(
+                hour = currentHour,
+                minute = currentMin
+            ),
+    )
 
     val differenceEndWithCurrent = differenceBetweenTime(
-            start = "${addZeroIfNeeded(endHour)}:${addZeroIfNeeded(endMin)}",
-            end = "${addZeroIfNeeded(currentHour)}:${addZeroIfNeeded(currentMin)}"
-        )
-
+        start = getCorrectTime(
+            hour = endHour,
+            minute = endMin
+        ),
+        end = getCorrectTime(
+            hour = currentHour,
+            minute = currentMin
+        ),
+    )
 
     Log.i(PlansViewModel.TAG, "differenceStartWithCurrent - ${differenceStartWithCurrent.toMinutes()}")
     Log.i(PlansViewModel.TAG, "differenceEndWithCurrent - ${differenceEndWithCurrent.toMinutes()}")
@@ -57,13 +68,27 @@ fun getPlanTimeStatus(
     }
 }
 
+private fun getCorrectTime (
+    hour: Int,
+    minute: Int
+) : String {
+
+    return if (hour == 0 && minute == 0) {
+        "23:59"
+    } else {
+        "${addZeroIfNeeded(hour)}:${addZeroIfNeeded(minute)}"
+    }
+
+}
+
 private fun addZeroIfNeeded (
     num: Int
 ) : String {
 
-    if (num.toString().length == 1) {
-        return "0$num"
-    }
+    return if (num.toString().length == 1) {
+        "0$num"
+    } else {
+        num.toString()
 
-    return num.toString()
+    }
 }
