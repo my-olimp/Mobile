@@ -12,9 +12,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDefaults.YearAbbrMonthDaySkeleton
+import androidx.compose.material3.DatePickerDefaults.YearMonthWeekdayDaySkeleton
+import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -41,17 +45,38 @@ fun CalendarSheet(
     onEvent: (Event) -> Unit,
 ) {
 
-    val pickerState = rememberDatePickerState()
+//    val calendar = Calendar.getInstance()
+//    val parts = selectedDate.split("-")
+//    calendar.set(
+//        parts[0].toInt(),
+//        parts[1].toInt(),
+//        parts[2].toInt()
+//    )
+//    val currentMillis = calendar.timeInMillis
+
+    val pickerState = rememberDatePickerState(
+//        initialSelectedDateMillis = currentMillis,
+    )
 
     // Get today's date and time
     val today = Date()
+
     // Subtract one day to get yesterday's date
     val cal: Calendar = Calendar.getInstance()
     cal.time = today
     cal.add(Calendar.DAY_OF_YEAR, -1)
     val yesterday: Date = cal.time
+
     // Get yesterday's date in milliseconds
     val yesterdayMillis: Long = yesterday.time
+
+    val formatter = remember {
+        DatePickerFormatter(
+            yearSelectionSkeleton = YearAbbrMonthDaySkeleton,
+            selectedDateSkeleton = YearMonthWeekdayDaySkeleton,
+            selectedDateDescriptionSkeleton = YearMonthWeekdayDaySkeleton
+        )
+    }
 
     Column (
         modifier = Modifier
@@ -65,6 +90,7 @@ fun CalendarSheet(
             dateValidator = {
                 it >= yesterdayMillis
             },
+            dateFormatter = formatter,
             colors = DatePickerDefaults.colors(
                 todayDateBorderColor = BlueStart.copy(alpha = 0.75f),
                 todayContentColor = BlackProfile,

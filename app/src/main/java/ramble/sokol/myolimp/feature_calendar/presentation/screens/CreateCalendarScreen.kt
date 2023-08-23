@@ -119,7 +119,8 @@ fun CreateCalendarScreen (
 //                     showing date picker
 
                     CalendarSheet(
-                        onEvent = viewModel::onEvent
+                        onEvent = viewModel::onEvent,
+//                        selectedDate = LocalDate.now().toString()
                     )
 
                 }
@@ -242,7 +243,7 @@ fun CreateCalendarScreen (
                 DateInput(
                     label = stringResource(R.string.data_plan),
                     state = state,
-                    onEvent = viewModel::onEvent
+                    onEvent = viewModel::onEvent,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
