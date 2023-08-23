@@ -52,7 +52,7 @@ fun getPlanTimeStatus(
 
         return PlanTimeStatus.PREVIOUS
 
-    } else if ((differenceStartWithCurrent.toMinutes() > 0L && differenceEndWithCurrent.toMinutes() < 0L) || differenceStartWithCurrent.toMinutes() < 0L && differenceEndWithCurrent.toMinutes() > 0L) {
+    } else if ((differenceStartWithCurrent.toMinutes() >= 0L && differenceEndWithCurrent.toMinutes() <= 0L) || differenceStartWithCurrent.toMinutes() <= 0L && differenceEndWithCurrent.toMinutes() >= 0L) {
         // current
         Log.i(PlansViewModel.TAG, "current")
 
