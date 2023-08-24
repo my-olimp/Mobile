@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_profile.domain.models
+package ramble.sokol.myolimp.feature_profile.data.models
 
 import android.net.Uri
 

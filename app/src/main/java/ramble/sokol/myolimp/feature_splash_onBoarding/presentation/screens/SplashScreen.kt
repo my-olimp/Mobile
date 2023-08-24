@@ -45,7 +45,7 @@ fun SplashScreen(
         isSplashScreen = true
     ) {
 
-        val version = "v.0.3.3"
+        val version = "v.0.4.0"
 
         val transition = rememberInfiniteTransition(label = "")
         val alpha by transition.animateFloat(
