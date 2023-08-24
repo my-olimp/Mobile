@@ -4,14 +4,15 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
+import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 
 class ProfileViewModel : ViewModel() {
 
     companion object {
-        private const val TAG : String = "VMProfile"
+        private const val TAG : String = "ViewModelProfile"
     }
+
 
     private val _state = mutableStateOf (
         UserModel (
