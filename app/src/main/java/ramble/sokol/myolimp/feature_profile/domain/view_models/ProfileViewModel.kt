@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
+import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 
 class ProfileViewModel : ViewModel() {
@@ -34,6 +37,8 @@ class ProfileViewModel : ViewModel() {
         )
 
     val state: State<UserModel> = _state
+
+    private val repository = ProfileRepository()
 
     fun onEvent (
         event: ProfileEvent
@@ -95,6 +100,11 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnSave -> {
                 saveUserData()
+
+                viewModelScope.launch {
+                    updateUserData(user = _state.value)
+                }
+
             }
 
             is ProfileEvent.OnRegionChanged -> {
@@ -137,6 +147,18 @@ class ProfileViewModel : ViewModel() {
 
     private fun saveUserData() {
         Log.i(TAG, "update object user -\n${_state.value}")
+    }
+
+    private suspend fun updateUserData(
+        user: UserModel,
+    ) {
+
+        val response = repository.updateUser(
+            auth = "",
+            user = user
+        )
+
+        Log.i(TAG, "response - ${response.body()}")
     }
 
 }
