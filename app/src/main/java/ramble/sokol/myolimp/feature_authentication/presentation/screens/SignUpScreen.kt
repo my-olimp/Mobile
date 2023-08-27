@@ -1,28 +1,38 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
-
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
+import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
 
 @Destination
@@ -38,6 +48,7 @@ fun SignUpScreen(
 @Destination
 @Composable
 fun SignUpScreen1() {
+
     OlimpTheme {
         Column(
             modifier = Modifier
@@ -63,13 +74,16 @@ fun SignUpScreen1() {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
+
             TextField(
                 modifier = Modifier
                     .width(331.dp)
                     .height(45.dp),
-                value = name,
+                value = "",
                 singleLine = true,
-                onValueChange = { value -> name = value },
+                onValueChange = {
+//                        value -> name = value
+                                },
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -91,9 +105,11 @@ fun SignUpScreen1() {
                 modifier = Modifier
                     .width(331.dp)
                     .height(45.dp),
-                value = password,
+                value = "",
                 singleLine = true,
-                onValueChange = { value -> password = value },
+                onValueChange = {
+//                        value -> password = value
+                                },
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -116,9 +132,11 @@ fun SignUpScreen1() {
                     .background(color = Color.White)
                     .width(331.dp)
                     .height(45.dp),
-                value = checked_password,
+                value = "",
                 singleLine = true,
-                onValueChange = { value -> checked_password = value },
+                onValueChange = {
+//                        value -> checked_password = value
+                                },
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -226,7 +244,7 @@ fun SignUpScreenData3() {
                     .padding(0.05184.dp)
                     .width(100.dp)
                     .height(24.dp),
-                painter = painterResource(id = R.drawable.vector),
+                painter = painterResource(id = R.drawable.ic_default_img),
                 contentDescription = "image description",
                 //contentScale = ContentScale.None
             )
@@ -335,7 +353,7 @@ fun SignUpScreenData4() {
                     .padding(0.05184.dp)
                     .width(100.dp)
                     .height(24.dp),
-                painter = painterResource(id = R.drawable.vector),
+                painter = painterResource(id = R.drawable.ic_default_img),
                 contentDescription = "image description",
                 //contentScale = ContentScale.None
             )
