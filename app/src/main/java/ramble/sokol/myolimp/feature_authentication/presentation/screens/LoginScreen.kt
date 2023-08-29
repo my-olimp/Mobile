@@ -1,80 +1,59 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.presentation.components.OutlinedBtn
-import ramble.sokol.myolimp.feature_authentication.presentation.components.TextFieldAuthEmail
-import ramble.sokol.myolimp.feature_authentication.presentation.components.TextFieldAuthPassword
-import ramble.sokol.myolimp.feature_authentication.presentation.components.TextFieldAuthPhone
+import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
+import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
+import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
-import ramble.sokol.myolimp.ui.theme.White
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Destination
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator
 ) {
+
+    val viewModel = getViewModel<LoginViewModel>()
+    val state = viewModel.state.collectAsState()
+
     OlimpTheme {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(White)
-                .padding(top = 24.dp),
+                .padding(vertical = 24.dp, horizontal = 16.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.auth_my_olimp),
                 contentDescription = "image auth my olimp"
@@ -94,141 +73,65 @@ fun LoginScreen(
                 )
             )
 
+            Spacer(modifier = Modifier.height(22.dp))
 
-
-        var tabIndex by remember {
-            mutableIntStateOf(0)
-        } // 1.
-        val tabTitles = listOf("Почта", "Номер телефона")
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start) {
-
-                TabRow(
-                    modifier = Modifier.fillMaxWidth(0.5f),
-                    selectedTabIndex = tabIndex
-                ) { // 3.
-                    tabTitles.forEachIndexed { index, title ->
-                        Tab(
-                            selected = tabIndex == index, // 4.
-                            onClick = { tabIndex = index },
-                            text = { Text(text = title,
-                                color = Color.Black) }) // 5.
-                    }
-                }
-
-            }
-
-            when (tabIndex) { // 6.
-                0 -> LoginEmailScreen()
-                1 -> LoginPhoneScreen()
-            }
-
-            Spacer(modifier = Modifier.padding(top = 21.dp))
-
-            FilledBtn(
-                text = stringResource(id = R.string.login),
+            OutlinedText(
+                previousData = "",
+                label = stringResource(id = R.string.email),
+                isError = state.value.isEmailError
             ) {
-                // for requset
+                viewModel.onEvent(LoginEvent.OnEmailUpdated(it))
             }
-            Spacer(modifier = Modifier.height(24.dp))
 
+            if (state.value.isEmailError) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                ErrorMessage(
+                    text = stringResource(R.string.email_error_msg)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            PasswordField(
+                previousData = "",
+                label = stringResource(id = R.string.password),
+                isError = state.value.isPasswordError
+            ) {
+                viewModel.onEvent(LoginEvent.OnPasswordUpdated(it))
+            }
+
+            if (state.value.isPasswordError) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                ErrorMessage(
+                    text = stringResource(R.string.error_password_msg)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(17.dp))
+            
             Text(
                 modifier = Modifier
-                    .width(320.dp)
-                    .height(15.dp),
-                text = "Забыли пароль?",
+                    .fillMaxWidth(),
+                text = stringResource(R.string.forgot_password),
                 style = TextStyle(
                     fontSize = 13.sp,
-                    lineHeight = 15.sp,
+                    fontFamily = FontFamily(Font(R.font.regular)),
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF222222),
-                ),
-            )
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
-@Composable
-fun LoginEmailScreen() {
-    OlimpTheme {
-        val email by remember {
-            mutableStateOf("")
-        }
-        val password by remember {
-            mutableStateOf("")
-        }
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, start = 14.dp, end = 14.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            TextFieldAuthEmail(
-                previousData = email,
-                label = stringResource(id = R.string.email),
-                onTextChanged = {
-
-                }
+                    color = BlackProfile,
+                )
             )
 
-            Spacer(modifier = Modifier.padding(top = 10.dp))
-
-            TextFieldAuthPassword(
-                previousData = password,
-                label = stringResource(id = R.string.password),
-                onTextChanged = {
-
-                }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
-@Composable
-fun LoginPhoneScreen() {
-    OlimpTheme {
-
-        var phone by remember {
-            mutableStateOf("")
-        }
-        val password by remember {
-            mutableStateOf("")
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, start = 14.dp, end = 14.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            TextFieldAuthPhone(
-                previousData = phone,
-                label = stringResource(id = R.string.number_phone),
-                onTextChanged = {
-                    phone = it.take(10)
-                }
-            )
-
-            Spacer(modifier = Modifier.padding(top = 10.dp))
-
-            TextFieldAuthPassword(
-                previousData = password,
-                label = stringResource(id = R.string.password),
-                onTextChanged = {
-
-                }
-            )
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            FilledBtn(
+                padding = 0.dp,
+                isEnabled = state.value.isLogging,
+                text = stringResource(id = R.string.login),
+            ) {
+                viewModel.onEvent(LoginEvent.OnLogin(navigator = navigator))
+            }
         }
     }
 }

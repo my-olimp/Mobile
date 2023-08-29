@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.LoginScreenDestination
+import ramble.sokol.myolimp.destinations.SignUpScreenData4Destination
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -41,9 +43,8 @@ fun SignUpScreen(
     navigator: DestinationsNavigator
 ) {
     //SignUpScreen1()
-    SignUpScreenData3()
+    SignUpScreenData3(navigator)
 }
-
 
 @Destination
 @Composable
@@ -231,7 +232,9 @@ fun SignUpScreenData2() {
 
 @Destination
 @Composable
-fun SignUpScreenData3() {
+fun SignUpScreenData3(
+    navigator: DestinationsNavigator
+) {
     var findvalue by remember { mutableStateOf("") }
     OlimpTheme {
         Column (
@@ -330,6 +333,8 @@ fun SignUpScreenData3() {
                 text = "Дальше"
             ) {
                 //navigator
+
+                navigator.navigate(SignUpScreenData4Destination)
             }
         }
     }

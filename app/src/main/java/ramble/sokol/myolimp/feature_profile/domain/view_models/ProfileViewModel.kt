@@ -152,13 +152,17 @@ class ProfileViewModel : ViewModel() {
     private suspend fun updateUserData(
         user: UserModel,
     ) {
+        try {
+            val response = repository.updateUser(
+                // TODO get from datastore
+                auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2OTMyMjM2NTMsImlhdCI6MTY5MzIyMjc1MywidHlwIjoiYWNjZXNzIn0.cmoYmBPEgxn8_9Zu2AoF9V1n8mIWt3QuRtY65E_bFE8",
+                user = user
+            )
 
-        val response = repository.updateUser(
-            auth = "",
-            user = user
-        )
-
-        Log.i(TAG, "response - ${response.body()}")
+            Log.i(TAG, "response - ${response.body()}")
+        } catch (ex: Exception) {
+            Log.i(TAG, "ex - ${ex.message}")
+        }
     }
 
 }
