@@ -71,6 +71,7 @@
     <string name="task">Задача</string>
     <string name="data_plan">Дата</string>
     <string name="password">Пароль</string>
+    <string name="confirm_password">Подтверждение пароля</string>
     <string name="number_phone">Номер телефона</string>
     <string name="subject">Предмет</string>
     <string name="name_error">Название некорректно</string>
@@ -96,4 +97,9 @@
     <string name="forgot_password">Забыли пароль?</string>
     <string name="email_error_msg">Почта указана некорректно</string>
     <string name="error_password_msg">Неверный пароль, повторите попытку</string>
+    <string name="poilitics">Регистрируясь, вы соглашаетесь на обработку персональных данных и получение информационных сообщений от группы компании MyOlimp</string>
+    <string name="already_registered">Уже регистрировались в сервисах MyOlimp?</string>
+    <string name="login_to_account">Войдите в учетную запись</string>
+    <string name="register_account">Зарегистрировать учетную запись</string>
+    <string name="not_registered">Еще не регистрировались в сервисах MyOlimp?</string>
 </resources>

@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("ramble.sokol.myolimp", appContext.packageName)
+        assertEquals("ramble.sokol.com.development.myolimp", appContext.packageName)
     }
 }

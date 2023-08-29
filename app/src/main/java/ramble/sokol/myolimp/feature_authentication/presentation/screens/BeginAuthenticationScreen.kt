@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 import ramble.sokol.myolimp.ui.theme.GreySecondary
 import ramble.sokol.myolimp.ui.theme.LightBlack
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import ramble.sokol.myolimp.ui.theme.Transparent
 
 @Destination
 @Composable
@@ -42,7 +44,8 @@ fun BeginAuthenticationScreen (
     OlimpTheme {
         Column (
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(Transparent),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

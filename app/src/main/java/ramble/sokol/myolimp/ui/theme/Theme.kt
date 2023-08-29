@@ -23,7 +23,8 @@ import ramble.sokol.myolimp.ui.presentation.bottom_navigation.BottomNavigationBa
 
 @Composable
 fun OlimpTheme(
-    uiColor: Color = Transparent,
+    statusBarColor: Color = Transparent,
+    navigationBarColor: Color = Transparent,
     isSplashScreen: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -35,10 +36,16 @@ fun OlimpTheme(
 
         DisposableEffect(systemUiController, useDarkIcons) {
 
-            systemUiController.setSystemBarsColor(
-                color = uiColor,
+            systemUiController.setStatusBarColor(
+                color = statusBarColor,
                 darkIcons = useDarkIcons
             )
+
+            systemUiController.setNavigationBarColor(
+                color = navigationBarColor,
+                darkIcons = useDarkIcons
+            )
+
 
             onDispose {}
         }
