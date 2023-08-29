@@ -93,4 +93,7 @@
     <string name="no_plans">Планов нет...</string>
     <string name="nothing_was_found">По запросу \'%1$s\' ничего не найдено</string>
     <string name="search">Найти</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="email_error_msg">Почта указана некорректно</string>
+    <string name="error_password_msg">Неверный пароль, повторите попытку</string>
 </resources>

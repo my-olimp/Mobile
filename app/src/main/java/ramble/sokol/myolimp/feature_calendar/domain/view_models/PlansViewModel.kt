@@ -50,7 +50,6 @@ class PlansViewModel (
         PlanState()
     )
 
-
     private val dataStoreRepository = CalendarDataRepository(context = context)
 
     fun onEvent(
