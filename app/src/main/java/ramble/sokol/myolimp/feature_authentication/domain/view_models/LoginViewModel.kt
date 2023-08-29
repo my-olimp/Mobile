@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,15 +12,21 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
-import ramble.sokol.myolimp.feature_authentication.domain.repository.LoginRepository
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.LoginRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
+import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    context: Context
+) : ViewModel() {
     companion object {
         const val TAG = "ViewModelLogin"
     }
 
     private val repository = LoginRepository()
+
+    private val dataStore = CodeDataStore(context)
 
     private val _state = MutableStateFlow(
         LoginState()
@@ -84,17 +91,16 @@ class LoginViewModel : ViewModel() {
                             password = _state.value.password,
                         ),
                         onResult = {
+                            // all correct
                             if (it?.code != null) {
-                                // all correct
 
-                                Log.i(TAG, "code - ${it.code}")
-
-                                // save it in data store
+                                // save token in data store
+                                saveToken(it.code)
 
                                 navigator.navigate(HomeScreenDestination)
 
+                            // invalid data
                             } else {
-                                // invalid data
 
                                 Log.i(TAG, "Error getting code")
 
@@ -154,4 +160,16 @@ class LoginViewModel : ViewModel() {
             )
         }
     }
+
+    private fun saveToken(
+        token: String
+    ) {
+        viewModelScope.launch {
+            dataStore.setToken(
+                key = Constants.ACCESS_TOKEN,
+                value = token
+            )
+        }
+    }
+
 }

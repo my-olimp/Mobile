@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_authentication.domain.repository
+package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
 import ramble.sokol.myolimp.feature_authentication.data.api.AuthenticationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
