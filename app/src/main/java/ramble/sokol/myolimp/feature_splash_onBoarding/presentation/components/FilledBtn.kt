@@ -18,11 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.DisabledBlue
 import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
 fun FilledBtn (
     text: String,
+    isEnabled: Boolean = true,
     padding: Dp = 36.dp,
     onClick: () -> Unit
 ) {
@@ -32,9 +34,11 @@ fun FilledBtn (
             .padding(horizontal = padding),
         shape = RoundedCornerShape(size = 16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = BlueStart
+            containerColor = BlueStart,
+            disabledContainerColor = DisabledBlue
         ),
-        onClick = onClick
+        onClick = onClick,
+        enabled = isEnabled
     ) {
         Text(
             modifier = Modifier

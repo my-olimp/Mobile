@@ -5,14 +5,14 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Headers
-import retrofit2.http.PUT
+import retrofit2.http.PATCH
 
 interface ProfileApi {
 
     @Headers(
         "Content-Type: application/json",
     )
-    @PUT("user/")
+    @PATCH("user/")
     suspend fun updateUserData(
         @Header("Authorization") auth: String,
         @Body user: UserModel,
