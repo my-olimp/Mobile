@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
@@ -48,6 +49,13 @@ class SignUpViewModel (
 
                           Toast.makeText(context,
                               context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
+
+                          event.navigator.navigate(
+                              CodeCheckerScreenDestination(
+                                  email = _state.value.email,
+                                  password = _state.value.password,
+                              )
+                          )
                       }
                   )
             }
