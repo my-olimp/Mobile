@@ -33,8 +33,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
-import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
-import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
+import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.FooterAuth
 import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
@@ -51,7 +51,7 @@ fun SignUpScreen(
     navigator: DestinationsNavigator
 ) {
 
-    val viewModel = getViewModel<LoginViewModel>()
+    val viewModel = getViewModel<SignUpViewModel>()
     val state = viewModel.state.collectAsState()
 
     OlimpTheme(
@@ -94,10 +94,9 @@ fun SignUpScreen(
 
                 OutlinedText(
                     previousData = "",
-                    label = stringResource(id = R.string.email),
-                    isError = state.value.isEmailError
+                    label = stringResource(id = R.string.email)
                 ) {
-                    viewModel.onEvent(LoginEvent.OnEmailUpdated(it))
+                    viewModel.onEvent(SignUpEvent.OnEmailUpdated(it))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -105,9 +104,8 @@ fun SignUpScreen(
                 PasswordField(
                     previousData = "",
                     label = stringResource(id = R.string.password),
-                    isError = state.value.isPasswordError
                 ) {
-                    viewModel.onEvent(LoginEvent.OnPasswordUpdated(it))
+                    viewModel.onEvent(SignUpEvent.OnPasswordUpdated(it))
                 }
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -116,29 +114,33 @@ fun SignUpScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(24.dp)),
-                    progress = 0.5f,
+                    progress = state.value.passwordStatus,
                     trackColor = Color(0xFFE1E3E6),
-                    color = Color(0xFFEDB16A)
+                    color = when (state.value.passwordStatus) {
+                        1f -> Color(0xFF58914F)
+                        0.3f -> Color(0xFFDA4242)
+                        0.6f -> Color(0xFFEDB16A)
+                        else -> Color(0xFFE1E3E6)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 PasswordField(
                     previousData = "",
-                    label = stringResource(id = R.string.confirm_password),
-                    isError = state.value.isPasswordError
+                    label = stringResource(id = R.string.confirm_password)
                 ) {
-                    viewModel.onEvent(LoginEvent.OnPasswordUpdated(it))
+                    viewModel.onEvent(SignUpEvent.OnConfirmedPasswordUpdated(it))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 FilledBtn(
                     padding = 0.dp,
-                    isEnabled = state.value.isLogging,
+                    isEnabled = state.value.isRegistering,
                     text = stringResource(id = R.string.register),
                 ) {
-                    viewModel.onEvent(LoginEvent.OnLogin(navigator = navigator))
+                    viewModel.onEvent(SignUpEvent.OnSignUp(navigator = navigator))
                 }
 
                 Spacer(modifier = Modifier.height(17.dp))
