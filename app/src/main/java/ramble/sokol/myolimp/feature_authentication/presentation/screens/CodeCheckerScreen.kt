@@ -34,6 +34,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpView
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ConfirmationRow
 import ramble.sokol.myolimp.feature_authentication.presentation.components.FooterAuth
 import ramble.sokol.myolimp.ui.theme.BlackProfile
+import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
@@ -109,8 +110,27 @@ fun CodeCheckerScreen (
                 Spacer(modifier = Modifier.height(36.dp))
 
                 ConfirmationRow(
-                    onEvent = viewModel::onEvent
+                    onEvent = viewModel::onEvent,
+                    isError = state.value.isCodeError,
+                    navigator = navigator
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                if (state.value.isCodeError) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        text = stringResource(R.string.error_register_message),
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.regular)),
+                            fontWeight = FontWeight(400),
+                            color = MessageError,
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                }
             }
 
             Column (

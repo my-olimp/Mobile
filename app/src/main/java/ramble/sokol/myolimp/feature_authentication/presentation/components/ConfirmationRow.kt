@@ -12,12 +12,15 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConfirmationRow (
-    onEvent: (SignUpEvent) -> Unit
+    onEvent: (SignUpEvent) -> Unit,
+    navigator: DestinationsNavigator,
+    isError: Boolean
 ) {
     val focusManager = LocalFocusManager.current
     val (
@@ -42,8 +45,12 @@ fun ConfirmationRow (
                     next = code2
                 },
             placeholder = "",
+            isError = isError,
             onTextChanged = {
-                onEvent(SignUpEvent.OnCode1Updated(it))
+                onEvent(SignUpEvent.OnCode1Updated(
+                    navigator,
+                    it
+                ))
                 focusManager.moveFocus(FocusDirection.Next)
             }
         )
@@ -58,8 +65,12 @@ fun ConfirmationRow (
                     next = code3
                 },
             placeholder = "",
+            isError = isError,
             onTextChanged = {
-                onEvent(SignUpEvent.OnCode2Updated(it))
+                onEvent(SignUpEvent.OnCode2Updated(
+                    navigator,
+                    it
+                ))
                 focusManager.moveFocus(FocusDirection.Next)
             }
         )
@@ -74,8 +85,12 @@ fun ConfirmationRow (
                     next = code4
                 },
             placeholder = "",
+            isError = isError,
             onTextChanged = {
-                onEvent(SignUpEvent.OnCode3Updated(it))
+                onEvent(SignUpEvent.OnCode3Updated(
+                    navigator,
+                    it
+                ))
                 focusManager.moveFocus(FocusDirection.Next)
             }
         )
@@ -90,8 +105,12 @@ fun ConfirmationRow (
                     next = code5
                 },
             placeholder = "",
+            isError = isError,
             onTextChanged = {
-                onEvent(SignUpEvent.OnCode4Updated(it))
+                onEvent(SignUpEvent.OnCode4Updated(
+                    navigator,
+                    it
+                ))
                 focusManager.moveFocus(FocusDirection.Next)
             }
         )
@@ -106,8 +125,12 @@ fun ConfirmationRow (
                     next = code6
                 },
             placeholder = "",
+            isError = isError,
             onTextChanged = {
-                onEvent(SignUpEvent.OnCode5Updated(it))
+                onEvent(SignUpEvent.OnCode5Updated(
+                    navigator,
+                    it
+                ))
                 focusManager.moveFocus(FocusDirection.Next)
             }
         )
@@ -119,9 +142,13 @@ fun ConfirmationRow (
                 .weight(0.16f)
                 .focusRequester(code6),
             placeholder = "",
+            isError = isError,
             onTextChanged = {
                 focusManager.clearFocus()
-                onEvent(SignUpEvent.OnCode6Updated(it))
+                onEvent(SignUpEvent.OnCode6Updated(
+                    navigator,
+                    it
+                ))
             }
         )
     }

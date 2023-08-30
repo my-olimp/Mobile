@@ -106,4 +106,6 @@
     <string name="email_confirmation">Подтверждение почты:</string>
     <string name="email_description">На почту %1$s был отправлен код,  введите его для завершения регистрации</string>
     <string name="choose_time">Выберите время начала и конца</string>
+    <string name="success_register_message">Аккаунт был успешно зарегестрирован</string>
+    <string name="error_register_message">Неверный код, попробуйте еще раз</string>
 </resources>

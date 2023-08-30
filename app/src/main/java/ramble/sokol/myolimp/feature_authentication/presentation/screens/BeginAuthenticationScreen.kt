@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
 import ramble.sokol.myolimp.destinations.SignUpScreenDestination
@@ -103,8 +102,7 @@ fun BeginAuthenticationScreen (
             OutlinedBtn(
                 text = stringResource(R.string.login)
             ) {
-//                navigator.navigate(LoginScreenDestination)
-                navigator.navigate(CodeCheckerScreenDestination("awd", "awd"))
+                navigator.navigate(LoginScreenDestination)
             }
 
             Spacer(modifier = Modifier.height(24.dp))

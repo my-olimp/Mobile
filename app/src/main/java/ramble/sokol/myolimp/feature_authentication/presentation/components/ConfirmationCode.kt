@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.OutlinedUnFocusedBorder
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 
@@ -30,7 +31,8 @@ import ramble.sokol.myolimp.ui.theme.SheetTitle
 fun ConfirmationCode(
     modifier: Modifier,
     placeholder: String,
-    onTextChanged: (Int) -> Unit,
+    isError: Boolean,
+    onTextChanged: (Int?) -> Unit,
 ) {
 
     var textValue by remember {
@@ -47,7 +49,8 @@ fun ConfirmationCode(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = BlueStart,
                 unfocusedBorderColor = OutlinedUnFocusedBorder,
-                cursorColor = BlueStart
+                cursorColor = BlueStart,
+                errorBorderColor = MessageError
             ),
             placeholder = {
                 Text(
@@ -68,9 +71,16 @@ fun ConfirmationCode(
                 // only numbers
                 if (it.onlyNumbers()) {
                     textValue = it
-                    onTextChanged(
-                        it.toInt()
-                    )
+
+                    try {
+                        onTextChanged(
+                            it.toInt()
+                        )
+                    } catch (_ : Exception) {
+                        onTextChanged(
+                            null
+                        )
+                    }
                 }
             },
             textStyle = TextStyle(
@@ -79,7 +89,8 @@ fun ConfirmationCode(
                 fontWeight = FontWeight(500),
                 color = SheetTitle,
                 textAlign = TextAlign.Center
-            )
+            ),
+            isError = isError
         )
 
 }

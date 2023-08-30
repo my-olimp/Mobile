@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
+import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
@@ -61,9 +63,6 @@ class SignUpViewModel (
                       }
                   )
             }
-            is SignUpEvent.OnSentToken -> {
-
-            }
             is SignUpEvent.OnEmailUpdated -> {
                 _state.update {
                     it.copy(
@@ -97,6 +96,7 @@ class SignUpViewModel (
                         code1 = event.code1,
                     )
                 }
+                isSendingCode(event.navigator)
             }
             is SignUpEvent.OnCode2Updated -> {
                 _state.update {
@@ -104,6 +104,7 @@ class SignUpViewModel (
                         code2 = event.code2,
                     )
                 }
+                isSendingCode(event.navigator)
             }
             is SignUpEvent.OnCode3Updated -> {
                 _state.update {
@@ -111,6 +112,7 @@ class SignUpViewModel (
                         code3 = event.code3,
                     )
                 }
+                isSendingCode(event.navigator)
             }
             is SignUpEvent.OnCode4Updated -> {
                 _state.update {
@@ -118,6 +120,7 @@ class SignUpViewModel (
                         code4 = event.code4,
                     )
                 }
+                isSendingCode(event.navigator)
             }
             is SignUpEvent.OnCode5Updated -> {
                 _state.update {
@@ -125,6 +128,7 @@ class SignUpViewModel (
                         code5 = event.code5,
                     )
                 }
+                isSendingCode(event.navigator)
             }
             is SignUpEvent.OnCode6Updated -> {
                 _state.update {
@@ -132,6 +136,7 @@ class SignUpViewModel (
                         code6 = event.code6,
                     )
                 }
+                isSendingCode(event.navigator)
             }
         }
     }
@@ -164,8 +169,61 @@ class SignUpViewModel (
         navigator: DestinationsNavigator,
         onError: () -> Unit
     ) {
+        val code = _state.value.code1.toString() + _state.value.code2.toString() + _state.value.code3.toString() + _state.value.code4.toString() + _state.value.code5.toString() + _state.value.code6.toString()
 
+        Log.i(TAG, "user code - $code")
+
+        repository.signUp(
+            data = RequestSignUpModel(
+                code = code,
+                email = _state.value.email,
+                firstName = _state.value.email,
+                secondName = _state.value.email,
+                thirdName = _state.value.email,
+                password = _state.value.password,
+            ),
+            onResult = {
+                Log.i(TAG, "completed - $it")
+
+                if (it != null) {
+                    Toast.makeText(context,
+                        context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
+
+                    navigator.navigate(HomeScreenDestination)
+                } else {
+                    onError()
+                }
+           },
+            onError = {
+                Log.i(TAG, "error - $it")
+                onError()
+            }
+        )
     }
+
+    private fun isSendingCode(
+        navigator: DestinationsNavigator,
+    ) {
+        if (
+            _state.value.code1.toString().isNotEmpty() && _state.value.code1 != null
+            && _state.value.code2.toString().isNotEmpty() && _state.value.code2 != null
+            && _state.value.code3.toString().isNotEmpty() && _state.value.code3 != null
+            && _state.value.code4.toString().isNotEmpty() && _state.value.code4 != null
+            && _state.value.code5.toString().isNotEmpty() && _state.value.code5 != null
+            && _state.value.code6.toString().isNotEmpty() && _state.value.code6 != null
+        ) {
+            signUp(
+                navigator = navigator
+            ) {
+                _state.update {
+                    it.copy(
+                        isCodeError = true,
+                    )
+                }
+            }
+        }
+    }
+
 
     private fun sendVerificationCode(
         onSent: () -> Unit,

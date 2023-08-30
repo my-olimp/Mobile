@@ -17,7 +17,7 @@ interface AuthenticationApi {
     ): Call<ResponseAuthModel>
 
     @Headers("Content-Type: application/json")
-    @POST("user/login/")
+    @POST("user/register/")
     fun signUp(
         @Body data: RequestSignUpModel,
     ): Call<ResponseAuthModel>

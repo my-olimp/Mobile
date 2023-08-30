@@ -6,6 +6,7 @@ data class SignUpState (
     val confirmedPassword: String = "",
 
     val isRegistering: Boolean = false,
+    val isCodeError: Boolean = false,
 
     val code1: Int? = null,
     val code2: Int? = null,
