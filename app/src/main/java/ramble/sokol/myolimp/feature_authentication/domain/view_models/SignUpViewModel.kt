@@ -16,10 +16,12 @@ import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
+import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class SignUpViewModel (
     val context: Context
@@ -33,6 +35,8 @@ class SignUpViewModel (
     private val _state = MutableStateFlow(
         SignUpState()
     )
+
+    private val dataStore = CodeDataStore(context)
 
     val state = _state.asStateFlow()
 
@@ -186,6 +190,10 @@ class SignUpViewModel (
                 Log.i(TAG, "completed - $it")
 
                 if (it != null) {
+
+                    // save token in data store
+                    saveToken(it.code)
+
                     Toast.makeText(context,
                         context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
 
@@ -247,6 +255,17 @@ class SignUpViewModel (
             } catch (ex: Exception) {
                 Log.i(TAG, "exception - ${ex.message}")
             }
+        }
+    }
+
+    private fun saveToken(
+        token: String
+    ) {
+        viewModelScope.launch {
+            dataStore.setToken(
+                key = Constants.ACCESS_TOKEN,
+                value = token
+            )
         }
     }
 }
