@@ -72,7 +72,6 @@
     <string name="data_plan">Дата</string>
     <string name="password">Пароль</string>
     <string name="confirm_password">Подтверждение пароля</string>
-    <string name="number_phone">Номер телефона</string>
     <string name="subject">Предмет</string>
     <string name="name_error">Название некорректно</string>
     <string name="data_error">Дата некорректна</string>
@@ -80,7 +79,6 @@
     <string name="subject_error">Предмет не выбран</string>
     <string name="time_error">Время начала и конца некорректно</string>
     <string name="pick_date">Выберите дату</string>
-    <string name="time">Время</string>
     <string name="today_plan">План на сегодня</string>
     <string name="first_step">С чего начать?</string>
     <string name="probnik">Пробник</string>

@@ -16,6 +16,8 @@ import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEma
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
+import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
+import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
 
 class SignUpViewModel (
     val context: Context
@@ -88,6 +90,49 @@ class SignUpViewModel (
                 }
                 checkAbilityRegistering()
             }
+
+            is SignUpEvent.OnCode1Updated -> {
+                _state.update {
+                    it.copy(
+                        code1 = event.code1,
+                    )
+                }
+            }
+            is SignUpEvent.OnCode2Updated -> {
+                _state.update {
+                    it.copy(
+                        code2 = event.code2,
+                    )
+                }
+            }
+            is SignUpEvent.OnCode3Updated -> {
+                _state.update {
+                    it.copy(
+                        code3 = event.code3,
+                    )
+                }
+            }
+            is SignUpEvent.OnCode4Updated -> {
+                _state.update {
+                    it.copy(
+                        code4 = event.code4,
+                    )
+                }
+            }
+            is SignUpEvent.OnCode5Updated -> {
+                _state.update {
+                    it.copy(
+                        code5 = event.code5,
+                    )
+                }
+            }
+            is SignUpEvent.OnCode6Updated -> {
+                _state.update {
+                    it.copy(
+                        code6 = event.code6,
+                    )
+                }
+            }
         }
     }
 
@@ -114,10 +159,6 @@ class SignUpViewModel (
             )
         }
     }
-
-    private fun String.onlyLetters(): Boolean = (firstOrNull { !it.isLetter() } == null)
-
-    private fun String.onlyNumbers(): Boolean = (firstOrNull { !it.isDigit() } == null)
 
     private fun signUp (
         navigator: DestinationsNavigator,

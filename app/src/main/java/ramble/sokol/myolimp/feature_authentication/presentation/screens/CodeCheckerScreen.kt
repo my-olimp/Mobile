@@ -108,8 +108,9 @@ fun CodeCheckerScreen (
 
                 Spacer(modifier = Modifier.height(36.dp))
 
-                ConfirmationRow()
-
+                ConfirmationRow(
+                    onEvent = viewModel::onEvent
+                )
             }
 
             Column (

@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,9 +38,13 @@ import ramble.sokol.myolimp.feature_authentication.presentation.components.Foote
 import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
+import ramble.sokol.myolimp.ui.theme.BackgroundProgressIndicator
 import ramble.sokol.myolimp.ui.theme.BlackProfile
+import ramble.sokol.myolimp.ui.theme.ErrorStatus
+import ramble.sokol.myolimp.ui.theme.MiddleStatus
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
+import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
 
 
@@ -115,12 +118,12 @@ fun SignUpScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(24.dp)),
                     progress = state.value.passwordStatus,
-                    trackColor = Color(0xFFE1E3E6),
+                    trackColor = BackgroundProgressIndicator,
                     color = when (state.value.passwordStatus) {
-                        1f -> Color(0xFF58914F)
-                        0.3f -> Color(0xFFDA4242)
-                        0.6f -> Color(0xFFEDB16A)
-                        else -> Color(0xFFE1E3E6)
+                        1f -> SuccessStatus
+                        0.3f -> ErrorStatus
+                        0.6f -> MiddleStatus
+                        else -> BackgroundProgressIndicator
                     }
                 )
 
