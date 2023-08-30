@@ -102,4 +102,9 @@
     <string name="login_to_account">Войдите в учетную запись</string>
     <string name="register_account">Зарегистрировать учетную запись</string>
     <string name="not_registered">Еще не регистрировались в сервисах MyOlimp?</string>
+    <string name="success_autherization_message">Авторизация прошла успешно )</string>
+    <string name="register_auth_error_message">К сожалению, бэкендреры накосячили...</string>
+    <string name="success_send_code_message">Код успешно отправлен )</string>
+    <string name="email_confirmation">Подтверждение почты:</string>
+    <string name="email_description">На почту %1$s был отправлен код,  введите его для завершения регистрации</string>
 </resources>

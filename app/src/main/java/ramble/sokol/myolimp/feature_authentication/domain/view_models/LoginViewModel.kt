@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
@@ -18,7 +20,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class LoginViewModel(
-    context: Context
+    val context: Context
 ) : ViewModel() {
     companion object {
         const val TAG = "ViewModelLogin"
@@ -64,21 +66,27 @@ class LoginViewModel(
 
             is LoginEvent.OnLogin -> {
                 loginToAccount(
-                    navigator = event.navigator
-                ) {
-                    _state.update {
-                        it.copy(
-                            isPasswordError = true,
-                            isEmailError = true
-                        )
+                    onSuccess = {
+                        Toast.makeText(context,
+                            context.getString(R.string.success_autherization_message), Toast.LENGTH_SHORT).show()
+
+                        event.navigator.navigate(HomeScreenDestination)
+                    },
+                    onError = {
+                        _state.update {
+                            it.copy(
+                                isPasswordError = true,
+                                isEmailError = true
+                            )
+                        }
                     }
-                }
+                ) 
             }
         }
     }
 
     private fun loginToAccount(
-        navigator: DestinationsNavigator,
+        onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
         if(isDataValid()) {
@@ -93,11 +101,12 @@ class LoginViewModel(
                         onResult = {
                             // all correct
                             if (it?.code != null) {
-
+                                
                                 // save token in data store
                                 saveToken(it.code)
 
-                                navigator.navigate(HomeScreenDestination)
+                                // navigate to main screen
+                                onSuccess()
 
                             // invalid data
                             } else {

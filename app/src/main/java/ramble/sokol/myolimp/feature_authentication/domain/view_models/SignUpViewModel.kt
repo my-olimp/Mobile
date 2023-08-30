@@ -2,20 +2,25 @@ package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 
 class SignUpViewModel (
-    context: Context
+    val context: Context
 ) : ViewModel() {
     companion object {
-        const val TAG = "ViewModelSignUp"
+        private const val TAG = "ViewModelSignUp"
     }
 
     private val repository = SignUpRepository()
@@ -31,11 +36,23 @@ class SignUpViewModel (
     ) {
         when (event) {
             is SignUpEvent.OnSignUp -> {
-                signUp(
-                    navigator = event.navigator
-                ) {
-                  // TODO
-                }
+                  sendVerificationCode(
+                      onError = {
+                          Log.i(TAG, "error")
+
+                          Toast.makeText(context,
+                              context.getString(R.string.register_auth_error_message), Toast.LENGTH_SHORT).show()
+                      },
+                      onSent = {
+                          Log.i(TAG, "sent")
+
+                          Toast.makeText(context,
+                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
+                      }
+                  )
+            }
+            is SignUpEvent.OnSentToken -> {
+
             }
             is SignUpEvent.OnEmailUpdated -> {
                 _state.update {
@@ -99,5 +116,30 @@ class SignUpViewModel (
         onError: () -> Unit
     ) {
 
+    }
+
+    private fun sendVerificationCode(
+        onSent: () -> Unit,
+        onError: () -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                repository.sendVerificationCode(
+                    RequestSendingEmailModel(
+                        email = _state.value.email
+                    ),
+                    onResult = {
+                        onSent()
+                        Log.i(TAG, "success - $it")
+                    },
+                    onError = {
+                        onError()
+                        Log.i(TAG, "error - ${it.message}")
+                    }
+                )
+            } catch (ex: Exception) {
+                Log.i(TAG, "exception - ${ex.message}")
+            }
+        }
     }
 }

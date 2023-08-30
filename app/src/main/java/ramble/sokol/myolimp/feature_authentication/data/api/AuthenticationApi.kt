@@ -1,7 +1,9 @@
 package ramble.sokol.myolimp.feature_authentication.data.api
 
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseLoginModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -12,6 +14,18 @@ interface AuthenticationApi {
     @POST("user/login/")
     fun loginUser(
         @Body data: RequestLoginModel,
-    ): Call<ResponseLoginModel>
+    ): Call<ResponseAuthModel>
+
+    @Headers("Content-Type: application/json")
+    @POST("user/login/")
+    fun signUp(
+        @Body data: RequestSignUpModel,
+    ): Call<ResponseAuthModel>
+
+    @Headers("Content-Type: application/json")
+    @POST("user/register/email/")
+    fun sendEmail(
+        @Body data: RequestSendingEmailModel,
+    ): Call<String>
 
 }
