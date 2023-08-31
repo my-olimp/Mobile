@@ -100,6 +100,11 @@ class ProfileViewModel (
                 }
             }
 
+            is ProfileEvent.OnImgSave -> {
+                viewModelScope.launch {
+                   updateUserImg()
+                }
+            }
             is ProfileEvent.OnRegionChanged -> {
                 _state.value = _state.value.copy(
                     region = event.region
@@ -160,6 +165,18 @@ class ProfileViewModel (
             )
 
             Log.i(TAG, "response - ${response.body()}")
+        } catch (ex: Exception) {
+            Log.i(TAG, "ex - ${ex.message}")
+        }
+    }
+
+    private suspend fun updateUserImg() {
+        try {
+            repository.updateUserImg(
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                imgArray = "" //TODO() Understand how to transfer image as string
+            )
+            Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
         }

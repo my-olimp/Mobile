@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 
 sealed class ProfileEvent {
     data object OnSave: ProfileEvent()
+    data object OnImgSave: ProfileEvent()
     data object OnImgDelete: ProfileEvent()
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()

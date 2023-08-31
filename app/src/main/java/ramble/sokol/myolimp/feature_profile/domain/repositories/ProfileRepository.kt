@@ -13,6 +13,12 @@ class ProfileRepository {
             user = user
         )
 
-    suspend fun getUser() {}
+    suspend fun updateUserImg(
+        auth: String,
+        imgArray: String
+    ) = ProfileRetrofitInstance.api.updateUserImg(
+        auth = auth,
+        imgArray = imgArray
+    )
 
 }
