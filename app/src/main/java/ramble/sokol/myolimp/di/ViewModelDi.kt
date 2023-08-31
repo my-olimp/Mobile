@@ -15,7 +15,7 @@ val viewModelsModule = module {
 
     /* ProfileScreen */
     viewModel {
-        ProfileViewModel()
+        ProfileViewModel(get())
     }
 
     /* Calendar */

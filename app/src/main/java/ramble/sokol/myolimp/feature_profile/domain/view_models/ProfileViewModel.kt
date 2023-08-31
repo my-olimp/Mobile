@@ -1,21 +1,29 @@
 package ramble.sokol.myolimp.feature_profile.domain.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel (
+    context: Context
+) : ViewModel() {
 
     companion object {
         private const val TAG : String = "ViewModelProfile"
     }
 
+    private val dataStore = CodeDataStore(context = context)
 
     private val _state = mutableStateOf (
         UserModel (
@@ -100,11 +108,9 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnSave -> {
                 saveUserData()
-
                 viewModelScope.launch {
                     updateUserData(user = _state.value)
                 }
-
             }
 
             is ProfileEvent.OnRegionChanged -> {
@@ -141,6 +147,14 @@ class ProfileViewModel : ViewModel() {
                 _state.value = _state.value.copy(
                     email = event.email
                 )
+            }
+
+            is ProfileEvent.OnLogOut -> {
+                viewModelScope.launch {
+                    dataStore.deleteToken()
+
+                    event.navigator.navigate(BeginAuthenticationScreenDestination)
+                }
             }
         }
     }

@@ -30,6 +30,12 @@ class CodeDataStore (
 
     }
 
+    suspend fun deleteToken() {
+        context.dataStore.edit {
+            it.clear()
+        }
+    }
+
 
     suspend fun getToken(
         key: String
