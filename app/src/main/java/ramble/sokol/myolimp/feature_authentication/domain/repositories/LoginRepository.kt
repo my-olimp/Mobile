@@ -3,7 +3,7 @@ package ramble.sokol.myolimp.feature_authentication.domain.repositories
 import ramble.sokol.myolimp.feature_authentication.data.api.AuthenticationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseLoginModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,22 +11,22 @@ import retrofit2.Response
 class LoginRepository {
     fun login (
         data: RequestLoginModel,
-        onResult: (ResponseLoginModel?) -> Unit,
+        onResult: (ResponseAuthModel?) -> Unit,
         onError: (Throwable) -> Unit
     ){
         val instance = RetrofitBuilder.instance(AuthenticationApi::class.java)
 
         instance.loginUser(data).enqueue(
-            object : Callback<ResponseLoginModel> {
+            object : Callback<ResponseAuthModel> {
 
                 override fun onResponse(
-                    call: Call<ResponseLoginModel>,
-                    response: Response<ResponseLoginModel>
+                    call: Call<ResponseAuthModel>,
+                    response: Response<ResponseAuthModel>
                 ) {
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<ResponseLoginModel>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
                     onError(t)
                 }
             }

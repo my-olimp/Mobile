@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -165,7 +166,7 @@ fun TimerPicker(
             .padding(all = 16.dp)
     ) {
         Text (
-            text = "Выберите время начала и конца",
+            text = stringResource(R.string.choose_time),
 
             style = TextStyle(
                 fontSize = 16.sp,

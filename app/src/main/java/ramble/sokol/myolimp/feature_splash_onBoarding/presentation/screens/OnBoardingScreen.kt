@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FragmentImage
 import ramble.sokol.myolimp.ui.theme.GreyDark
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
-import ramble.sokol.myolimp.ui.theme.White
+import ramble.sokol.myolimp.ui.theme.Transparent
 
 @SuppressLint("SuspiciousIndentation", "UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
@@ -55,7 +56,8 @@ fun OnBoardingScreen(
 
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(Transparent),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = CenterHorizontally
         ) {
