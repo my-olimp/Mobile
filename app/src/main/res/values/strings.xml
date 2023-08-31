@@ -109,4 +109,11 @@
     <string name="choose_time">Выберите время начала и конца</string>
     <string name="success_register_message">Аккаунт был создан</string>
     <string name="error_register_message">Неверный код, попробуйте еще раз</string>
+    <string name="individual_data">Персональные данные</string>
+    <string name="one_of_four">1 из 4</string>
+    <string name="female_gender">Женский</string>
+    <string name="male_gender">Мужской</string>
+    <string name="type_of_activity">Вид деятельности</string>
+    <string name="further">Дальше</string>
+    
 </resources>
