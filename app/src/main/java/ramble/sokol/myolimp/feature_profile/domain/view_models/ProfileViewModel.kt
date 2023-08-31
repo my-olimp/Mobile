@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
+import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -154,8 +155,7 @@ class ProfileViewModel (
     ) {
         try {
             val response = repository.updateUser(
-                // TODO get from datastore
-                auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2OTMyMjM2NTMsImlhdCI6MTY5MzIyMjc1MywidHlwIjoiYWNjZXNzIn0.cmoYmBPEgxn8_9Zu2AoF9V1n8mIWt3QuRtY65E_bFE8",
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                 user = user
             )
 
