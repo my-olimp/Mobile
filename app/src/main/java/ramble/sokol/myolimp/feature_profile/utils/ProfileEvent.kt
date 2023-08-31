@@ -1,8 +1,11 @@
 package ramble.sokol.myolimp.feature_profile.utils
 
 import android.net.Uri
+import androidx.navigation.NavController
 
 sealed class ProfileEvent {
+    data object OnSave: ProfileEvent()
+    data object OnImgDelete: ProfileEvent()
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()
     data class OnThirdNameChanged(val thirdName: String): ProfileEvent()
@@ -17,6 +20,5 @@ sealed class ProfileEvent {
     data class OnGradeChanged(val grade: Int): ProfileEvent()
     data class OnEmailChanged(val email: String): ProfileEvent()
     data class OnPhoneChanged(val phone: String): ProfileEvent()
-    data object OnSave: ProfileEvent()
-    data object OnImgDelete: ProfileEvent()
+    data class OnLogOut(val navigator: NavController): ProfileEvent()
 }

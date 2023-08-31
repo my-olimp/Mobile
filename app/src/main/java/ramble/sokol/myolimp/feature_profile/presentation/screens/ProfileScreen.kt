@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +42,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
+import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfile
@@ -54,7 +56,10 @@ fun ProfileScreen(
 ) {
 
     val viewModel = getViewModel<ProfileViewModel>()
+    val state = viewModel.state.collectAsState()
     val context = LocalContext.current
+
+//    TODO Launched effect with getting user info
 
     BottomBarTheme(
         navController = navController
@@ -90,7 +95,8 @@ fun ProfileScreen(
                         .size(95.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(CircleShape),
-                    model = if (viewModel.state.value.profileImg != null) viewModel.state.value.profileImg else R.drawable.ic_default_img,
+                    model = if (state.value.profileImg != null) state.value.profileImg
+                            else R.drawable.ic_default_img,
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -221,7 +227,7 @@ fun ProfileScreen(
                     content = stringResource(R.string.profile_logout_content),
                     isShowBack = false
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    viewModel.onEvent(ProfileEvent.OnLogOut(navigator = navController))
                 }
             }
         }
@@ -238,20 +244,6 @@ fun NewsScreen(
     ) {
         Text(
             modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "NewsScreen"
-        )
-    }
-}
-
-@Destination
-@Composable
-fun LibraryScreen(
-    navController: NavController
-) {
-    BottomBarTheme(
-        navController = navController
-    ) {
-        Text(
-            modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "LibraryScreen"
         )
     }
 }

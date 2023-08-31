@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.screens
 
+import android.util.Log
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -31,7 +33,10 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_profile.data.Constants.ACCESS_TOKEN
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -45,7 +50,7 @@ fun SplashScreen(
         isSplashScreen = true
     ) {
 
-        val version = "v.0.4.0"
+        val version = "v.0.4.1"
 
         val transition = rememberInfiniteTransition(label = "")
         val alpha by transition.animateFloat(
@@ -60,17 +65,38 @@ fun SplashScreen(
             ), label = ""
         )
 
+        val context = LocalContext.current
+        val repository = CodeDataStore(context = context)
+
         LaunchedEffect(
             key1 = true
         ) {
             delay(2000L)
-        /*
-            After delay launch onBoarding
-        */
 
-        // after that user won't be able to go to previous page
+            val token = repository.getToken(ACCESS_TOKEN)
+
+            // after that user won't be able to go to previous page
             navigator.popBackStack()
-            navigator.navigate(OnBoardingScreenDestination)
+
+            if (token != null) {
+                /*
+                    After delay launch home screen
+                */
+
+                Log.i("CODE-GEET", "code - $token")
+
+                navigator.navigate(HomeScreenDestination)
+
+            } else {
+                /*
+                    After delay launch onBoarding
+                */
+
+                // if user is not registered
+                navigator.navigate(OnBoardingScreenDestination)
+
+            }
+
         }
 
         Column(

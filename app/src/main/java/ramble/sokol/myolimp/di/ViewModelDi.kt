@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
+import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 
 val viewModelsModule = module {
@@ -15,7 +16,7 @@ val viewModelsModule = module {
 
     /* ProfileScreen */
     viewModel {
-        ProfileViewModel()
+        ProfileViewModel(get())
     }
 
     /* Calendar */
@@ -31,5 +32,10 @@ val viewModelsModule = module {
     /* SignUp */
     viewModel {
         SignUpViewModel(get())
+    }
+
+    /* Library */
+    viewModel {
+        LibraryViewModel(get())
     }
 }
