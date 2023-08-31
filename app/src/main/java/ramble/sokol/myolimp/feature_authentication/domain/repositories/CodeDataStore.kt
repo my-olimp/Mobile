@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
-import java.time.LocalDate
 
 class CodeDataStore (
     val context: Context
@@ -34,13 +33,13 @@ class CodeDataStore (
 
     suspend fun getToken(
         key: String
-    ): String {
+    ): String? {
 
         val dataStoreKey = stringPreferencesKey(key)
 
         val preferences = context.dataStore.data.first()
 
-        return preferences[dataStoreKey] ?: LocalDate.now().toString()
+        return preferences[dataStoreKey]
 
     }
 
