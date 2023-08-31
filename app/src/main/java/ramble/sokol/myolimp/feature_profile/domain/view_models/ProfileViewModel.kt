@@ -7,10 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -25,28 +27,12 @@ class ProfileViewModel (
 
     private val dataStore = CodeDataStore(context = context)
 
-    private val _state = mutableStateOf (
-        UserModel (
-            firstName = "Диана",
-            secondName = "Спиридонова",
-            thirdName = "Романовна",
-            dateOfBirth = "25.05.2007",
-            gender = "Женский",
-            snils = "123-456-789-99",
-            region = "Московская область",
-            city = "Чехов",
-            school = "МБОУ СОШ №10",
-            email = "aleshka@mail.ru",
-            phone = "+7 123 456 78 90",
-            grade = 10,
-            profileImg = null,
-            hasThird = false
-            )
-        )
-
-    val state: State<UserModel> = _state
-
     private val repository = ProfileRepository()
+
+    private val _state = MutableStateFlow(
+        UserModel()
+    )
+    val state = _state.asStateFlow()
 
     fun onEvent (
         event: ProfileEvent

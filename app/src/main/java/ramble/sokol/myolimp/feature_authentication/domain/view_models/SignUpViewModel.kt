@@ -35,10 +35,10 @@ class SignUpViewModel (
     private val _state = MutableStateFlow(
         SignUpState()
     )
+    val state = _state.asStateFlow()
 
     private val dataStore = CodeDataStore(context)
 
-    val state = _state.asStateFlow()
 
     fun onEvent(
         event: SignUpEvent
