@@ -34,6 +34,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.FooterAuth
 import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
@@ -97,9 +98,18 @@ fun SignUpScreen(
 
                 OutlinedText(
                     previousData = "",
-                    label = stringResource(id = R.string.email)
+                    label = stringResource(id = R.string.email),
+                    isError = state.value.isEmailError
                 ) {
                     viewModel.onEvent(SignUpEvent.OnEmailUpdated(it))
+                }
+
+                if (state.value.isEmailError) {
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    ErrorMessage(
+                        text = stringResource(R.string.email_error_already_in_use)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))

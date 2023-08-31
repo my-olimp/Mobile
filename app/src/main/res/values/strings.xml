@@ -94,6 +94,7 @@
     <string name="search">Найти</string>
     <string name="forgot_password">Забыли пароль?</string>
     <string name="email_error_msg">Почта указана некорректно</string>
+    <string name="email_error_already_in_use">Аккаунт с такой почтой уже зарегистрирован</string>
     <string name="error_password_msg">Неверный пароль, повторите попытку</string>
     <string name="poilitics">Регистрируясь, вы соглашаетесь на обработку персональных данных и получение информационных сообщений от группы компании MyOlimp</string>
     <string name="already_registered">Уже регистрировались в сервисах MyOlimp?</string>
@@ -106,6 +107,6 @@
     <string name="email_confirmation">Подтверждение почты:</string>
     <string name="email_description">На почту %1$s был отправлен код,  введите его для завершения регистрации</string>
     <string name="choose_time">Выберите время начала и конца</string>
-    <string name="success_register_message">Аккаунт был успешно зарегестрирован</string>
+    <string name="success_register_message">Аккаунт был создан</string>
     <string name="error_register_message">Неверный код, попробуйте еще раз</string>
 </resources>

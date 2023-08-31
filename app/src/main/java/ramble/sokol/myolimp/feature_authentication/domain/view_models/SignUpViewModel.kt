@@ -244,8 +244,18 @@ class SignUpViewModel (
                         email = _state.value.email
                     ),
                     onResult = {
-                        onSent()
-                        Log.i(TAG, "success - $it")
+                        if (it != null) {
+                            onSent()
+                            Log.i(TAG, "success - $it")
+                            Toast.makeText(context, "Code - $it", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // account has already registered
+                            _state.update { state->
+                                state.copy(
+                                    isEmailError = true,
+                                )
+                            }
+                        }
                     },
                     onError = {
                         onError()
