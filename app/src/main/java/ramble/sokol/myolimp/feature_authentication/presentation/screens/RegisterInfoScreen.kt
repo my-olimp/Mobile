@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,16 +44,18 @@ import ramble.sokol.myolimp.ui.theme.Transparent
 
 @Preview
 @Composable
-fun PersonalDataScreenPreview() {
-    PersonalDataScreen()
+fun RegisterInfoScreenPreview() {
+    RegisterInfoScreen()
 }
 
 
 @Composable
-fun PersonalDataScreen() {
+fun RegisterInfoScreen() {
 
     //с ней не грузит превью
     //val viewModel = getViewModel<RegisterInfoViewModel>()
+
+    val isSelected = remember { mutableStateOf(true) }
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -147,19 +151,20 @@ fun PersonalDataScreen() {
                     Spacer(modifier = Modifier.width(12.dp))
 
                     RadioText(
-                        onClick = { /*TODO*/ },
+                        onClick = { isSelected.value = true },
                         header = stringResource(id = R.string.female_gender),
-                        textStyle = regularStyle
+                        textStyle = regularStyle,
+                        selected = isSelected.value
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
 
                     RadioText(
-                        onClick = { /*TODO*/ },
+                        onClick = { isSelected.value = false },
                         header = stringResource(id = R.string.male_gender),
                         textStyle = regularStyle,
-                        selected = false
+                        selected = !(isSelected.value)
                     )
                 }
 
