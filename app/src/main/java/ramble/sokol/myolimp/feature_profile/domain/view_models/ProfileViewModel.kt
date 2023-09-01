@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
+import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -99,6 +100,11 @@ class ProfileViewModel (
                 }
             }
 
+            is ProfileEvent.OnImgSave -> {
+                viewModelScope.launch {
+                   updateUserImg()
+                }
+            }
             is ProfileEvent.OnRegionChanged -> {
                 _state.value = _state.value.copy(
                     region = event.region
@@ -154,12 +160,23 @@ class ProfileViewModel (
     ) {
         try {
             val response = repository.updateUser(
-                // TODO get from datastore
-                auth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE2OTMyMjM2NTMsImlhdCI6MTY5MzIyMjc1MywidHlwIjoiYWNjZXNzIn0.cmoYmBPEgxn8_9Zu2AoF9V1n8mIWt3QuRtY65E_bFE8",
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                 user = user
             )
 
             Log.i(TAG, "response - ${response.body()}")
+        } catch (ex: Exception) {
+            Log.i(TAG, "ex - ${ex.message}")
+        }
+    }
+
+    private suspend fun updateUserImg() {
+        try {
+            repository.updateUserImg(
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                imgArray = "" //TODO() Understand how to transfer image as string
+            )
+            Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
         }
