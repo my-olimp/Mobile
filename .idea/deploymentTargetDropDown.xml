@@ -2,6 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="PersonalDataScreenPreview">
+        <State />
+      </entry>
+      <entry key="RegisterInfoScreenPreview">
+        <State />
+      </entry>
+
       <entry key="app">
         <State />
       </entry>

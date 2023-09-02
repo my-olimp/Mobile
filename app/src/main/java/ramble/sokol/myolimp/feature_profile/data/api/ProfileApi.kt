@@ -19,6 +19,7 @@ interface ProfileApi {
         @Body user: UserModel,
     ): Response<UserModel>
 
+
     @Headers("Content-Type: application/json",)
     @POST("user/avatar/")
     suspend fun updateUserImg(
