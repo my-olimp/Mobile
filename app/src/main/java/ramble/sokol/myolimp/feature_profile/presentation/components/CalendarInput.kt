@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -110,7 +111,9 @@ fun CalendarInput(
             focusedBorderColor = BlueStart,
             focusedLabelColor = BlueStart,
             cursorColor = BlueStart,
-            backgroundColor = White
+            backgroundColor = White,
+            disabledTextColor = Color.Black,
+            disabledTrailingIconColor = Color.Black
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
