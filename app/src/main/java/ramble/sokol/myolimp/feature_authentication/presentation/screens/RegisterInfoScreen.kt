@@ -13,21 +13,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+
+import org.koin.androidx.compose.getViewModel
+import ramble.sokol.myolimp.R
+
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
@@ -35,27 +44,27 @@ import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInpu
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
-import ramble.sokol.myolimp.ui.theme.BlackRegistrationData
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
+import ramble.sokol.myolimp.ui.theme.regularType
 
-@Preview
+
+@Destination
 @Composable
-fun RegisterInfoScreenPreview() {
-    RegisterInfoScreen()
-}
+fun RegisterInfoScreen(
+    navigator: DestinationsNavigator
+) {
 
+    val viewModel = getViewModel<RegisterInfoViewModel>()
 
-@Composable
-fun RegisterInfoScreen() {
-
-    //с ней не грузит превью
-    //val viewModel = getViewModel<RegisterInfoViewModel>()
+    val state = viewModel.state.collectAsState()
 
     val isSelected = remember { mutableStateOf(true) }
+
+    val activityType = stringArrayResource(id = R.array.activity_type)
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -114,11 +123,13 @@ fun RegisterInfoScreen() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedText(
-                    previousData = "" /* TODO */,
+                    previousData = state.value.fio,
                     label = stringResource(id = R.string.name_surname),
                     isEnabled = true,
                     onTextChanged = {
-                        //TODO
+                        viewModel.onEvent(
+                            RegistrationEvent.OnNameSurnameChanged(it)
+                        )
                     }
                 )
 
@@ -130,41 +141,38 @@ fun RegisterInfoScreen() {
                     verticalAlignment = Alignment.CenterVertically
 
                 ) {
-
-                    val regularStyle = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(400),
-                        color = BlackRegistrationData
-                    )
-
                     Text(
                         text = stringResource(id = R.string.gender) + ':',
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.regular)),
-                            fontWeight = FontWeight(400),
-                            color = GreyProfileData
-                        )
+                        style = regularType(color = GreyProfileData)
                     )
 
                     Spacer(modifier = Modifier.width(12.dp))
 
                     RadioText(
-                        onClick = { isSelected.value = true },
                         header = stringResource(id = R.string.female_gender),
-                        textStyle = regularStyle,
-                        selected = isSelected.value
+                        textStyle = regularType(),
+                        selected = isSelected.value,
+                        onClick = {
+                            isSelected.value = true
+                            viewModel.onEvent(
+                                event = RegistrationEvent.OnGenderChanged("f")
+                            )
+                        }
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
 
                     RadioText(
-                        onClick = { isSelected.value = false },
                         header = stringResource(id = R.string.male_gender),
-                        textStyle = regularStyle,
-                        selected = !(isSelected.value)
+                        textStyle = regularType(),
+                        selected = !(isSelected.value),
+                        onClick = {
+                            isSelected.value = false
+                            viewModel.onEvent(
+                                event = RegistrationEvent.OnGenderChanged("m")
+                            )
+                        },
                     )
                 }
 
@@ -172,23 +180,21 @@ fun RegisterInfoScreen() {
 
                 CalendarInput(
                     label = stringResource(id = R.string.dob),
-                    previousData = "" //TODO
+                    previousData = state.value.bdate
                 ) {
-                    //TODO
+                    viewModel.onEvent(RegistrationEvent.OnDobChanged(it))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 ReadOnlyDropDown(
-                    options =  listOf(
-                        "Ученик","Тренер/Учитель","Сотрудник школы",
-                        "Сотрудник вуза","Член комитета олимпиад",
-                        "Работодатель"
-                    ),
-                    previousData = "" /*TODO*/,
+                    options =  activityType.toList(),
+                    previousData = state.value.activityType,
                     label = stringResource(id = R.string.type_of_activity)
                 ) {
-                    //TODO
+                    viewModel.onEvent(RegistrationEvent.OnActivityTypeChanged(
+                        activityType = if(it == activityType[0]) "s" else "t"
+                    ))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -197,7 +203,7 @@ fun RegisterInfoScreen() {
                     text = stringResource(id = R.string.further),
                     padding = 0.dp
                 ) {
-                    //TODO
+                    viewModel.onEvent(RegistrationEvent.OnNext)
                 }
                 
             }

@@ -115,5 +115,14 @@
     <string name="male_gender">Мужской</string>
     <string name="type_of_activity">Вид деятельности</string>
     <string name="further">Дальше</string>
+    <string name="pupil">Ученик</string>
+    <string-array name="activity_type">
+        <item>Ученик</item>
+        <item>Тренер/учитель</item>
+        <item>Сотрудник школы</item>
+        <item>Сотрудник вуза</item>
+        <item>Член комитета олимпиад</item>
+        <item>Работодатель</item>
+    </string-array>
     
 </resources>
