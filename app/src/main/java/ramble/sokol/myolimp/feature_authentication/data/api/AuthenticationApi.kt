@@ -11,7 +11,7 @@ import retrofit2.http.POST
 
 interface AuthenticationApi {
     @Headers("Content-Type: application/json")
-    @POST("user/login/")
+    @POST("user/auth/login/")
     fun loginUser(
         @Body data: RequestLoginModel,
     ): Call<ResponseAuthModel>
