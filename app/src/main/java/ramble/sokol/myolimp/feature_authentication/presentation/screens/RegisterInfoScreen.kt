@@ -39,12 +39,12 @@ import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInpu
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
-import ramble.sokol.myolimp.ui.theme.BlackRegistrationData
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
+import ramble.sokol.myolimp.ui.theme.regularType
 
 
 @Destination
@@ -138,29 +138,16 @@ fun RegisterInfoScreen(
                     verticalAlignment = Alignment.CenterVertically
 
                 ) {
-
-                    val regularStyle = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(400),
-                        color = BlackRegistrationData
-                    )
-
                     Text(
                         text = stringResource(id = R.string.gender) + ':',
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.regular)),
-                            fontWeight = FontWeight(400),
-                            color = GreyProfileData
-                        )
+                        style = regularType(color = GreyProfileData)
                     )
 
                     Spacer(modifier = Modifier.width(12.dp))
 
                     RadioText(
                         header = stringResource(id = R.string.female_gender),
-                        textStyle = regularStyle,
+                        textStyle = regularType(),
                         selected = isSelected.value,
                         onClick = {
                             isSelected.value = true
@@ -175,7 +162,7 @@ fun RegisterInfoScreen(
 
                     RadioText(
                         header = stringResource(id = R.string.male_gender),
-                        textStyle = regularStyle,
+                        textStyle = regularType(),
                         selected = !(isSelected.value),
                         onClick = {
                             isSelected.value = false

@@ -2,7 +2,6 @@ package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -69,31 +68,30 @@ class RegisterInfoViewModel(
             }
             is RegistrationEvent.OnNext -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    updateUserData()
+                    val fio = state.value.fio.split(" ")
+                    if(fio.size == 3) {
+                        updateUserData(
+                            UserMainDataModel(
+                                firstName = fio[0],
+                                secondName = fio[1],
+                                thirdName = fio[2],
+                                dateOfBirth = state.value.bdate,
+                                gender = state.value.gender,
+                                accountType = state.value.activityType
+                            )
+                        )
+                    }
                 }
             }
         }
     }
 
-    private suspend fun updateUserData() {
-
-        val fio = state.value.fio.split(" ")
-
-        val userModel = UserMainDataModel(
-            firstName = fio[0],
-            secondName = fio[1],
-            thirdName = fio[2],
-            dateOfBirth = state.value.bdate,
-            gender = state.value.gender,
-            accountType = state.value.activityType
-        )
-
+    private suspend fun updateUserData(userModel: UserMainDataModel) {
         try {
             val response = repository.registerInfo(
                 auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                 data = userModel
             )
-            Toast.makeText(context,"response: ${response.body()}",Toast.LENGTH_LONG).show()
             Log.i(TAG,"response is ${response.body()}")
         } catch (e : Exception){
             Log.i(TAG,"exception: ${e.message}")
