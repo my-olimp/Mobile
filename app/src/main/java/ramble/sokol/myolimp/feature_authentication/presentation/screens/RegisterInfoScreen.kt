@@ -19,14 +19,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
@@ -44,15 +46,12 @@ import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
 
-@Preview
-@Composable
-fun RegisterInfoScreenPreview() {
-    RegisterInfoScreen()
-}
 
-
+@Destination
 @Composable
-fun RegisterInfoScreen() {
+fun RegisterInfoScreen(
+    navigator: DestinationsNavigator
+) {
 
     val viewModel = getViewModel<RegisterInfoViewModel>()
 
@@ -61,6 +60,8 @@ fun RegisterInfoScreen() {
     val isSelected = remember {
         mutableStateOf(true)
     }
+
+    val activityType = stringArrayResource(id = R.array.activity_type)
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -124,7 +125,7 @@ fun RegisterInfoScreen() {
                     isEnabled = true,
                     onTextChanged = {
                         viewModel.onEvent(
-                            RegistrationEvent.OnNameSurnameChanged(state.value.fio)
+                            RegistrationEvent.OnNameSurnameChanged(it)
                         )
                     }
                 )
@@ -197,15 +198,13 @@ fun RegisterInfoScreen() {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 ReadOnlyDropDown(
-                    options =  listOf(
-                        "Ученик","Тренер/Учитель","Сотрудник школы",
-                        "Сотрудник вуза","Член комитета олимпиад",
-                        "Работодатель"
-                    ),
+                    options =  activityType.toList(),
                     previousData = state.value.activityType,
                     label = stringResource(id = R.string.type_of_activity)
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnActivityTypeChanged(it))
+                    viewModel.onEvent(RegistrationEvent.OnActivityTypeChanged(
+                        activityType = if(it == activityType[0]) "s" else "t"
+                    ))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
