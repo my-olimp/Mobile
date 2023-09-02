@@ -109,6 +109,7 @@ fun ExpandableCalendar(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .animateContentSize()
+            .padding(horizontal = 16.dp)
     ) {
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -120,8 +121,7 @@ fun ExpandableCalendar(
         Row(
             modifier = Modifier
                 .height(intrinsicSize = IntrinsicSize.Max)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
@@ -165,12 +165,12 @@ fun ExpandableCalendar(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Column(
             modifier = Modifier
                 .clip(
-                    RoundedCornerShape(40.dp)
+                    RoundedCornerShape(12.dp)
                 )
                 .clickable(
                     onClick = {
@@ -180,7 +180,7 @@ fun ExpandableCalendar(
                 .background(
                     color = White,
                     shape = RoundedCornerShape(
-                        size = 40.dp
+                        size = 8.dp
                     )
                 )
         ) {

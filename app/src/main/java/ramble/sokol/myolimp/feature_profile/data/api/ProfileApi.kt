@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 
 interface ProfileApi {
 
@@ -18,5 +19,12 @@ interface ProfileApi {
         @Body user: UserModel,
     ): Response<UserModel>
 
+
+    @Headers("Content-Type: application/json",)
+    @POST("user/avatar/")
+    suspend fun updateUserImg(
+        @Header("Authorization") auth: String,
+        @Body imgArray: String,
+    )
 
 }
