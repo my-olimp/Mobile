@@ -29,9 +29,7 @@ interface ProfileApi {
     )
 
     @Headers("Content-Type: application/json")
-    @POST("user/auth/logout")
-    suspend fun logOut(
-        @Header("Authorization") auth: String
-    ) : Call<String>
+    @POST("user/auth/logout/")
+    suspend fun logOut() : Call<String>
 
 }

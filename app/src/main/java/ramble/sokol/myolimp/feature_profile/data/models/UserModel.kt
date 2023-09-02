@@ -17,6 +17,7 @@ data class UserModel (
     @SerializedName("phone") val phone: String = "",
     @SerializedName("email") val email: String = "",
     @SerializedName("grade") val grade: Int = 0,
+    @SerializedName("account_type") val accountType: String = "",
     @SerializedName("image") val profileImg: Uri? = null,
     val hasThird: Boolean = true,
 ) : Serializable

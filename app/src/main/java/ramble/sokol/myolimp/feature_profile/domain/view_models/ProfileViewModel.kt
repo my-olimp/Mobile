@@ -25,7 +25,7 @@ class ProfileViewModel (
 
     private val dataStore = CodeDataStore(context = context)
 
-    private val repository = ProfileRepository()
+    private val repository = ProfileRepository(context = context)
 
     private val _state = MutableStateFlow(
         UserModel()
@@ -146,7 +146,6 @@ class ProfileViewModel (
 
                     try {
                         repository.logOut(
-                            auth = dataStore.getToken(Constants.ACCESS_TOKEN)!!,
                             onResult = {
                                 Log.i(TAG, "result - $it")
                             },

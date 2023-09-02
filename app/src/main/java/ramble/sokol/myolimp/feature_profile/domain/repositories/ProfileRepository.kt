@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.domain.repositories
 
+import android.content.Context
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
@@ -8,9 +9,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfileRepository {
+class ProfileRepository(
+    context: Context
+) {
 
-    private val instance = RetrofitBuilder.instance(ProfileApi::class.java)
+    private val instance = RetrofitBuilder(context = context).instance(ProfileApi::class.java)
 
     suspend fun updateUser(
         auth: String,
@@ -29,11 +32,10 @@ class ProfileRepository {
     )
 
     suspend fun logOut(
-        auth: String,
         onResult: (String) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.logOut(auth).enqueue(
+        instance.logOut().enqueue(
             object : Callback<String> {
 
                 override fun onResponse(
