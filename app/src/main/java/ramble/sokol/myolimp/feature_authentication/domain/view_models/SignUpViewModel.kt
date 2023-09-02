@@ -30,7 +30,7 @@ class SignUpViewModel (
         private const val TAG = "ViewModelSignUp"
     }
 
-    private val repository = SignUpRepository()
+    private val repository = SignUpRepository(context = context)
 
     private val _state = MutableStateFlow(
         SignUpState()

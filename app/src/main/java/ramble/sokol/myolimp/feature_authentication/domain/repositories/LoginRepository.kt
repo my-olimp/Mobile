@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
+import android.content.Context
 import ramble.sokol.myolimp.feature_authentication.data.api.AuthenticationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
@@ -8,13 +9,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginRepository {
+class LoginRepository (
+    val context: Context
+) {
     fun login (
         data: RequestLoginModel,
         onResult: (ResponseAuthModel?) -> Unit,
         onError: (Throwable) -> Unit
     ){
-        val instance = RetrofitBuilder.instance(AuthenticationApi::class.java)
+        val instance = RetrofitBuilder(context = context).instance(AuthenticationApi::class.java)
 
         instance.loginUser(data).enqueue(
             object : Callback<ResponseAuthModel> {

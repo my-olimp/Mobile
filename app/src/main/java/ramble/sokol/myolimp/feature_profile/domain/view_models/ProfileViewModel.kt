@@ -2,8 +2,6 @@ package ramble.sokol.myolimp.feature_profile.domain.view_models
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
@@ -12,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
@@ -28,7 +25,7 @@ class ProfileViewModel (
 
     private val dataStore = CodeDataStore(context = context)
 
-    private val repository = ProfileRepository()
+    private val repository = ProfileRepository(context = context)
 
     private val _state = MutableStateFlow(
         UserModel()
@@ -146,6 +143,19 @@ class ProfileViewModel (
                     dataStore.deleteToken()
 
                     event.navigator.navigate(BeginAuthenticationScreenDestination)
+
+                    try {
+                        repository.logOut(
+                            onResult = {
+                                Log.i(TAG, "result - $it")
+                            },
+                            onError = {
+                                Log.i(TAG, "error occurred - $it")
+                            }
+                        )
+                    } catch (ex: Exception) {
+                        Log.i(TAG, "exception - ${ex.message}")
+                    }
                 }
             }
         }
