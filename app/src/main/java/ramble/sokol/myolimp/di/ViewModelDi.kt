@@ -38,7 +38,7 @@ val viewModelsModule = module {
     /* Register Info */
     viewModel {
         RegisterInfoViewModel(get())
-
+    }
     /* Library */
     viewModel {
         LibraryViewModel(get())

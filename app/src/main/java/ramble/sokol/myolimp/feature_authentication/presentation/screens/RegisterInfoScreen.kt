@@ -114,7 +114,7 @@ fun RegisterInfoScreen() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedText(
-                    previousData = "" /* TODO */,
+                    previousData = "",
                     label = stringResource(id = R.string.name_surname),
                     isEnabled = true,
                     onTextChanged = {
