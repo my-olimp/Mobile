@@ -12,7 +12,7 @@ interface RegistrationApi {
 
     @Headers("Content-Type: application/json")
     @PATCH("user/")
-     fun updateMainUserData(
+    fun updateMainUserData(
         @Header("Authorization") auth: String,
         @Body data: UserMainDataModel
     ) : Response<UserModel>

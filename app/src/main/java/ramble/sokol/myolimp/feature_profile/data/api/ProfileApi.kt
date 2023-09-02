@@ -30,6 +30,8 @@ interface ProfileApi {
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/logout/")
-    suspend fun logOut() : Call<String>
+    suspend fun logOut(
+        @Header("Cookie") cookie: String,
+    ) : Response<Unit>
 
 }

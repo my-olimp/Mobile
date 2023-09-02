@@ -2,10 +2,8 @@ package ramble.sokol.myolimp.feature_authentication.data.api
 
 import android.content.Context
 import okhttp3.OkHttpClient
-import org.koin.android.ext.koin.androidContext
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.utils.interceptors.ReceivedCookiesInterceptor
-import ramble.sokol.myolimp.utils.interceptors.SetCookiesInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -14,7 +12,7 @@ class RetrofitBuilder(
 ) {
 
     private val client = OkHttpClient.Builder()
-        .addInterceptor(SetCookiesInterceptor(context = context))
+//        .addInterceptor(SetCookiesInterceptor(context = context))
         .addInterceptor(ReceivedCookiesInterceptor(context = context))
         .build()
 

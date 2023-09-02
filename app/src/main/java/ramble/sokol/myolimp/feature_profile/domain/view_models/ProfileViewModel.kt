@@ -14,6 +14,7 @@ import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
+import ramble.sokol.myolimp.utils.CookiesDataStore
 
 class ProfileViewModel (
     context: Context
@@ -24,6 +25,7 @@ class ProfileViewModel (
     }
 
     private val dataStore = CodeDataStore(context = context)
+    private val cookiesDataStore = CookiesDataStore(context = context)
 
     private val repository = ProfileRepository(context = context)
 
@@ -146,8 +148,9 @@ class ProfileViewModel (
 
                     try {
                         repository.logOut(
+                            cookie=cookiesDataStore.getCookies(Constants.COOKIES)!!,
                             onResult = {
-                                Log.i(TAG, "result - $it")
+                                Log.i(TAG, "completed")
                             },
                             onError = {
                                 Log.i(TAG, "error occurred - $it")

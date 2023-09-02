@@ -5,9 +5,6 @@ import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ProfileRepository(
     context: Context
@@ -32,27 +29,19 @@ class ProfileRepository(
     )
 
     suspend fun logOut(
-        onResult: (String) -> Unit,
+        cookie: String,
+        onResult: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.logOut().enqueue(
-            object : Callback<String> {
 
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
-                    onResult(response.body().toString())
-                }
-
-                override fun onFailure(
-                    call: Call<String>,
-                    t: Throwable
-                ) {
-                    onError(t)
-                }
-            }
-        )
+        try {
+            instance.logOut(
+                cookie = cookie
+            )
+            onResult()
+        } catch (ex: Exception) {
+            onError(ex)
+        }
     }
 
 }

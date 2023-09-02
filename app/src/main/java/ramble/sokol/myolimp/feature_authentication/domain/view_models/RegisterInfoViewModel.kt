@@ -24,7 +24,7 @@ class RegisterInfoViewModel(
         private const val TAG : String = "RegistrationInfoViewModel"
     }
 
-    private val repository = RegistrationInfoRepository()
+    private val repository = RegistrationInfoRepository(context = context)
 
     private val dataStore = CodeDataStore(context = context)
 
