@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,8 +24,6 @@ fun EditPersonalInfoSheet(
     viewModel: ProfileViewModel
 ) {
 
-    val state = viewModel.state.collectAsState()
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,7 +32,7 @@ fun EditPersonalInfoSheet(
     ) {
 
         OutlinedText(
-            previousData = state.value.secondName,
+            previousData = viewModel.state.value.secondName,
             label = stringResource(R.string.second_name),
             isEnabled = true,
             onTextChanged = {
@@ -46,7 +43,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.firstName,
+            previousData = viewModel.state.value.firstName,
             label = stringResource(R.string.name),
             isEnabled = true,
             onTextChanged = {
@@ -57,9 +54,9 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.thirdName,
+            previousData = viewModel.state.value.thirdName,
             label = stringResource(R.string.third_name),
-            isEnabled = !state.value.hasThird,
+            isEnabled = !viewModel.state.value.hasThird,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnThirdNameChanged(it))
             }
@@ -70,7 +67,7 @@ fun EditPersonalInfoSheet(
         // https://stackoverflow.com/questions/72124384/how-do-i-set-border-color-for-the-checkbox-using-jetpack-compose
         CheckBoxLabel(
             label = stringResource(R.string.no_third_name),
-            previousData = state.value.hasThird,
+            previousData = viewModel.state.value.hasThird,
             onStatusChanged = {
                 viewModel.onEvent(ProfileEvent.OnMarkerClicked(it))
             }
@@ -83,7 +80,7 @@ fun EditPersonalInfoSheet(
 
         CalendarInput(
             label = stringResource(id = R.string.dob),
-            previousData = state.value.dateOfBirth
+            previousData = viewModel.state.value.dateOfBirth
         ) {
             viewModel.onEvent(ProfileEvent.OnDobChanged(it))
         }
@@ -94,7 +91,7 @@ fun EditPersonalInfoSheet(
            options =  listOf(
                "Мужской", "Женский"
            ),
-            previousData = state.value.gender,
+            previousData = viewModel.state.value.gender,
             label = stringResource(id = R.string.gender)
         ) {
             viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
@@ -103,7 +100,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.snils,
+            previousData = viewModel.state.value.snils,
             label = stringResource(R.string.snils),
             isEnabled = true,
             onTextChanged = {

@@ -26,7 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -53,9 +55,7 @@ fun RegisterInfoScreen() {
     //с ней не грузит превью
     //val viewModel = getViewModel<RegisterInfoViewModel>()
 
-    val isSelected = remember {
-        mutableStateOf(true)
-    }
+    val isSelected = remember { mutableStateOf(true) }
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen

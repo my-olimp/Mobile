@@ -43,5 +43,6 @@ val viewModelsModule = module {
     /* Library */
     viewModel {
         LibraryViewModel(get())
+
     }
 }

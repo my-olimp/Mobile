@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -26,5 +27,11 @@ interface ProfileApi {
         @Header("Authorization") auth: String,
         @Body imgArray: String,
     )
+
+    @Headers("Content-Type: application/json",)
+    @POST("user/auth/logout")
+    suspend fun logOut(
+        @Header("Authorization") auth: String
+    ) : Call<String>
 
 }
