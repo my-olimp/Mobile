@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,7 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -50,8 +54,9 @@ fun RegisterInfoScreenPreview() {
 @Composable
 fun RegisterInfoScreen() {
 
-    //с ней не грузит превью
-    //val viewModel = getViewModel<RegisterInfoViewModel>()
+    val viewModel = getViewModel<RegisterInfoViewModel>()
+
+    val state = viewModel.state.collectAsState()
 
     val isSelected = remember {
         mutableStateOf(true)
@@ -114,11 +119,13 @@ fun RegisterInfoScreen() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedText(
-                    previousData = "",
+                    previousData = state.value.fio,
                     label = stringResource(id = R.string.name_surname),
                     isEnabled = true,
                     onTextChanged = {
-                        //TODO
+                        viewModel.onEvent(
+                            RegistrationEvent.OnNameSurnameChanged(state.value.fio)
+                        )
                     }
                 )
 
@@ -151,20 +158,30 @@ fun RegisterInfoScreen() {
                     Spacer(modifier = Modifier.width(12.dp))
 
                     RadioText(
-                        onClick = { isSelected.value = true },
                         header = stringResource(id = R.string.female_gender),
                         textStyle = regularStyle,
-                        selected = isSelected.value
+                        selected = isSelected.value,
+                        onClick = {
+                            isSelected.value = true
+                            viewModel.onEvent(
+                                event = RegistrationEvent.OnGenderChanged("f")
+                            )
+                        }
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
 
                     RadioText(
-                        onClick = { isSelected.value = false },
                         header = stringResource(id = R.string.male_gender),
                         textStyle = regularStyle,
-                        selected = !(isSelected.value)
+                        selected = !(isSelected.value),
+                        onClick = {
+                            isSelected.value = false
+                            viewModel.onEvent(
+                                event = RegistrationEvent.OnGenderChanged("m")
+                            )
+                        },
                     )
                 }
 
@@ -172,9 +189,9 @@ fun RegisterInfoScreen() {
 
                 CalendarInput(
                     label = stringResource(id = R.string.dob),
-                    previousData = "" //TODO
+                    previousData = state.value.bdate
                 ) {
-                    //TODO
+                    viewModel.onEvent(RegistrationEvent.OnDobChanged(it))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -185,10 +202,10 @@ fun RegisterInfoScreen() {
                         "Сотрудник вуза","Член комитета олимпиад",
                         "Работодатель"
                     ),
-                    previousData = "" /*TODO*/,
+                    previousData = state.value.activityType,
                     label = stringResource(id = R.string.type_of_activity)
                 ) {
-                    //TODO
+                    viewModel.onEvent(RegistrationEvent.OnActivityTypeChanged(it))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -197,7 +214,7 @@ fun RegisterInfoScreen() {
                     text = stringResource(id = R.string.further),
                     padding = 0.dp
                 ) {
-                    //TODO
+                    viewModel.onEvent(RegistrationEvent.OnNext)
                 }
                 
             }

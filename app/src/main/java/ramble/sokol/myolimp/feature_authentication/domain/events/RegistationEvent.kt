@@ -2,7 +2,7 @@ package ramble.sokol.myolimp.feature_authentication.domain.events
 
 sealed interface RegistrationEvent {
 
-    data object OnSave: RegistrationEvent
+    data object OnNext: RegistrationEvent
 
     data class OnGenderChanged(val gender: String): RegistrationEvent
 
