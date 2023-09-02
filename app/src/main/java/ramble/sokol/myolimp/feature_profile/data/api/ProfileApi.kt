@@ -21,14 +21,14 @@ interface ProfileApi {
     ): Response<UserModel>
 
 
-    @Headers("Content-Type: application/json",)
+    @Headers("Content-Type: application/json")
     @POST("user/avatar/")
     suspend fun updateUserImg(
         @Header("Authorization") auth: String,
         @Body imgArray: String,
     )
 
-    @Headers("Content-Type: application/json",)
+    @Headers("Content-Type: application/json")
     @POST("user/auth/logout")
     suspend fun logOut(
         @Header("Authorization") auth: String

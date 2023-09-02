@@ -12,8 +12,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
+import ramble.sokol.myolimp.feature_authentication.presentation.screens.RegisterInfoScreen
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -153,3 +155,4 @@ fun ConfirmationRow (
         )
     }
 }
+

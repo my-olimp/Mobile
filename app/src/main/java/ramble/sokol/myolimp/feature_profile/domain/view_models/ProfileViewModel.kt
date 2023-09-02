@@ -140,6 +140,9 @@ class ProfileViewModel (
 
             is ProfileEvent.OnLogOut -> {
                 viewModelScope.launch {
+                    dataStore.deleteToken()
+
+                    event.navigator.navigate(BeginAuthenticationScreenDestination)
 
                     try {
                         repository.logOut(
@@ -154,10 +157,6 @@ class ProfileViewModel (
                     } catch (ex: Exception) {
                         Log.i(TAG, "exception - ${ex.message}")
                     }
-
-                    dataStore.deleteToken()
-
-                    event.navigator.navigate(BeginAuthenticationScreenDestination)
                 }
             }
         }

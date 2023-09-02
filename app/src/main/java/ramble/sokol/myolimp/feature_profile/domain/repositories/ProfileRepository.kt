@@ -1,8 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.domain.repositories
 
-import ramble.sokol.myolimp.feature_authentication.data.api.AuthenticationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
