@@ -62,7 +62,8 @@ class RegisterInfoViewModel(
             is RegistrationEvent.OnNameSurnameChanged -> {
                 _state.update {
                     it.copy(
-                        fio = event.fio
+                        fio = event.fio,
+                        fioError = false
                     )
                 }
             }
@@ -81,7 +82,11 @@ class RegisterInfoViewModel(
                         }
                     )
                 } else {
-                    state.value.fioError = true
+                    _state.update {
+                        it.copy(
+                            fioError = true
+                        )
+                    }
                 }
             }
         }
