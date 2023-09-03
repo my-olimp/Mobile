@@ -73,7 +73,11 @@ class RegisterInfoViewModel(
                             event.navigator.navigate(""/*TODO navigate next*/)
                         },
                         onError = {
-                            state.value.fioError = true
+                            _state.update {
+                                it.copy(
+                                    fioError = true
+                                )
+                            }
                         }
                     )
                 } else {

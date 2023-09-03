@@ -129,7 +129,8 @@ fun RegisterInfoScreen(
                         viewModel.onEvent(
                             RegistrationEvent.OnNameSurnameChanged(it)
                         )
-                    }
+                    },
+                    isError = state.value.fioError
                 )
 
                 if (state.value.fioError) {
