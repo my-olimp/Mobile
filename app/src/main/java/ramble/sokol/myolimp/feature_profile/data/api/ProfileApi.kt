@@ -1,7 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
-import ramble.sokol.myolimp.feature_profile.data.models.UserModel
-import retrofit2.Call
+import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -17,8 +16,8 @@ interface ProfileApi {
     @PATCH("user/")
     suspend fun updateUserData(
         @Header("Authorization") auth: String,
-        @Body user: UserModel,
-    ): Response<UserModel>
+        @Body user: UserModelEntity,
+    ): Response<UserModelEntity>
 
 
     @Headers("Content-Type: application/json")

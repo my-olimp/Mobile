@@ -4,7 +4,8 @@ import android.content.Context
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
-import ramble.sokol.myolimp.feature_profile.data.models.UserModel
+import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
+import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 
 class ProfileRepository(
     context: Context
@@ -17,7 +18,7 @@ class ProfileRepository(
         user: UserModel
     ) = ProfileRetrofitInstance.api.updateUserData(
             auth = auth,
-            user = user
+            user = user.toUserModelEntity()
         )
 
     suspend fun updateUserImg(

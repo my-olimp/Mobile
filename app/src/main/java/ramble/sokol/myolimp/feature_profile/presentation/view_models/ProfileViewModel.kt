@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_profile.domain.view_models
+package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants
-import ramble.sokol.myolimp.feature_profile.data.models.UserModel
+import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
+import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.utils.CookiesDataStore
