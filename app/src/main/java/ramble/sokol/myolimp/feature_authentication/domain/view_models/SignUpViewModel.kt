@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
@@ -197,7 +198,7 @@ class SignUpViewModel (
                     Toast.makeText(context,
                         context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
 
-                    navigator.navigate(HomeScreenDestination)
+                    navigator.navigate(RegisterInfoScreenDestination)
                 } else {
                     onError()
                 }
