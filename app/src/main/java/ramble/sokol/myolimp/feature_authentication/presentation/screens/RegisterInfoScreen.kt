@@ -33,6 +33,7 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -127,8 +128,17 @@ fun RegisterInfoScreen(
                         viewModel.onEvent(
                             RegistrationEvent.OnNameSurnameChanged(it)
                         )
-                    }
+                    },
+                    isError = state.value.fioError
                 )
+
+                if (state.value.fioError) {
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    ErrorMessage(
+                        text = stringResource(R.string.fio_error)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -200,7 +210,7 @@ fun RegisterInfoScreen(
                     text = stringResource(id = R.string.further),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnNext)
+                    viewModel.onEvent(RegistrationEvent.OnNext(navigator))
                 }
                 
             }

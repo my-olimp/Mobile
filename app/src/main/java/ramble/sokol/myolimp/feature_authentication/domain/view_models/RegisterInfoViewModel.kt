@@ -62,23 +62,29 @@ class RegisterInfoViewModel(
             is RegistrationEvent.OnNameSurnameChanged -> {
                 _state.update {
                     it.copy(
-                        fio = event.fio
+                        fio = event.fio,
+                        fioError = false
                     )
                 }
             }
             is RegistrationEvent.OnNext -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val fio = state.value.fio.split(" ")
-                    if(fio.size == 3) {
-                        updateUserData(
-                            UserMainDataModel(
-                                firstName = fio[0],
-                                secondName = fio[1],
-                                thirdName = fio[2],
-                                dateOfBirth = state.value.bdate,
-                                gender = state.value.gender,
-                                accountType = state.value.activityType
-                            )
+                if(isDataValid()) {
+                    sendRequest(
+                        onResult = {
+                            event.navigator.navigate(""/*TODO navigate next*/)
+                        },
+                        onError = {
+                            _state.update {
+                                it.copy(
+                                    fioError = true
+                                )
+                            }
+                        }
+                    )
+                } else {
+                    _state.update {
+                        it.copy(
+                            fioError = true
                         )
                     }
                 }
@@ -86,16 +92,50 @@ class RegisterInfoViewModel(
         }
     }
 
-    private suspend fun updateUserData(userModel: UserMainDataModel) {
+    private suspend fun updateUserData(
+        userModel: UserMainDataModel,
+        onResult: () -> Unit,
+        onError: () -> Unit
+    ) {
         try {
-            val response = repository.registerInfo(
+            repository.registerInfo(
                 auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
-                data = userModel
+                data = userModel,
+                onResult = {
+                      onResult.invoke()
+                },
+                onError = {
+                    onError.invoke()
+                    Log.i(TAG,"exception: ${it.message}")
+                }
             )
-            Log.i(TAG,"response is ${response.body()}")
+
         } catch (e : Exception){
             Log.i(TAG,"exception: ${e.message}")
         }
     }
 
+    private fun isDataValid(): Boolean {
+        return state.value.fio.split(" ").size == 3
+    }
+    private fun sendRequest(
+        onResult: () -> Unit,
+        onError: () -> Unit
+    ) {
+        viewModelScope.launch (Dispatchers.IO) {
+            val fio = state.value.fio.split(" ")
+            updateUserData(
+                userModel = UserMainDataModel(
+                    firstName = fio[0],
+                    secondName = fio[1],
+                    thirdName = fio[2],
+                    dateOfBirth = state.value.bdate,
+                    gender = state.value.gender,
+                    accountType = state.value.activityType
+                ),
+                onResult = onResult,
+                onError = onError
+            )
+        }
+    }
 }

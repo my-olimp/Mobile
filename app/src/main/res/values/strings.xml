@@ -124,5 +124,6 @@
         <item>Член комитета олимпиад</item>
         <item>Работодатель</item>
     </string-array>
+    <string name="fio_error">Неправильно ввели ФИО</string>
     
 </resources>

@@ -1,8 +1,10 @@
 package ramble.sokol.myolimp.feature_authentication.domain.events
 
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 sealed interface RegistrationEvent {
 
-    data object OnNext: RegistrationEvent
+    data class OnNext(val navigator: DestinationsNavigator) : RegistrationEvent
 
     data class OnGenderChanged(val gender: String): RegistrationEvent
 
