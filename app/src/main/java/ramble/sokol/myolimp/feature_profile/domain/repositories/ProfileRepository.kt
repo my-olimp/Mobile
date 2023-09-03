@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_profile.domain.repositories
 
 import android.content.Context
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
@@ -32,23 +33,37 @@ class ProfileRepository(
     )
 
     suspend fun logOut(
-        onResult: (String) -> Unit,
+        cookie: String,
+        onResult: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.logOut().enqueue(
-            object : Callback<String> {
+
+        try {
+            instance.logOut(
+                cookie = cookie
+            )
+            onResult()
+        } catch (ex: Exception) {
+            onError(ex)
+        }
+    }
+
+    suspend fun refreshToken(
+        cookie: String,
+        onResult: (ResponseAuthModel?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.refreshToken(cookie = cookie).enqueue(
+            object : Callback<ResponseAuthModel> {
 
                 override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
+                    call: Call<ResponseAuthModel>,
+                    response: Response<ResponseAuthModel>
                 ) {
-                    onResult(response.body().toString())
+                    onResult(response.body())
                 }
 
-                override fun onFailure(
-                    call: Call<String>,
-                    t: Throwable
-                ) {
+                override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
                     onError(t)
                 }
             }

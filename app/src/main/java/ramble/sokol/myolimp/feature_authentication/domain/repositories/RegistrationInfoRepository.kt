@@ -10,16 +10,19 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class RegistrationInfoRepository(
+
+class RegistrationInfoRepository (
     val context: Context
 ) {
 
     fun registerInfo(
         auth: String,
+
         data: UserMainDataModel,
         onResult: (UserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
+
         val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
 
         instance.updateMainUserData(auth,data).enqueue(

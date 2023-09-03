@@ -27,14 +27,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
-
-
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
@@ -61,7 +58,9 @@ fun RegisterInfoScreen(
 
     val state = viewModel.state.collectAsState()
 
-    val isSelected = remember { mutableStateOf(true) }
+    val isSelected = remember {
+        mutableStateOf(true)
+    }
 
     val activityType = stringArrayResource(id = R.array.activity_type)
 

@@ -7,6 +7,7 @@ sealed class ProfileEvent {
     data object OnSave: ProfileEvent()
     data object OnImgSave: ProfileEvent()
     data object OnImgDelete: ProfileEvent()
+    data object OnRefreshToken: ProfileEvent()
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()
     data class OnThirdNameChanged(val thirdName: String): ProfileEvent()
