@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_profile.data.models.UserModel
 import retrofit2.Call
 import retrofit2.Response
@@ -33,5 +34,11 @@ interface ProfileApi {
     suspend fun logOut(
         @Header("Cookie") cookie: String,
     ) : Response<Unit>
+
+    @Headers("Content-Type: application/json")
+    @POST("user/auth/refresh_token/")
+    suspend fun refreshToken(
+        @Header("Cookie") cookie: String,
+    ) : Call<ResponseAuthModel>
 
 }

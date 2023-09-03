@@ -6,9 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 
 class CookiesDataStore(
@@ -28,6 +26,12 @@ class CookiesDataStore(
 
         context.dataStore.edit {
             it[dataStoreKey] = value
+        }
+    }
+
+    suspend fun deleteCookies() {
+        context.dataStore.edit {
+            it.clear()
         }
     }
 
