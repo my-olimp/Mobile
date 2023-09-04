@@ -1,19 +1,30 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
+import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class RegisterEducationViewModel(
     val context: Context
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG : String = "RegistrationEducationViewModel"
+    }
+
 
     val repository = RegistrationRepository(context)
 
@@ -60,13 +71,51 @@ class RegisterEducationViewModel(
             }
             is RegistrationEvent.OnNext -> {
                 if(checkData()) {
-                    Toast.makeText(context,"data is valid",Toast.LENGTH_LONG).show()
+                    sendRequest(
+                        onResult = {
+                            //event.navigator.navigate("" /*TODO navigate*/)
+                                   Log.i(TAG,"request called result")
+                        },
+                        onError = {
+                            Log.i(TAG,"request called error")
+                        }
+                    )
                 } else {
                     Toast.makeText(context,"data isnt valid",Toast.LENGTH_LONG).show()
                 }
             }
             else -> {}
          }
+    }
+
+    private fun sendRequest(
+        onResult: () -> Unit,
+        onError: () -> Unit
+    ) {
+       viewModelScope.launch(Dispatchers.IO) {
+           val userData = state.value
+           try {
+               repository.registerEducation(
+                   auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                   data = UserEducationDataModel(
+                       region = userData.region,
+                       city = userData.city,
+                       school = userData.school,
+                       grade = userData.grade.toInt()
+                   ),
+                   onResult = {
+                       Log.i(TAG,"request response: $it")
+                         onResult.invoke()
+                   },
+                   onError = {
+                       onError.invoke()
+                       Log.i(TAG,"request exception: ${it.message}")
+                   }
+               )
+           } catch (e: Exception) {
+               Log.i(TAG,"exception: ${e.message}")
+           }
+       }
     }
 
     private fun checkData(): Boolean {
