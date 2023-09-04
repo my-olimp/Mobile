@@ -1,8 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.screens
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,6 +38,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -48,7 +47,6 @@ import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfile
 import ramble.sokol.myolimp.ui.theme.White
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Destination
 @Composable
 fun ProfileScreen(
@@ -152,7 +150,7 @@ fun ProfileScreen(
                 }
 
                 Spacer(
-                    modifier = Modifier
+                     modifier = Modifier
                         .height(29.dp)
                 )
 
@@ -161,6 +159,8 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_purpose),
                     content = stringResource(R.string.profile_purpose_content)
                 ) {
+                    navController.navigate(RegisterImageScreenDestination)
+
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 
