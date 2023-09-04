@@ -26,9 +26,9 @@ class RegisterEducationViewModel(
     }
 
 
-    val repository = RegistrationRepository(context)
+    private val repository = RegistrationRepository(context)
 
-    val dataStore = CodeDataStore(context)
+    private val dataStore = CodeDataStore(context)
 
     private val _state = MutableStateFlow(RegistrationEducationState())
     val state = _state.asStateFlow()
@@ -81,7 +81,7 @@ class RegisterEducationViewModel(
                         }
                     )
                 } else {
-                    Toast.makeText(context,"data isnt valid",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
                 }
             }
             else -> {}
