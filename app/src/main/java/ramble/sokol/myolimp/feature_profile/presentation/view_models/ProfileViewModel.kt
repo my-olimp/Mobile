@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_profile.domain.view_models
+package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.content.Context
 import android.util.Log
@@ -11,9 +11,11 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants
-import ramble.sokol.myolimp.feature_profile.data.models.UserModel
+import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
+import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
+import ramble.sokol.myolimp.utils.CookiesDataStore
 
 class ProfileViewModel (
     context: Context
@@ -24,6 +26,7 @@ class ProfileViewModel (
     }
 
     private val dataStore = CodeDataStore(context = context)
+    private val cookiesDataStore = CookiesDataStore(context = context)
 
     private val repository = ProfileRepository(context = context)
 
@@ -141,13 +144,15 @@ class ProfileViewModel (
             is ProfileEvent.OnLogOut -> {
                 viewModelScope.launch {
                     dataStore.deleteToken()
+                    cookiesDataStore.deleteCookies()
 
                     event.navigator.navigate(BeginAuthenticationScreenDestination)
 
                     try {
                         repository.logOut(
+                            cookie=cookiesDataStore.getCookies(Constants.COOKIES)!!,
                             onResult = {
-                                Log.i(TAG, "result - $it")
+                                Log.i(TAG, "completed")
                             },
                             onError = {
                                 Log.i(TAG, "error occurred - $it")
@@ -157,6 +162,42 @@ class ProfileViewModel (
                         Log.i(TAG, "exception - ${ex.message}")
                     }
                 }
+            }
+
+            is ProfileEvent.OnRefreshToken -> {
+
+                refreshToken()
+            }
+        }
+    }
+
+    private fun refreshToken()  {
+        viewModelScope.launch {
+            try {
+                repository.refreshToken(
+                    cookie=cookiesDataStore.getCookies(Constants.COOKIES)!!,
+                    onResult = { result->
+                        Log.i(TAG, "completed - $result")
+
+                        if (result != null) {
+                            // save token in data store
+                            saveToken(result.code)
+
+                            /*
+                            * TODO: Update UserModel
+                            * result.user ->
+                            * */
+
+                        }
+
+                        // Error if user is empty
+                    },
+                    onError = {
+                        Log.i(TAG, "error occurred - $it")
+                    }
+                )
+            } catch (ex: Exception) {
+                Log.i(TAG, "exception - ${ex.message}")
             }
         }
     }
@@ -189,6 +230,17 @@ class ProfileViewModel (
             Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
+        }
+    }
+
+    private fun saveToken(
+        token: String
+    ) {
+        viewModelScope.launch {
+            dataStore.setToken(
+                key = Constants.ACCESS_TOKEN,
+                value = token
+            )
         }
     }
 

@@ -29,6 +29,12 @@ class CookiesDataStore(
         }
     }
 
+    suspend fun deleteCookies() {
+        context.dataStore.edit {
+            it.clear()
+        }
+    }
+
     suspend fun getCookies(
         key: String,
     ) : String? {

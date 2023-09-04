@@ -27,7 +27,7 @@ class SetCookiesInterceptor(
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val builder: Request.Builder = chain.request().newBuilder()
+        val  builder: Request.Builder = chain.request().newBuilder()
 
         scope.launch {
             val cookie = cookiesDataStore.getCookies(COOKIES)
@@ -37,6 +37,7 @@ class SetCookiesInterceptor(
             if (cookie != null) {
                 builder.addHeader("Cookie", cookie)
             }
+
         }
 
         return chain.proceed(builder.build())

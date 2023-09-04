@@ -47,7 +47,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout

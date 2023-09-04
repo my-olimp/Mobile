@@ -40,8 +40,8 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme

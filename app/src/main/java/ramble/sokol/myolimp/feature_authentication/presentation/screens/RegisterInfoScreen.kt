@@ -52,7 +52,9 @@ fun RegisterInfoScreen(
 
     val state = viewModel.state.collectAsState()
 
-    val isSelected = remember { mutableStateOf(true) }
+    val isSelected = remember {
+        mutableStateOf(true)
+    }
 
     val activityType = stringArrayResource(id = R.array.activity_type)
 

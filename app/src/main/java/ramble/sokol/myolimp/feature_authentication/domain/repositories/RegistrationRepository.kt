@@ -5,31 +5,30 @@ import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
-import ramble.sokol.myolimp.feature_profile.data.models.UserModel
+import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-class RegistrationRepository(
+class RegistrationInfoRepository (
     val context: Context
 ) {
 
     fun registerInfo(
         auth: String,
         data: UserMainDataModel,
-        onResult: (UserModel?) -> Unit,
+        onResult: (UserModelEntity?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
 
         instance.updateMainUserData(auth,data).enqueue(
-            object : Callback<UserModel> {
-                override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+            object : Callback<UserModelEntity> {
+                override fun onResponse(call: Call<UserModelEntity>, response: Response<UserModelEntity>) {
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
                     onError(t)
                 }
 
@@ -40,18 +39,18 @@ class RegistrationRepository(
     fun registerEducation(
         auth: String,
         data: UserEducationDataModel,
-        onResult: (UserModel?) -> Unit,
+        onResult: (UserModelEntity?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
 
         instance.updateEducationUserData(auth, data).enqueue(
-            object : Callback<UserModel> {
-                override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+            object : Callback<UserModelEntity> {
+                override fun onResponse(call: Call<UserModelEntity>, response: Response<UserModelEntity>) {
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
                     onError(t)
                 }
 

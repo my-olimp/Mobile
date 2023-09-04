@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn

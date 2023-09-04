@@ -6,10 +6,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
@@ -198,7 +200,18 @@ class SignUpViewModel (
                     Toast.makeText(context,
                         context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
 
+                    navigator.navigate(
+                        HomeScreenDestination()
+                    ) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+
                     navigator.navigate(RegisterInfoScreenDestination)
+
                 } else {
                     onError()
                 }

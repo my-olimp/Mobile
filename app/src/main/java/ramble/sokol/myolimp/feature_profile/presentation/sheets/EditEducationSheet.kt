@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 
