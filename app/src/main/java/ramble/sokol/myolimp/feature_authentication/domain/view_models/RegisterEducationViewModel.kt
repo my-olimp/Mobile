@@ -25,7 +25,6 @@ class RegisterEducationViewModel(
         private const val TAG : String = "RegistrationEducationViewModel"
     }
 
-
     private val repository = RegistrationRepository(context)
 
     private val dataStore = CodeDataStore(context)
