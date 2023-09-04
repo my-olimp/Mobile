@@ -14,4 +14,12 @@ sealed interface RegistrationEvent {
 
     data class OnActivityTypeChanged(val activityType: String): RegistrationEvent
 
+    data class OnSchoolChanged(val school: String) : RegistrationEvent
+
+    data class OnRegionChanged(val region: String) : RegistrationEvent
+
+    data class OnCityChanged(val city: String) : RegistrationEvent
+
+    data class OnGradeChanged(val grade: String) : RegistrationEvent
+
 }

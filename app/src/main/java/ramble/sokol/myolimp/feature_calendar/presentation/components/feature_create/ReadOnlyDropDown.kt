@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.MessageError
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +38,7 @@ fun ReadOnlyDropDown (
     options: List<String>,
     previousData: String,
     label: String,
+    isError: Boolean = false,
     onTextChanged: (String) -> Unit
 ) {
     var expanded by remember {
@@ -89,7 +91,8 @@ fun ReadOnlyDropDown (
                 focusedBorderColor = Color(0xFF3579F8),
                 focusedLabelColor = Color(0xFF3579F8),
                 cursorColor = Color(0xFF3579F8),
-                backgroundColor = White
+                backgroundColor = White,
+                errorBorderColor = MessageError
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -104,6 +107,7 @@ fun ReadOnlyDropDown (
                 // user can't write anything
             },
             readOnly = true,
+            isError = isError
         )
 
         ExposedDropdownMenu(

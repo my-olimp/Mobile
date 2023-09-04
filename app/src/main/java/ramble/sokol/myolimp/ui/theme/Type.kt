@@ -37,13 +37,23 @@ val Typography = Typography(
     */
 )
 
-
 fun regularType(
     color: Color = BlackRegistrationData,
     fontSize: TextUnit = 14.sp
 ) = TextStyle(
+        fontSize = fontSize,
+        fontFamily = FontFamily(Font(R.font.regular)),
+        fontWeight = FontWeight(400),
+        color = color
+)
+
+fun mediumType(
+    color: Color = BlackProfile,
+    fontSize: TextUnit = 18.sp
+) = TextStyle(
     fontSize = fontSize,
-    fontFamily = FontFamily(Font(R.font.regular)),
-    fontWeight = FontWeight(400),
-    color = color
+    fontFamily = FontFamily(Font(R.font.medium)),
+    fontWeight = FontWeight(500),
+    color = color,
+    letterSpacing = 0.4.sp
 )

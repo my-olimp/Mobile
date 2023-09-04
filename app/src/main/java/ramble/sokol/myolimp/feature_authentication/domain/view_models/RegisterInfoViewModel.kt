@@ -9,10 +9,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.destinations.RegisterEducationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationInfoRepository
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
@@ -24,7 +25,7 @@ class RegisterInfoViewModel(
         private const val TAG : String = "RegistrationInfoViewModel"
     }
 
-    private val repository = RegistrationInfoRepository(context = context)
+    private val repository = RegistrationRepository(context = context)
 
     private val dataStore = CodeDataStore(context = context)
 
@@ -71,7 +72,7 @@ class RegisterInfoViewModel(
                 if(isDataValid()) {
                     sendRequest(
                         onResult = {
-                            event.navigator.navigate(""/*TODO navigate next*/)
+                            event.navigator.navigate(RegisterEducationScreenDestination)
                         },
                         onError = {
                             _state.update {
@@ -89,6 +90,7 @@ class RegisterInfoViewModel(
                     }
                 }
             }
+            else -> {}
         }
     }
 

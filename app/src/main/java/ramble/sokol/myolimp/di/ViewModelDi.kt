@@ -1,10 +1,9 @@
 package ramble.sokol.myolimp.di
 
-import org.koin.androidx.compose.get
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.scope.get
 import org.koin.dsl.module
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
@@ -46,6 +45,11 @@ val viewModelsModule = module {
     /* Register Image */
     viewModel {
         RegisterImageViewModel()
+    }
+
+    /* Register Education */
+    viewModel {
+        RegisterEducationViewModel(get())
     }
 
     /* Library */

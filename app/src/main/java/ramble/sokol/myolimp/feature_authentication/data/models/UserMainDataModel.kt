@@ -9,4 +9,4 @@ data class UserMainDataModel (
     @SerializedName("data_of_birth") val dateOfBirth: String = "",
     @SerializedName("gender") val gender: String = "",
     @SerializedName("account_type") val accountType: String = ""
-    )
+)
