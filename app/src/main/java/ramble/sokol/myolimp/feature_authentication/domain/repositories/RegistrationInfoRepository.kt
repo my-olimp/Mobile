@@ -17,7 +17,6 @@ class RegistrationInfoRepository (
 
     fun registerInfo(
         auth: String,
-
         data: UserMainDataModel,
         onResult: (UserModel?) -> Unit,
         onError: (Throwable) -> Unit
