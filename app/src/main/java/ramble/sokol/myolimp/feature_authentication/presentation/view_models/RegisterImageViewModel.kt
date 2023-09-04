@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
 
-class RegisterImageViewModel() : ViewModel() {
+class RegisterImageViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(RegisterImageState())
     val state = _state.asStateFlow()

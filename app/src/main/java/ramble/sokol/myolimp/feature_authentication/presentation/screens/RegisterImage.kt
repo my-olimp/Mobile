@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,27 +31,29 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.ui.theme.OlimpTheme
-import ramble.sokol.myolimp.ui.theme.SecondaryScreen
-import ramble.sokol.myolimp.ui.theme.Transparent
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
+import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
+import ramble.sokol.myolimp.ui.theme.OlimpTheme
+import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
+import ramble.sokol.myolimp.ui.theme.Transparent
 
+@Destination()
 @Composable
 internal fun RegisterImageScreen(
     navigator: DestinationsNavigator
