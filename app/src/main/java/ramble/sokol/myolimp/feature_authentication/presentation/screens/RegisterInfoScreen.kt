@@ -21,32 +21,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
-
-
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
+import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
-import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
-import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
 import ramble.sokol.myolimp.ui.theme.regularType
 
@@ -89,35 +80,10 @@ fun RegisterInfoScreen(
 
                 Spacer(modifier = Modifier.padding(top = 16.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.individual_data),
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(R.font.medium)),
-                            fontWeight = FontWeight(500),
-                            color = BlackProfile,
-                            letterSpacing = 0.4.sp,
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.width(24.dp))
-
-                    Text(
-                        text = stringResource(id = R.string.one_of_four),
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.medium)),
-                            fontWeight = FontWeight(500),
-                            color = SuccessStatus,
-                            letterSpacing = 0.4.sp
-                        ),
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
+                TextHeaderWithCounter(
+                    headerText = stringResource(id = R.string.individual_data),
+                    counterText = stringResource(id = R.string.one_of_four)
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
