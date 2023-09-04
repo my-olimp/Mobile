@@ -1,9 +1,9 @@
 package ramble.sokol.myolimp.feature_profile.domain.models
 
-import android.net.Uri
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 
 data class UserModel(
+    val id: String = "",
     val firstName: String = "",
     val secondName: String = "",
     val thirdName: String = "",
@@ -17,7 +17,7 @@ data class UserModel(
     val email: String = "",
     val grade: Int = 0,
     val accountType: String = "",
-    val profileImg: Uri? = null,
+    val profileImg: String? = null,
     val hasThird: Boolean = true,
 ) {
     fun toUserModelEntity() = UserModelEntity(

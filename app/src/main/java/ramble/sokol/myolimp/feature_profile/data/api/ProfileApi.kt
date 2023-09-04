@@ -37,7 +37,7 @@ interface ProfileApi {
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/refresh_token/")
-    suspend fun refreshToken(
+    fun refreshToken(
         @Header("Cookie") cookie: String,
     ) : Call<ResponseAuthModel>
 

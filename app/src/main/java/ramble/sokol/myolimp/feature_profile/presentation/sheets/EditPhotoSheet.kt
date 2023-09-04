@@ -58,8 +58,8 @@ fun EditPhotoSheet(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
-            selectedImgUri = it
-            viewModel.onEvent(ProfileEvent.OnImgChanged(it))
+//            selectedImgUri = it
+//            viewModel.onEvent(ProfileEvent.OnImgChanged(it))
         }
     )
 

@@ -7,11 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants
-import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -77,7 +77,8 @@ class ProfileViewModel (
 
             is ProfileEvent.OnImgChanged -> {
                 _state.value = _state.value.copy(
-                    profileImg = event.img
+                    // TODO change event or update to string
+//                    profileImg = event.img
                 )
             }
 
@@ -165,7 +166,6 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnRefreshToken -> {
-
                 refreshToken()
             }
         }
@@ -183,10 +183,25 @@ class ProfileViewModel (
                             // save token in data store
                             saveToken(result.code)
 
-                            /*
-                            * TODO: Update UserModel
-                            * result.user ->
-                            * */
+                            _state.update {
+                                it.copy(
+                                    id = result.user.id ?: "",
+
+                                    firstName = result.user.firstName ?: "",
+                                    secondName = result.user.secondName ?: "",
+                                    thirdName = result.user.secondName ?: "",
+
+                                    profileImg = "https://storage.yandexcloud.net/myolimp/user/avatar/${result.user.id}.webp",
+
+                                    gender = result.user.gender ?: "",
+                                    snils = result.user.snils ?: "",
+
+                                    grade = result.user.grade ?: 0,
+
+                                    email = result.user.email ?: "",
+
+                                )
+                            }
 
                         }
 
