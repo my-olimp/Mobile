@@ -196,6 +196,8 @@ class ProfileViewModel (
                                     gender = result.user.gender ?: "",
                                     snils = result.user.snils ?: "",
 
+                                    dateOfBirth = result.user.dateOfBirth ?: "",
+
                                     grade = result.user.grade ?: 0,
 
                                     email = result.user.email ?: "",
