@@ -164,4 +164,5 @@
         <item>11</item>
         <item>12</item>
     </string-array>
+    <string name="null_textfield_error">Необходимо ввести %1$s</string>
 </resources>
