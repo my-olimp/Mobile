@@ -5,6 +5,8 @@ import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -14,13 +16,23 @@ class RegistrationInfoRepository (
 
     fun registerInfo(
         auth: String,
-        data: UserMainDataModel
-    ): Response<UserModelEntity> {
+        data: UserMainDataModel,
+        onResult: (UserModelEntity?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
 
-        return instance.updateMainUserData(
-            auth = auth,
-            data = data
+        instance.updateMainUserData(auth,data).enqueue(
+            object : Callback<UserModelEntity> {
+                override fun onResponse(call: Call<UserModelEntity>, response: Response<UserModelEntity>) {
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
+                    onError(t)
+                }
+
+            }
         )
     }
 }

@@ -144,6 +144,7 @@ class ProfileViewModel (
             is ProfileEvent.OnLogOut -> {
                 viewModelScope.launch {
                     dataStore.deleteToken()
+                    cookiesDataStore.deleteCookies()
 
                     event.navigator.navigate(BeginAuthenticationScreenDestination)
 
@@ -161,6 +162,42 @@ class ProfileViewModel (
                         Log.i(TAG, "exception - ${ex.message}")
                     }
                 }
+            }
+
+            is ProfileEvent.OnRefreshToken -> {
+
+                refreshToken()
+            }
+        }
+    }
+
+    private fun refreshToken()  {
+        viewModelScope.launch {
+            try {
+                repository.refreshToken(
+                    cookie=cookiesDataStore.getCookies(Constants.COOKIES)!!,
+                    onResult = { result->
+                        Log.i(TAG, "completed - $result")
+
+                        if (result != null) {
+                            // save token in data store
+                            saveToken(result.code)
+
+                            /*
+                            * TODO: Update UserModel
+                            * result.user ->
+                            * */
+
+                        }
+
+                        // Error if user is empty
+                    },
+                    onError = {
+                        Log.i(TAG, "error occurred - $it")
+                    }
+                )
+            } catch (ex: Exception) {
+                Log.i(TAG, "exception - ${ex.message}")
             }
         }
     }
@@ -193,6 +230,17 @@ class ProfileViewModel (
             Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
+        }
+    }
+
+    private fun saveToken(
+        token: String
+    ) {
+        viewModelScope.launch {
+            dataStore.setToken(
+                key = Constants.ACCESS_TOKEN,
+                value = token
+            )
         }
     }
 
