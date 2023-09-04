@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.data.api
 
+import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
@@ -18,6 +19,13 @@ interface RegistrationApi {
     fun updateMainUserData(
         @Header("Authorization") auth: String,
         @Body data: UserMainDataModel
+    ) : Call<UserModelEntity>
+
+    @Headers("Content-Type: application/json")
+    @PATCH("user/")
+    fun updateEducationUserData(
+        @Header("Authorization") auth: String,
+        @Body data: UserEducationDataModel
     ) : Call<UserModelEntity>
 
 }

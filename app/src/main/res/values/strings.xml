@@ -111,6 +111,7 @@
     <string name="error_register_message">Неверный код, попробуйте еще раз</string>
     <string name="individual_data">Персональные данные</string>
     <string name="one_of_four">1 из 4</string>
+    <string name="two_of_four">2 из 4</string>
     <string name="female_gender">Женский</string>
     <string name="male_gender">Мужской</string>
     <string name="type_of_activity">Вид деятельности</string>
@@ -125,5 +126,43 @@
         <item>Работодатель</item>
     </string-array>
     <string name="fio_error">Неправильно ввели ФИО</string>
-    
+    <string-array name="region">
+        <item>Московская область</item>
+        <item>Москва</item>
+        <item>Санкт-петербург</item>
+        <item>Краснодарский край</item>
+        <item>Свердловская область</item>
+        <item>Ростовская область</item>
+    </string-array>
+    <string-array name="city">
+        <item>Апрелевка</item>
+        <item>Балашиха</item>
+        <item>Белоозерский</item>
+        <item>Бронницы</item>
+        <item>Верея</item>
+        <item>Видное</item>
+    </string-array>
+    <string-array name="school">
+        <item>МБОУ СОШ №1</item>
+        <item>МБОУ гимназия №2</item>
+        <item>МБОУ СОШ №3</item>
+        <item>МБОУ лицей №4</item>
+        <item>МБОУ СОШ №6</item>
+        <item>МБОУ гимназия №7</item>
+    </string-array>
+    <string-array name="grade">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+    <string name="null_textfield_error">Необходимо ввести %1$s</string>
 </resources>
