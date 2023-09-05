@@ -99,7 +99,7 @@ class RegisterEducationViewModel(
                repository.registerEducation(
                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                    data = UserEducationDataModel(
-                       region = userData.region.asResponseModel(),
+                       region = userData.region.number,
                        city = userData.city,
                        school = userData.school,
                        grade = userData.grade.toInt()
