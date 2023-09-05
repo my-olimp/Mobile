@@ -30,6 +30,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInf
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -100,12 +101,12 @@ fun RegisterInfoScreen(
                     },
                     isError = state.value.fioError
                 )
-
                 if (state.value.fioError) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    ErrorMessage(
-                        text = stringResource(R.string.fio_error)
+                    ShowError(
+                        text = stringResource(
+                            id = R.string.null_textfield_error,
+                            stringResource(id = R.string.name_surname).lowercase()
+                        )
                     )
                 }
 
@@ -156,21 +157,41 @@ fun RegisterInfoScreen(
 
                 CalendarInput(
                     label = stringResource(id = R.string.dob),
-                    previousData = state.value.bdate
+                    previousData = state.value.bdate,
+                    isError = state.value.bdateError
                 ) {
                     viewModel.onEvent(RegistrationInfoEvent.OnDobChanged(it))
+                }
+                if (state.value.bdateError) {
+                    ShowError(
+                        text = stringResource(
+                            id = R.string.null_textfield_error,
+                            stringResource(id = R.string.error_date)
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 ReadOnlyDropDown(
-                    options =  activityType.toList(),
+                    options = activityType.toList(),
                     previousData = state.value.activityType,
-                    label = stringResource(id = R.string.type_of_activity)
+                    label = stringResource(id = R.string.type_of_activity),
+                    isError = state.value.activityTypeError
                 ) {
-                    viewModel.onEvent(RegistrationInfoEvent.OnActivityTypeChanged(
-                        activityType = if(it == activityType[0]) "s" else "t"
-                    ))
+                    viewModel.onEvent(
+                        RegistrationInfoEvent.OnActivityTypeChanged(
+                            activityType = if (it == activityType[0]) "s" else "t"
+                        )
+                    )
+                }
+                if (state.value.activityTypeError) {
+                    ShowError(
+                        text = stringResource(
+                            id = R.string.null_textfield_error,
+                            stringResource(id = R.string.type_of_activity).lowercase()
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -181,7 +202,7 @@ fun RegisterInfoScreen(
                 ) {
                     viewModel.onEvent(RegistrationInfoEvent.OnNext(navigator))
                 }
-                
+
             }
         }
     }

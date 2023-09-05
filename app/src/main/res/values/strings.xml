@@ -165,4 +165,5 @@
         <item>12</item>
     </string-array>
     <string name="null_textfield_error">Необходимо ввести %1$s</string>
+    <string name="error_date">дату рождения</string>
 </resources>

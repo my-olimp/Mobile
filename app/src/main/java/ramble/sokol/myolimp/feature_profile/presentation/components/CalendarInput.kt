@@ -33,6 +33,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.White
 
@@ -41,6 +42,7 @@ import ramble.sokol.myolimp.ui.theme.White
 fun CalendarInput(
     label: String,
     previousData: String,
+    isError: Boolean = false,
     onTextChanged: (String) -> Unit
 ) {
 
@@ -110,7 +112,8 @@ fun CalendarInput(
             focusedBorderColor = BlueStart,
             focusedLabelColor = BlueStart,
             cursorColor = BlueStart,
-            backgroundColor = White
+            backgroundColor = White,
+            errorBorderColor = MessageError
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
@@ -122,6 +125,7 @@ fun CalendarInput(
             textValue = it
             onTextChanged(it)
         },
-        enabled = false
+        enabled = false,
+        isError = isError
     )
 }

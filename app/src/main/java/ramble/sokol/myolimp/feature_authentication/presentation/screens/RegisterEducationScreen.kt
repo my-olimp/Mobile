@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -25,7 +24,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
-import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
@@ -91,8 +90,9 @@ fun RegisterEducationScreen(
                         )
                     }
                 }
-                if(state.value.regionError) ShowError(
-                    text = stringResource(id = R.string.null_textfield_error,
+                if (state.value.regionError) ShowError(
+                    text = stringResource(
+                        id = R.string.null_textfield_error,
                         stringResource(id = R.string.region).lowercase()
                     )
                 )
@@ -107,8 +107,11 @@ fun RegisterEducationScreen(
                 ) {
                     viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(it))
                 }
-                if(state.value.cityError) ShowError(
-                    text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.city))
+                if (state.value.cityError) ShowError(
+                    text = stringResource(
+                        id = R.string.null_textfield_error,
+                        stringResource(id = R.string.city).lowercase()
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -121,8 +124,11 @@ fun RegisterEducationScreen(
                 ) {
                     viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(it))
                 }
-                if(state.value.schoolError) ShowError(
-                    text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.school))
+                if (state.value.schoolError) ShowError(
+                    text = stringResource(
+                        id = R.string.null_textfield_error,
+                        stringResource(id = R.string.school).lowercase()
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -135,8 +141,11 @@ fun RegisterEducationScreen(
                 ) {
                     viewModel.onEvent(RegistrationEducationEvent.OnGradeChanged(it))
                 }
-                if(state.value.gradeError) ShowError(
-                    text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.grade))
+                if (state.value.gradeError) ShowError(
+                    text = stringResource(
+                        id = R.string.null_textfield_error,
+                        stringResource(id = R.string.grade).lowercase()
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -150,14 +159,6 @@ fun RegisterEducationScreen(
             }
         }
     }
-}
-
-@Composable
-private fun ShowError(text : String) {
-    Spacer(modifier = Modifier.height(4.dp))
-    ErrorMessage(
-        text = text
-    )
 }
 
 private fun List<Region>.toListString(): List<String> {

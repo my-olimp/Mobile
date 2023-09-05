@@ -42,14 +42,16 @@ class RegisterInfoViewModel(
             is RegistrationInfoEvent.OnActivityTypeChanged -> {
                 _state.update {
                     it.copy(
-                        activityType = event.activityType
+                        activityType = event.activityType,
+                        activityTypeError = false
                     )
                 }
             }
             is RegistrationInfoEvent.OnDobChanged -> {
                 _state.update {
                     it.copy(
-                        bdate = event.bdate
+                        bdate = event.bdate,
+                        bdateError = false
                     )
                 }
             }
@@ -75,19 +77,9 @@ class RegisterInfoViewModel(
                             event.navigator.navigate(RegisterEducationScreenDestination)
                         },
                         onError = {
-                            _state.update {
-                                it.copy(
-                                    fioError = true
-                                )
-                            }
+                            Log.i(TAG,"request failed")
                         }
                     )
-                } else {
-                    _state.update {
-                        it.copy(
-                            fioError = true
-                        )
-                    }
                 }
             }
         }
@@ -118,7 +110,20 @@ class RegisterInfoViewModel(
     }
 
     private fun isDataValid(): Boolean {
-        return state.value.fio.split(" ").size == 3
+        var isValid = true
+        if (state.value.fio.split(" ").size != 3) {
+            _state.update { it.copy(fioError = true) }
+            isValid = false
+        }
+        if(state.value.bdate == "") {
+            _state.update { it.copy(bdateError = true) }
+            isValid = false
+        }
+        if(state.value.activityType == "") {
+            _state.update { it.copy(activityTypeError = true) }
+            isValid = false
+        }
+        return isValid
     }
     private fun sendRequest(
         onResult: () -> Unit,
