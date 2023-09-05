@@ -26,7 +26,6 @@ class RegisterEducationViewModel(
         private const val TAG : String = "RegistrationEducationViewModel"
     }
 
-
     private val repository = RegistrationRepository(context)
 
     private val dataStore = CodeDataStore(context)
@@ -83,7 +82,7 @@ class RegisterEducationViewModel(
                         }
                     )
                 } else {
-                    Toast.makeText(context,"data isnt valid",Toast.LENGTH_LONG).show()
+                    Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
                 }
             }
          }

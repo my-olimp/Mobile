@@ -6,6 +6,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewM
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
@@ -41,7 +42,12 @@ val viewModelsModule = module {
         RegisterInfoViewModel(get())
     }
 
-    /*Register Education*/
+    /* Register Image */
+    viewModel {
+        RegisterImageViewModel()
+    }
+
+    /* Register Education */
     viewModel {
         RegisterEducationViewModel(get())
     }
