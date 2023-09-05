@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +61,9 @@ fun ProfileScreen(
     val state = viewModel.state.collectAsState()
     val context = LocalContext.current
 
-//    TODO Launched effect with getting user info
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onEvent(ProfileEvent.OnRefreshToken)
+    })
 
     BottomBarTheme(
         navController = navController
@@ -106,7 +109,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Спиридонова Диана", style = TextStyle(
+                    text = "${state.value.firstName} ${state.value.secondName}", style = TextStyle(
                         fontSize = 17.sp,
                         fontFamily = FontFamily(Font(R.font.bold)),
                         fontWeight = FontWeight(600),
@@ -118,7 +121,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    modifier = Modifier.padding(bottom = 16.dp), text = "Ученик", style = TextStyle(
+                    modifier = Modifier.padding(bottom = 16.dp), text = state.value.accountType, style = TextStyle(
                         fontSize = 13.sp,
                         fontFamily = FontFamily(Font(R.font.medium)),
                         fontWeight = FontWeight(500),
