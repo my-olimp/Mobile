@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
@@ -16,6 +17,7 @@ import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.utils.CookiesDataStore
+import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
 
 class ProfileViewModel (
     context: Context
@@ -204,16 +206,18 @@ class ProfileViewModel (
 
                                     accountType = result.user.accountType ?: "",
 
-//                                    region = result.user.region
+                                    //region = result.user.region
 
                                 )
                             }
-
                         }
-
-                        // Error if user is empty
                     },
                     onError = {
+
+                        if (it is NetworkConnectivityException) {
+                            Log.i(TAG, "there is no network - $it")
+                        }
+
                         Log.i(TAG, "error occurred - $it")
                     }
                 )
