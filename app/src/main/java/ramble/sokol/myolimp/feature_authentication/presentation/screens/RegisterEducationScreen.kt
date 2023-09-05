@@ -21,7 +21,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.toListString
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
@@ -32,7 +32,6 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
-import java.util.Locale
 
 
 @Destination
@@ -41,7 +40,7 @@ fun RegisterEducationScreen(
     navigator: DestinationsNavigator
 ) {
 
-    val viewModel = getViewModel<RegisterEducationViewModel>().also { it.loadData() }
+    val viewModel = getViewModel<RegisterEducationViewModel>().also { it.loadRegions() }
 
     val state = viewModel.state.collectAsState()
 
@@ -79,7 +78,8 @@ fun RegisterEducationScreen(
                 EditableDropDown(
                     previousData = state.value.region.name,
                     label = stringResource(id = R.string.region),
-                    options = state.value.regionList.toListString(),
+                    options = state.value.regionList.toListString()
+                        .ifEmpty { stringArrayResource(id = R.array.region).toList() },
                     isError = state.value.regionError
                 ) { newRegion ->
                     state.value.regionList.find {
@@ -102,10 +102,14 @@ fun RegisterEducationScreen(
                 EditableDropDown(
                     previousData = state.value.city,
                     label = stringResource(id = R.string.city_profile),
-                    options = stringArrayResource(id = R.array.city).toList(),
+                    options = state.value.cityList.ifEmpty { stringArrayResource(id = R.array.city).toList() },
                     isError = state.value.cityError
-                ) {
-                    viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(it))
+                ) { newCity ->
+                    state.value.cityList.find {
+                        it == newCity
+                    }?.let {
+                        viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(it))
+                    }
                 }
                 if (state.value.cityError) ShowError(
                     text = stringResource(
@@ -161,10 +165,9 @@ fun RegisterEducationScreen(
     }
 }
 
-private fun List<Region>.toListString(): List<String> {
-    val list = mutableListOf<String>()
-    for(item in this) list.add(item.name)
-    return list
-}
+
+
+
+
 
 

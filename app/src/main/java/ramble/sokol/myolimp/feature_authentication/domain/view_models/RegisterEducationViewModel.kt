@@ -58,9 +58,10 @@ class RegisterEducationViewModel(
                 _state.update {
                     it.copy(
                         region = event.region,
-                        regionError = false
+                        regionError = false,
                     )
                 }
+                requestCities(event.region.number)
             }
             is RegistrationEducationEvent.OnSchoolChanged -> {
                 _state.update {
@@ -139,7 +140,7 @@ class RegisterEducationViewModel(
         return isValid
     }
 
-    fun loadData() {
+    fun loadRegions() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
@@ -156,6 +157,33 @@ class RegisterEducationViewModel(
                     },
                     onError = {
                         Log.i(TAG,"throwed ${it.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"exception: ${e.message}")
+            }
+        }
+    }
+
+    private fun requestCities(regionId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Log.i(TAG,"try to request with $regionId region id")
+                repository.getCities(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    data = regionId,
+                    onResult = { list ->
+                        Log.i(TAG,"request response is $list")
+                        if(list != null) {
+                            _state.update {
+                                it.copy(
+                                    cityList = list
+                                )
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"request cause $it")
                     }
                 )
             } catch (e: Exception) {

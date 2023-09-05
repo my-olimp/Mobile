@@ -1,7 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.data.api
 
-import ramble.sokol.myolimp.feature_authentication.data.models.RequestCityModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
@@ -15,6 +13,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.PATCH
+import retrofit2.http.Query
 
 interface RegistrationApi {
 
@@ -42,15 +41,15 @@ interface RegistrationApi {
     @GET("user/location/cities")
     fun getCities(
         @Header("Authorization") auth: String,
-        @Body data: RequestCityModel
-    ) : Call<List<ResponseCityModel>>
+        @Query("region") data: Int
+    ) : Call<List<String>>
 
 
     @Headers("Content-Type: application/json")
     @GET("user/location/cities")
     fun getSchools(
         @Header("Authorization") auth: String,
-        @Body data: RequestCityModel /*TODO replace*/
-    ) : Call<List<ResponseCityModel>> /*TODO replace*/
+        @Query("region") data: Int
+    ) : Call<List<String>> /*TODO replace*/
 
 }

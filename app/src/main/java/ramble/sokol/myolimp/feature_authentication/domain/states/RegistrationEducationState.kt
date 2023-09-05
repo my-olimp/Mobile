@@ -11,5 +11,6 @@ data class RegistrationEducationState(
     var cityError: Boolean = false,
     var schoolError: Boolean = false,
     var gradeError: Boolean = false,
-    val regionList: List<Region> = listOf()
+    val regionList: List<Region> = listOf(),
+    val cityList: List<String> = listOf()
 )

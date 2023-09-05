@@ -25,3 +25,9 @@ fun List<ResponseRegionModel>.asListRegion(): List<Region> {
     for(item in this) list.add(item.asRegion())
     return list
 }
+
+fun List<Region>.toListString(): List<String> {
+    val list = mutableListOf<String>()
+    for(item in this) list.add(item.name)
+    return list
+}

@@ -78,4 +78,27 @@ class RegistrationRepository (
             }
         )
     }
+
+    fun getCities(
+        auth: String,
+        data: Int,
+        onResult: (List<String>?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.getCities(auth, data).enqueue(
+            object : Callback<List<String>> {
+                override fun onResponse(
+                    call: Call<List<String>>,
+                    response: Response<List<String>>
+                ) {
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                    onError(t)
+                }
+
+            }
+        )
+    }
 }
