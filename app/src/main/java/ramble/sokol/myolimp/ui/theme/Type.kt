@@ -49,11 +49,12 @@ fun regularType(
 
 fun mediumType(
     color: Color = BlackProfile,
-    fontSize: TextUnit = 18.sp
+    fontSize: TextUnit = 18.sp,
+    letterSpacing: TextUnit = 0.4.sp
 ) = TextStyle(
     fontSize = fontSize,
     fontFamily = FontFamily(Font(R.font.medium)),
     fontWeight = FontWeight(500),
     color = color,
-    letterSpacing = 0.4.sp
+    letterSpacing = letterSpacing
 )

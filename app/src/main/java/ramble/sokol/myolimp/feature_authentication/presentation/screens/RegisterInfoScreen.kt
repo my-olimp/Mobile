@@ -26,10 +26,11 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -95,17 +96,17 @@ fun RegisterInfoScreen(
                     isEnabled = true,
                     onTextChanged = {
                         viewModel.onEvent(
-                            RegistrationEvent.OnNameSurnameChanged(it)
+                            RegistrationInfoEvent.OnNameSurnameChanged(it)
                         )
                     },
                     isError = state.value.fioError
                 )
-
                 if (state.value.fioError) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    ErrorMessage(
-                        text = stringResource(R.string.fio_error)
+                    ShowError(
+                        text = stringResource(
+                            id = R.string.null_textfield_error,
+                            stringResource(id = R.string.name_surname).lowercase()
+                        )
                     )
                 }
 
@@ -131,7 +132,7 @@ fun RegisterInfoScreen(
                         onClick = {
                             isSelected.value = true
                             viewModel.onEvent(
-                                event = RegistrationEvent.OnGenderChanged("f")
+                                event = RegistrationInfoEvent.OnGenderChanged("f")
                             )
                         }
                     )
@@ -146,7 +147,7 @@ fun RegisterInfoScreen(
                         onClick = {
                             isSelected.value = false
                             viewModel.onEvent(
-                                event = RegistrationEvent.OnGenderChanged("m")
+                                event = RegistrationInfoEvent.OnGenderChanged("m")
                             )
                         },
                     )
@@ -156,21 +157,41 @@ fun RegisterInfoScreen(
 
                 CalendarInput(
                     label = stringResource(id = R.string.dob),
-                    previousData = state.value.bdate
+                    previousData = state.value.bdate,
+                    isError = state.value.bdateError
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnDobChanged(it))
+                    viewModel.onEvent(RegistrationInfoEvent.OnDobChanged(it))
+                }
+                if (state.value.bdateError) {
+                    ShowError(
+                        text = stringResource(
+                            id = R.string.null_textfield_error,
+                            stringResource(id = R.string.error_date)
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 ReadOnlyDropDown(
-                    options =  activityType.toList(),
+                    options = activityType.toList(),
                     previousData = state.value.activityType,
-                    label = stringResource(id = R.string.type_of_activity)
+                    label = stringResource(id = R.string.type_of_activity),
+                    isError = state.value.activityTypeError
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnActivityTypeChanged(
-                        activityType = if(it == activityType[0]) "s" else "t"
-                    ))
+                    viewModel.onEvent(
+                        RegistrationInfoEvent.OnActivityTypeChanged(
+                            activityType = if (it == activityType[0]) "s" else "t"
+                        )
+                    )
+                }
+                if (state.value.activityTypeError) {
+                    ShowError(
+                        text = stringResource(
+                            id = R.string.null_textfield_error,
+                            stringResource(id = R.string.type_of_activity).lowercase()
+                        )
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -179,9 +200,9 @@ fun RegisterInfoScreen(
                     text = stringResource(id = R.string.further),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnNext(navigator))
+                    viewModel.onEvent(RegistrationInfoEvent.OnNext(navigator))
                 }
-                
+
             }
         }
     }

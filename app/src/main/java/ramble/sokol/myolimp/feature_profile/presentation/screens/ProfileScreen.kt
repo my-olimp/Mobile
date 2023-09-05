@@ -40,6 +40,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterEducationScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -161,7 +162,8 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_purpose),
                     content = stringResource(R.string.profile_purpose_content)
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(RegisterEducationScreenDestination)
                 }
 
                 Spacer(

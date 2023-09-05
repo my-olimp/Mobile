@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.RegisterEducationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
-import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
@@ -36,31 +36,33 @@ class RegisterInfoViewModel(
     val state = _state.asStateFlow()
 
     fun onEvent(
-        event: RegistrationEvent
+        event: RegistrationInfoEvent
     ) {
         when(event) {
-            is RegistrationEvent.OnActivityTypeChanged -> {
+            is RegistrationInfoEvent.OnActivityTypeChanged -> {
                 _state.update {
                     it.copy(
-                        activityType = event.activityType
+                        activityType = event.activityType,
+                        activityTypeError = false
                     )
                 }
             }
-            is RegistrationEvent.OnDobChanged -> {
+            is RegistrationInfoEvent.OnDobChanged -> {
                 _state.update {
                     it.copy(
-                        bdate = event.bdate
+                        bdate = event.bdate,
+                        bdateError = false
                     )
                 }
             }
-            is RegistrationEvent.OnGenderChanged -> {
+            is RegistrationInfoEvent.OnGenderChanged -> {
                 _state.update {
                     it.copy(
                         gender = event.gender
                     )
                 }
             }
-            is RegistrationEvent.OnNameSurnameChanged -> {
+            is RegistrationInfoEvent.OnNameSurnameChanged -> {
                 _state.update {
                     it.copy(
                         fio = event.fio,
@@ -68,29 +70,18 @@ class RegisterInfoViewModel(
                     )
                 }
             }
-            is RegistrationEvent.OnNext -> {
+            is RegistrationInfoEvent.OnNext -> {
                 if(isDataValid()) {
                     sendRequest(
                         onResult = {
                             event.navigator.navigate(RegisterEducationScreenDestination)
                         },
                         onError = {
-                            _state.update {
-                                it.copy(
-                                    fioError = true
-                                )
-                            }
+                            Log.i(TAG,"request failed")
                         }
                     )
-                } else {
-                    _state.update {
-                        it.copy(
-                            fioError = true
-                        )
-                    }
                 }
             }
-            else -> {}
         }
     }
 
@@ -104,7 +95,8 @@ class RegisterInfoViewModel(
                 auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                 data = userModel,
                 onResult = {
-                      onResult.invoke()
+                    Log.i(TAG,"response: $it")
+                    onResult.invoke()
                 },
                 onError = {
                     onError.invoke()
@@ -118,7 +110,20 @@ class RegisterInfoViewModel(
     }
 
     private fun isDataValid(): Boolean {
-        return state.value.fio.split(" ").size == 3
+        var isValid = true
+        if (state.value.fio.split(" ").size != 3) {
+            _state.update { it.copy(fioError = true) }
+            isValid = false
+        }
+        if(state.value.bdate == "") {
+            _state.update { it.copy(bdateError = true) }
+            isValid = false
+        }
+        if(state.value.activityType == "") {
+            _state.update { it.copy(activityTypeError = true) }
+            isValid = false
+        }
+        return isValid
     }
     private fun sendRequest(
         onResult: () -> Unit,
