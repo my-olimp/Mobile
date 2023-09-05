@@ -10,8 +10,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
-import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
@@ -26,18 +30,18 @@ class RegisterEducationViewModel(
     }
 
 
-    val repository = RegistrationRepository(context)
+    private val repository = RegistrationRepository(context)
 
-    val dataStore = CodeDataStore(context)
+    private val dataStore = CodeDataStore(context)
 
     private val _state = MutableStateFlow(RegistrationEducationState())
     val state = _state.asStateFlow()
 
     fun onEvent(
-        event: RegistrationEvent
+        event: RegistrationEducationEvent
     ) {
         when(event) {
-            is RegistrationEvent.OnGradeChanged -> {
+            is RegistrationEducationEvent.OnGradeChanged -> {
                 _state.update {
                     it.copy(
                         grade = event.grade,
@@ -45,7 +49,7 @@ class RegisterEducationViewModel(
                     )
                 }
             }
-            is RegistrationEvent.OnCityChanged -> {
+            is RegistrationEducationEvent.OnCityChanged -> {
                 _state.update {
                     it.copy(
                         city = event.city,
@@ -53,7 +57,7 @@ class RegisterEducationViewModel(
                     )
                 }
             }
-            is RegistrationEvent.OnRegionChanged -> {
+            is RegistrationEducationEvent.OnRegionChanged -> {
                 _state.update {
                     it.copy(
                         region = event.region,
@@ -61,7 +65,7 @@ class RegisterEducationViewModel(
                     )
                 }
             }
-            is RegistrationEvent.OnSchoolChanged -> {
+            is RegistrationEducationEvent.OnSchoolChanged -> {
                 _state.update {
                     it.copy(
                         school = event.school,
@@ -69,12 +73,12 @@ class RegisterEducationViewModel(
                     )
                 }
             }
-            is RegistrationEvent.OnNext -> {
+            is RegistrationEducationEvent.OnNext -> {
                 if(checkData()) {
                     sendRequest(
                         onResult = {
                             //event.navigator.navigate("" /*TODO navigate*/)
-                                   Log.i(TAG,"request called result")
+                            Log.i(TAG,"request called result")
                         },
                         onError = {
                             Log.i(TAG,"request called error")
@@ -84,7 +88,6 @@ class RegisterEducationViewModel(
                     Toast.makeText(context,"data isnt valid",Toast.LENGTH_LONG).show()
                 }
             }
-            else -> {}
          }
     }
 
@@ -98,14 +101,14 @@ class RegisterEducationViewModel(
                repository.registerEducation(
                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                    data = UserEducationDataModel(
-                       region = userData.region,
+                       region = userData.region.asResponseModel(),
                        city = userData.city,
                        school = userData.school,
                        grade = userData.grade.toInt()
                    ),
                    onResult = {
                        Log.i(TAG,"request response: $it")
-                         onResult.invoke()
+                       onResult.invoke()
                    },
                    onError = {
                        onError.invoke()
@@ -120,7 +123,7 @@ class RegisterEducationViewModel(
 
     private fun checkData(): Boolean {
         var isValid = true
-        if (state.value.region == "") {
+        if (state.value.region.name == "") {
             _state.update { it.copy(regionError = true) }
             isValid = false
         }
@@ -137,5 +140,30 @@ class RegisterEducationViewModel(
             isValid = false
         }
         return isValid
+    }
+
+    fun loadData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getRegions(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    onResult = { response ->
+                        Log.i(TAG,"response regions $response")
+                        if(response != null) {
+                            _state.update {
+                                it.copy(
+                                    regionList = response.asListRegion()
+                                )
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"throwed ${it.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"exception: ${e.message}")
+            }
+        }
     }
 }

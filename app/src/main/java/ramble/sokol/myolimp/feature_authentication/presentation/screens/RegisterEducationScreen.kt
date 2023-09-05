@@ -16,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
@@ -31,7 +33,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
-
+import java.util.Locale
 
 
 @Destination
@@ -40,7 +42,7 @@ fun RegisterEducationScreen(
     navigator: DestinationsNavigator
 ) {
 
-    val viewModel = getViewModel<RegisterEducationViewModel>()
+    val viewModel = getViewModel<RegisterEducationViewModel>().also { it.loadData() }
 
     val state = viewModel.state.collectAsState()
 
@@ -76,15 +78,23 @@ fun RegisterEducationScreen(
 
 
                 EditableDropDown(
-                    previousData = state.value.region,
+                    previousData = state.value.region.name,
                     label = stringResource(id = R.string.region),
-                    options = stringArrayResource(id = R.array.region).toList(),
+                    options = state.value.regionList.toListString(),
                     isError = state.value.regionError
-                ) {
-                    viewModel.onEvent(RegistrationEvent.OnRegionChanged(it))
+                ) { newRegion ->
+                    state.value.regionList.find {
+                        it.name == newRegion
+                    }?.let {
+                        viewModel.onEvent(
+                            event = RegistrationEducationEvent.OnRegionChanged(it)
+                        )
+                    }
                 }
                 if(state.value.regionError) ShowError(
-                    text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.region))
+                    text = stringResource(id = R.string.null_textfield_error,
+                        stringResource(id = R.string.region).lowercase()
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -95,7 +105,7 @@ fun RegisterEducationScreen(
                     options = stringArrayResource(id = R.array.city).toList(),
                     isError = state.value.cityError
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnCityChanged(it))
+                    viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(it))
                 }
                 if(state.value.cityError) ShowError(
                     text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.city))
@@ -109,7 +119,7 @@ fun RegisterEducationScreen(
                     options = stringArrayResource(id = R.array.school).toList(),
                     isError = state.value.schoolError
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnSchoolChanged(it))
+                    viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(it))
                 }
                 if(state.value.schoolError) ShowError(
                     text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.school))
@@ -123,7 +133,7 @@ fun RegisterEducationScreen(
                     label = stringResource(id = R.string.grade),
                     isError = state.value.gradeError
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnGradeChanged(it))
+                    viewModel.onEvent(RegistrationEducationEvent.OnGradeChanged(it))
                 }
                 if(state.value.gradeError) ShowError(
                     text = stringResource(id = R.string.null_textfield_error, stringResource(id = R.string.grade))
@@ -135,7 +145,7 @@ fun RegisterEducationScreen(
                     text = stringResource(id = R.string.further),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnNext(navigator))
+                    viewModel.onEvent(RegistrationEducationEvent.OnNext(navigator))
                 }
             }
         }
@@ -148,6 +158,12 @@ private fun ShowError(text : String) {
     ErrorMessage(
         text = text
     )
+}
+
+private fun List<Region>.toListString(): List<String> {
+    val list = mutableListOf<String>()
+    for(item in this) list.add(item.name)
+    return list
 }
 
 

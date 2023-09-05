@@ -26,7 +26,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEvent
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
@@ -95,7 +95,7 @@ fun RegisterInfoScreen(
                     isEnabled = true,
                     onTextChanged = {
                         viewModel.onEvent(
-                            RegistrationEvent.OnNameSurnameChanged(it)
+                            RegistrationInfoEvent.OnNameSurnameChanged(it)
                         )
                     },
                     isError = state.value.fioError
@@ -131,7 +131,7 @@ fun RegisterInfoScreen(
                         onClick = {
                             isSelected.value = true
                             viewModel.onEvent(
-                                event = RegistrationEvent.OnGenderChanged("f")
+                                event = RegistrationInfoEvent.OnGenderChanged("f")
                             )
                         }
                     )
@@ -146,7 +146,7 @@ fun RegisterInfoScreen(
                         onClick = {
                             isSelected.value = false
                             viewModel.onEvent(
-                                event = RegistrationEvent.OnGenderChanged("m")
+                                event = RegistrationInfoEvent.OnGenderChanged("m")
                             )
                         },
                     )
@@ -158,7 +158,7 @@ fun RegisterInfoScreen(
                     label = stringResource(id = R.string.dob),
                     previousData = state.value.bdate
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnDobChanged(it))
+                    viewModel.onEvent(RegistrationInfoEvent.OnDobChanged(it))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -168,7 +168,7 @@ fun RegisterInfoScreen(
                     previousData = state.value.activityType,
                     label = stringResource(id = R.string.type_of_activity)
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnActivityTypeChanged(
+                    viewModel.onEvent(RegistrationInfoEvent.OnActivityTypeChanged(
                         activityType = if(it == activityType[0]) "s" else "t"
                     ))
                 }
@@ -179,7 +179,7 @@ fun RegisterInfoScreen(
                     text = stringResource(id = R.string.further),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(RegistrationEvent.OnNext(navigator))
+                    viewModel.onEvent(RegistrationInfoEvent.OnNext(navigator))
                 }
                 
             }

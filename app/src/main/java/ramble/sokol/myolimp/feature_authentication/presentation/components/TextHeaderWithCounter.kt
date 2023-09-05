@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ramble.sokol.myolimp.ui.theme.RegistrationSuccess
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.mediumType
 
@@ -24,7 +25,7 @@ fun TextHeaderWithCounter(
     ) {
         Text(
             text = headerText,
-            style = mediumType()
+            style = mediumType(letterSpacing = 0.36.sp)
         )
 
         Spacer(modifier = Modifier.width(24.dp))
@@ -32,8 +33,9 @@ fun TextHeaderWithCounter(
         Text(
             text = counterText,
             style = mediumType(
-                color = SuccessStatus,
-                fontSize = 14.sp
+                color = RegistrationSuccess,
+                fontSize = 14.sp,
+                letterSpacing = 0.28.sp
             )
         )
     }
