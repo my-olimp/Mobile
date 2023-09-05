@@ -1,6 +1,8 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
+import android.content.Context
 import android.net.Uri
+import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -53,6 +56,8 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
+import java.io.File
+import java.lang.ref.WeakReference
 
 @Destination()
 @Composable
@@ -65,12 +70,13 @@ internal fun RegisterImageScreen(
         mutableStateOf(state.profileImg)
     }
     RegisterImageScreen(
-        onEvent = {event ->
+        onEvent = { event ->
             if (event is RegistrationImageEvent.OnImageChanged) {
                 selectedImgUri = event.uri
             }
             viewModel.onEvent(event)
         },
+        onNext = viewModel::onNext,
         snilsValue = state.snils,
         selectedProfileImg = state.profileImg
     )
@@ -79,12 +85,13 @@ internal fun RegisterImageScreen(
 @Preview
 @Composable
 fun PrevRegisterImageScreen() {
-    RegisterImageScreen({}, "", null)
+    RegisterImageScreen({}, {}, "", null)
 }
 
 @Composable
 fun RegisterImageScreen(
     onEvent: (RegistrationImageEvent) -> Unit,
+    onNext: (File) -> Unit,
     snilsValue: String,
     selectedProfileImg: Uri?
 ) {
@@ -94,6 +101,8 @@ fun RegisterImageScreen(
             onEvent(RegistrationImageEvent.OnImageChanged(it))
         }
     )
+
+    val context = LocalContext.current
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -162,9 +171,24 @@ fun RegisterImageScreen(
                     padding = 0.dp,
                     isEnabled = (selectedProfileImg != null && snilsValue.isNotEmpty())
                 ) {
-
+                    try{
+                        onNext(uriToFile(selectedProfileImg ?: Uri.EMPTY, context))
+                    } catch (e: Exception) {
+                        onEvent(RegistrationImageEvent.OnUploadError)
+                    }
                 }
             }
         }
     }
 }
+
+fun uriToFile(uri: Uri, context: Context): File {
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    cursor?.use {
+        it.moveToFirst()
+        val index = it.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA)
+        return File(it.getString(index))
+    }
+    throw Exception("Cursor is null.")
+}
+
