@@ -36,15 +36,12 @@ class NetworkConnectionInterceptor(
     override fun intercept(
         chain: Interceptor.Chain
     ): Response {
+        val response = chain.proceed(chain.request())
+
         if (!isConnected) {
             throw NetworkConnectivityException()
         }
 
-        return chain.proceed(
-            chain
-                .request()
-                .newBuilder()
-                .build()
-        )
+        return response
     }
 }
