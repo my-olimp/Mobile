@@ -43,7 +43,7 @@ import ramble.sokol.myolimp.ui.theme.Transparent
 import ramble.sokol.myolimp.ui.theme.regularType
 
 
-@Destination
+@Destination("temp")
 @Composable
 fun RegisterInfoScreen(
     navigator: DestinationsNavigator

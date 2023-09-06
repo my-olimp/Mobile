@@ -48,7 +48,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout
@@ -60,6 +59,7 @@ import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditContactsShee
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditEducationSheet
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPersonalInfoSheet
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPhotoSheet
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
@@ -70,7 +70,7 @@ import ramble.sokol.myolimp.ui.theme.White
 @Destination
 @Composable
 fun ProfileDataScreen(
-    navController: NavController
+    navController: NavController,
 ) {
 
     val viewModel = getViewModel<ProfileViewModel>()
@@ -89,6 +89,9 @@ fun ProfileDataScreen(
     var sheetName by remember {
         mutableStateOf("")
     }
+//    var selectedImgUri by remember {
+//        mutableStateOf(state.value.profileImg)
+//    }
 
 //    var selectedImgUri by remember {
 //        mutableStateOf(viewModel.state.value.profileImg)

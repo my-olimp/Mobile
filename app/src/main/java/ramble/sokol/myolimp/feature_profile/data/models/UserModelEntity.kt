@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.data.models
 
-import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import java.io.Serializable

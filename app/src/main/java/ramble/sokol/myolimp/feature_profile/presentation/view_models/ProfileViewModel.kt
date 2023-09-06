@@ -79,7 +79,8 @@ class ProfileViewModel (
 
             is ProfileEvent.OnImgChanged -> {
                 _state.value = _state.value.copy(
-                    profileImg = event.img
+                    // TODO change event or update to string
+//                    profileImg = event.img
                 )
             }
 
@@ -167,7 +168,6 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnRefreshToken -> {
-
                 refreshToken()
             }
         }

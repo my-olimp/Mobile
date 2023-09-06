@@ -166,4 +166,7 @@
     </string-array>
     <string name="null_textfield_error">Необходимо ввести %1$s</string>
     <string name="error_date">дату рождения</string>
+    <string name="register_image_screen_title">Фото и документ</string>
+    <string name="four_of_four">4 из 4</string>
+    <string name="label_snils">СНИЛС</string>
 </resources>

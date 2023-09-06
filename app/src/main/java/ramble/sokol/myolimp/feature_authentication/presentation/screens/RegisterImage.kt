@@ -1,6 +1,11 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +49,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
@@ -52,6 +59,9 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.ref.WeakReference
 
 @Destination()
 @Composable
@@ -64,12 +74,13 @@ internal fun RegisterImageScreen(
         mutableStateOf(state.profileImg)
     }
     RegisterImageScreen(
-        onEvent = {event ->
+        onEvent = { event ->
             if (event is RegistrationImageEvent.OnImageChanged) {
                 selectedImgUri = event.uri
             }
             viewModel.onEvent(event)
         },
+        onNext = viewModel::onNext,
         snilsValue = state.snils,
         selectedProfileImg = state.profileImg
     )
@@ -78,12 +89,13 @@ internal fun RegisterImageScreen(
 @Preview
 @Composable
 fun PrevRegisterImageScreen() {
-    RegisterImageScreen({}, "", null)
+    RegisterImageScreen({}, {_, _ ->}, "", null)
 }
 
 @Composable
 fun RegisterImageScreen(
     onEvent: (RegistrationImageEvent) -> Unit,
+    onNext: (File, Bitmap) -> Unit,
     snilsValue: String,
     selectedProfileImg: Uri?
 ) {
@@ -93,6 +105,8 @@ fun RegisterImageScreen(
             onEvent(RegistrationImageEvent.OnImageChanged(it))
         }
     )
+
+    val context = LocalContext.current
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -119,29 +133,12 @@ fun RegisterImageScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Фото и документ",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(R.font.medium)),
-                            fontWeight = FontWeight(500),
-                            color = BlackProfile,
-                            letterSpacing = 0.4.sp
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(24.dp))
-                    Text(
-                        text = "4 из 4",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.medium)),
-                            fontWeight = FontWeight(500),
-                            color = SuccessStatus,
-                            letterSpacing = 0.4.sp
-                        )
+                    TextHeaderWithCounter(
+                        headerText = stringResource(R.string.register_image_screen_title),
+                        counterText = stringResource(R.string.four_of_four)
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
                 IconButton(
                     onClick = {
                         launcher.launch(
@@ -150,11 +147,11 @@ fun RegisterImageScreen(
                             )
                         )
                     },
-                    modifier = Modifier.size(200.dp)
+                    modifier = Modifier.size(150.dp)
                 ) {
                     AsyncImage(
                         modifier = Modifier
-                            .size(200.dp)
+                            .size(150.dp)
                             .align(Alignment.CenterHorizontally)
                             .clip(CircleShape),
                         model = selectedProfileImg ?: R.drawable.ic_default_img,
@@ -165,20 +162,28 @@ fun RegisterImageScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedText(
                     previousData = snilsValue,
-                    label = "СНИЛС",
+                    label = stringResource(R.string.label_snils),
                     isEnabled = true,
                     onTextChanged = {
                         onEvent(RegistrationImageEvent.OnSnilsChanged(it))
                     },
                     isError = false
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 FilledBtn(
                     text = stringResource(id = R.string.further),
                     padding = 0.dp,
-                    isEnabled = (selectedProfileImg != null) //
+                    isEnabled = (selectedProfileImg != null && snilsValue.isNotEmpty())
                 ) {
-
+                    try {
+                        val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedProfileImg ?: Uri.EMPTY))
+                        val pngFile = File(context.cacheDir, "converted_image.png")
+                        if (pngFile.exists()) pngFile.delete()
+                        pngFile.createNewFile()
+                        onNext(pngFile, bitmap)
+                    } catch (e: Exception) {
+                        onEvent(RegistrationImageEvent.OnUploadError)
+                    }
                 }
             }
         }
