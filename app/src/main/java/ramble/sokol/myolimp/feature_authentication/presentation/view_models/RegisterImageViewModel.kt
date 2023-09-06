@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.view_models
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -21,6 +22,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterIn
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 
 class RegisterImageViewModel(
@@ -57,12 +59,21 @@ class RegisterImageViewModel(
         }
     }
 
-    fun onNext(imageFile: File) {
+    fun onNext(imageFile: File, bitmap: Bitmap) {
         viewModelScope.launch {
             try {
-                val requestFile = imageFile.asRequestBody("image".toMediaTypeOrNull())
+                // Write the bitmap to the new File in PNG format
+                val outStream = FileOutputStream(imageFile)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 80, outStream)
+                outStream.flush()
+                outStream.close()
+
+                //Prepate image for upload
+                val requestFile = imageFile.asRequestBody("image/png".toMediaTypeOrNull())
                 val body =
                     MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
+
+                //Upload image
                 repository.registerImageDocs(
                     auth = dataStore.getToken(Constants.ACCESS_TOKEN)
                         ?: throw Exception("No access token"),

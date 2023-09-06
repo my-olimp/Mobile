@@ -1,8 +1,11 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -57,6 +60,7 @@ import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.Transparent
 import java.io.File
+import java.io.FileOutputStream
 import java.lang.ref.WeakReference
 
 @Destination()
@@ -85,13 +89,13 @@ internal fun RegisterImageScreen(
 @Preview
 @Composable
 fun PrevRegisterImageScreen() {
-    RegisterImageScreen({}, {}, "", null)
+    RegisterImageScreen({}, {_, _ ->}, "", null)
 }
 
 @Composable
 fun RegisterImageScreen(
     onEvent: (RegistrationImageEvent) -> Unit,
-    onNext: (File) -> Unit,
+    onNext: (File, Bitmap) -> Unit,
     snilsValue: String,
     selectedProfileImg: Uri?
 ) {
@@ -171,8 +175,12 @@ fun RegisterImageScreen(
                     padding = 0.dp,
                     isEnabled = (selectedProfileImg != null && snilsValue.isNotEmpty())
                 ) {
-                    try{
-                        onNext(uriToFile(selectedProfileImg ?: Uri.EMPTY, context))
+                    try {
+                        val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedProfileImg ?: Uri.EMPTY))
+                        val pngFile = File(context.cacheDir, "converted_image.png")
+                        if (pngFile.exists()) pngFile.delete()
+                        pngFile.createNewFile()
+                        onNext(pngFile, bitmap)
                     } catch (e: Exception) {
                         onEvent(RegistrationImageEvent.OnUploadError)
                     }
@@ -181,14 +189,3 @@ fun RegisterImageScreen(
         }
     }
 }
-
-fun uriToFile(uri: Uri, context: Context): File {
-    val cursor = context.contentResolver.query(uri, null, null, null, null)
-    cursor?.use {
-        it.moveToFirst()
-        val index = it.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA)
-        return File(it.getString(index))
-    }
-    throw Exception("Cursor is null.")
-}
-

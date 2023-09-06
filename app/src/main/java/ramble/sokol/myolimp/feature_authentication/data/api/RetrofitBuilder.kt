@@ -14,7 +14,7 @@ class RetrofitBuilder(
 
     private val client = OkHttpClient.Builder()
 //        .addInterceptor(SetCookiesInterceptor(context = context))
-        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
         .addInterceptor(ReceivedCookiesInterceptor(context = context))
         .build()
 
