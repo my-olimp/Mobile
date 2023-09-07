@@ -4,28 +4,28 @@ import com.google.gson.annotations.SerializedName
 
 data class ResponseSchoolModel(
     @SerializedName("number") val number: Int = -1,
-    @SerializedName("name") val name: String = ""
+    @SerializedName("name") val name: String = "",
+    @SerializedName("region") val regionId: Int = -1
 ) {
     fun asSchool(): School {
-        return School(number, name)
+        return School(number, name, regionId)
     }
 }
-
-data class RequestSchoolModel (
-    @SerializedName("region") val regionId: Int
-)
 
 data class School (
     val number: Int = -1,
-    val name: String = ""
-) {
-    fun asResponseModel() : ResponseSchoolModel {
-        return ResponseSchoolModel(number, name)
-    }
-}
+    val name: String = "",
+    val regionId : Int = -1
+)
 
 fun List<ResponseSchoolModel>.asListSchool(): List<School> {
     val list = mutableListOf<School>()
     for(item in this) list.add(item.asSchool())
+    return list
+}
+
+fun List<School>.toListString(): List<String> {
+    val list = mutableListOf<String>()
+    for(item in this) list.add(item.name)
     return list
 }
