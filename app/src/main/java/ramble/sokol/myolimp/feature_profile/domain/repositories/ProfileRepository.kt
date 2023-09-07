@@ -49,7 +49,7 @@ class ProfileRepository(
         }
     }
 
-    suspend fun refreshToken(
+    fun refreshToken(
         cookie: String,
         onResult: (ResponseAuthModel?) -> Unit,
         onError: (Throwable) -> Unit
@@ -70,5 +70,4 @@ class ProfileRepository(
             }
         )
     }
-
 }

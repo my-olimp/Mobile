@@ -2,6 +2,8 @@ package ramble.sokol.myolimp.feature_profile.utils
 
 import android.net.Uri
 import androidx.navigation.NavController
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 
 sealed class ProfileEvent {
     data object OnSave: ProfileEvent()
@@ -14,9 +16,9 @@ sealed class ProfileEvent {
     data class OnDobChanged(val dob: String): ProfileEvent()
     data class OnGenderChanged(val gender: String): ProfileEvent()
     data class OnSnilsChanged(val snils: String): ProfileEvent()
-    data class OnImgChanged(val img: Uri?): ProfileEvent()
+    data class OnImgChanged(val img: String?): ProfileEvent()
     data class OnMarkerClicked(val hasThird: Boolean): ProfileEvent()
-    data class OnRegionChanged(val region: String): ProfileEvent()
+    data class OnRegionChanged(val region: ResponseRegionModel): ProfileEvent()
     data class OnCityChanged(val city: String): ProfileEvent()
     data class OnSchoolChanged(val school: String): ProfileEvent()
     data class OnGradeChanged(val grade: Int): ProfileEvent()

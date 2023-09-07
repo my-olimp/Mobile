@@ -2,7 +2,10 @@ package ramble.sokol.myolimp.feature_authentication.data.api
 
 import android.content.Context
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.utils.interceptors.AuthorizedInterceptor
+import ramble.sokol.myolimp.utils.interceptors.NetworkConnectionInterceptor
 import ramble.sokol.myolimp.utils.interceptors.ReceivedCookiesInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,7 +16,13 @@ class RetrofitBuilder(
 
     private val client = OkHttpClient.Builder()
 //        .addInterceptor(SetCookiesInterceptor(context = context))
+        // get cookie
+        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
         .addInterceptor(ReceivedCookiesInterceptor(context = context))
+        // if there is network connection
+        .addInterceptor(NetworkConnectionInterceptor(context = context))
+        // is user authenticated
+        .addInterceptor(AuthorizedInterceptor())
         .build()
 
     private val retrofit = Retrofit.Builder()

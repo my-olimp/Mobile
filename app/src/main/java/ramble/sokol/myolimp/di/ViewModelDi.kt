@@ -44,7 +44,7 @@ val viewModelsModule = module {
 
     /* Register Image */
     viewModel {
-        RegisterImageViewModel()
+        RegisterImageViewModel(get())
     }
 
     /* Register Education */

@@ -22,6 +22,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 fun EditEducationSheet (
     viewModel: ProfileViewModel
 ) {
+    val state = viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -35,16 +36,17 @@ fun EditEducationSheet (
                 "Московская область", "Краснодарская область",
                 "Нижегородская область", "Ленинградская область"
             ),
-            previousData = viewModel.state.value.region,
+            previousData = state.value.region.name,
             label = stringResource(R.string.region_profile),
         ) {
-            viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
+            // TODO
+//            viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
         EditableDropDown (
-            previousData = viewModel.state.value.city,
+            previousData = state.value.city,
             label = stringResource(R.string.city_profile),
             listOf(
                 "Балашиха", "Москва",
@@ -57,7 +59,7 @@ fun EditEducationSheet (
         Spacer(modifier = Modifier.height(14.dp))
 
         EditableDropDown (
-            previousData = viewModel.state.value.school,
+            previousData = state.value.school,
             label = stringResource(R.string.school),
             listOf(
                 "МБОУ СОШ №10", "МБОУ СОШ №1",
@@ -71,7 +73,7 @@ fun EditEducationSheet (
         Spacer(modifier = Modifier.height(14.dp))
 
         ReadOnlyDropDown (
-            previousData = viewModel.state.value.grade.toString(),
+            previousData = "${state.value.grade}",
             label = stringResource(R.string.grade),
             options = listOf(
                 "1", "2",

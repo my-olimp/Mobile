@@ -1,23 +1,24 @@
 package ramble.sokol.myolimp.feature_profile.domain.models
 
-import android.net.Uri
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 
 data class UserModel(
+    val id: String = "",
     val firstName: String = "",
     val secondName: String = "",
     val thirdName: String = "",
     val dateOfBirth: String = "",
     val gender: String = "",
     val snils: String = "",
-    val region: String = "",
+    val region: ResponseRegionModel = ResponseRegionModel(),
     val city: String = "",
     val school: String = "",
     val phone: String = "",
     val email: String = "",
     val grade: Int = 0,
     val accountType: String = "",
-    val profileImg: Uri? = null,
+    val profileImg: String? = null,
     val hasThird: Boolean = true,
 ) {
     fun toUserModelEntity() = UserModelEntity(
@@ -31,7 +32,7 @@ data class UserModel(
             else -> null
         },
         snils = if (snils == "") null else snils,
-        region = if (region == "") null else region,
+        region = region,
         city = if (city == "") null else city,
         school = if (school == "") null else school,
         phone = if (phone == "") null else phone,
