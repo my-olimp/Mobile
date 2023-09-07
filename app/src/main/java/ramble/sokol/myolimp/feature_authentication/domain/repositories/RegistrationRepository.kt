@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
@@ -150,4 +151,29 @@ class RegistrationRepository(
             }
         )
     }
+
+    fun getSchools(
+        auth: String,
+        data: Int,
+        onResult: (List<ResponseSchoolModel>?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.getSchools(auth, data).enqueue(
+            object : Callback<List<ResponseSchoolModel>> {
+                override fun onResponse(
+                    call: Call<List<ResponseSchoolModel>>,
+                    response: Response<List<ResponseSchoolModel>>
+                ) {
+                    Log.i("RegistrationEducationViewModel","request success with ${response.code()}")
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<List<ResponseSchoolModel>>, t: Throwable) {
+                    Log.i("RegistrationEducationViewModel","request called ${t.message} with exception")
+                    onError(t)
+                }
+            }
+        )
+    }
+
 }

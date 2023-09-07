@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
+import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
@@ -61,6 +62,7 @@ class RegisterEducationViewModel(
                     )
                 }
                 requestCities(event.region.number)
+                requestSchools(event.region.number)
             }
             is RegistrationEducationEvent.OnSchoolChanged -> {
                 _state.update {
@@ -85,37 +87,37 @@ class RegisterEducationViewModel(
                     Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
                 }
             }
-         }
+        }
     }
 
     private fun sendRequest(
         onResult: () -> Unit,
         onError: () -> Unit
     ) {
-       viewModelScope.launch(Dispatchers.IO) {
-           val userData = state.value
-           try {
-               repository.registerEducation(
-                   auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
-                   data = UserEducationDataModel(
-                       region = userData.region.asResponseModel(),
-                       city = userData.city,
-                       school = userData.school,
-                       grade = userData.grade.toInt()
-                   ),
-                   onResult = {
-                       Log.i(TAG,"request response: $it")
-                       onResult.invoke()
-                   },
-                   onError = {
-                       onError.invoke()
-                       Log.i(TAG,"request exception: ${it.message}")
-                   }
-               )
-           } catch (e: Exception) {
-               Log.i(TAG,"exception: ${e.message}")
-           }
-       }
+        viewModelScope.launch(Dispatchers.IO) {
+            val userData = state.value
+            try {
+                repository.registerEducation(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                    data = UserEducationDataModel(
+                        region = userData.region.number,
+                        city = userData.city,
+                        schoolId = userData.school.number,
+                        grade = userData.grade.toInt()
+                    ),
+                    onResult = {
+                        Log.i(TAG,"request response: $it")
+                        onResult.invoke()
+                    },
+                    onError = {
+                        onError.invoke()
+                        Log.i(TAG,"request exception: ${it.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"exception: ${e.message}")
+            }
+        }
     }
 
     private fun checkData(): Boolean {
@@ -128,7 +130,7 @@ class RegisterEducationViewModel(
             _state.update { it.copy(cityError = true) }
             isValid = false
         }
-        if (state.value.school == "") {
+        if (state.value.school.name == "") {
             _state.update { it.copy(schoolError = true) }
             isValid = false
         }
@@ -172,7 +174,7 @@ class RegisterEducationViewModel(
                     auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
                     data = regionId,
                     onResult = { list ->
-                        Log.i(TAG,"request response is $list")
+                        Log.i(TAG,"cities request response is $list")
                         if(list != null) {
                             _state.update {
                                 it.copy(
@@ -182,11 +184,36 @@ class RegisterEducationViewModel(
                         }
                     },
                     onError = {
-                        Log.i(TAG,"request cause $it")
+                        Log.i(TAG,"cities request cause $it")
                     }
                 )
             } catch (e: Exception) {
-                Log.i(TAG,"exception: ${e.message}")
+                Log.i(TAG,"cities exception: ${e.message}")
+            }
+        }
+    }
+    private fun requestSchools(regionId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getSchools(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("No access token"),
+                    data = regionId,
+                    onResult = { list ->
+                        Log.i(TAG,"response of school request: $list")
+                        if(list != null) {
+                            _state.update {
+                                it.copy(
+                                    schoolList = list.asListSchool()
+                                )
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"school response is exception: ${it.message}")
+                    }
+                )
+            } catch(e: Exception) {
+                Log.i(TAG,"school throwed exception ${e.message}")
             }
         }
     }

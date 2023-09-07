@@ -121,12 +121,17 @@ fun RegisterEducationScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 EditableDropDown(
-                    previousData = state.value.school,
+                    previousData = state.value.school.name,
                     label = stringResource(id = R.string.school),
-                    options = stringArrayResource(id = R.array.school).toList(),
+                    options = state.value.schoolList.toListString()
+                        .ifEmpty { stringArrayResource(id = R.array.school).toList() },
                     isError = state.value.schoolError
-                ) {
-                    viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(it))
+                ) { newSchool ->
+                    state.value.schoolList.find {
+                        it.name == newSchool
+                    }?.let {
+                        viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(it))
+                    }
                 }
                 if (state.value.schoolError) ShowError(
                     text = stringResource(
