@@ -4,20 +4,18 @@ import com.google.gson.annotations.SerializedName
 
 data class ResponseSchoolModel(
     @SerializedName("number") val number: Int = -1,
-    @SerializedName("name") val name: String = ""
+    @SerializedName("name") val name: String = "",
+    @SerializedName("region") val regionId: Int = -1
 ) {
     fun asSchool(): School {
-        return School(number, name)
+        return School(number, name, regionId)
     }
 }
 
-data class RequestSchoolModel (
-    @SerializedName("region") val regionId: Int
-)
-
 data class School (
     val number: Int = -1,
-    val name: String = ""
+    val name: String = "",
+    val regionId : Int
 ) {
     fun asResponseModel() : ResponseSchoolModel {
         return ResponseSchoolModel(number, name)

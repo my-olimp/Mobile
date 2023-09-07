@@ -85,37 +85,37 @@ class RegisterEducationViewModel(
                     Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
                 }
             }
-         }
+        }
     }
 
     private fun sendRequest(
         onResult: () -> Unit,
         onError: () -> Unit
     ) {
-       viewModelScope.launch(Dispatchers.IO) {
-           val userData = state.value
-           try {
-               repository.registerEducation(
-                   auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
-                   data = UserEducationDataModel(
-                       region = userData.region.asResponseModel(),
-                       city = userData.city,
-                       school = userData.school,
-                       grade = userData.grade.toInt()
-                   ),
-                   onResult = {
-                       Log.i(TAG,"request response: $it")
-                       onResult.invoke()
-                   },
-                   onError = {
-                       onError.invoke()
-                       Log.i(TAG,"request exception: ${it.message}")
-                   }
-               )
-           } catch (e: Exception) {
-               Log.i(TAG,"exception: ${e.message}")
-           }
-       }
+        viewModelScope.launch(Dispatchers.IO) {
+            val userData = state.value
+            try {
+                repository.registerEducation(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                    data = UserEducationDataModel(
+                        region = userData.region.asResponseModel(),
+                        city = userData.city,
+                        school = userData.school,
+                        grade = userData.grade.toInt()
+                    ),
+                    onResult = {
+                        Log.i(TAG,"request response: $it")
+                        onResult.invoke()
+                    },
+                    onError = {
+                        onError.invoke()
+                        Log.i(TAG,"request exception: ${it.message}")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"exception: ${e.message}")
+            }
+        }
     }
 
     private fun checkData(): Boolean {
@@ -187,6 +187,24 @@ class RegisterEducationViewModel(
                 )
             } catch (e: Exception) {
                 Log.i(TAG,"exception: ${e.message}")
+            }
+        }
+    }
+    private fun requestSchools(regionId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getSchools(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("No access token"),
+                    data = regionId,
+                    onResult = {
+
+                    },
+                    onError = {
+                        Log.i(TAG,"response is exception: ${it.message}")
+                    }
+                )
+            } catch(e: Exception) {
+                Log.i(TAG,"throwed exception ${e.message}")
             }
         }
     }

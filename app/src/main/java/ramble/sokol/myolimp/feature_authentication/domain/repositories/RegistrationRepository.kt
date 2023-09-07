@@ -1,9 +1,11 @@
 package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
 import android.content.Context
+import android.util.Log
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
@@ -101,4 +103,29 @@ class RegistrationRepository (
             }
         )
     }
+
+    fun getSchools(
+        auth: String,
+        data: Int,
+        onResult: (List<ResponseSchoolModel>?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.getSchools(auth, data).enqueue(
+            object : Callback<List<ResponseSchoolModel>> {
+                override fun onResponse(
+                    call: Call<List<ResponseSchoolModel>>,
+                    response: Response<List<ResponseSchoolModel>>
+                ) {
+                    Log.i("RegistrationEducationViewModel","request success with $call")
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<List<ResponseSchoolModel>>, t: Throwable) {
+                    Log.i("RegistrationEducationViewModel","request called $call with exception")
+                    onError(t)
+                }
+            }
+        )
+    }
+
 }
