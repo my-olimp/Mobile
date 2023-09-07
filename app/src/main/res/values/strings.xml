@@ -110,8 +110,10 @@
     <string name="success_register_message">Аккаунт был создан</string>
     <string name="error_register_message">Неверный код, попробуйте еще раз</string>
     <string name="individual_data">Персональные данные</string>
+    <string name="subjects">Дисциплины</string>
     <string name="one_of_four">1 из 4</string>
     <string name="two_of_four">2 из 4</string>
+    <string name="three_of_four">3 из 4</string>
     <string name="female_gender">Женский</string>
     <string name="male_gender">Мужской</string>
     <string name="type_of_activity">Вид деятельности</string>
@@ -169,4 +171,6 @@
     <string name="register_image_screen_title">Фото и документ</string>
     <string name="four_of_four">4 из 4</string>
     <string name="label_snils">СНИЛС</string>
+    <string name="choose_necessary_subjects">Выберите или введите в поиск предметы, к которым готовитесь</string>
+    <string name="popular_subjects">Популярные дисциплины</string>
 </resources>

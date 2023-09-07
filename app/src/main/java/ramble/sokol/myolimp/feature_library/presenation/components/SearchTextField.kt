@@ -67,7 +67,7 @@ fun SearchTextField (
             focusedBorderColor = BlueStart,
             focusedLabelColor = BlueStart,
             cursorColor = BlueStart,
-            unfocusedBorderColor = White,
+//            unfocusedBorderColor = White,
             backgroundColor = White,
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),

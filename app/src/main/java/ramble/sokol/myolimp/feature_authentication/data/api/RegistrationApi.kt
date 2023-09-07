@@ -3,6 +3,7 @@ package ramble.sokol.myolimp.feature_authentication.data.api
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import okhttp3.MultipartBody
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
@@ -57,6 +58,12 @@ interface RegistrationApi {
         @Header("Authorization") auth: String,
         @Query("region") data: Int
     ) : Call<List<ResponseSchoolModel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("user/subjects/")
+    fun getSubjects(
+        @Header("Authorization") auth: String
+    ) : Call<List<String>>
 
     @PATCH("user/")
     fun updateDocsUserData(

@@ -36,4 +36,5 @@ val ErrorStatus = Color(0xFFDA4242)
 val MiddleStatus = Color(0xFFEDB16A)
 val BackgroundProgressIndicator = Color(0xFFE1E3E6)
 val BlackRegistrationData = Color(0xD91A0710)
+val BlackRegistrationSubjects = Color(0xA61A0710)
 
