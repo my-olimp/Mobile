@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterSubjectsRepository
@@ -27,6 +29,11 @@ class RegisterSubjectsViewModel (
 
     private val _state = MutableStateFlow(RegisterSubjectsState())
     val state = _state.asStateFlow()
+
+    operator fun invoke() {
+        // load subjects
+        getSubjects()
+    }
 
     fun onEvent(
         event: RegisterSubjectEvent
@@ -48,16 +55,60 @@ class RegisterSubjectsViewModel (
         }
     }
 
-    fun getSubjects() {
+    private fun getSubjects() {
         // get subjects
         viewModelScope.launch {
             repository.getSchools(
                 auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("No access token"),
-                onResult = {
-                    Log.i(TAG, "success - $it")
+                onResult = { subjects->
+                    if (subjects != null) {
+
+                        val subjectsWithIcon = mutableListOf<SubjectModel>()
+
+                        subjects.forEach {
+                            when (it) {
+                                "Информатика" -> {
+                                    subjectsWithIcon.add(SubjectModel(
+                                        name = it,
+                                        icon = R.drawable.ic_profile_subject_it
+                                    ))
+                                }
+                                "Математика" -> {
+                                    subjectsWithIcon.add(SubjectModel(
+                                        name = it,
+                                        icon = R.drawable.ic_profile_subject_math
+                                    ))
+                                }
+                                "Физика" -> {
+                                    subjectsWithIcon.add(SubjectModel(
+                                        name = it,
+                                        icon = R.drawable.ic_subject_phycics
+                                    ))
+                                }
+                                "Литература" -> {
+                                    subjectsWithIcon.add(SubjectModel(
+                                        name = it,
+                                        icon = R.drawable.ic_subject_literature
+                                    ))
+                                }
+                                "Русский Язык" -> {
+                                    subjectsWithIcon.add(SubjectModel(
+                                        name = it,
+                                        icon = R.drawable.ic_subject_russian
+                                    ))
+                                }
+                            }
+                        }
+
+                        _state.update {
+                            it.copy(
+                                subjects = subjectsWithIcon
+                            )
+                        }
+                    }
+                    Log.i(TAG, "success - $subjects")
                 },
                 onError = {
-                    // TODO PARSE ERROR
                     Log.i(TAG, "error - $it")
                 }
             )

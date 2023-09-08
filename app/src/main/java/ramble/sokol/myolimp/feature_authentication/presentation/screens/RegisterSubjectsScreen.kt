@@ -3,13 +3,15 @@ package ramble.sokol.myolimp.feature_authentication.presentation.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -26,6 +28,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
@@ -34,6 +37,7 @@ import ramble.sokol.myolimp.ui.theme.BlackRegistrationSubjects
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 
+@OptIn(ExperimentalLayoutApi::class)
 @Destination
 @Composable
 fun RegisterSubjectsScreen (
@@ -41,10 +45,9 @@ fun RegisterSubjectsScreen (
 ) {
 
     val viewModel = getViewModel<RegisterSubjectsViewModel>()
+    val state = viewModel.state.collectAsState()
 
-    LaunchedEffect(key1 = Unit, block = {
-        viewModel.getSubjects()
-    })
+    viewModel.invoke()
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -111,6 +114,33 @@ fun RegisterSubjectsScreen (
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            FlowRow(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                maxItemsInEachRow = 4
+            ) {
+               state.value.subjects.forEach {
+                    SubjectComponent(
+                        subject = it,
+                        onClick = {
+
+                        }
+                    )
+                   SubjectComponent(
+                       subject = it,
+                       onClick = {
+
+                       }
+                   )
+                   SubjectComponent(
+                       subject = it,
+                       onClick = {
+
+                       }
+                   )
+                }
+            }
         }
     }
 }
