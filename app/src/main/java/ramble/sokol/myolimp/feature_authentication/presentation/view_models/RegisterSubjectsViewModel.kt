@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
@@ -30,17 +31,11 @@ class RegisterSubjectsViewModel (
     private val _state = MutableStateFlow(RegisterSubjectsState())
     val state = _state.asStateFlow()
 
-    operator fun invoke() {
-        // load subjects
-        getSubjects()
-    }
-
     fun onEvent(
         event: RegisterSubjectEvent
     ) {
         when (event) {
             is RegisterSubjectEvent.OnSubjectClicked -> {
-
                 val chosenSubjects = _state.value.chosenSubjects
 
                 if (!chosenSubjects.contains(event.subject)) chosenSubjects.add(event.subject)
@@ -51,6 +46,14 @@ class RegisterSubjectsViewModel (
                         chosenSubjects = chosenSubjects
                     )
                 }
+
+                Log.i(TAG, "${state.value.chosenSubjects} - ${state.value.chosenSubjects.contains(
+                    RequestSubjectModel(name = event.subject.name)
+                )}")
+            }
+
+            RegisterSubjectEvent.OnLoadSubjects -> {
+                getSubjects()
             }
         }
     }

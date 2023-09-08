@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -28,6 +33,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
@@ -47,7 +54,10 @@ fun RegisterSubjectsScreen (
     val viewModel = getViewModel<RegisterSubjectsViewModel>()
     val state = viewModel.state.collectAsState()
 
-    viewModel.invoke()
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onEvent(RegisterSubjectEvent.OnLoadSubjects)
+    })
+
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen
@@ -115,30 +125,22 @@ fun RegisterSubjectsScreen (
             Spacer(modifier = Modifier.height(10.dp))
 
             FlowRow(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 maxItemsInEachRow = 4
             ) {
                state.value.subjects.forEach {
                     SubjectComponent(
                         subject = it,
-                        onClick = {
-
+                        onClick = { subject->
+                            viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(
+                                RequestSubjectModel(
+                                    name = subject.name
+                                )
+                            ))
                         }
                     )
-                   SubjectComponent(
-                       subject = it,
-                       onClick = {
-
-                       }
-                   )
-                   SubjectComponent(
-                       subject = it,
-                       onClick = {
-
-                       }
-                   )
                 }
             }
         }
