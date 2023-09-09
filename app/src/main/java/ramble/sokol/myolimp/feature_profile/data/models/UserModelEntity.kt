@@ -1,7 +1,9 @@
 package ramble.sokol.myolimp.feature_profile.data.models
 
 import com.google.gson.annotations.SerializedName
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import java.io.Serializable
 
 data class UserModelEntity (
@@ -12,9 +14,9 @@ data class UserModelEntity (
     @SerializedName("data_of_birth") val dateOfBirth: String? = null,
     @SerializedName("gender") val gender: String? = null,
     @SerializedName("snils") val snils: String? = null,
-    @SerializedName("region") val region: ResponseRegionModel = ResponseRegionModel(),
-    @SerializedName("city") val city: String? = null,
-    @SerializedName("school") val school: String? = null,
+    @SerializedName("region") val region: ResponseRegionModel? = null,
+    @SerializedName("city") val city: ResponseCityModel? = null,
+    @SerializedName("school") val school: ResponseSchoolModel? = null,
     @SerializedName("phone") val phone: String? = null,
     @SerializedName("email") val email: String? = null,
     @SerializedName("grade") val grade: Int? = null,

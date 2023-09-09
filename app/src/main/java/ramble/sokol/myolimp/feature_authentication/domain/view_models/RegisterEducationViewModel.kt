@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
+import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
 import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
@@ -100,18 +101,18 @@ class RegisterEducationViewModel(
                 repository.registerEducation(
                     auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
                     data = UserEducationDataModel(
-                        region = userData.region.number,
-                        city = userData.city,
-                        schoolId = userData.school.number,
+                        regionId = userData.region.number,
+                        cityId = userData.city.id,
+                        schoolId = userData.school.id,
                         grade = userData.grade.toInt()
                     ),
                     onResult = {
-                        Log.i(TAG,"request response: $it")
+                        Log.i(TAG,"patch request response: $it")
                         onResult.invoke()
                     },
                     onError = {
                         onError.invoke()
-                        Log.i(TAG,"request exception: ${it.message}")
+                        Log.i(TAG,"patch request exception: ${it.message}")
                     }
                 )
             } catch (e: Exception) {
@@ -126,7 +127,7 @@ class RegisterEducationViewModel(
             _state.update { it.copy(regionError = true) }
             isValid = false
         }
-        if (state.value.city == "") {
+        if (state.value.city.name == "") {
             _state.update { it.copy(cityError = true) }
             isValid = false
         }
@@ -178,7 +179,7 @@ class RegisterEducationViewModel(
                         if(list != null) {
                             _state.update {
                                 it.copy(
-                                    cityList = list
+                                    cityList = list.asListCity()
                                 )
                             }
                         }

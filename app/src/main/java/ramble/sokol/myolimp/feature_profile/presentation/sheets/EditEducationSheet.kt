@@ -46,28 +46,29 @@ fun EditEducationSheet (
         Spacer(modifier = Modifier.height(14.dp))
 
         EditableDropDown (
-            previousData = state.value.city,
+            previousData = state.value.city.name,
             label = stringResource(R.string.city_profile),
             listOf(
                 "Балашиха", "Москва",
                 "Санкт-Петербург", "Чехов"
             )
         ) {
-            viewModel.onEvent(ProfileEvent.OnCityChanged(it))
+            //TODO
+            //viewModel.onEvent(ProfileEvent.OnCityChanged(it))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
         EditableDropDown (
-            previousData = state.value.school,
+            previousData = state.value.school.name,
             label = stringResource(R.string.school),
             listOf(
                 "МБОУ СОШ №10", "МБОУ СОШ №1",
                 "МБОУ гимназия №2", "МБОУ СОШ №3",
                 "МБОУ лицей №4",
             )
-        ) {
-            viewModel.onEvent(ProfileEvent.OnSchoolChanged(it))
+        ) {//TODO
+            //viewModel.onEvent(ProfileEvent.OnSchoolChanged(it))
         }
 
         Spacer(modifier = Modifier.height(14.dp))

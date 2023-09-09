@@ -3,6 +3,7 @@ package ramble.sokol.myolimp.feature_authentication.data.api
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import okhttp3.MultipartBody
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
@@ -49,7 +50,7 @@ interface RegistrationApi {
     fun getCities(
         @Header("Authorization") auth: String,
         @Query("region") data: Int
-    ) : Call<List<String>>
+    ) : Call<List<ResponseCityModel>>
 
 
     @Headers("Content-Type: application/json")
