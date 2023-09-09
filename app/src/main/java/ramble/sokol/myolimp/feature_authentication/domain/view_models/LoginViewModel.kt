@@ -3,10 +3,12 @@ package ramble.sokol.myolimp.feature_authentication.domain.view_models
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
@@ -66,6 +68,16 @@ class LoginViewModel : ViewModel() {
 
 //                        Toast.makeText(context,
 //                            context.getString(R.string.success_autherization_message), Toast.LENGTH_SHORT).show()
+
+                        event.navigator.navigate(
+                            HomeScreenDestination()
+                        ) {
+                            popUpTo(NavGraphs.root) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
 
                         event.navigator.navigate(HomeScreenDestination)
                     },
