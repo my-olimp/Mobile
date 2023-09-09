@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
@@ -196,13 +199,15 @@ class ProfileViewModel : ViewModel() {
                                     profileImg = "https://storage.yandexcloud.net/myolimp/user/avatar/${result.user.id}.webp",
 
                                     email = result.user.email ?: "",
+                                    phone = result.user.phone ?: "",
                                     snils = result.user.snils ?: "",
 
                                     grade = result.user.grade ?: 0,
-
                                     accountType = result.user.accountType ?: "",
 
-                                    //region = result.user.region
+                                    region = result.user.region ?: ResponseRegionModel(),
+                                    city = result.user.city ?: ResponseCityModel(),
+                                    school = result.user.school ?: ResponseSchoolModel(),
 
                                 )
                             }
