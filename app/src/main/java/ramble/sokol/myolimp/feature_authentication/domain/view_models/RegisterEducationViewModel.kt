@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
@@ -77,7 +78,7 @@ class RegisterEducationViewModel(
                 if(checkData()) {
                     sendRequest(
                         onResult = {
-                            //event.navigator.navigate("" /*TODO navigate*/)
+                            event.navigator.navigate(RegisterSubjectsScreenDestination)
                             Log.i(TAG,"request called result")
                         },
                         onError = {
