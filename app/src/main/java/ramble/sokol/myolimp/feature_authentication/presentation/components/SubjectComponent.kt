@@ -31,11 +31,12 @@ import ramble.sokol.myolimp.ui.theme.White
 @Composable
 fun SubjectComponent (
     subject: SubjectModel,
+    previouslySelected: Boolean,
     onClick: (SubjectModel) -> Unit
 ) {
 
     var isSelected by remember {
-        mutableStateOf(false)
+        mutableStateOf(previouslySelected)
     }
 
 //    https://developer.android.com/jetpack/compose/components/chip

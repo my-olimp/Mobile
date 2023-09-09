@@ -7,6 +7,8 @@ data class RegisterSubjectsState (
     val searchQuery : String = "",
     val isSearching : Boolean = false,
 
+    var isNextEnabled : Boolean = false,
+
     val subjects : MutableList<SubjectModel> = mutableListOf(),
     val chosenSubjects : MutableList<RequestSubjectModel> = mutableListOf()
 )

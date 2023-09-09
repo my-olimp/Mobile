@@ -173,4 +173,5 @@
     <string name="label_snils">СНИЛС</string>
     <string name="choose_necessary_subjects">Выберите или введите в поиск предметы, к которым готовитесь</string>
     <string name="popular_subjects">Популярные дисциплины</string>
+    <string name="no_subjects_found">Предмет не найден :(</string>
 </resources>

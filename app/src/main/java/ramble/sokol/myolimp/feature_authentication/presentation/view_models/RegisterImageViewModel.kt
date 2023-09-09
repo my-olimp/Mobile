@@ -29,7 +29,7 @@ class RegisterImageViewModel(
     val context: Context
 ) : ViewModel() {
 
-    private val repository = RegistrationRepository(context = context)
+    private val repository = RegistrationRepository()
     private val dataStore = CodeDataStore(context = context)
 
     private val _state = MutableStateFlow(RegisterImageState())

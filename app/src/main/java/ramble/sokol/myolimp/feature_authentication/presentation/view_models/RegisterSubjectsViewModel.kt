@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.Navigator
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
-import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
@@ -29,7 +27,7 @@ class RegisterSubjectsViewModel (
         const val TAG = "ViewModelRegisterSubjects"
     }
 
-    private val repository = RegisterSubjectsRepository(context = context)
+    private val repository = RegisterSubjectsRepository()
     private val dataStore = CodeDataStore(context = context)
 
     private val _state = MutableStateFlow(RegisterSubjectsState())
@@ -50,6 +48,8 @@ class RegisterSubjectsViewModel (
                         chosenSubjects = chosenSubjects
                     )
                 }
+
+                checkAbilityToNext()
 
                 Log.i(TAG, "chosen subjects - ${state.value.chosenSubjects}")
             }
@@ -76,6 +76,14 @@ class RegisterSubjectsViewModel (
             is RegisterSubjectEvent.OnNext -> {
                 updateUserData(event.navigator)
             }
+        }
+    }
+
+    private fun checkAbilityToNext() {
+        _state.update {
+            it.copy(
+                isNextEnabled = state.value.chosenSubjects.size > 0
+            )
         }
     }
 
@@ -172,5 +180,4 @@ class RegisterSubjectsViewModel (
             )
         }
     }
-
 }

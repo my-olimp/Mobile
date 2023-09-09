@@ -2,7 +2,6 @@ package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
@@ -30,7 +29,7 @@ class ProfileViewModel (
     private val dataStore = CodeDataStore(context = context)
     private val cookiesDataStore = CookiesDataStore(context = context)
 
-    private val repository = ProfileRepository(context = context)
+    private val repository = ProfileRepository()
 
     private val _state = MutableStateFlow(
         UserModel()

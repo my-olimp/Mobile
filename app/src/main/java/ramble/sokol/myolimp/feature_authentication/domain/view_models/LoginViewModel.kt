@@ -25,7 +25,7 @@ class LoginViewModel(
         const val TAG = "ViewModelLogin"
     }
 
-    private val repository = LoginRepository(context = context)
+    private val repository = LoginRepository()
 
     private val dataStore = CodeDataStore(context)
 

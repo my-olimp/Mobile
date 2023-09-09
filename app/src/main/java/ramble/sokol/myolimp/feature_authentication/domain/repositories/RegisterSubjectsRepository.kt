@@ -2,6 +2,8 @@ package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
 import android.content.Context
 import android.util.Log
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
@@ -11,11 +13,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterSubjectsRepository (
-    val context: Context
-) {
+class RegisterSubjectsRepository : KoinComponent {
 
-    private val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
+    private val instance = RetrofitBuilder().instance(RegistrationApi::class.java)
 
     fun getSchools(
         auth: String,

@@ -11,11 +11,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class ProfileRepository(
-    context: Context
-) {
+class ProfileRepository {
 
-    private val instance = RetrofitBuilder(context = context).instance(ProfileApi::class.java)
+    private val instance = RetrofitBuilder().instance(ProfileApi::class.java)
 
     suspend fun updateUser(
         auth: String,

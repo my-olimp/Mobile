@@ -16,10 +16,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegistrationRepository(
-    val context: Context
-) {
-    private val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
+class RegistrationRepository {
+
+    private val instance = RetrofitBuilder().instance(RegistrationApi::class.java)
 
     fun registerInfo(
         auth: String,
@@ -27,7 +26,6 @@ class RegistrationRepository(
         onResult: (UserModelEntity?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
         instance.updateMainUserData(auth, data).enqueue(
             object : Callback<UserModelEntity> {
                 override fun onResponse(
@@ -77,7 +75,6 @@ class RegistrationRepository(
         onResult: (UserModelEntity?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val instance = RetrofitBuilder(context = context).instance(RegistrationApi::class.java)
         instance.uploadImage(auth, imageBody).enqueue(
             object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
