@@ -1,5 +1,7 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -35,12 +37,15 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubject
 import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackRegistrationData
 import ramble.sokol.myolimp.ui.theme.BlackRegistrationSubjects
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
+import java.io.File
 
 @OptIn(ExperimentalLayoutApi::class)
 @Destination
@@ -166,6 +171,16 @@ fun RegisterSubjectsScreen (
                         )
                     }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            FilledBtn(
+                text = stringResource(id = R.string.further),
+                padding = 0.dp,
+                isEnabled = (state.value.subjects.size > 0)
+            ) {
+                viewModel.onEvent(RegisterSubjectEvent.OnNext(navigator))
             }
         }
     }

@@ -77,4 +77,11 @@ interface RegistrationApi {
         @Header("Authorization") auth: String,
         @Part image: MultipartBody.Part
     ): Call<Void>
+
+    @Headers("Content-Type: application/json")
+    @PATCH("user/")
+    fun updateSubjects(
+        @Header("Authorization") auth: String,
+        @Body data: List<Int>
+    ) : Call<UserModelEntity>
 }

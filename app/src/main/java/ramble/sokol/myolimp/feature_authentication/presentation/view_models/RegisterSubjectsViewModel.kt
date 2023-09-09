@@ -4,11 +4,14 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.Navigator
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
@@ -49,11 +52,9 @@ class RegisterSubjectsViewModel (
 
                 Log.i(TAG, "chosen subjects - ${state.value.chosenSubjects}")
             }
-
-            RegisterSubjectEvent.OnLoadSubjects -> {
+            is RegisterSubjectEvent.OnLoadSubjects -> {
                 getSubjects()
             }
-
             is RegisterSubjectEvent.OnSearchQueryUpdated -> {
                 _state.update {
                     it.copy(
@@ -64,7 +65,6 @@ class RegisterSubjectsViewModel (
                 Log.i(TAG, "chosen subjects - ${state.value.searchQuery}")
 
             }
-
             is RegisterSubjectEvent.OnSearched -> {
                 _state.update {
                     it.copy(
@@ -72,6 +72,38 @@ class RegisterSubjectsViewModel (
                     )
                 }
             }
+            is RegisterSubjectEvent.OnNext -> {
+                updateUserData(event.navigator)
+            }
+        }
+    }
+
+    private fun updateUserData(
+        navigator: DestinationsNavigator
+    ) {
+        viewModelScope.launch {
+
+            val chosenSubjectsIds = state.value.chosenSubjects.map {
+                it.id
+            }
+
+            Log.i(TAG, "ids - $chosenSubjectsIds")
+
+            repository.updateSubjects(
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                subjects = chosenSubjectsIds,
+                onResult = {
+
+                    if (it != null) {
+                        navigator.navigate(RegisterImageScreenDestination)
+                    }
+
+                    Log.i(TAG, "result - $it")
+                },
+                onError = {
+                    Log.i(TAG, "error - $it")
+                }
+            )
         }
     }
 

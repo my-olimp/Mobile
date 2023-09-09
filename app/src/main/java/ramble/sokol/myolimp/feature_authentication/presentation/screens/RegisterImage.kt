@@ -49,7 +49,7 @@ import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
 import java.io.File
 
-@Destination()
+@Destination
 @Composable
 internal fun RegisterImageScreen(
     navigator: DestinationsNavigator
