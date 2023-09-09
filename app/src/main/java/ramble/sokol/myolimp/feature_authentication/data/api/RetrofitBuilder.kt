@@ -12,7 +12,7 @@ import ramble.sokol.myolimp.utils.interceptors.ReceivedCookiesInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitBuilder : KoinComponent{
+class RetrofitBuilder : KoinComponent {
 
     private val context by inject<Context>()
 
@@ -20,9 +20,9 @@ class RetrofitBuilder : KoinComponent{
 //        .addInterceptor(SetCookiesInterceptor(context = context))
         // get cookie
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
-        .addInterceptor(ReceivedCookiesInterceptor(context = context))
+        .addInterceptor(ReceivedCookiesInterceptor())
         // if there is network connection
-        .addInterceptor(NetworkConnectionInterceptor(context = context))
+        .addInterceptor(NetworkConnectionInterceptor())
         // is user authenticated
         .addInterceptor(AuthorizedInterceptor())
         .build()

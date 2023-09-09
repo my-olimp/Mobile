@@ -1,8 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -12,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.NavGraphs
-import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
@@ -26,9 +23,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class SignUpViewModel (
-    val context: Context
-) : ViewModel() {
+class SignUpViewModel : ViewModel() {
     companion object {
         private const val TAG = "ViewModelSignUp"
     }
@@ -40,8 +35,7 @@ class SignUpViewModel (
     )
     val state = _state.asStateFlow()
 
-    private val dataStore = CodeDataStore(context)
-
+    private val dataStore = CodeDataStore()
 
     fun onEvent(
         event: SignUpEvent
@@ -50,16 +44,21 @@ class SignUpViewModel (
             is SignUpEvent.OnSignUp -> {
                   sendVerificationCode(
                       onError = {
+
                           Log.i(TAG, "error")
 
-                          Toast.makeText(context,
-                              context.getString(R.string.register_auth_error_message), Toast.LENGTH_SHORT).show()
+                          // TODO: Make SnackBar
+
+//                          Toast.makeText(context,
+//                              context.getString(R.string.register_auth_error_message), Toast.LENGTH_SHORT).show()
                       },
                       onSent = {
                           Log.i(TAG, "sent")
 
-                          Toast.makeText(context,
-                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
+                          // TODO: Make SnackBar
+
+//                          Toast.makeText(context,
+//                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
 
                           event.navigator.navigate(
                               CodeCheckerScreenDestination(
@@ -197,8 +196,10 @@ class SignUpViewModel (
                     // save token in data store
                     saveToken(it.code)
 
-                    Toast.makeText(context,
-                        context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
+                    // TODO: Make SnackBar
+
+//                    Toast.makeText(context,
+//                        context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
 
                     navigator.navigate(
                         HomeScreenDestination()
@@ -261,7 +262,10 @@ class SignUpViewModel (
                         if (it != null) {
                             onSent()
                             Log.i(TAG, "success - $it")
-                            Toast.makeText(context, "Code - $it", Toast.LENGTH_SHORT).show()
+
+                            // TODO: Make SnackBar
+
+//                            Toast.makeText(context, "Code - $it", Toast.LENGTH_SHORT).show()
                         } else {
                             // account has already registered
                             _state.update { state->

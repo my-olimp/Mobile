@@ -13,14 +13,13 @@ import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 
 val viewModelsModule = module {
-
     /*
         Create viewModels here
     */
 
     /* ProfileScreen */
     viewModel {
-        ProfileViewModel(get())
+        ProfileViewModel()
     }
 
     /* Calendar */
@@ -30,37 +29,36 @@ val viewModelsModule = module {
 
     /* Login */
     viewModel {
-        LoginViewModel(get())
+        LoginViewModel()
     }
 
     /* SignUp */
     viewModel {
-        SignUpViewModel(get())
+        SignUpViewModel()
     }
 
     /* Register Info */
     viewModel {
-        RegisterInfoViewModel(get())
+        RegisterInfoViewModel()
     }
 
     /* Register Image */
     viewModel {
-        RegisterImageViewModel(get())
+        RegisterImageViewModel()
     }
 
     /* Register Education */
     viewModel {
-        RegisterEducationViewModel(get())
+        RegisterEducationViewModel()
     }
 
     /* Register Subjects */
     viewModel {
-        RegisterSubjectsViewModel(get())
+        RegisterSubjectsViewModel()
     }
 
     /* Library */
     viewModel {
-        LibraryViewModel(get())
+        LibraryViewModel()
     }
-
 }

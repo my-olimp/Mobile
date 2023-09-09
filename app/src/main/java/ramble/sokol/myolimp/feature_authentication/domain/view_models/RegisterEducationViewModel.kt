@@ -1,8 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +19,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.Registrat
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class RegisterEducationViewModel(
-    val context: Context
-) : ViewModel() {
+class RegisterEducationViewModel : ViewModel() {
 
     companion object {
         private const val TAG : String = "RegistrationEducationViewModel"
@@ -31,7 +27,7 @@ class RegisterEducationViewModel(
 
     private val repository = RegistrationRepository()
 
-    private val dataStore = CodeDataStore(context)
+    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(RegistrationEducationState())
     val state = _state.asStateFlow()
@@ -86,7 +82,9 @@ class RegisterEducationViewModel(
                         }
                     )
                 } else {
-                    Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
+                    // TODO: Make SnackBar
+
+//                    Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
                 }
             }
         }

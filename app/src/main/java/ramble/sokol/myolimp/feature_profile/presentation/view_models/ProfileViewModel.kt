@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,16 +17,14 @@ import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.utils.CookiesDataStore
 import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
 
-class ProfileViewModel (
-    context: Context
-) : ViewModel() {
+class ProfileViewModel : ViewModel() {
 
     companion object {
         private const val TAG : String = "ViewModelProfile"
     }
 
-    private val dataStore = CodeDataStore(context = context)
-    private val cookiesDataStore = CookiesDataStore(context = context)
+    private val dataStore = CodeDataStore()
+    private val cookiesDataStore = CookiesDataStore()
 
     private val repository = ProfileRepository()
 
@@ -176,7 +173,7 @@ class ProfileViewModel (
         viewModelScope.launch {
             try {
                 repository.refreshToken(
-                    cookie=cookiesDataStore.getCookies(Constants.COOKIES)!!,
+                    cookie=cookiesDataStore.getCookies(Constants.COOKIES) ?: throw Exception("no cookie token"),
                     onResult = { result->
                         Log.i(TAG, "completed - $result")
 

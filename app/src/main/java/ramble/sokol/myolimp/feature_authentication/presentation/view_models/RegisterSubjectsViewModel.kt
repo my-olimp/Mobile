@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.view_models
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,16 +18,14 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterS
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterSubjectsState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class RegisterSubjectsViewModel (
-    context: Context
-) : ViewModel() {
+class RegisterSubjectsViewModel : ViewModel() {
 
     companion object {
         const val TAG = "ViewModelRegisterSubjects"
     }
 
     private val repository = RegisterSubjectsRepository()
-    private val dataStore = CodeDataStore(context = context)
+    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(RegisterSubjectsState())
     val state = _state.asStateFlow()

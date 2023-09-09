@@ -5,13 +5,15 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import okhttp3.Interceptor
 import okhttp3.Response
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
 import java.io.IOException
 
 
-class NetworkConnectionInterceptor(
-    val context: Context
-) : Interceptor {
+class NetworkConnectionInterceptor : Interceptor, KoinComponent {
+
+    private val context by inject<Context>()
 
     private val isConnected: Boolean
         get() {

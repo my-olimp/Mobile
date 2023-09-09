@@ -1,30 +1,23 @@
 package ramble.sokol.myolimp.utils.interceptors
 
-import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.IOException
+import org.koin.core.component.KoinComponent
 import ramble.sokol.myolimp.feature_profile.data.Constants.COOKIES
 import ramble.sokol.myolimp.utils.CookiesDataStore
 
-class ReceivedCookiesInterceptor(
-    context: Context
-) : Interceptor {
+class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
 
     companion object {
         private const val TAG = "InterceptorReceivedCookies"
     }
 
-    private val context: Context
-    private val cookiesDataStore = CookiesDataStore(context = context)
+    private val cookiesDataStore = CookiesDataStore()
     private val scope = MainScope()
-
-    init {
-        this.context = context
-    }
 
     @Throws(IOException::class)
     override fun intercept(

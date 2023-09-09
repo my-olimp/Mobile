@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.view_models
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
@@ -10,27 +9,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
-import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 
-class RegisterImageViewModel(
-    val context: Context
-) : ViewModel() {
+class RegisterImageViewModel : ViewModel() {
 
     private val repository = RegistrationRepository()
-    private val dataStore = CodeDataStore(context = context)
+    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(RegisterImageState())
     val state = _state.asStateFlow()

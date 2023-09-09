@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,9 +16,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.Registrat
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class RegisterInfoViewModel(
-    val context: Context
-) : ViewModel() {
+class RegisterInfoViewModel : ViewModel() {
 
     companion object {
         private const val TAG : String = "RegistrationInfoViewModel"
@@ -27,7 +24,7 @@ class RegisterInfoViewModel(
 
     private val repository = RegistrationRepository()
 
-    private val dataStore = CodeDataStore(context = context)
+    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(
         RegistrationInfoState()

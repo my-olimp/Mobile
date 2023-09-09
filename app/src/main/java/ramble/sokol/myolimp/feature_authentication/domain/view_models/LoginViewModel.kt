@@ -1,15 +1,12 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
@@ -18,16 +15,14 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.LoginRepo
 import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class LoginViewModel(
-    val context: Context
-) : ViewModel() {
+class LoginViewModel : ViewModel() {
     companion object {
         const val TAG = "ViewModelLogin"
     }
 
     private val repository = LoginRepository()
 
-    private val dataStore = CodeDataStore(context)
+    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(
         LoginState()
@@ -66,8 +61,11 @@ class LoginViewModel(
             is LoginEvent.OnLogin -> {
                 loginToAccount(
                     onSuccess = {
-                        Toast.makeText(context,
-                            context.getString(R.string.success_autherization_message), Toast.LENGTH_SHORT).show()
+
+                        // TODO: Make SnackBar
+
+//                        Toast.makeText(context,
+//                            context.getString(R.string.success_autherization_message), Toast.LENGTH_SHORT).show()
 
                         event.navigator.navigate(HomeScreenDestination)
                     },
