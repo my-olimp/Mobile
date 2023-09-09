@@ -118,7 +118,7 @@ class LoginViewModel(
                         onError = {
                             // can not get data
 
-                            Log.i(TAG, "Error sending request")
+                            Log.i(TAG, "Error sending request - $it")
 
                             onError()
                         }

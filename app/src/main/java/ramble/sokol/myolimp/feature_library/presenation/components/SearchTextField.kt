@@ -1,7 +1,9 @@
 package ramble.sokol.myolimp.feature_library.presenation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -14,7 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -32,7 +38,8 @@ import ramble.sokol.myolimp.ui.theme.White
 @Composable
 fun SearchTextField (
     modifier: Modifier,
-    onTextChanged: (String) -> Unit
+    onTextChanged: (String) -> Unit,
+    onCancelSearching: () -> Unit,
 ) {
 
     val textValue = remember {
@@ -43,8 +50,14 @@ fun SearchTextField (
         mutableStateOf(false)
     }
 
+    val focusRequester = remember {
+        FocusRequester()
+    }
+    val focusManager = LocalFocusManager.current
+
     OutlinedTextField(
         modifier = modifier
+            .focusRequester(focusRequester)
             .onFocusChanged {
                 hasFocus = it.isFocused
             },
@@ -67,8 +80,8 @@ fun SearchTextField (
             focusedBorderColor = BlueStart,
             focusedLabelColor = BlueStart,
             cursorColor = BlueStart,
-            unfocusedBorderColor = White,
             backgroundColor = White,
+
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         singleLine = true,
@@ -84,6 +97,21 @@ fun SearchTextField (
                     .size(20.dp),
                 tint = if (hasFocus) BlueStart else GreyProfileData,
                 painter = painterResource(id = R.drawable.ic_calendar_search),
+                contentDescription = "search"
+            )
+        },
+        trailingIcon = {
+            Icon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        textValue.value = ""
+                        focusManager.clearFocus()
+                        onCancelSearching()
+                    },
+                tint = if (hasFocus) BlueStart else GreyProfileData,
+                painter = painterResource(id = R.drawable.ic_profile_cancel),
                 contentDescription = "search"
             )
         }

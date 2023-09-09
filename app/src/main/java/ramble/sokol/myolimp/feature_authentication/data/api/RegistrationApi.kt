@@ -4,6 +4,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionMod
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
@@ -59,6 +60,12 @@ interface RegistrationApi {
         @Query("region") data: Int
     ) : Call<List<ResponseSchoolModel>>
 
+    @Headers("Content-Type: application/json")
+    @GET("user/subjects/")
+    fun getSubjects(
+        @Header("Authorization") auth: String
+    ) : Call<List<RequestSubjectModel>>
+
     @PATCH("user/")
     fun updateDocsUserData(
         @Header("Authorization") auth: String,
@@ -71,4 +78,11 @@ interface RegistrationApi {
         @Header("Authorization") auth: String,
         @Part image: MultipartBody.Part
     ): Call<Void>
+
+    @Headers("Content-Type: application/json")
+    @PATCH("user/")
+    fun updateSubjects(
+        @Header("Authorization") auth: String,
+        @Body data: List<Int>
+    ) : Call<UserModelEntity>
 }
