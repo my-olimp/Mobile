@@ -47,13 +47,30 @@ class RegisterSubjectsViewModel (
                     )
                 }
 
-                Log.i(TAG, "${state.value.chosenSubjects} - ${state.value.chosenSubjects.contains(
-                    RequestSubjectModel(name = event.subject.name)
-                )}")
+                Log.i(TAG, "chosen subjects - ${state.value.chosenSubjects}")
             }
 
             RegisterSubjectEvent.OnLoadSubjects -> {
                 getSubjects()
+            }
+
+            is RegisterSubjectEvent.OnSearchQueryUpdated -> {
+                _state.update {
+                    it.copy(
+                        searchQuery = event.query,
+                    )
+                }
+
+                Log.i(TAG, "chosen subjects - ${state.value.searchQuery}")
+
+            }
+
+            is RegisterSubjectEvent.OnSearched -> {
+                _state.update {
+                    it.copy(
+                        isSearching = event.isSearching
+                    )
+                }
             }
         }
     }
@@ -69,34 +86,39 @@ class RegisterSubjectsViewModel (
                         val subjectsWithIcon = mutableListOf<SubjectModel>()
 
                         subjects.forEach {
-                            when (it) {
+                            when (it.name) {
                                 "Информатика" -> {
                                     subjectsWithIcon.add(SubjectModel(
-                                        name = it,
+                                        id = it.id,
+                                        name = it.name,
                                         icon = R.drawable.ic_profile_subject_it
                                     ))
                                 }
                                 "Математика" -> {
                                     subjectsWithIcon.add(SubjectModel(
-                                        name = it,
+                                        id = it.id,
+                                        name = it.name,
                                         icon = R.drawable.ic_profile_subject_math
                                     ))
                                 }
                                 "Физика" -> {
                                     subjectsWithIcon.add(SubjectModel(
-                                        name = it,
+                                        id = it.id,
+                                        name = it.name,
                                         icon = R.drawable.ic_subject_phycics
                                     ))
                                 }
                                 "Литература" -> {
                                     subjectsWithIcon.add(SubjectModel(
-                                        name = it,
+                                        id = it.id,
+                                        name = it.name,
                                         icon = R.drawable.ic_subject_literature
                                     ))
                                 }
                                 "Русский Язык" -> {
                                     subjectsWithIcon.add(SubjectModel(
-                                        name = it,
+                                        id = it.id,
+                                        name = it.name,
                                         icon = R.drawable.ic_subject_russian
                                     ))
                                 }

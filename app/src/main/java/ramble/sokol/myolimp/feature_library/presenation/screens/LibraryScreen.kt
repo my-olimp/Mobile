@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_library.domain.events.LibraryEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
@@ -65,6 +66,9 @@ fun LibraryScreen(
                     .weight(0.68f),
                 onTextChanged = {
                     viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
+                },
+                onCancelSearching = {
+                    viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
                 }
             )
 

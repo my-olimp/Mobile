@@ -14,9 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -38,6 +35,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubject
 import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
+import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
 import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
 import ramble.sokol.myolimp.ui.theme.BlackRegistrationData
 import ramble.sokol.myolimp.ui.theme.BlackRegistrationSubjects
@@ -91,7 +89,12 @@ fun RegisterSubjectsScreen (
                 modifier = Modifier
                     .fillMaxWidth(),
                 onTextChanged = {
-
+                    viewModel.onEvent(RegisterSubjectEvent.OnSearchQueryUpdated(it))
+                    viewModel.onEvent(RegisterSubjectEvent.OnSearched(true))
+                },
+                onCancelSearching = {
+                    viewModel.onEvent(RegisterSubjectEvent.OnSearchQueryUpdated(""))
+                    viewModel.onEvent(RegisterSubjectEvent.OnSearched(false))
                 }
             )
 
@@ -124,23 +127,44 @@ fun RegisterSubjectsScreen (
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                maxItemsInEachRow = 4
-            ) {
-               state.value.subjects.forEach {
-                    SubjectComponent(
-                        subject = it,
-                        onClick = { subject->
-                            viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(
-                                RequestSubjectModel(
-                                    name = subject.name
-                                )
-                            ))
-                        }
-                    )
+            // subjects
+
+            var subjects = state.value.subjects
+
+            if (state.value.searchQuery != null && state.value.isSearching) {
+                subjects = subjects.filter {
+                    Log.i("ViewModelRegisterSubjects", "${it.name} - ${it.name.startsWith(state.value.searchQuery)}")
+
+                    it.name.startsWith(state.value.searchQuery, ignoreCase = true)
+                }.toMutableList()
+
+                Log.i("ViewModelRegisterSubjects", "get - $subjects")
+            }
+
+            if (subjects.isEmpty()) {
+                ImageWithText(
+                    drawable = R.drawable.ic_main_no_plans,
+                    text = "Предмет не найден :("
+                )
+            } else {
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    maxItemsInEachRow = 4
+                ) {
+                    subjects.forEach {
+                        SubjectComponent(
+                            subject = it,
+                            onClick = { subject->
+                                viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(
+                                    RequestSubjectModel(
+                                        name = subject.name
+                                    )
+                                ))
+                            }
+                        )
+                    }
                 }
             }
         }

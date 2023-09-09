@@ -4,6 +4,9 @@ import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectMod
 import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 
 data class RegisterSubjectsState (
+    val searchQuery : String = "",
+    val isSearching : Boolean = false,
+
     val subjects : MutableList<SubjectModel> = mutableListOf(),
     val chosenSubjects : MutableList<RequestSubjectModel> = mutableListOf()
 )

@@ -63,7 +63,7 @@ interface RegistrationApi {
     @GET("user/subjects/")
     fun getSubjects(
         @Header("Authorization") auth: String
-    ) : Call<List<String>>
+    ) : Call<List<RequestSubjectModel>>
 
     @PATCH("user/")
     fun updateDocsUserData(
