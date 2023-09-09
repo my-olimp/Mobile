@@ -1,6 +1,8 @@
 package ramble.sokol.myolimp.feature_profile.domain.models
 
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 
 data class UserModel(
@@ -12,8 +14,8 @@ data class UserModel(
     val gender: String = "",
     val snils: String = "",
     val region: ResponseRegionModel = ResponseRegionModel(),
-    val city: String = "",
-    val school: String = "",
+    val city: ResponseCityModel = ResponseCityModel(),
+    val school: ResponseSchoolModel = ResponseSchoolModel(),
     val phone: String = "",
     val email: String = "",
     val grade: Int = 0,
@@ -33,8 +35,8 @@ data class UserModel(
         },
         snils = if (snils == "") null else snils,
         region = region,
-        city = if (city == "") null else city,
-        school = if (school == "") null else school,
+        city = city,
+        school = school,
         phone = if (phone == "") null else phone,
         email = if (email == "") null else email,
         grade = if (grade == 0) null else grade,

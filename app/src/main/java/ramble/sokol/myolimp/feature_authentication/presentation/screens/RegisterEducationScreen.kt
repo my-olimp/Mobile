@@ -100,13 +100,13 @@ fun RegisterEducationScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 EditableDropDown(
-                    previousData = state.value.city,
+                    previousData = state.value.city.name,
                     label = stringResource(id = R.string.city_profile),
-                    options = state.value.cityList.ifEmpty { stringArrayResource(id = R.array.city).toList() },
+                    options = state.value.cityList.toListString().ifEmpty { stringArrayResource(id = R.array.city).toList() },
                     isError = state.value.cityError
                 ) { newCity ->
                     state.value.cityList.find {
-                        it == newCity
+                        it.name == newCity
                     }?.let {
                         viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(it))
                     }

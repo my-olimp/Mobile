@@ -310,14 +310,14 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.city),
-                    content = state.value.city
+                    content = state.value.city.name
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.school),
-                    content = state.value.school
+                    content = state.value.school.name
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

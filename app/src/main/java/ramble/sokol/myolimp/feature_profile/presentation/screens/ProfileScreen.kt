@@ -178,7 +178,8 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_progress),
                     content = stringResource(R.string.profile_progress_content)
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(RegisterEducationScreenDestination)
                 }
 
                 Spacer(

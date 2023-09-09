@@ -5,6 +5,7 @@ import android.util.Log
 import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
@@ -56,6 +57,7 @@ class RegistrationRepository(
                     call: Call<UserModelEntity>,
                     response: Response<UserModelEntity>
                 ) {
+                    Log.i("RegistrationEducationViewModel","auth token: $auth")
                     onResult(response.body())
                 }
 
@@ -132,22 +134,21 @@ class RegistrationRepository(
     fun getCities(
         auth: String,
         data: Int,
-        onResult: (List<String>?) -> Unit,
+        onResult: (List<ResponseCityModel>?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         instance.getCities(auth, data).enqueue(
-            object : Callback<List<String>> {
+            object : Callback<List<ResponseCityModel>> {
                 override fun onResponse(
-                    call: Call<List<String>>,
-                    response: Response<List<String>>
+                    call: Call<List<ResponseCityModel>>,
+                    response: Response<List<ResponseCityModel>>
                 ) {
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<List<String>>, t: Throwable) {
+                override fun onFailure(call: Call<List<ResponseCityModel>>, t: Throwable) {
                     onError(t)
                 }
-
             }
         )
     }

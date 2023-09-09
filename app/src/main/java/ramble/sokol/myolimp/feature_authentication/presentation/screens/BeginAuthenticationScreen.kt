@@ -27,6 +27,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
+import ramble.sokol.myolimp.destinations.ProfileScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterEducationScreenDestination
 import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_authentication.presentation.components.OutlinedBtn
@@ -110,8 +111,8 @@ fun BeginAuthenticationScreen (
             FilledBtn(
                 text = "[Beta]"
             ) {
-                //navigator.navigate(ProfileScreenDestination)
-                navigator.navigate(RegisterEducationScreenDestination)
+                navigator.navigate(ProfileScreenDestination)
+                //navigator.navigate(RegisterEducationScreenDestination)
             }
         }
     }
