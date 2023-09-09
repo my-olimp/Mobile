@@ -5,6 +5,7 @@ import android.util.Log
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,7 +40,7 @@ class RegisterSubjectsRepository (
 
     fun updateSubjects(
         auth: String,
-        subjects: List<Int>,
+        subjects: RequestSubjects,
         onResult: (UserModelEntity?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
@@ -49,6 +50,7 @@ class RegisterSubjectsRepository (
                     call: Call<UserModelEntity>,
                     response: Response<UserModelEntity>
                 ) {
+                    Log.i("ViewModelRegisterSubjects", "code - ${response.code()}")
                     onResult(response.body())
                 }
 

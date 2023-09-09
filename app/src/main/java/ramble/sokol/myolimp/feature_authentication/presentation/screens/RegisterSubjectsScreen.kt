@@ -164,6 +164,7 @@ fun RegisterSubjectsScreen (
                             onClick = { subject->
                                 viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(
                                     RequestSubjectModel(
+                                        id = subject.id,
                                         name = subject.name
                                     )
                                 ))

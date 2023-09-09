@@ -5,6 +5,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolMod
 import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
@@ -83,6 +84,6 @@ interface RegistrationApi {
     @PATCH("user/")
     fun updateSubjects(
         @Header("Authorization") auth: String,
-        @Body data: List<Int>
+        @Body data: RequestSubjects
     ) : Call<UserModelEntity>
 }

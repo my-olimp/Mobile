@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
+import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
@@ -91,7 +92,7 @@ class RegisterSubjectsViewModel (
 
             repository.updateSubjects(
                 auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
-                subjects = chosenSubjectsIds,
+                subjects = RequestSubjects(chosenSubjectsIds),
                 onResult = {
 
                     if (it != null) {
