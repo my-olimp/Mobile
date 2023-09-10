@@ -7,11 +7,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.toListString
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
@@ -23,6 +27,13 @@ fun EditEducationSheet (
     viewModel: ProfileViewModel
 ) {
     val state = viewModel.state.collectAsState()
+    val isUpdated = remember {
+        mutableStateOf(false)
+    }
+    if(!isUpdated.value){
+        viewModel.updateRegionsList()
+        isUpdated.value = true
+    }
 
     Column(
         modifier = Modifier
@@ -31,49 +42,55 @@ fun EditEducationSheet (
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        EditableDropDown (
-            options = listOf(
-                "Московская область", "Краснодарская область",
-                "Нижегородская область", "Ленинградская область"
-            ),
+        EditableDropDown(
+            options = state.value.regionList.toListString().ifEmpty {
+                stringArrayResource(id = R.array.region).toList()
+            },
             previousData = state.value.region.name,
             label = stringResource(R.string.region_profile),
-        ) {
-            // TODO
-//            viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
+        ) { newRegion ->
+            state.value.regionList.find {
+                it.name == newRegion
+            }?.let {
+                viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
+            }
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        EditableDropDown (
+        EditableDropDown(
+            options = state.value.cityList.toListString().ifEmpty {
+                stringArrayResource(id = R.array.city).toList()
+            },
             previousData = state.value.city.name,
-            label = stringResource(R.string.city_profile),
-            listOf(
-                "Балашиха", "Москва",
-                "Санкт-Петербург", "Чехов"
-            )
-        ) {
-            //TODO
-            //viewModel.onEvent(ProfileEvent.OnCityChanged(it))
+            label = stringResource(R.string.city_profile)
+        ) { newCity ->
+            state.value.cityList.find {
+                it.name == newCity
+            }?.let {
+                viewModel.onEvent(ProfileEvent.OnCityChanged(it))
+            }
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        EditableDropDown (
+        EditableDropDown(
+            options = state.value.schoolList.toListString().ifEmpty {
+                stringArrayResource(id = R.array.school).toList()
+            },
             previousData = state.value.school.name,
-            label = stringResource(R.string.school),
-            listOf(
-                "МБОУ СОШ №10", "МБОУ СОШ №1",
-                "МБОУ гимназия №2", "МБОУ СОШ №3",
-                "МБОУ лицей №4",
-            )
-        ) {//TODO
-            //viewModel.onEvent(ProfileEvent.OnSchoolChanged(it))
+            label = stringResource(R.string.school)
+        ) { newSchool ->
+            state.value.schoolList.find {
+                it.name == newSchool
+            }?.let {
+                viewModel.onEvent(ProfileEvent.OnSchoolChanged(it))
+            }
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        ReadOnlyDropDown (
+        ReadOnlyDropDown(
             previousData = "${state.value.grade}",
             label = stringResource(R.string.grade),
             options = listOf(
@@ -87,7 +104,8 @@ fun EditEducationSheet (
         ) {
             try {
                 viewModel.onEvent(ProfileEvent.OnGradeChanged(it.toInt()))
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
 
         Spacer(modifier = Modifier.height(34.dp))

@@ -18,6 +18,7 @@ data class School (
     val regionId : Int = -1
 )
 
+
 fun List<ResponseSchoolModel>.asListSchool(): List<School> {
     val list = mutableListOf<School>()
     for(item in this) list.add(item.asSchool())
