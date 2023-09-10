@@ -53,7 +53,7 @@ fun DrawableWrapper(
                     }
                     .clickable {
                         if (isRouterBtn) {
-                            SheetRouter.navigateTo(SheetNavigation.Empty)
+                            SheetRouter.navigateTo(SheetNavigation.Empty())
                         }
                     }
                 )
@@ -74,7 +74,7 @@ fun DrawableWrapper(
                     )
                     .clickable {
                         if (isRouterBtn) {
-                            SheetRouter.navigateTo(SheetNavigation.Empty)
+                            SheetRouter.navigateTo(SheetNavigation.Empty())
                         }
                     }
                 )

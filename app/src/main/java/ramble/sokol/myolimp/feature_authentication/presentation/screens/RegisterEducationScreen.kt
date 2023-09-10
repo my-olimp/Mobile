@@ -21,6 +21,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.City
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.School
 import ramble.sokol.myolimp.feature_authentication.data.models.toListString
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
@@ -82,13 +85,9 @@ fun RegisterEducationScreen(
                     isError = state.value.regionError,
                     errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region)
                 ) { newRegion ->
-                    state.value.regionList.find {
-                        it.name == newRegion
-                    }?.let {
-                        viewModel.onEvent(
-                            event = RegistrationEducationEvent.OnRegionChanged(it)
-                        )
-                    }
+                    viewModel.onEvent(RegistrationEducationEvent.OnRegionChanged(
+                        state.value.regionList.find { it.name == newRegion } ?: Region()
+                    ))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -100,11 +99,9 @@ fun RegisterEducationScreen(
                     isError = state.value.cityError,
                     errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city)
                 ) { newCity ->
-                    state.value.cityList.find {
-                        it.name == newCity
-                    }?.let {
-                        viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(it))
-                    }
+                    viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(
+                        state.value.cityList.find { it.name == newCity } ?: City()
+                    ))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -117,11 +114,9 @@ fun RegisterEducationScreen(
                     isError = state.value.schoolError,
                     errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)
                 ) { newSchool ->
-                    state.value.schoolList.find {
-                        it.name == newSchool
-                    }?.let {
-                        viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(it))
-                    }
+                    viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(
+                        state.value.schoolList.find { it.name == newSchool } ?: School()
+                    ))
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
