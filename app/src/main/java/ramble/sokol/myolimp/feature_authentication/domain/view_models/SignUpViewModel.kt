@@ -42,32 +42,34 @@ class SignUpViewModel : ViewModel() {
     ) {
         when (event) {
             is SignUpEvent.OnSignUp -> {
-                  sendVerificationCode(
-                      onError = {
 
-                          Log.i(TAG, "error")
+                if (checkPasswordCorrectness())
+                sendVerificationCode(
+                  onError = {
 
-                          // TODO: Make SnackBar
+                      Log.i(TAG, "error")
 
-//                          Toast.makeText(context,
-//                              context.getString(R.string.register_auth_error_message), Toast.LENGTH_SHORT).show()
-                      },
-                      onSent = {
-                          Log.i(TAG, "sent")
+                      // TODO: Make SnackBar
 
-                          // TODO: Make SnackBar
+                //                          Toast.makeText(context,
+                //                              context.getString(R.string.register_auth_error_message), Toast.LENGTH_SHORT).show()
+                  },
+                  onSent = {
+                      Log.i(TAG, "sent")
 
-//                          Toast.makeText(context,
-//                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
+                      // TODO: Make SnackBar
 
-                          event.navigator.navigate(
-                              CodeCheckerScreenDestination(
-                                  email = _state.value.email,
-                                  password = _state.value.password,
-                              )
+                //                          Toast.makeText(context,
+                //                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
+
+                      event.navigator.navigate(
+                          CodeCheckerScreenDestination(
+                              email = _state.value.email,
+                              password = _state.value.password,
                           )
-                      }
-                  )
+                      )
+                  }
+                )
             }
             is SignUpEvent.OnEmailUpdated -> {
                 _state.update {
@@ -245,6 +247,35 @@ class SignUpViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    private fun checkPasswordCorrectness() : Boolean {
+
+        val password = _state.value.password
+
+        if (password.contains(" ")) {
+            Log.i(TAG, "white space")
+            _state.update {
+                it.copy(
+                    passwordError = "Пароль не может содержать в себе пробелы",
+                )
+            }
+
+            return false
+        } else if (!password.matches("^[a-zA-Z0-9!@#$%^&*]*$".toRegex())) {
+            Log.i(TAG, "letters")
+
+            _state.update {
+                it.copy(
+                    passwordError = "Пароль должен состоять только из букв латиницы верхнего или нижнего регистра, цифр, специальных символов(!@$%^)",
+                )
+            }
+
+            return false
+        }
+
+        return true
+
     }
 
 
