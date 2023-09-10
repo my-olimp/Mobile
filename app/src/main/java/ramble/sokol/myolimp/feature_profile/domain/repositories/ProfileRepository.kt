@@ -1,8 +1,12 @@
 package ramble.sokol.myolimp.feature_profile.domain.repositories
 
 import android.content.Context
+import android.util.Log
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
+import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
@@ -65,6 +69,76 @@ class ProfileRepository {
                 override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
                     onError(t)
                 }
+            }
+        )
+    }
+
+    fun getRegions(
+        auth: String,
+        onResult: (List<ResponseRegionModel>?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.getRegions(auth).enqueue(
+            object : Callback<List<ResponseRegionModel>> {
+                override fun onResponse(
+                    call: Call<List<ResponseRegionModel>>,
+                    response: Response<List<ResponseRegionModel>>
+                ) {
+                    Log.i("ViewModelProfile","region response code: ${response.code()}")
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<List<ResponseRegionModel>>, t: Throwable) {
+                    onError(t)
+                }
+
+            }
+        )
+    }
+    fun getCities(
+        auth: String,
+        regionId: Int,
+        onResult: (List<ResponseCityModel>?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.getCities(auth,regionId).enqueue(
+            object: Callback<List<ResponseCityModel>> {
+                override fun onResponse(
+                    call: Call<List<ResponseCityModel>>,
+                    response: Response<List<ResponseCityModel>>
+                ) {
+                    Log.i("ViewModelProfile","city response code: ${response.code()}")
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<List<ResponseCityModel>>, t: Throwable) {
+                    onError(t)
+                }
+
+            }
+        )
+    }
+
+    fun getSchools(
+        auth: String,
+        regionId: Int,
+        onResult: (List<ResponseSchoolModel>?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.getSchools(auth,regionId).enqueue(
+            object: Callback<List<ResponseSchoolModel>> {
+                override fun onResponse(
+                    call: Call<List<ResponseSchoolModel>>,
+                    response: Response<List<ResponseSchoolModel>>
+                ) {
+                    Log.i("ViewModelProfile","school response code ${response.code()}")
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<List<ResponseSchoolModel>>, t: Throwable) {
+                    onError(t)
+                }
+
             }
         )
     }

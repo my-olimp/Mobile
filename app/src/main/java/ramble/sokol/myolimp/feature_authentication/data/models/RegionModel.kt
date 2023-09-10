@@ -14,7 +14,11 @@ data class ResponseRegionModel(
 data class Region(
     val number: Int = -1,
     val name: String = ""
-)
+) {
+    fun asResponseModel(): ResponseRegionModel {
+        return ResponseRegionModel(number, name)
+    }
+}
 
 fun List<ResponseRegionModel>.asListRegion(): List<Region> {
     val list = mutableListOf<Region>()

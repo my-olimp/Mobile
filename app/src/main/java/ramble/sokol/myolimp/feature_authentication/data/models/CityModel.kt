@@ -16,7 +16,11 @@ data class City(
     val id: Int = -1,
     val name: String = "",
     val regionId: Int = -1
-)
+) {
+    fun asResponseModel(): ResponseCityModel {
+        return ResponseCityModel(id, name, regionId)
+    }
+}
 
 fun List<ResponseCityModel>.asListCity(): List<City> {
     val list = mutableListOf<City>()

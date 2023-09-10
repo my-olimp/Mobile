@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -12,6 +13,9 @@ import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
+import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
+import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
+import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
@@ -111,6 +115,10 @@ class ProfileViewModel : ViewModel() {
                 _state.value = _state.value.copy(
                     region = event.region
                 )
+                viewModelScope.launch {
+                    updateCitiesList()
+                    updateSchoolsList()
+                }
             }
 
             is ProfileEvent.OnCityChanged -> {
@@ -205,9 +213,9 @@ class ProfileViewModel : ViewModel() {
                                     grade = result.user.grade ?: 0,
                                     accountType = result.user.accountType ?: "",
 
-                                    region = result.user.region ?: ResponseRegionModel(),
-                                    city = result.user.city ?: ResponseCityModel(),
-                                    school = result.user.school ?: ResponseSchoolModel(),
+                                    region = (result.user.region ?: ResponseRegionModel()).asRegion(),
+                                    city = (result.user.city ?: ResponseCityModel()).asCity(),
+                                    school = (result.user.school ?: ResponseSchoolModel()).asSchool(),
 
                                 )
                             }
@@ -269,5 +277,76 @@ class ProfileViewModel : ViewModel() {
             )
         }
     }
+
+    fun updateRegionsList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getRegions(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    onResult = { list ->
+                        Log.i(TAG,"response region list: $list")
+                        if(list != null) {
+                            _state.update {
+                                it.copy(regionList = list.asListRegion())
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"region exception $it")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"region request throw ${e.message}")
+            }
+        }
+    }
+    private fun updateCitiesList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getCities(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    regionId = state.value.region.number,
+                    onResult = { list ->
+                        Log.i(TAG,"response city list: $list")
+                        if(list != null) {
+                            _state.update {
+                                it.copy(cityList = list.asListCity())
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"city exception $it")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"city request throw ${e.message}")
+            }
+        }
+    }
+
+    private fun updateSchoolsList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.getSchools(
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    regionId = state.value.region.number,
+                    onResult = { list ->
+                        Log.i(TAG,"response school list: $list")
+                        if(list != null) {
+                            _state.update {
+                                it.copy(schoolList = list.asListSchool())
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"school exception $it")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.i(TAG,"school request throw ${e.message}")
+            }
+        }
+    }
+
 
 }
