@@ -6,12 +6,14 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
+import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.feature_calendar.data.Constants.IS_CREATED
@@ -131,8 +133,18 @@ class PlansViewModel (
 
                             setDefaultData()
 
-                            // navigate to calendar screen
+                            // update destination
+                            event.navController.navigate(
+                                CalendarScreenDestination()
+                            ) {
+                                popUpTo(NavGraphs.root) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
 
+                            // navigate to calendar screen
                             event.navController.navigate(
                                 CalendarScreenDestination()
                             )

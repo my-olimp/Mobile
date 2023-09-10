@@ -41,8 +41,8 @@ import com.ramcosta.composedestinations.navigation.popUpTo
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.destinations.CalendarScreenDestination
 import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
+import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
@@ -115,21 +115,32 @@ fun HomeScreen(
                         modifier = Modifier
                             .clip(CircleShape)
                             .clickable {
-                                // update destination
-                                navController.navigate(
-                                    CalendarScreenDestination()
-                                ) {
-                                    popUpTo(NavGraphs.root) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
 
                                 // show creating sheet
                                 navController.navigate(
-                                    CreateCalendarScreenDestination(date = LocalDate.now().toString())
-                                )
+                                    CreateCalendarScreenDestination(
+                                        date = LocalDate.now().toString(),
+                                        fromHome = true
+                                    )
+                                ) {
+                                    // not to save previous state - CreatePlan
+                                    popUpTo(NavGraphs.root) {
+                                        saveState = false
+                                    }
+                                    launchSingleTop = false
+                                    restoreState = false
+                                }
+
+//                                // update destination
+//                                navController.navigate(
+//                                    HomeScreenDestination()
+//                                ) {
+//                                    popUpTo(NavGraphs.root) {
+//                                        saveState = true
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
                             },
                         painter = painterResource(id = R.drawable.ic_main_add_plan),
                         contentDescription = "add plan",
