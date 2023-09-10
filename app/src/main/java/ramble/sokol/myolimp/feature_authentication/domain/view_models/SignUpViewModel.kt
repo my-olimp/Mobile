@@ -1,6 +1,8 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -9,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
@@ -23,10 +27,12 @@ import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel : ViewModel(), KoinComponent {
     companion object {
         private const val TAG = "ViewModelSignUp"
     }
+
+    private val context by inject<Context>()
 
     private val repository = SignUpRepository()
 
@@ -296,7 +302,7 @@ class SignUpViewModel : ViewModel() {
 
                             // TODO: Make SnackBar
 
-//                            Toast.makeText(context, "Code - $it", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Code - $it", Toast.LENGTH_SHORT).show()
                         } else {
                             // account has already registered
                             _state.update { state->
