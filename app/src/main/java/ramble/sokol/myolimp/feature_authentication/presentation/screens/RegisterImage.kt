@@ -66,6 +66,7 @@ internal fun RegisterImageScreen(
             }
             viewModel.onEvent(event)
         },
+        navigator = navigator,
         onNext = viewModel::onNext,
         snilsValue = state.snils,
         selectedProfileImg = state.profileImg
@@ -75,14 +76,15 @@ internal fun RegisterImageScreen(
 @Preview
 @Composable
 fun PrevRegisterImageScreen() {
-    RegisterImageScreen({}, {_, _ ->}, "", null)
+//    RegisterImageScreen({}, {_, _ ->}, "", null)
 }
 
 @Composable
 fun RegisterImageScreen(
     onEvent: (RegistrationImageEvent) -> Unit,
-    onNext: (File, Bitmap) -> Unit,
+    onNext: (File, Bitmap, DestinationsNavigator) -> Unit,
     snilsValue: String,
+    navigator: DestinationsNavigator,
     selectedProfileImg: Uri?
 ) {
     val launcher = rememberLauncherForActivityResult(
@@ -166,7 +168,7 @@ fun RegisterImageScreen(
                         val pngFile = File(context.cacheDir, "converted_image.png")
                         if (pngFile.exists()) pngFile.delete()
                         pngFile.createNewFile()
-                        onNext(pngFile, bitmap)
+                        onNext(pngFile, bitmap, navigator)
                     } catch (e: Exception) {
                         onEvent(RegistrationImageEvent.OnUploadError)
                     }

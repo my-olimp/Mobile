@@ -5,6 +5,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -12,6 +14,8 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import ramble.sokol.myolimp.NavGraphs
+import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
@@ -52,7 +56,11 @@ class RegisterImageViewModel : ViewModel() {
         }
     }
 
-    fun onNext(imageFile: File, bitmap: Bitmap) {
+    fun onNext(
+        imageFile: File,
+        bitmap: Bitmap,
+        navigator: DestinationsNavigator
+    ) {
         viewModelScope.launch {
             try {
                 // Write the bitmap to the new File in PNG format
@@ -76,6 +84,16 @@ class RegisterImageViewModel : ViewModel() {
                     imageBody = body,
                     onResult = {
                         Log.i("RegistrerImageViewModel", "success,\n $it") // TODO()
+
+                        navigator.navigate(
+                            HomeScreenDestination()
+                        ) {
+                            popUpTo(NavGraphs.root) {
+                                saveState = false
+                            }
+                            launchSingleTop = false
+                            restoreState = false
+                        }
                     },
                     onError = {
                         throw it

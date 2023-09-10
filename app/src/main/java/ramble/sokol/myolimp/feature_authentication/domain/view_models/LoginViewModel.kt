@@ -73,13 +73,11 @@ class LoginViewModel : ViewModel() {
                             HomeScreenDestination()
                         ) {
                             popUpTo(NavGraphs.root) {
-                                saveState = true
+                                saveState = false
                             }
-                            launchSingleTop = true
-                            restoreState = true
+                            launchSingleTop = false
+                            restoreState = false
                         }
-
-                        event.navigator.navigate(HomeScreenDestination)
                     },
                     onError = {
                         _state.update {
