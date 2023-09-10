@@ -31,7 +31,7 @@ fun EditEducationSheet (
         mutableStateOf(false)
     }
     if(!isUpdated.value){
-        viewModel.updateRegionsList()
+        viewModel.updateMenus()
         isUpdated.value = true
     }
 
@@ -48,6 +48,8 @@ fun EditEducationSheet (
             },
             previousData = state.value.region.name,
             label = stringResource(R.string.region_profile),
+            isError = state.value.regionError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region_profile)
         ) { newRegion ->
             state.value.regionList.find {
                 it.name == newRegion
@@ -63,7 +65,9 @@ fun EditEducationSheet (
                 stringArrayResource(id = R.array.city).toList()
             },
             previousData = state.value.city.name,
-            label = stringResource(R.string.city_profile)
+            label = stringResource(R.string.city_profile),
+            isError = state.value.cityError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city_profile)
         ) { newCity ->
             state.value.cityList.find {
                 it.name == newCity
@@ -79,7 +83,9 @@ fun EditEducationSheet (
                 stringArrayResource(id = R.array.school).toList()
             },
             previousData = state.value.school.name,
-            label = stringResource(R.string.school)
+            label = stringResource(R.string.school),
+            isError = state.value.schoolError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)
         ) { newSchool ->
             state.value.schoolList.find {
                 it.name == newSchool
@@ -93,14 +99,9 @@ fun EditEducationSheet (
         ReadOnlyDropDown(
             previousData = "${state.value.grade}",
             label = stringResource(R.string.grade),
-            options = listOf(
-                "1", "2",
-                "3", "4",
-                "5", "6",
-                "7", "8",
-                "9", "10",
-                "11",
-            )
+            options = stringArrayResource(id = R.array.grade).toList(),
+            isError = state.value.gradeError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.grade)
         ) {
             try {
                 viewModel.onEvent(ProfileEvent.OnGradeChanged(it.toInt()))
@@ -117,4 +118,8 @@ fun EditEducationSheet (
             viewModel.onEvent(ProfileEvent.OnSave)
         }
     }
+}
+@Composable
+private fun errorText(id: Int,addId: Int): String {
+    return stringResource(id = id, stringResource(id = addId).lowercase())
 }

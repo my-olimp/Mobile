@@ -24,7 +24,11 @@ data class UserModel(
     val hasThird: Boolean = true,
     val regionList: List<Region> = listOf(),
     val cityList: List<City> = listOf(),
-    val schoolList: List<School> = listOf()
+    val schoolList: List<School> = listOf(),
+    val regionError: Boolean = false,
+    val cityError: Boolean = false,
+    val schoolError: Boolean = false,
+    val gradeError: Boolean = false
 ) {
     fun toUserModelEntity() = UserModelEntity(
         firstName = if (firstName == "") null else firstName,

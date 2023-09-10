@@ -59,8 +59,10 @@ class RegisterEducationViewModel : ViewModel() {
                         regionError = false,
                     )
                 }
-                requestCities(event.region.number)
-                requestSchools(event.region.number)
+                viewModelScope.launch(Dispatchers.IO) {
+                    requestCities(event.region.number)
+                    requestSchools(event.region.number)
+                }
             }
             is RegistrationEducationEvent.OnSchoolChanged -> {
                 _state.update {
