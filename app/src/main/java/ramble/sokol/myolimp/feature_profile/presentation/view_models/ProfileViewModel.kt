@@ -20,10 +20,11 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataS
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
+import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.utils.CookiesDataStore
 import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
-
 class ProfileViewModel : ViewModel() {
 
     companion object {
@@ -100,9 +101,12 @@ class ProfileViewModel : ViewModel() {
             }
 
             is ProfileEvent.OnSave -> {
-                saveUserData()
-                viewModelScope.launch {
-                    updateUserData(user = _state.value)
+                if(isValidData()) {
+                    saveUserData()
+                    viewModelScope.launch {
+                        updateUserData(user = _state.value)
+                    }
+                    SheetRouter.navigateTo(SheetNavigation.Empty)
                 }
             }
 
@@ -113,7 +117,8 @@ class ProfileViewModel : ViewModel() {
             }
             is ProfileEvent.OnRegionChanged -> {
                 _state.value = _state.value.copy(
-                    region = event.region
+                    region = event.region,
+                    regionError = false
                 )
                 viewModelScope.launch {
                     updateCitiesList()
@@ -123,19 +128,22 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnCityChanged -> {
                 _state.value = _state.value.copy(
-                    city = event.city
+                    city = event.city,
+                    cityError = false
                 )
             }
 
             is ProfileEvent.OnSchoolChanged -> {
                 _state.value = _state.value.copy(
-                    school = event.school
+                    school = event.school,
+                    schoolError = false
                 )
             }
 
             is ProfileEvent.OnGradeChanged -> {
                 _state.value = _state.value.copy(
-                    grade = event.grade
+                    grade = event.grade,
+                    gradeError = false
                 )
             }
 
@@ -245,7 +253,8 @@ class ProfileViewModel : ViewModel() {
     ) {
         try {
             val response = repository.updateUser(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                    ?: throw Exception("No access token"),
                 user = user
             )
 
@@ -278,7 +287,7 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    fun updateRegionsList() {
+    private fun updateRegionsList() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
@@ -348,5 +357,38 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    private fun isValidData(): Boolean {
+        var isValid = true
+        with(state.value) {
+            if(this.regionList.find { it == this.region } == null) {
+                isValid = false
+                _state.update { it.copy(regionError = true) }
+            }
+            if(this.cityList.find { it == this.city } == null) {
+                isValid = false
+                _state.update { it.copy(cityError = true) }
+            }
+            if(this.schoolList.find { it == this.school } == null) {
+                isValid = false
+                _state.update { it.copy(schoolError = true) }
+            }
+            if(this.grade == 0) {
+                isValid = false
+                _state.update { it.copy(gradeError = true) }
+            }
+        }
 
+        return isValid
+    }
+
+    fun updateMenus() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateRegionsList()
+            if(state.value.region.name != ""){
+                updateCitiesList()
+                updateSchoolsList()
+            }
+        }
+    }
 }
+

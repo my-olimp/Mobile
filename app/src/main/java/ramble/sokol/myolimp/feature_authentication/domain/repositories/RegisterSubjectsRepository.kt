@@ -1,14 +1,12 @@
 package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
-import android.content.Context
 import android.util.Log
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
-import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,20 +39,20 @@ class RegisterSubjectsRepository : KoinComponent {
     fun updateSubjects(
         auth: String,
         subjects: RequestSubjects,
-        onResult: (UserModelEntity?) -> Unit,
+        onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         instance.updateSubjects(auth, subjects).enqueue(
-            object : Callback<UserModelEntity> {
+            object : Callback<ResponseUserModel> {
                 override fun onResponse(
-                    call: Call<UserModelEntity>,
-                    response: Response<UserModelEntity>
+                    call: Call<ResponseUserModel>,
+                    response: Response<ResponseUserModel>
                 ) {
                     Log.i("ViewModelRegisterSubjects", "code - ${response.code()}")
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseUserModel>, t: Throwable) {
                     onError(t)
                 }
             }

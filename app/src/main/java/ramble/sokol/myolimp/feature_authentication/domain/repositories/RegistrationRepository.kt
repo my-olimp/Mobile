@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
-import android.content.Context
 import android.util.Log
 import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
@@ -11,7 +10,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolMod
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
-import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,19 +22,19 @@ class RegistrationRepository {
     fun registerInfo(
         auth: String,
         data: UserMainDataModel,
-        onResult: (UserModelEntity?) -> Unit,
+        onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         instance.updateMainUserData(auth, data).enqueue(
-            object : Callback<UserModelEntity> {
+            object : Callback<ResponseUserModel> {
                 override fun onResponse(
-                    call: Call<UserModelEntity>,
-                    response: Response<UserModelEntity>
+                    call: Call<ResponseUserModel>,
+                    response: Response<ResponseUserModel>
                 ) {
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseUserModel>, t: Throwable) {
                     onError(t)
                 }
 
@@ -46,20 +45,20 @@ class RegistrationRepository {
     fun registerEducation(
         auth: String,
         data: UserEducationDataModel,
-        onResult: (UserModelEntity?) -> Unit,
+        onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         instance.updateEducationUserData(auth, data).enqueue(
-            object : Callback<UserModelEntity> {
+            object : Callback<ResponseUserModel> {
                 override fun onResponse(
-                    call: Call<UserModelEntity>,
-                    response: Response<UserModelEntity>
+                    call: Call<ResponseUserModel>,
+                    response: Response<ResponseUserModel>
                 ) {
                     Log.i("RegistrationEducationViewModel","auth token: $auth")
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseUserModel>, t: Throwable) {
                     onError(t)
                 }
 
@@ -72,7 +71,7 @@ class RegistrationRepository {
         auth: String,
         data: UserDocsDataModel,
         imageBody: MultipartBody.Part,
-        onResult: (UserModelEntity?) -> Unit,
+        onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         instance.uploadImage(auth, imageBody).enqueue(
@@ -88,16 +87,16 @@ class RegistrationRepository {
             }
         )
         instance.updateDocsUserData(auth, data).enqueue(
-            object : Callback<UserModelEntity> {
+            object : Callback<ResponseUserModel> {
                 override fun onResponse(
-                    call: Call<UserModelEntity>,
-                    response: Response<UserModelEntity>
+                    call: Call<ResponseUserModel>,
+                    response: Response<ResponseUserModel>
                 ) {
                     Log.i("RegistrationRepository", "Docs status ${response.code()}, mes: ${response.message()}")  // TODO()
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<UserModelEntity>, t: Throwable) {
+                override fun onFailure(call: Call<ResponseUserModel>, t: Throwable) {
                     onError(t)
                 }
 

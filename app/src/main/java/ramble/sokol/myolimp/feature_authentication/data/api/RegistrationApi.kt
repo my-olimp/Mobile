@@ -9,6 +9,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 
@@ -31,14 +32,14 @@ interface RegistrationApi {
     fun updateMainUserData(
         @Header("Authorization") auth: String,
         @Body data: UserMainDataModel
-    ) : Call<UserModelEntity>
+    ) : Call<ResponseUserModel>
 
     @Headers("Content-Type: application/json")
     @PATCH("user/")
     fun updateEducationUserData(
         @Header("Authorization") auth: String,
         @Body data: UserEducationDataModel
-    ) : Call<UserModelEntity>
+    ) : Call<ResponseUserModel>
 
     @Headers("Content-Type: application/json")
     @GET("user/location/regions")
@@ -71,7 +72,7 @@ interface RegistrationApi {
     fun updateDocsUserData(
         @Header("Authorization") auth: String,
         @Body data: UserDocsDataModel
-    ) : Call<UserModelEntity>
+    ) : Call<ResponseUserModel>
 
     @Multipart
     @POST("/user/avatar/")
@@ -85,5 +86,5 @@ interface RegistrationApi {
     fun updateSubjects(
         @Header("Authorization") auth: String,
         @Body data: RequestSubjects
-    ) : Call<UserModelEntity>
+    ) : Call<ResponseUserModel>
 }
