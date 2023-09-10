@@ -2,6 +2,6 @@
 
 # My-Olimp
 
-[![CodeFactor](https://www.codefactor.io/repository/github/rambletot/myolimp/badge)](https://www.codefactor.io/repository/github/rambletot/myolimp)
+[![CodeFactor](https://www.codefactor.io/repository/github/my-olimp/mobile/badge)](https://www.codefactor.io/repository/github/my-olimp/mobile)
 
 App for scientific Olympiads
