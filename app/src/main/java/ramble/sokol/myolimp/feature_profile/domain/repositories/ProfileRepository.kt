@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.domain.repositories
 
-import android.content.Context
 import android.util.Log
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel

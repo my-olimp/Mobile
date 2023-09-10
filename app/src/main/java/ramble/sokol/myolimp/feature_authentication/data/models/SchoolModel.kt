@@ -16,11 +16,7 @@ data class School (
     val id: Int = -1,
     val name: String = "",
     val regionId : Int = -1
-) {
-    fun asResponseModel(): ResponseSchoolModel{
-        return ResponseSchoolModel(id, name, regionId)
-    }
-}
+)
 
 
 fun List<ResponseSchoolModel>.asListSchool(): List<School> {

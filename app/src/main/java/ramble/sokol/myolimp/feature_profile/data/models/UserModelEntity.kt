@@ -1,9 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.data.models
 
 import com.google.gson.annotations.SerializedName
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import java.io.Serializable
 
 data class UserModelEntity (

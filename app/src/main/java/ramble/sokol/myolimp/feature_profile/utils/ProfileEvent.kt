@@ -3,9 +3,6 @@ package ramble.sokol.myolimp.feature_profile.utils
 import androidx.navigation.NavController
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_authentication.data.models.School
 
 sealed class ProfileEvent {
