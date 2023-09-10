@@ -37,9 +37,9 @@ data class UserModel(
             else -> null
         },
         snils = if (snils == "") null else snils,
-        region = region.asResponseModel(),
-        city = city.asResponseModel(),
-        school = school.asResponseModel(),
+        regionId = region.number,
+        cityId = city.id,
+        schoolId = school.id,
         phone = if (phone == "") null else phone,
         email = if (email == "") null else email,
         grade = if (grade == 0) null else grade,

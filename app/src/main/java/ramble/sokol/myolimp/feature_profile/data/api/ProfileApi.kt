@@ -5,6 +5,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -24,7 +25,7 @@ interface ProfileApi {
     suspend fun updateUserData(
         @Header("Authorization") auth: String,
         @Body user: UserModelEntity,
-    ): Response<UserModelEntity>
+    ): Response<ResponseUserModel>
 
 
     @Headers("Content-Type: application/json")
