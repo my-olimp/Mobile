@@ -20,6 +20,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataS
 import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -40,6 +41,11 @@ class ProfileViewModel : ViewModel() {
         UserModel()
     )
     val state = _state.asStateFlow()
+
+    private val _educationState = MutableStateFlow(
+        ProfileEducationState()
+    )
+    private val educationState = _educationState.asStateFlow()
 
     fun onEvent (
         event: ProfileEvent
@@ -106,7 +112,7 @@ class ProfileViewModel : ViewModel() {
                     viewModelScope.launch {
                         updateUserData(user = _state.value)
                     }
-                    SheetRouter.navigateTo(SheetNavigation.Empty)
+                    SheetRouter.navigateTo(SheetNavigation.Empty())
                 }
             }
 
@@ -184,6 +190,33 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnRefreshToken -> {
                 refreshToken()
+            }
+
+            is ProfileEvent.OnAttachSheet -> {
+                updateMenus()
+                with(state.value) {
+                    _educationState.update {
+                        it.copy(
+                            region = this.region,
+                            city = this.city,
+                            school = this.school,
+                            grade = this.grade
+                        )
+                    }
+                }
+            }
+
+            is ProfileEvent.OnCancelSheet -> {
+                with(educationState.value) {
+                    _state.update {
+                        it.copy(
+                            region = this.region,
+                            city = this.city,
+                            school = this.school,
+                            grade = this.grade
+                        )
+                    }
+                }
             }
         }
     }
@@ -381,13 +414,25 @@ class ProfileViewModel : ViewModel() {
         return isValid
     }
 
-    fun updateMenus() {
+    private fun updateMenus() {
         viewModelScope.launch(Dispatchers.IO) {
+            refreshErrors()
             updateRegionsList()
             if(state.value.region.name != ""){
                 updateCitiesList()
                 updateSchoolsList()
             }
+        }
+    }
+
+    private fun refreshErrors() {
+        _state.update {
+            it.copy(
+                regionError = false,
+                cityError = false,
+                schoolError = false,
+                gradeError = false
+            )
         }
     }
 }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 
 object SheetRouter {
 
-    var currentSheet: MutableState<SheetNavigation> = mutableStateOf(SheetNavigation.Empty)
+    var currentSheet: MutableState<SheetNavigation> = mutableStateOf(SheetNavigation.Empty())
 
     fun navigateTo(destination : SheetNavigation) {
         currentSheet.value = destination
