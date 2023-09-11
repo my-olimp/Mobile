@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
@@ -25,10 +29,13 @@ import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.utils.CookiesDataStore
 import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
+import java.io.File
+import java.io.FileOutputStream
+
 class ProfileViewModel : ViewModel() {
 
     companion object {
-        private const val TAG : String = "ViewModelProfile"
+        private const val TAG: String = "ViewModelProfile"
     }
 
     private val dataStore = CodeDataStore()
@@ -41,7 +48,7 @@ class ProfileViewModel : ViewModel() {
     )
     val state = _state.asStateFlow()
 
-    fun onEvent (
+    fun onEvent(
         event: ProfileEvent
     ) {
         when (event) {
@@ -83,8 +90,7 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnImgChanged -> {
                 _state.value = _state.value.copy(
-                    // TODO change event or update to string
-//                    profileImg = event.img
+                    profileImg = event.uri.toString()
                 )
             }
 
@@ -101,7 +107,7 @@ class ProfileViewModel : ViewModel() {
             }
 
             is ProfileEvent.OnSave -> {
-                if(isValidData()) {
+                if (isValidData()) {
                     saveUserData()
                     viewModelScope.launch {
                         updateUserData(user = _state.value)
@@ -112,9 +118,14 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnImgSave -> {
                 viewModelScope.launch {
-                   updateUserImg()
+                    updateUserImg(
+                        file = event.file,
+                        bitmap = event.bitmap,
+                        onResult = { SheetRouter.navigateTo(SheetNavigation.Empty) }
+                    )
                 }
             }
+
             is ProfileEvent.OnRegionChanged -> {
                 _state.value = _state.value.copy(
                     region = event.region,
@@ -168,7 +179,7 @@ class ProfileViewModel : ViewModel() {
 
                     try {
                         repository.logOut(
-                            cookie=cookiesDataStore.getCookies(Constants.COOKIES)!!,
+                            cookie = cookiesDataStore.getCookies(Constants.COOKIES)!!,
                             onResult = {
                                 Log.i(TAG, "completed")
                             },
@@ -185,15 +196,18 @@ class ProfileViewModel : ViewModel() {
             is ProfileEvent.OnRefreshToken -> {
                 refreshToken()
             }
+
+            ProfileEvent.OnUploadError -> TODO()
         }
     }
 
-    private fun refreshToken()  {
+    private fun refreshToken() {
         viewModelScope.launch {
             try {
                 repository.refreshToken(
-                    cookie=cookiesDataStore.getCookies(Constants.COOKIES) ?: throw Exception("no cookie token"),
-                    onResult = { result->
+                    cookie = cookiesDataStore.getCookies(Constants.COOKIES)
+                        ?: throw Exception("no cookie token"),
+                    onResult = { result ->
                         Log.i(TAG, "completed - $result")
 
                         if (result != null) {
@@ -221,11 +235,13 @@ class ProfileViewModel : ViewModel() {
                                     grade = result.user.grade ?: 0,
                                     accountType = result.user.accountType ?: "",
 
-                                    region = (result.user.region ?: ResponseRegionModel()).asRegion(),
+                                    region = (result.user.region
+                                        ?: ResponseRegionModel()).asRegion(),
                                     city = (result.user.city ?: ResponseCityModel()).asCity(),
-                                    school = (result.user.school ?: ResponseSchoolModel()).asSchool(),
+                                    school = (result.user.school
+                                        ?: ResponseSchoolModel()).asSchool(),
 
-                                )
+                                    )
                             }
                         }
                     },
@@ -264,12 +280,29 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    private suspend fun updateUserImg() {
+    private suspend fun updateUserImg(
+        file: File,
+        bitmap: Bitmap,
+        onResult: () -> Unit,
+    ) {
         try {
-            repository.updateUserImg(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
-                imgArray = "" //TODO() Understand how to transfer image as string
-            )
+            // Write the bitmap to the new File in PNG format
+            val outStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, outStream)
+            outStream.flush()
+            outStream.close()
+
+            //Prepate image for upload
+            val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
+            val body =
+                MultipartBody.Part.createFormData("image", file.name, requestFile)
+            repository.uploadImg(
+                auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                    ?: throw Exception("No access token"),
+                imageBody = body,
+                onResult = onResult,
+                onError = { throw it }
+                )
             Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
@@ -291,44 +324,47 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                        ?: throw Exception("no access token"),
                     onResult = { list ->
-                        Log.i(TAG,"response region list: $list")
-                        if(list != null) {
+                        Log.i(TAG, "response region list: $list")
+                        if (list != null) {
                             _state.update {
                                 it.copy(regionList = list.asListRegion())
                             }
                         }
                     },
                     onError = {
-                        Log.i(TAG,"region exception $it")
+                        Log.i(TAG, "region exception $it")
                     }
                 )
             } catch (e: Exception) {
-                Log.i(TAG,"region request throw ${e.message}")
+                Log.i(TAG, "region request throw ${e.message}")
             }
         }
     }
+
     private fun updateCitiesList() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getCities(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                        ?: throw Exception("no access token"),
                     regionId = state.value.region.number,
                     onResult = { list ->
-                        Log.i(TAG,"response city list: $list")
-                        if(list != null) {
+                        Log.i(TAG, "response city list: $list")
+                        if (list != null) {
                             _state.update {
                                 it.copy(cityList = list.asListCity())
                             }
                         }
                     },
                     onError = {
-                        Log.i(TAG,"city exception $it")
+                        Log.i(TAG, "city exception $it")
                     }
                 )
             } catch (e: Exception) {
-                Log.i(TAG,"city request throw ${e.message}")
+                Log.i(TAG, "city request throw ${e.message}")
             }
         }
     }
@@ -337,22 +373,23 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getSchools(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                        ?: throw Exception("no access token"),
                     regionId = state.value.region.number,
                     onResult = { list ->
-                        Log.i(TAG,"response school list: $list")
-                        if(list != null) {
+                        Log.i(TAG, "response school list: $list")
+                        if (list != null) {
                             _state.update {
                                 it.copy(schoolList = list.asListSchool())
                             }
                         }
                     },
                     onError = {
-                        Log.i(TAG,"school exception $it")
+                        Log.i(TAG, "school exception $it")
                     }
                 )
             } catch (e: Exception) {
-                Log.i(TAG,"school request throw ${e.message}")
+                Log.i(TAG, "school request throw ${e.message}")
             }
         }
     }
@@ -360,19 +397,19 @@ class ProfileViewModel : ViewModel() {
     private fun isValidData(): Boolean {
         var isValid = true
         with(state.value) {
-            if(this.regionList.find { it == this.region } == null) {
+            if (this.regionList.find { it == this.region } == null) {
                 isValid = false
                 _state.update { it.copy(regionError = true) }
             }
-            if(this.cityList.find { it == this.city } == null) {
+            if (this.cityList.find { it == this.city } == null) {
                 isValid = false
                 _state.update { it.copy(cityError = true) }
             }
-            if(this.schoolList.find { it == this.school } == null) {
+            if (this.schoolList.find { it == this.school } == null) {
                 isValid = false
                 _state.update { it.copy(schoolError = true) }
             }
-            if(this.grade == 0) {
+            if (this.grade == 0) {
                 isValid = false
                 _state.update { it.copy(gradeError = true) }
             }
@@ -384,7 +421,7 @@ class ProfileViewModel : ViewModel() {
     fun updateMenus() {
         viewModelScope.launch(Dispatchers.IO) {
             updateRegionsList()
-            if(state.value.region.name != ""){
+            if (state.value.region.name != "") {
                 updateCitiesList()
                 updateSchoolsList()
             }

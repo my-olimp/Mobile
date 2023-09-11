@@ -1,5 +1,8 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +31,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -36,8 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.DrawableWrapper
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileFilledBtn
@@ -45,6 +51,7 @@ import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileOutli
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.White
+import java.io.File
 
 @Composable
 fun EditPhotoSheet(
@@ -57,10 +64,10 @@ fun EditPhotoSheet(
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {
+        onResult = {uri ->
             // TODO
-            selectedImgUri = it.toString()
-            viewModel.onEvent(ProfileEvent.OnImgChanged(it.toString()))
+            selectedImgUri = uri.toString()
+            viewModel.onEvent(ProfileEvent.OnImgChanged(uri))
         }
     )
 
@@ -101,7 +108,6 @@ fun EditPhotoSheet(
             ),
             onClick = {
                 // to open window with choosing image
-
                 launcher.launch(
                     PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.ImageOnly
@@ -137,8 +143,19 @@ fun EditPhotoSheet(
                 .padding(vertical = 24.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            val context = LocalContext.current
             ProfileFilledBtn(text = stringResource(R.string.save)) {
-                viewModel.onEvent(ProfileEvent.OnSave)
+                try {
+                    val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(
+                        selectedImgUri?.toUri() ?: Uri.EMPTY))
+                    val pngFile = File(context.cacheDir, "converted_image.png")
+                    if (pngFile.exists()) pngFile.delete()
+                    pngFile.createNewFile()
+                    viewModel.onEvent(ProfileEvent.OnImgSave(pngFile, bitmap))
+                } catch (e: Exception) {
+                    Log.i("Edit photo sheet", "PNG convertation error, $e")
+                    viewModel.onEvent(ProfileEvent.OnUploadError)
+                }
             }
 
             ProfileOutlinedBtn(text = stringResource(R.string.delete)) {

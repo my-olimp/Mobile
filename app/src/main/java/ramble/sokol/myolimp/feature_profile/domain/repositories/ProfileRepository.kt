@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_profile.domain.repositories
 
 import android.util.Log
+import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
@@ -26,13 +27,22 @@ class ProfileRepository {
             user = user.toUserModelEntity()
         )
 
-    suspend fun updateUserImg(
+    suspend fun uploadImg(
         auth: String,
-        imgArray: String
-    ) = ProfileRetrofitInstance.api.updateUserImg(
-        auth = auth,
-        imgArray = imgArray
-    )
+        imageBody: MultipartBody.Part,
+        onResult: () -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        try {
+            instance.uploadImage(
+                auth = auth,
+                image = imageBody
+            )
+            onResult()
+        } catch (ex: Exception) {
+            onError(ex)
+        }
+    }
 
     suspend fun logOut(
         cookie: String,
