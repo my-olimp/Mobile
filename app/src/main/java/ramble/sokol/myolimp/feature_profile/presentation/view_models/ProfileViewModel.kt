@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
@@ -121,7 +122,9 @@ class ProfileViewModel : ViewModel() {
                     updateUserImg(
                         file = event.file,
                         bitmap = event.bitmap,
-                        onResult = { SheetRouter.navigateTo(SheetNavigation.Empty) }
+                        onResult = {
+                            Log.i("TEMP", "hide sheet")
+                            SheetRouter.navigateTo(SheetNavigation.Empty) }
                     )
                 }
             }
@@ -302,7 +305,7 @@ class ProfileViewModel : ViewModel() {
                 imageBody = body,
                 onResult = onResult,
                 onError = { throw it }
-                )
+            )
             Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
@@ -412,6 +415,12 @@ class ProfileViewModel : ViewModel() {
             if (this.grade == 0) {
                 isValid = false
                 _state.update { it.copy(gradeError = true) }
+            }
+            if (snils.length != 11 || !snils.isDigitsOnly()) {
+                isValid = false
+                _state.update { curValue ->
+                    curValue.copy(snilsError = true)
+                }
             }
         }
 

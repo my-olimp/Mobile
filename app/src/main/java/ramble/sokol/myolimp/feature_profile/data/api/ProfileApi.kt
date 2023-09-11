@@ -36,7 +36,7 @@ interface ProfileApi {
     suspend fun uploadImage(
         @Header("Authorization") auth: String,
         @Part image: MultipartBody.Part
-    ): Call<Void>
+    ): Call<Void>?
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/logout/")

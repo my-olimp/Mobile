@@ -144,7 +144,10 @@ fun EditPhotoSheet(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val context = LocalContext.current
-            ProfileFilledBtn(text = stringResource(R.string.save)) {
+            ProfileFilledBtn(
+                text = stringResource(R.string.save),
+                enabled = (selectedImgUri.toString().startsWith("content://"))
+            ) {
                 try {
                     val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(
                         selectedImgUri?.toUri() ?: Uri.EMPTY))

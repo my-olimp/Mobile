@@ -1,6 +1,8 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -105,11 +108,18 @@ fun EditPersonalInfoSheet(
         OutlinedText(
             previousData = state.value.snils,
             label = stringResource(R.string.snils),
-            isEnabled = true,
+            isEnabled = state.value.snilsError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSnilsChanged(it))
             }
         )
+        if (state.value.snilsError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = stringResource(R.string.null_snils_error_text))
+            }
+        }
         
         Spacer(modifier = Modifier.height(34.dp))
 
