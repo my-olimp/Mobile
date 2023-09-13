@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
+import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
@@ -12,8 +13,10 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface ProfileApi {
@@ -28,12 +31,12 @@ interface ProfileApi {
     ): Response<ResponseUserModel>
 
 
-    @Headers("Content-Type: application/json")
-    @POST("user/avatar/")
-    suspend fun updateUserImg(
+    @Multipart
+    @POST("/user/avatar/")
+    suspend fun uploadImage(
         @Header("Authorization") auth: String,
-        @Body imgArray: String,
-    )
+        @Part image: MultipartBody.Part
+    ): Call<Void>?
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/logout/")

@@ -1,13 +1,16 @@
 package ramble.sokol.myolimp.feature_profile.utils
 
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.navigation.NavController
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.School
+import java.io.File
 
 sealed class ProfileEvent {
     data object OnSave: ProfileEvent()
-    data object OnImgSave: ProfileEvent()
+    data class OnImgSave(val file: File, val bitmap: Bitmap): ProfileEvent()
     data object OnImgDelete: ProfileEvent()
     data object OnRefreshToken: ProfileEvent()
 
@@ -21,7 +24,7 @@ sealed class ProfileEvent {
     data class OnDobChanged(val dob: String): ProfileEvent()
     data class OnGenderChanged(val gender: String): ProfileEvent()
     data class OnSnilsChanged(val snils: String): ProfileEvent()
-    data class OnImgChanged(val img: String?): ProfileEvent()
+    data class OnImgChanged(val uri: Uri?): ProfileEvent()
     data class OnMarkerClicked(val hasThird: Boolean): ProfileEvent()
     data class OnRegionChanged(val region: Region): ProfileEvent()
     data class OnCityChanged(val city: City): ProfileEvent()
@@ -30,4 +33,5 @@ sealed class ProfileEvent {
     data class OnEmailChanged(val email: String): ProfileEvent()
     data class OnPhoneChanged(val phone: String): ProfileEvent()
     data class OnLogOut(val navigator: NavController): ProfileEvent()
+    data object OnUploadError: ProfileEvent()
 }

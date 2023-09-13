@@ -52,56 +52,51 @@ class RegisterImageViewModel : ViewModel() {
                 }
             }
 
-            is RegistrationImageEvent.OnUploadError -> {} // add error handing
-        }
-    }
+            is RegistrationImageEvent.OnSubmit -> {
+                viewModelScope.launch {
+                    try {
+                        // Write the bitmap to the new File in PNG format
+                        val outStream = FileOutputStream(event.file)
+                        event.bitmap.compress(Bitmap.CompressFormat.PNG, 80, outStream)
+                        outStream.flush()
+                        outStream.close()
 
-    fun onNext(
-        imageFile: File,
-        bitmap: Bitmap,
-        navigator: DestinationsNavigator
-    ) {
-        viewModelScope.launch {
-            try {
-                // Write the bitmap to the new File in PNG format
-                val outStream = FileOutputStream(imageFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 80, outStream)
-                outStream.flush()
-                outStream.close()
+                        //Prepate image for upload
+                        val requestFile = event.file.asRequestBody("image/png".toMediaTypeOrNull())
+                        val body =
+                            MultipartBody.Part.createFormData("image", event.file.name, requestFile)
 
-                //Prepate image for upload
-                val requestFile = imageFile.asRequestBody("image/png".toMediaTypeOrNull())
-                val body =
-                    MultipartBody.Part.createFormData("image", imageFile.name, requestFile)
-
-                //Upload image
-                repository.registerImageDocs(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
-                        ?: throw Exception("No access token"),
-                    data = UserDocsDataModel(
-                        snils = state.value.snils
-                    ),
-                    imageBody = body,
-                    onResult = {
-                        Log.i("RegistrerImageViewModel", "success,\n $it") // TODO()
-
-                        navigator.navigate(
-                            HomeScreenDestination()
-                        ) {
-                            popUpTo(NavGraphs.root) {
-                                saveState = false
+                        //Upload image
+                        repository.registerImageDocs(
+                            auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                                ?: throw Exception("No access token"),
+                            data = UserDocsDataModel(
+                                snils = state.value.snils
+                            ),
+                            imageBody = body,
+                            onResult = {
+                                Log.i("RegistrerImageViewModel", "success,\n $it") // TODO()
+                                event.navigator.navigate(
+                                    HomeScreenDestination()
+                                ) {
+                                    popUpTo(NavGraphs.root) {
+                                        saveState = false
+                                    }
+                                    launchSingleTop = false
+                                    restoreState = false
+                                }
+                            },
+                            onError = {
+                                throw it
                             }
-                            launchSingleTop = false
-                            restoreState = false
-                        }
-                    },
-                    onError = {
-                        throw it
+                        )
+                    } catch (e: Exception) {
+                        Log.i("RegisterImageViewModel", "exception: ${e.message}")
                     }
-                )
-            } catch (e: Exception) {
-                Log.i("RegisterImageViewModel", "exception: ${e.message}")
+                }
             }
+
+            is RegistrationImageEvent.OnUploadError -> {} // TODO add error handing
         }
     }
 }
@@ -109,5 +104,6 @@ class RegisterImageViewModel : ViewModel() {
 sealed interface RegistrationImageEvent {
     data class OnSnilsChanged(val snils: String) : RegistrationImageEvent
     data class OnImageChanged(val uri: Uri?) : RegistrationImageEvent
+    data class OnSubmit(val file: File, val bitmap: Bitmap, val navigator: DestinationsNavigator) : RegistrationImageEvent
     data object OnUploadError : RegistrationImageEvent
 }
