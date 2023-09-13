@@ -39,6 +39,7 @@ fun BottomSheetLayout(
     sheetState: ModalBottomSheetState,
     name: String,
     isCenter: Boolean = true,
+    onDetach: () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
 ) {
 
@@ -100,7 +101,7 @@ fun BottomSheetLayout(
                                     CircleShape
                                 )
                                 .clickable {
-                                    SheetRouter.navigateTo(SheetNavigation.Empty)
+                                    SheetRouter.navigateTo(SheetNavigation.Empty(onDetach = onDetach))
                                 },
                             painter = painterResource(id = R.drawable.ic_profile_cancel),
                             contentDescription = "close sheet"

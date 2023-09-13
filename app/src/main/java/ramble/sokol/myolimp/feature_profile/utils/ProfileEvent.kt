@@ -13,6 +13,11 @@ sealed class ProfileEvent {
     data class OnImgSave(val file: File, val bitmap: Bitmap): ProfileEvent()
     data object OnImgDelete: ProfileEvent()
     data object OnRefreshToken: ProfileEvent()
+
+    data object OnAttachSheet: ProfileEvent()
+
+    data object OnCancelSheet: ProfileEvent()
+
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()
     data class OnThirdNameChanged(val thirdName: String): ProfileEvent()

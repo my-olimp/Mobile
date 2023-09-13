@@ -15,6 +15,9 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.City
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.School
 import ramble.sokol.myolimp.feature_authentication.data.models.toListString
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
@@ -31,7 +34,7 @@ fun EditEducationSheet (
         mutableStateOf(false)
     }
     if(!isUpdated.value){
-        viewModel.updateMenus()
+        viewModel.onEvent(ProfileEvent.OnAttachSheet)
         isUpdated.value = true
     }
 
@@ -51,11 +54,9 @@ fun EditEducationSheet (
             isError = state.value.regionError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region_profile)
         ) { newRegion ->
-            state.value.regionList.find {
-                it.name == newRegion
-            }?.let {
-                viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
-            }
+            viewModel.onEvent(ProfileEvent.OnRegionChanged(
+                state.value.regionList.find { it.name == newRegion } ?: Region()
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -69,11 +70,9 @@ fun EditEducationSheet (
             isError = state.value.cityError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city_profile)
         ) { newCity ->
-            state.value.cityList.find {
-                it.name == newCity
-            }?.let {
-                viewModel.onEvent(ProfileEvent.OnCityChanged(it))
-            }
+            viewModel.onEvent(ProfileEvent.OnCityChanged(
+                state.value.cityList.find { it.name == newCity } ?: City()
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -87,11 +86,9 @@ fun EditEducationSheet (
             isError = state.value.schoolError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)
         ) { newSchool ->
-            state.value.schoolList.find {
-                it.name == newSchool
-            }?.let {
-                viewModel.onEvent(ProfileEvent.OnSchoolChanged(it))
-            }
+            viewModel.onEvent(ProfileEvent.OnSchoolChanged(
+                state.value.schoolList.find { it.name == newSchool } ?: School()
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))

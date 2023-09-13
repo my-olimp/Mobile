@@ -375,7 +375,10 @@ fun ProfileDataScreen(
     BottomSheetLayout(
         sheetState = sheetState,
         isCenter = isCenter,
-        name = sheetName
+        name = sheetName,
+        onDetach = {
+            viewModel.onEvent(ProfileEvent.OnCancelSheet)
+        }
     ) {
         Crossfade(targetState = SheetRouter.currentSheet, label = "") {
             when (it.value) {
@@ -433,6 +436,7 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.Empty -> {
+                    (it.value as SheetNavigation.Empty).onDetach.invoke()
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
                             sheetState.hide()

@@ -5,5 +5,5 @@ sealed class SheetNavigation {
     data object EditPersonalData : SheetNavigation()
     data object EditEducation : SheetNavigation()
     data object EditContacts : SheetNavigation()
-    data object Empty : SheetNavigation()
+    data class Empty(val onDetach: () -> Unit = {}) : SheetNavigation()
 }
