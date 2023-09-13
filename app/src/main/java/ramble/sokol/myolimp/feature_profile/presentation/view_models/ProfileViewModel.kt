@@ -130,7 +130,7 @@ class ProfileViewModel : ViewModel() {
                         bitmap = event.bitmap,
                         onResult = {
                             Log.i("TEMP", "hide sheet")
-                            SheetRouter.navigateTo(SheetNavigation.Empty) }
+                            SheetRouter.navigateTo(SheetNavigation.Empty()) }
                     )
                 }
             }
