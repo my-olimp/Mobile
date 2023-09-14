@@ -6,14 +6,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.City
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.School
+import ramble.sokol.myolimp.feature_authentication.data.models.toListString
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 
@@ -21,6 +29,15 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 fun EditEducationSheet (
     viewModel: ProfileViewModel
 ) {
+    val state = viewModel.state.collectAsState()
+    val isUpdated = remember {
+        mutableStateOf(false)
+    }
+    if(!isUpdated.value){
+        viewModel.onEvent(ProfileEvent.OnAttachSheet)
+        isUpdated.value = true
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,61 +45,65 @@ fun EditEducationSheet (
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        EditableDropDown (
-            options = listOf(
-                "Московская область", "Краснодарская область",
-                "Нижегородская область", "Ленинградская область"
-            ),
-            previousData = viewModel.state.value.region,
+        EditableDropDown(
+            options = state.value.regionList.toListString().ifEmpty {
+                stringArrayResource(id = R.array.region).toList()
+            },
+            previousData = state.value.region.name,
             label = stringResource(R.string.region_profile),
-        ) {
-            viewModel.onEvent(ProfileEvent.OnRegionChanged(it))
+            isError = state.value.regionError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region_profile)
+        ) { newRegion ->
+            viewModel.onEvent(ProfileEvent.OnRegionChanged(
+                state.value.regionList.find { it.name == newRegion } ?: Region()
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        EditableDropDown (
-            previousData = viewModel.state.value.city,
+        EditableDropDown(
+            options = state.value.cityList.toListString().ifEmpty {
+                stringArrayResource(id = R.array.city).toList()
+            },
+            previousData = state.value.city.name,
             label = stringResource(R.string.city_profile),
-            listOf(
-                "Балашиха", "Москва",
-                "Санкт-Петербург", "Чехов"
-            )
-        ) {
-            viewModel.onEvent(ProfileEvent.OnCityChanged(it))
+            isError = state.value.cityError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city_profile)
+        ) { newCity ->
+            viewModel.onEvent(ProfileEvent.OnCityChanged(
+                state.value.cityList.find { it.name == newCity } ?: City()
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        EditableDropDown (
-            previousData = viewModel.state.value.school,
+        EditableDropDown(
+            options = state.value.schoolList.toListString().ifEmpty {
+                stringArrayResource(id = R.array.school).toList()
+            },
+            previousData = state.value.school.name,
             label = stringResource(R.string.school),
-            listOf(
-                "МБОУ СОШ №10", "МБОУ СОШ №1",
-                "МБОУ гимназия №2", "МБОУ СОШ №3",
-                "МБОУ лицей №4",
-            )
-        ) {
-            viewModel.onEvent(ProfileEvent.OnSchoolChanged(it))
+            isError = state.value.schoolError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)
+        ) { newSchool ->
+            viewModel.onEvent(ProfileEvent.OnSchoolChanged(
+                state.value.schoolList.find { it.name == newSchool } ?: School()
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        ReadOnlyDropDown (
-            previousData = viewModel.state.value.grade.toString(),
+        ReadOnlyDropDown(
+            previousData = "${state.value.grade}",
             label = stringResource(R.string.grade),
-            options = listOf(
-                "1", "2",
-                "3", "4",
-                "5", "6",
-                "7", "8",
-                "9", "10",
-                "11",
-            )
+            options = stringArrayResource(id = R.array.grade).toList(),
+            isError = state.value.gradeError,
+            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.grade)
         ) {
             try {
                 viewModel.onEvent(ProfileEvent.OnGradeChanged(it.toInt()))
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
 
         Spacer(modifier = Modifier.height(34.dp))
@@ -94,4 +115,8 @@ fun EditEducationSheet (
             viewModel.onEvent(ProfileEvent.OnSave)
         }
     }
+}
+@Composable
+private fun errorText(id: Int,addId: Int): String {
+    return stringResource(id = id, stringResource(id = addId).lowercase())
 }

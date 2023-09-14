@@ -5,12 +5,9 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.domain.utils.dayViewModifier
@@ -28,7 +25,7 @@ internal fun MonthViewCalendar(
     state: PlanState
 ) {
 
-    val itemWidth = LocalConfiguration.current.screenWidthDp / 7
+//    val itemWidth = LocalConfiguration.current.screenWidthDp / 7
 
     CalendarPager(
         loadedDates = loadedDates,
@@ -43,13 +40,13 @@ internal fun MonthViewCalendar(
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentSize()
         ) {
             loadedDates[currentPage].forEachIndexed { index, date ->
 
                 Box(
                     Modifier
-                        .width(itemWidth.dp)
+//                        .width(itemWidth.dp)
+                        .fillMaxWidth(0.14f)
                         .padding(5.dp),
                     contentAlignment = Alignment.Center
                 ) {

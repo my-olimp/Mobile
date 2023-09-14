@@ -1,18 +1,22 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckBoxLabel
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
@@ -24,6 +28,8 @@ fun EditPersonalInfoSheet(
     viewModel: ProfileViewModel
 ) {
 
+    val state = viewModel.state.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,7 +38,7 @@ fun EditPersonalInfoSheet(
     ) {
 
         OutlinedText(
-            previousData = viewModel.state.value.secondName,
+            previousData = state.value.secondName,
             label = stringResource(R.string.second_name),
             isEnabled = true,
             onTextChanged = {
@@ -43,7 +49,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = viewModel.state.value.firstName,
+            previousData = state.value.firstName,
             label = stringResource(R.string.name),
             isEnabled = true,
             onTextChanged = {
@@ -54,9 +60,9 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = viewModel.state.value.thirdName,
+            previousData = state.value.thirdName,
             label = stringResource(R.string.third_name),
-            isEnabled = !viewModel.state.value.hasThird,
+            isEnabled = !state.value.hasThird,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnThirdNameChanged(it))
             }
@@ -67,7 +73,7 @@ fun EditPersonalInfoSheet(
         // https://stackoverflow.com/questions/72124384/how-do-i-set-border-color-for-the-checkbox-using-jetpack-compose
         CheckBoxLabel(
             label = stringResource(R.string.no_third_name),
-            previousData = viewModel.state.value.hasThird,
+            previousData = state.value.hasThird,
             onStatusChanged = {
                 viewModel.onEvent(ProfileEvent.OnMarkerClicked(it))
             }
@@ -80,7 +86,7 @@ fun EditPersonalInfoSheet(
 
         CalendarInput(
             label = stringResource(id = R.string.dob),
-            previousData = viewModel.state.value.dateOfBirth
+            previousData = state.value.dateOfBirth
         ) {
             viewModel.onEvent(ProfileEvent.OnDobChanged(it))
         }
@@ -91,7 +97,7 @@ fun EditPersonalInfoSheet(
            options =  listOf(
                "Мужской", "Женский"
            ),
-            previousData = viewModel.state.value.gender,
+            previousData = state.value.gender,
             label = stringResource(id = R.string.gender)
         ) {
             viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
@@ -100,13 +106,20 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = viewModel.state.value.snils,
+            previousData = state.value.snils,
             label = stringResource(R.string.snils),
-            isEnabled = true,
+            isEnabled = state.value.snilsError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSnilsChanged(it))
             }
         )
+        if (state.value.snilsError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = stringResource(R.string.null_snils_error_text))
+            }
+        }
         
         Spacer(modifier = Modifier.height(34.dp))
 

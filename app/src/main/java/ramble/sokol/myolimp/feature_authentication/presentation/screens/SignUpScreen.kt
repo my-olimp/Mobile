@@ -146,6 +146,14 @@ fun SignUpScreen(
                     viewModel.onEvent(SignUpEvent.OnConfirmedPasswordUpdated(it))
                 }
 
+                if (state.value.passwordError != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    ErrorMessage(
+                        text = state.value.passwordError!!
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 FilledBtn(

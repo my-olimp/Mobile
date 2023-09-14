@@ -11,7 +11,7 @@ import retrofit2.Response
 
 class SignUpRepository {
 
-    private val instance = RetrofitBuilder.instance(AuthenticationApi::class.java)
+    private val instance = RetrofitBuilder().instance(AuthenticationApi::class.java)
 
     fun signUp(
         data: RequestSignUpModel,

@@ -14,7 +14,7 @@ class LoginRepository {
         onResult: (ResponseAuthModel?) -> Unit,
         onError: (Throwable) -> Unit
     ){
-        val instance = RetrofitBuilder.instance(AuthenticationApi::class.java)
+        val instance = RetrofitBuilder().instance(AuthenticationApi::class.java)
 
         instance.loginUser(data).enqueue(
             object : Callback<ResponseAuthModel> {

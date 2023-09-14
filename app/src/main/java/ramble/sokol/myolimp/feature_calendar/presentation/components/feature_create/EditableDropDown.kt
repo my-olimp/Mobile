@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.White
 
@@ -44,6 +46,8 @@ fun EditableDropDown(
     previousData: String,
     label: String,
     options: List<String>,
+    isError: Boolean = false,
+    errorText: String = stringResource(id = R.string.null_textfield_error,"none"),
     onTextChanged: (String) -> Unit,
 ) {
 
@@ -110,7 +114,8 @@ fun EditableDropDown(
                 focusedBorderColor = BlueStart,
                 focusedLabelColor = BlueStart,
                 cursorColor = BlueStart,
-                backgroundColor = White
+                backgroundColor = White,
+                errorBorderColor = MessageError
             ),
             trailingIcon = {
 
@@ -137,6 +142,7 @@ fun EditableDropDown(
             ),
             singleLine = true,
             maxLines = 1,
+            isError = isError
         )
 
         // filter options based on text field value
@@ -175,4 +181,7 @@ fun EditableDropDown(
             }
         }
     }
+    if (isError) ShowError(
+        text = errorText
+    )
 }

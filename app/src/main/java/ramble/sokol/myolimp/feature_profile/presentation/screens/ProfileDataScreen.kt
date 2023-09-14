@@ -23,6 +23,7 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +48,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout
@@ -59,22 +59,23 @@ import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditContactsShee
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditEducationSheet
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPersonalInfoSheet
 import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPhotoSheet
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
 import ramble.sokol.myolimp.ui.theme.White
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun ProfileDataScreen(
-    navController: NavController
+    navController: NavController,
 ) {
 
     val viewModel = getViewModel<ProfileViewModel>()
-
+    val state = viewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
@@ -82,18 +83,23 @@ fun ProfileDataScreen(
             false
         }
     )
-
     var isCenter by remember {
         mutableStateOf(false)
     }
-
     var sheetName by remember {
         mutableStateOf("")
     }
+//    var selectedImgUri by remember {
+//        mutableStateOf(state.value.profileImg)
+//    }
 
-    var selectedImgUri by remember {
-        mutableStateOf(viewModel.state.value.profileImg)
-    }
+//    var selectedImgUri by remember {
+//        mutableStateOf(viewModel.state.value.profileImg)
+//    }
+
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onEvent(ProfileEvent.OnRefreshToken)
+    })
 
     BottomBarTheme(
         navController = navController
@@ -128,7 +134,8 @@ fun ProfileDataScreen(
                         .size(95.dp)
                         .align(CenterHorizontally)
                         .clip(CircleShape),
-                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
+//                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
+                    model = state.value.profileImg,
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -144,7 +151,8 @@ fun ProfileDataScreen(
                     }
 
                     ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-                        selectedImgUri = null
+//                        TODO
+//                        selectedImgUri = null
                         viewModel.onEvent(ProfileEvent.OnImgDelete)
                     }
                 }
@@ -235,28 +243,35 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.id),
-                    content = "123456"
+                    content = state.value.id
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.name_surname),
-                    content = "Спиридонова Диана Романовна"
+                    content = "${state.value.firstName} ${state.value.secondName} ${state.value.thirdName}"
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                ProfileSectionContent(
+                    title = stringResource(R.string.dob),
+                    content = state.value.dateOfBirth
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.gender),
-                    content = "Женский"
+                    content = state.value.gender
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.snils),
-                    content = "123-456-789-99"
+                    content = state.value.snils
                 )
             }
 
@@ -288,28 +303,28 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.region),
-                    content = "Московская область"
+                    content = state.value.region.name
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.city),
-                    content = "Балашиха"
+                    content = state.value.city.name
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.school),
-                    content = "МБОУ СШ № 1"
+                    content = state.value.school.name
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.grade),
-                    content = "10"
+                    content = "${state.value.grade}"
                 )
             }
 
@@ -341,14 +356,14 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.email),
-                    content = "polyubvi@ya.ru"
+                    content = state.value.email
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.phone_number),
-                    content = "+7 123 456 78 90"
+                    content = state.value.phone
                 )
             }
 
@@ -360,7 +375,10 @@ fun ProfileDataScreen(
     BottomSheetLayout(
         sheetState = sheetState,
         isCenter = isCenter,
-        name = sheetName
+        name = sheetName,
+        onDetach = {
+            viewModel.onEvent(ProfileEvent.OnCancelSheet)
+        }
     ) {
         Crossfade(targetState = SheetRouter.currentSheet, label = "") {
             when (it.value) {
@@ -418,6 +436,7 @@ fun ProfileDataScreen(
                 }
 
                 is SheetNavigation.Empty -> {
+                    (it.value as SheetNavigation.Empty).onDetach.invoke()
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {
                             sheetState.hide()

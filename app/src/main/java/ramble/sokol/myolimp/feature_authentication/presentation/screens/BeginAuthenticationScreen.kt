@@ -111,6 +111,7 @@ fun BeginAuthenticationScreen (
                 text = "[Beta]"
             ) {
                 navigator.navigate(ProfileScreenDestination)
+                //navigator.navigate(RegisterEducationScreenDestination)
             }
         }
     }

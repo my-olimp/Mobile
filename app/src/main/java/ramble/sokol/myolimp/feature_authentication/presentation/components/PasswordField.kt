@@ -52,8 +52,10 @@ fun PasswordField(
             .fillMaxWidth(),
         value = textValue,
         onValueChange = {
-            textValue = it
-            onTextChanged(textValue)
+            if (textValue.length < 256) {
+                textValue = it
+                onTextChanged(textValue)
+            }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = BlueStart,

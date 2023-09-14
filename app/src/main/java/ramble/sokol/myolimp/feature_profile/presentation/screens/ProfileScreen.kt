@@ -1,8 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.screens
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,15 +39,15 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
-import ramble.sokol.myolimp.feature_profile.domain.view_models.ProfileViewModel
+import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfile
 import ramble.sokol.myolimp.ui.theme.White
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Destination
 @Composable
 fun ProfileScreen(
@@ -55,7 +55,12 @@ fun ProfileScreen(
 ) {
 
     val viewModel = getViewModel<ProfileViewModel>()
+    val state = viewModel.state.collectAsState()
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onEvent(ProfileEvent.OnRefreshToken)
+    })
 
     BottomBarTheme(
         navController = navController
@@ -91,7 +96,8 @@ fun ProfileScreen(
                         .size(95.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(CircleShape),
-                    model = if (viewModel.state.value.profileImg != null) viewModel.state.value.profileImg else R.drawable.ic_default_img,
+                    model = if (state.value.profileImg != null) state.value.profileImg
+                            else R.drawable.ic_default_img,
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -100,7 +106,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Спиридонова Диана", style = TextStyle(
+                    text = "${state.value.firstName} ${state.value.secondName}", style = TextStyle(
                         fontSize = 17.sp,
                         fontFamily = FontFamily(Font(R.font.bold)),
                         fontWeight = FontWeight(600),
@@ -112,7 +118,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    modifier = Modifier.padding(bottom = 16.dp), text = "Ученик", style = TextStyle(
+                    modifier = Modifier.padding(bottom = 16.dp), text = state.value.accountType, style = TextStyle(
                         fontSize = 13.sp,
                         fontFamily = FontFamily(Font(R.font.medium)),
                         fontWeight = FontWeight(500),
@@ -147,7 +153,7 @@ fun ProfileScreen(
                 }
 
                 Spacer(
-                    modifier = Modifier
+                     modifier = Modifier
                         .height(29.dp)
                 )
 
@@ -156,6 +162,8 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_purpose),
                     content = stringResource(R.string.profile_purpose_content)
                 ) {
+
+                    navController.navigate(RegisterImageScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 
@@ -239,20 +247,6 @@ fun NewsScreen(
     ) {
         Text(
             modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "NewsScreen"
-        )
-    }
-}
-
-@Destination
-@Composable
-fun LibraryScreen(
-    navController: NavController
-) {
-    BottomBarTheme(
-        navController = navController
-    ) {
-        Text(
-            modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "LibraryScreen"
         )
     }
 }

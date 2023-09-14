@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -39,58 +40,62 @@ fun ConfirmationCode(
         mutableStateOf("")
     }
 
-        OutlinedTextField(
-            modifier = modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(size = 16.dp),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = BlueStart,
-                unfocusedBorderColor = OutlinedUnFocusedBorder,
-                cursorColor = BlueStart,
-                errorBorderColor = MessageError
-            ),
-            placeholder = {
-                Text(
-                    text = placeholder,
-                    style = TextStyle(
-                        fontSize = 34.sp,
-                        fontFamily = FontFamily(Font(R.font.medium)),
-                        fontWeight = FontWeight(500),
-                        color = SheetTitle,
-                        textAlign = TextAlign.Center
-                    )
+    OutlinedTextField(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(size = 16.dp),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = BlueStart,
+            unfocusedBorderColor = OutlinedUnFocusedBorder,
+            cursorColor = BlueStart,
+            errorBorderColor = MessageError
+        ),
+        placeholder = {
+            Text(
+                text = placeholder,
+                style = TextStyle(
+                    fontSize = 34.sp,
+                    fontFamily = FontFamily(Font(R.font.medium)),
+                    fontWeight = FontWeight(500),
+                    color = SheetTitle,
+                    textAlign = TextAlign.Center
                 )
-            },
-            singleLine = true,
-            maxLines = 1,
-            value = textValue,
-            onValueChange = {
-                // only numbers
-                if (it.onlyNumbers()) {
-                    textValue = it
+            )
+        },
+        singleLine = true,
+        maxLines = 1,
+        value = textValue,
+        onValueChange = {
+            // only numbers
+            if (it.onlyNumbers()) {
+                try {
+                    textValue = textValue.replace(
+                        textValue,
+                        if (it.indexOf(textValue) == 0 && it.length > 1) it[1].toString() else it[0].toString()
+                    )
 
-                    try {
-                        onTextChanged(
-                            it.toInt()
-                        )
-                    } catch (_ : Exception) {
-                        onTextChanged(
-                            null
-                        )
-                    }
+                    onTextChanged(
+                        textValue.toInt()
+                    )
+                } catch (_: Exception) {
+                    textValue = ""
+
+                    onTextChanged(
+                        null
+                    )
                 }
-            },
-            textStyle = TextStyle(
-                fontSize = 34.sp,
-                fontFamily = FontFamily(Font(R.font.medium)),
-                fontWeight = FontWeight(500),
-                color = SheetTitle,
-                textAlign = TextAlign.Center
-            ),
-            isError = isError
-        )
-
+            }
+        },
+        textStyle = TextStyle(
+            fontSize = 34.sp,
+            fontFamily = FontFamily(Font(R.font.medium)),
+            fontWeight = FontWeight(500),
+            color = SheetTitle,
+            textAlign = TextAlign.Center
+        ),
+        isError = isError
+    )
 }

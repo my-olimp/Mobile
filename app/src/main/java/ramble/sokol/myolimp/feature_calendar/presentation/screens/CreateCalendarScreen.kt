@@ -46,9 +46,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
+import com.ramcosta.composedestinations.navigation.popUpTo
 import org.koin.androidx.compose.getViewModel
+import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
+import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
+import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_clock.TimerPicker
@@ -67,7 +71,8 @@ import java.time.LocalDate
 @Composable
 fun CreateCalendarScreen (
     navController: NavController,
-    date: String
+    date: String,
+    fromHome: Boolean = false
 ) {
 
     val viewModel = getViewModel<PlansViewModel>()
@@ -157,21 +162,29 @@ fun CreateCalendarScreen (
                     )
 
                     Image(
-                        painter = painterResource(id = R.drawable.ic_profile_cancel),
-                        contentDescription = "close",
                         modifier = Modifier
                             .clickable {
 
                                 Log.i(PlansViewModel.TAG, "${state.date} - $date")
 
-                                viewModel.onEvent(
-                                    Event.SaveDate(date)
-                                )
+                                if (fromHome) {
+                                    // navigate to home if from home
 
-                                navController.navigate(
-                                    CalendarScreenDestination()
-                                )
-                            }
+                                    navController.navigate(
+                                        HomeScreenDestination()
+                                    )
+                                } else {
+                                    viewModel.onEvent(
+                                        Event.SaveDate(date)
+                                    )
+
+                                    navController.navigate(
+                                        CalendarScreenDestination()
+                                    )
+                                }
+                            },
+                        painter = painterResource(id = R.drawable.ic_profile_cancel),
+                        contentDescription = "close",
                     )
                 }
 
