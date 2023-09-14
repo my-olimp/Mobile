@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +34,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
+import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BlueStart
@@ -42,14 +50,15 @@ import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
 
-@[Preview(showBackground = true) Composable]
+/*@[Preview(showBackground = true) Composable]
 fun PreviewArticleScreen() {
     ArticleScreen()
-}
+}*/
 
-@Composable
+@OptIn(ExperimentalLayoutApi::class)
+@[Composable Destination]
 fun ArticleScreen(
-
+    navigator: DestinationsNavigator
 ) {
 
     val testItems = listOf(
@@ -66,6 +75,7 @@ fun ArticleScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = BackgroundMain)
+                .verticalScroll(rememberScrollState())
         ) {
             Row(
                 modifier = Modifier
@@ -190,8 +200,6 @@ fun ArticleScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 LazyRow (
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -201,6 +209,24 @@ fun ArticleScreen(
                         SubjectItem(subjectText = "math meth $it")
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                /*FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    for(i in 0..10) {
+                        //SubjectItem(subjectText = "math meth $i")
+                        SubjectComponent(
+                            subject = SubjectModel(name = "meth $i"),
+                            previouslySelected = false,
+                            onClick = {}
+                        )
+                    }
+                }*/
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -238,7 +264,28 @@ fun ArticleScreen(
 
                 Spacer(modifier = Modifier.height(5.dp))
                 /*TASKS*/
-                TextTask()
+                TextTask(
+                    TaskText = "Задача 1. Решить уравнение 2x3 − 3x2 − 8x + 12 = 0.",
+                    SolutionText = "x2(2x − 3) − 4(2x − 3) = 0 \n" +
+                            "(2x − 3)(x2 − 4) = 0 \n" +
+                            "(2x − 3)(x − 2)(x + 2) = 0.",
+                    AnswerText = "Ответ: 3/2, ±2."
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                TextTask(
+                    TaskText = "Задача 2. (МГУ, социологич. ф-т, 2004 ) Решите уравнение:\n" +
+                            "x3 + 9x2 + 18x − 2(x 2 + 9x) − 36\n" +
+                            "                     √ x + 3   ",
+                    SolutionText = " Если поддаться искушению раскрыть скобки и привести подобные слагаемые (тем более что сократится 18x), то в возникшем кубическом уравнении придётся подбирать корень с целью разложить левую часть на множители. Данная процедура описана в следующем пункте и не представляет здесь никаких сложностей, однако необходимости в ней сейчас нет. Дело в том, что несколько вычурная запись условия содержит подсказку, как именно надо группировать слагаемые. Имеем:  \n" +
+                            "x3 + 9x2 + 18x − 2(x2 + 9x) − 36 = x(x2 + 9x) − 2(x2 + 9x) + 18x − 36 = (x 2 + 9x)(x − 2) + 18(x − 2) = (x − 2)(x2 + 9x + 18) = (x − 2)(x + 3)(x + 6).\n" +
+                            "Наше уравнение, таким образом, равносильно системе\n" +
+                            "   (x − 2)(x + 3)(x + 6) = 0, \n" +
+                            "    x + 3 > 0, \n" +
+                            "решением которой служит x = 2.",
+                    AnswerText = "Ответ: 2."
+                )
             }
         }
     }
@@ -267,7 +314,11 @@ fun SubjectItem(subjectText: String) {
 }
 
 @Composable
-fun TextTask() {
+fun TextTask(
+    TaskText: String = "",
+    SolutionText: String = "",
+    AnswerText: String = ""
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -281,7 +332,7 @@ fun TextTask() {
             modifier = Modifier.padding(vertical = 5.dp)
         ){
             Text(
-                text = "Задача 1. Решить уравнение 2x3 − 3x2 − 8x + 12 = 0.",
+                text = TaskText,
                 style = mediumType(
                     color = SheetTitle,
                     fontSize = 11.sp,
@@ -299,9 +350,7 @@ fun TextTask() {
                 modifier = Modifier.padding(vertical = 5.dp)
             )
             Text(
-                text = "x2(2x − 3) − 4(2x − 3) = 0 \n" +
-                        "(2x − 3)(x2 − 4) = 0 \n" +
-                        "(2x − 3)(x − 2)(x + 2) = 0.",
+                text = SolutionText,
                 style = mediumType(
                     color = SheetTitle,
                     fontSize = 11.sp,
@@ -311,7 +360,7 @@ fun TextTask() {
             )
             /*ANSWER*/
             Text(
-                text = "Ответ: 3/2, ±2.",
+                text = AnswerText,
                 style = mediumType(
                     color = SheetTitle,
                     fontSize = 11.sp,
