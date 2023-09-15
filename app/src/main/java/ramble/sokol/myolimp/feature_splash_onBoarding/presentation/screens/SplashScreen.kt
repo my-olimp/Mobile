@@ -31,11 +31,13 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants.ACCESS_TOKEN
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -48,6 +50,10 @@ fun SplashScreen(
     OlimpTheme (
         isSplashScreen = true
     ) {
+
+        val vm = getViewModel<SplashViewModel>()
+
+        vm.show()
 
         val version = "v.0.4.2"
 
