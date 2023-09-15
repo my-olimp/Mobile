@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.core.text.isDigitsOnly
@@ -23,7 +24,9 @@ import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
 import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
+import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
@@ -34,7 +37,9 @@ import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
 import java.io.File
 import java.io.FileOutputStream
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel (
+    context: Context
+) : ViewModel() {
 
     companion object {
         private const val TAG: String = "ViewModelProfile"
@@ -45,10 +50,28 @@ class ProfileViewModel : ViewModel() {
 
     private val repository = ProfileRepository()
 
+    private val userDatabase : UserDatabase = UserDatabase.invoke(context)
+    private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
+
     private val _state = MutableStateFlow(
         UserModel()
+//        ProfileState()
     )
     val state = _state.asStateFlow()
+
+//    TODO uncomment
+
+//    private val _user = userRepository.getUser("")
+
+//    val state = combine(_state, _user) { state, user ->
+//        state.copy(
+//            user = user
+//        )
+//    }.stateIn(
+//        viewModelScope,
+//        SharingStarted.WhileSubscribed(),
+//        PlanState()
+//    )
 
     private val _educationState = MutableStateFlow(
         ProfileEducationState()
@@ -115,7 +138,6 @@ class ProfileViewModel : ViewModel() {
 
             is ProfileEvent.OnSave -> {
                 if (isValidData()) {
-                    saveUserData()
                     viewModelScope.launch {
                         updateUserData(user = _state.value)
                     }
@@ -240,13 +262,15 @@ class ProfileViewModel : ViewModel() {
     private fun refreshToken() {
         viewModelScope.launch {
             try {
-                repository.refreshToken(
+
+                repository.refreshToken (
                     cookie = cookiesDataStore.getCookies(Constants.COOKIES)
                         ?: throw Exception("no cookie token"),
                     onResult = { result ->
-                        Log.i(TAG, "completed - $result")
 
-                        if (result != null) {
+                        if (result != null && result.user.id != null) {
+                            Log.i(TAG, "completed - $result")
+
                             // save token in data store
                             saveToken(result.code)
 
@@ -279,6 +303,11 @@ class ProfileViewModel : ViewModel() {
 
                                     )
                             }
+
+                            Log.i(TAG, "user - ${userRepository.getUser()}")
+
+                        } else {
+                            Log.i(TAG, "can not get user")
                         }
                     },
                     onError = {
@@ -294,10 +323,6 @@ class ProfileViewModel : ViewModel() {
                 Log.i(TAG, "exception - ${ex.message}")
             }
         }
-    }
-
-    private fun saveUserData() {
-        Log.i(TAG, "update object user -\n${_state.value}")
     }
 
     private suspend fun updateUserData(

@@ -19,6 +19,6 @@ interface UserDao {
     @Delete
     suspend fun deleteUser(user: LocalUserModel)
 
-    @Query("SELECT * FROM user")
+    @Query("SELECT * FROM user LIMIT 1")
     fun getUser(): Flow<LocalUserModel>
 }
