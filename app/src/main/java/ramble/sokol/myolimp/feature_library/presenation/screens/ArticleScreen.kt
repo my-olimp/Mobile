@@ -50,15 +50,15 @@ import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
 
-/*@[Preview(showBackground = true) Composable]
+@[Preview(showBackground = true) Composable]
 fun PreviewArticleScreen() {
     ArticleScreen()
-}*/
+}
 
 @OptIn(ExperimentalLayoutApi::class)
-@[Composable Destination]
+@[Composable /*Destination*/]
 fun ArticleScreen(
-    navigator: DestinationsNavigator
+    //navigator: DestinationsNavigator
 ) {
 
     val testItems = listOf(
