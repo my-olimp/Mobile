@@ -60,7 +60,6 @@ fun ArticleScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = BackgroundMain)
-                //.verticalScroll(rememberScrollState())
         ) {
             Row(
                 modifier = Modifier
@@ -116,10 +115,10 @@ fun ArticleScreen(
                         .weight(0.15f)
                         .padding(top = 8.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        /*.background(
-                        //color = if (state.value.isShowingFavourites) BlueStart else White,
-                        //shape = RoundedCornerShape(size = 8.dp)
-                    )*/
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
                         .clickable {
                             //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
                         },
@@ -161,8 +160,8 @@ fun ArticleScreen(
             }
             /*              select parts               */
             when(partState) {
-                0 -> ExaminationScreen()
-                else -> EducationScreen()
+                0 -> EducationScreen()
+                else -> ExaminationScreen()
             }
         }
     }

@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_library.presenation.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -29,27 +30,33 @@ fun ExaminationScreen() {
         Task(taskText = "Задание 2\nРешите уравнение: x4 − 2x3 − 3x + 6 = 0;\nВ ответ запишите меньший корень", taskAnswer = "Число или дробь"),
         Task(taskText = "Задание 3 Решите уравнение: x4 − 2x3 − 3x + 6 = 0; В ответ запишите меньший корень", taskAnswer = "Число или дробь")
     )
-
-    Text(
-        text = "Уравнение высших порядков",
-        style = regularType(
-            letterSpacing = 0.24.sp,
-            fontSize = 12.sp,
-            color = GreyProfileData
-        ),
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    )
-    LazyColumn (
-        modifier = Modifier.wrapContentHeight()
-    ){
-        items(testItems.size) {
-            ExaminationTask(taskText = testItems[it].taskText, taskLabel = testItems[it].taskAnswer, onTextChanged = {/*TODO*/}) {
-                /*TODO*/
+    Column(
+        modifier = Modifier.padding(18.dp)
+    ) {
+        Text(
+            text = "Уравнение высших порядков",
+            style = regularType(
+                letterSpacing = 0.24.sp,
+                fontSize = 12.sp,
+                color = GreyProfileData
+            ),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+        LazyColumn(
+            modifier = Modifier
+                .wrapContentHeight()
+        ) {
+            items(testItems.size) {
+                ExaminationTask(
+                    taskText = testItems[it].taskText,
+                    taskLabel = testItems[it].taskAnswer,
+                    onTextChanged = {/*TODO*/ }) {
+                    /*TODO*/
+                }
             }
         }
     }
-
 }
