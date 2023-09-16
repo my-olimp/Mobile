@@ -9,7 +9,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionMod
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
-import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,10 +21,10 @@ class ProfileRepository {
 
     suspend fun updateUser(
         auth: String,
-        user: UserModel
-    ) = ProfileRetrofitInstance.api.updateUserData(
+        user: LocalUserModel
+    ) = instance.updateUserData(
             auth = auth,
-            user = user.toUserModelEntity()
+            user = user
         )
 
     suspend fun uploadImg(
@@ -65,22 +65,25 @@ class ProfileRepository {
         onResult: (ResponseAuthModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.refreshToken(cookie = cookie).enqueue(
-            object : Callback<ResponseAuthModel> {
-
-                override fun onResponse(
-                    call: Call<ResponseAuthModel>,
-                    response: Response<ResponseAuthModel>
-                ) {
-                    onResult(response.body())
-                }
-
-                override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
-                    onError(t)
-                }
-            }
-        )
+//        instance.refreshToken(cookie = cookie).enqueue(
+//            object : Callback<ResponseAuthModel> {
+//
+//                override fun onResponse(
+//                    call: Call<ResponseAuthModel>,
+//                    response: Response<ResponseAuthModel>
+//                ) {
+//                    onResult(response.body())
+//                }
+//
+//                override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
+//                    onError(t)
+//                }
+//            }
+//        )
     }
+
+    suspend fun refreshTokenNew(cookie: String)
+        = instance.refreshToken(cookie)
 
     fun getRegions(
         auth: String,

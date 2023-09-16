@@ -38,7 +38,7 @@ fun EditPersonalInfoSheet(
     ) {
 
         OutlinedText(
-            previousData = state.value.secondName,
+            previousData = state.value.secondName ?: "Loading",
             label = stringResource(R.string.second_name),
             isEnabled = true,
             onTextChanged = {
@@ -49,7 +49,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.firstName,
+            previousData = state.value.firstName ?: "Loading",
             label = stringResource(R.string.name),
             isEnabled = true,
             onTextChanged = {
@@ -60,7 +60,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.thirdName,
+            previousData = state.value.thirdName ?: "Loading",
             label = stringResource(R.string.third_name),
             isEnabled = !state.value.hasThird,
             onTextChanged = {
@@ -86,7 +86,7 @@ fun EditPersonalInfoSheet(
 
         CalendarInput(
             label = stringResource(id = R.string.dob),
-            previousData = state.value.dateOfBirth
+            previousData = state.value.dateOfBirth ?: "Loading"
         ) {
             viewModel.onEvent(ProfileEvent.OnDobChanged(it))
         }
@@ -97,7 +97,7 @@ fun EditPersonalInfoSheet(
            options =  listOf(
                "Мужской", "Женский"
            ),
-            previousData = state.value.gender,
+            previousData = state.value.gender ?: "Loading",
             label = stringResource(id = R.string.gender)
         ) {
             viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
@@ -106,7 +106,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.snils,
+            previousData = state.value.snils ?: "Loading",
             label = stringResource(R.string.snils),
             isEnabled = state.value.snilsError,
             onTextChanged = {
@@ -127,7 +127,7 @@ fun EditPersonalInfoSheet(
             text = stringResource(id = R.string.save),
             padding = 0.dp
         ) {
-            viewModel.onEvent(ProfileEvent.OnSave)
+            viewModel.onEvent(ProfileEvent.OnPersonalInfoSave)
         }
     }
 }

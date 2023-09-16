@@ -11,7 +11,7 @@ import ramble.sokol.myolimp.feature_authentication.presentation.view_models.Regi
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 val viewModelsModule = module {
     /*
@@ -65,7 +65,7 @@ val viewModelsModule = module {
 
     /* SplashScreen */
     viewModel {
-        SplashViewModel(get())
+        LocalUserViewModel()
     }
 
 }

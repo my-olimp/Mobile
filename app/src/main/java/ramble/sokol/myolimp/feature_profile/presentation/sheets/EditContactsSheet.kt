@@ -27,7 +27,7 @@ fun EditContactsSheet (
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedText(
-            previousData = viewModel.state.value.email,
+            previousData = viewModel.state.value.email ?: "Loading",
             label = stringResource(R.string.email),
             isEnabled = true,
             onTextChanged = {
@@ -38,7 +38,7 @@ fun EditContactsSheet (
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = viewModel.state.value.phone,
+            previousData = viewModel.state.value.phone ?: "Loading",
             label = stringResource(R.string.phone_number),
             isEnabled = true,
             onTextChanged = {

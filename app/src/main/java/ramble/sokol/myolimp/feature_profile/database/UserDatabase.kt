@@ -10,7 +10,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.L
 
 @Database(
     entities = [LocalUserModel::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class UserDatabase : RoomDatabase() {

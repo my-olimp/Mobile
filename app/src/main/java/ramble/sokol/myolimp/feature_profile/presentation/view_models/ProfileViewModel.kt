@@ -9,30 +9,30 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
 import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.COOKIES
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
-import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
-import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
+import ramble.sokol.myolimp.feature_profile.domain.states.ProfileState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
-import ramble.sokol.myolimp.utils.CookiesDataStore
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
 import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
 import java.io.File
 import java.io.FileOutputStream
@@ -46,7 +46,6 @@ class ProfileViewModel (
     }
 
     private val dataStore = CodeDataStore()
-    private val cookiesDataStore = CookiesDataStore()
 
     private val repository = ProfileRepository()
 
@@ -54,38 +53,51 @@ class ProfileViewModel (
     private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
 
     private val _state = MutableStateFlow(
-        UserModel()
-//        ProfileState()
+        ProfileState()
     )
-    val state = _state.asStateFlow()
 
-//    TODO uncomment
+    private val _user = userRepository.getUser()
 
-//    private val _user = userRepository.getUser("")
+    val state = combine(_state, _user) { state, user ->
+        state.copy(
+            user = user,
+            firstName = user.firstName,
+            secondName = user.secondName,
+            thirdName = user.thirdName,
+            dateOfBirth = user.dateOfBirth,
+            snils = user.snils,
+            gender = user.gender,
+            region = user.region,
+            city = user.city,
+            school = user.school,
+            phone = user.phone,
+            email = user.email,
+            grade = user.grade,
+            profileImg = user.profileImg,
+            hasThird = user.hasThird,
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        ProfileState()
+    )
 
-//    val state = combine(_state, _user) { state, user ->
-//        state.copy(
-//            user = user
-//        )
-//    }.stateIn(
-//        viewModelScope,
-//        SharingStarted.WhileSubscribed(),
-//        PlanState()
+//    private val _educationState = MutableStateFlow(
+//        ProfileEducationState()
 //    )
-
-    private val _educationState = MutableStateFlow(
-        ProfileEducationState()
-    )
-    private val educationState = _educationState.asStateFlow()
+//    private val educationState = _educationState.asStateFlow()
 
     fun onEvent (
         event: ProfileEvent
     ) {
         when (event) {
             is ProfileEvent.OnFirstNameChanged -> {
-                _state.value = _state.value.copy(
-                    firstName = event.firstName
-                )
+                _state.update {
+                    it.copy(
+                        firstName = event.firstName
+
+                    )
+                }
             }
 
             is ProfileEvent.OnSecondNameChanged -> {
@@ -139,10 +151,19 @@ class ProfileViewModel (
             is ProfileEvent.OnSave -> {
                 if (isValidData()) {
                     viewModelScope.launch {
-                        updateUserData(user = _state.value)
+                        updateUserData()
                     }
                     SheetRouter.navigateTo(SheetNavigation.Empty())
+                } else {
+                    Log.i(TAG, "data is not valid")
                 }
+            }
+
+            is ProfileEvent.OnPersonalInfoSave -> {
+                viewModelScope.launch {
+                    updateUserData()
+                }
+                SheetRouter.navigateTo(SheetNavigation.Empty())
             }
 
             is ProfileEvent.OnImgSave -> {
@@ -204,13 +225,13 @@ class ProfileViewModel (
             is ProfileEvent.OnLogOut -> {
                 viewModelScope.launch {
                     dataStore.deleteToken()
-                    cookiesDataStore.deleteCookies()
 
+                    event.navigator.popBackStack()
                     event.navigator.navigate(BeginAuthenticationScreenDestination)
 
                     try {
                         repository.logOut(
-                            cookie = cookiesDataStore.getCookies(Constants.COOKIES)!!,
+                            cookie = dataStore.getToken(COOKIES).first() ?: throw Exception("no refresh"),
                             onResult = {
                                 Log.i(TAG, "completed")
                             },
@@ -225,50 +246,52 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnRefreshToken -> {
-                refreshToken()
+//                refreshToken()
             }
 
             ProfileEvent.OnUploadError -> TODO()
             
             is ProfileEvent.OnAttachSheet -> {
                 updateMenus()
-                with(state.value) {
-                    _educationState.update {
-                        it.copy(
-                            region = this.region,
-                            city = this.city,
-                            school = this.school,
-                            grade = this.grade
-                        )
-                    }
-                }
+//                with(state.value) {
+//                    _educationState.update {
+//                        it.copy(
+//                            region = this.region,
+//                            city = this.city,
+//                            school = this.school,
+//                            grade = this.grade
+//                        )
+//                    }
+//                }
             }
 
             is ProfileEvent.OnCancelSheet -> {
-                with(educationState.value) {
-                    _state.update {
-                        it.copy(
-                            region = this.region,
-                            city = this.city,
-                            school = this.school,
-                            grade = this.grade
-                        )
-                    }
-                }
+//                with(educationState.value) {
+//                    _state.update {
+//                        it.copy(
+//                            region = this.region,
+//                            city = this.city,
+//                            school = this.school,
+//                            grade = this.grade
+//                        )
+//                    }
+//                }
             }
         }
     }
+
+
 
     private fun refreshToken() {
         viewModelScope.launch {
             try {
 
                 repository.refreshToken (
-                    cookie = cookiesDataStore.getCookies(Constants.COOKIES)
+                    cookie = dataStore.getToken(COOKIES).first()
                         ?: throw Exception("no cookie token"),
                     onResult = { result ->
 
-                        if (result != null && result.user.id != null) {
+                        if (result != null) {
                             Log.i(TAG, "completed - $result")
 
                             // save token in data store
@@ -277,7 +300,7 @@ class ProfileViewModel (
                             _state.update {
                                 it.copy(
 
-                                    id = result.user.id ?: "",
+                                    id = result.user.id,
 
                                     firstName = result.user.firstName ?: "",
                                     secondName = result.user.secondName ?: "",
@@ -295,11 +318,11 @@ class ProfileViewModel (
                                     grade = result.user.grade ?: 0,
                                     accountType = result.user.accountType ?: "",
 
-                                    region = (result.user.region
-                                        ?: ResponseRegionModel()).asRegion(),
-                                    city = (result.user.city ?: ResponseCityModel()).asCity(),
-                                    school = (result.user.school
-                                        ?: ResponseSchoolModel()).asSchool(),
+//                                    region = (result.user.region
+//                                        ?: ResponseRegionModel()).asRegion(),
+//                                    city = (result.user.city ?: ResponseCityModel()).asCity(),
+//                                    school = (result.user.school
+//                                        ?: ResponseSchoolModel()).asSchool(),
 
                                     )
                             }
@@ -325,12 +348,19 @@ class ProfileViewModel (
         }
     }
 
-    private suspend fun updateUserData(
-        user: UserModel,
-    ) {
+    private suspend fun updateUserData() {
         try {
+            val user = LocalUserModel(
+                id = "12",
+                firstName = _state.value.firstName!!,
+                secondName = _state.value.firstName!!,
+                thirdName = _state.value.firstName!!,
+                email = "awd@mail.ru",
+            )
+
+            Log.i(TAG, "useeeer - $user")
             val response = repository.updateUser(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                auth = dataStore.getToken(ACCESS_TOKEN).first()
                     ?: throw Exception("No access token"),
                 user = user
             )
@@ -358,7 +388,7 @@ class ProfileViewModel (
             val body =
                 MultipartBody.Part.createFormData("image", file.name, requestFile)
             repository.uploadImg(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                auth = dataStore.getToken(ACCESS_TOKEN).first()
                     ?: throw Exception("No access token"),
                 imageBody = body,
                 onResult = onResult,
@@ -375,7 +405,7 @@ class ProfileViewModel (
     ) {
         viewModelScope.launch {
             dataStore.setToken(
-                key = Constants.ACCESS_TOKEN,
+                key = ACCESS_TOKEN,
                 value = token
             )
         }
@@ -385,7 +415,7 @@ class ProfileViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                    auth = dataStore.getToken(ACCESS_TOKEN).first()
                         ?: throw Exception("no access token"),
                     onResult = { list ->
                         Log.i(TAG, "response region list: $list")
@@ -409,9 +439,10 @@ class ProfileViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getCities(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                    auth = dataStore.getToken(ACCESS_TOKEN).first()
                         ?: throw Exception("no access token"),
-                    regionId = state.value.region.number,
+                    regionId = state.value.region?.number
+                        ?: throw Exception("null region"),
                     onResult = { list ->
                         Log.i(TAG, "response city list: $list")
                         if (list != null) {
@@ -434,9 +465,10 @@ class ProfileViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getSchools(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                    auth = dataStore.getToken(ACCESS_TOKEN).first()
                         ?: throw Exception("no access token"),
-                    regionId = state.value.region.number,
+                    regionId = state.value.region?.number
+                        ?: throw Exception("null region"),
                     onResult = { list ->
                         Log.i(TAG, "response school list: $list")
                         if (list != null) {
@@ -456,7 +488,9 @@ class ProfileViewModel (
     }
 
     private fun isValidData(): Boolean {
+
         var isValid = true
+
         with(state.value) {
             if (this.regionList.find { it == this.region } == null) {
                 isValid = false
@@ -474,11 +508,9 @@ class ProfileViewModel (
                 isValid = false
                 _state.update { it.copy(gradeError = true) }
             }
-            if (snils.length != 11 || !snils.isDigitsOnly()) {
+            if (snils != null && snils.length != 11 || snils != null && !snils.isDigitsOnly()) {
                 isValid = false
-                _state.update { curValue ->
-                    curValue.copy(snilsError = true)
-                }
+                _state.update { it.copy(snilsError = true) }
             }
         }
 
@@ -489,7 +521,7 @@ class ProfileViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             refreshErrors()
             updateRegionsList()
-            if (state.value.region.name != "") {
+            if (state.value.region?.name != "") {
                 updateCitiesList()
                 updateSchoolsList()
             }

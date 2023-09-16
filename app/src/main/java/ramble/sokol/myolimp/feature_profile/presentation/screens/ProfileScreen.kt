@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,9 +57,9 @@ fun ProfileScreen(
     val state = viewModel.state.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = Unit, block = {
-        viewModel.onEvent(ProfileEvent.OnRefreshToken)
-    })
+//    LaunchedEffect(key1 = Unit, block = {
+//        viewModel.onEvent(ProfileEvent.OnRefreshToken)
+//    })
 
     BottomBarTheme(
         navController = navController
@@ -118,7 +117,9 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    modifier = Modifier.padding(bottom = 16.dp), text = state.value.accountType, style = TextStyle(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = state.value.accountType ?: "Loading",
+                    style = TextStyle(
                         fontSize = 13.sp,
                         fontFamily = FontFamily(Font(R.font.medium)),
                         fontWeight = FontWeight(500),

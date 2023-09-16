@@ -10,6 +10,7 @@ import java.io.File
 
 sealed class ProfileEvent {
     data object OnSave: ProfileEvent()
+    data object OnPersonalInfoSave: ProfileEvent()
     data class OnImgSave(val file: File, val bitmap: Bitmap): ProfileEvent()
     data object OnImgDelete: ProfileEvent()
     data object OnRefreshToken: ProfileEvent()

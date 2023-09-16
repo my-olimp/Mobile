@@ -7,6 +7,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,8 +28,8 @@ interface ProfileApi {
     @PATCH("user/")
     suspend fun updateUserData(
         @Header("Authorization") auth: String,
-        @Body user: UserModelEntity,
-    ): Response<ResponseUserModel>
+        @Body user: LocalUserModel,
+    ): Response<LocalUserModel>
 
 
     @Multipart
@@ -46,9 +47,9 @@ interface ProfileApi {
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/refresh_token/")
-    fun refreshToken(
+    suspend fun refreshToken(
         @Header("Cookie") cookie: String,
-    ) : Call<ResponseAuthModel>
+    ) : Response<ResponseAuthModel>
 
     @Headers("Content-Type: application/json")
     @GET("user/location/cities")
