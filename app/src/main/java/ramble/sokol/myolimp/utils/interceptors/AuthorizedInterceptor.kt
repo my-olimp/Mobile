@@ -23,7 +23,7 @@ class AuthorizedInterceptor : Interceptor {
         chain: Interceptor.Chain,
     ): Response {
 
-        Log.i(TAG, "send request")
+        Log.i(TAG, "send request - ${chain.request().url} - ${chain.request().headers}")
 
         val originalRequest = chain.request()
 
@@ -34,40 +34,40 @@ class AuthorizedInterceptor : Interceptor {
         var requestBuilder = originalRequest.newBuilder()
             .header("Authorization", "Bearer $accessToken")
 
-        var newRequest = requestBuilder.build()
-
-        val response = chain.proceed(newRequest)
+        val response = chain.proceed(requestBuilder.build())
 
         Log.i(TAG, "response code - ${response.code}")
 
-        if (response.code == 402 || response.code == 401) {
-            runBlocking {
-
+        if (response.code >= 400) {
+            return runBlocking {
                 Log.i(TAG, "update token")
 
                 val token = getRefreshToken()
 
                 Log.i(TAG, "refresh - $token")
 
-                val result = ProfileRepository().refreshTokenNew(
-                    token ?: throw Exception("no refresh")
+                val response = ProfileRepository().refreshTokenNew(
+                    cookie = token ?: throw Exception("no cookie")
                 )
 
-                saveCookies(result.body()?.code ?: throw AuthorizedException())
+                Log.i(TAG, "new refresh body - ${response.body()}")
 
-                //val newToken = result.body()?.code ?: throw AuthorizedException()
+                val accessToken = response.body()?.code
 
-                Log.i(TAG, "newToken - ${getRefreshToken()}")
+                saveAccess(
+                    accessToken ?: throw AuthorizedException()
+                )
+
+                Log.i(TAG, "newToken - $accessToken")
 
                 requestBuilder = originalRequest.newBuilder()
-                    .header("Cookie", "Bearer ${getRefreshToken()}")
+                    .header("Authorization", "Bearer $accessToken")
 
-                newRequest = requestBuilder.build()
+                Log.i(TAG, "end newRequest")
+                return@runBlocking chain.proceed(requestBuilder.build())
             }
-
-            return chain.proceed(newRequest)
         }
-
+        Log.i(TAG, "end response")
         return response
     }
 
@@ -76,12 +76,12 @@ class AuthorizedInterceptor : Interceptor {
         return@runBlocking CodeDataStore().getToken(ACCESS_TOKEN).first<String?>()
     }
 
-    private fun saveCookies(
-        cookie: String
+    private fun saveAccess(
+        access: String
     ) = runBlocking {
         CodeDataStore().setToken(
-            value = cookie,
-            key = COOKIES
+            value = access,
+            key = ACCESS_TOKEN
         )
     }
 

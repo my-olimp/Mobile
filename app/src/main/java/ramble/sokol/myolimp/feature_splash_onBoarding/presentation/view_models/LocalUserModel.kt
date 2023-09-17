@@ -12,7 +12,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.School
     tableName = "user"
 )
 data class LocalUserModel(
-    @PrimaryKey val id: String = "",
+    @SerializedName("id") @PrimaryKey val id: String = "",
     @SerializedName("first_name") val firstName: String? = null,
     @SerializedName("second_name") val secondName: String? = null,
     @SerializedName("third_name") val thirdName: String? = null,

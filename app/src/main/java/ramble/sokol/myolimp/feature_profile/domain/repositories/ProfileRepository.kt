@@ -18,12 +18,13 @@ import retrofit2.Response
 class ProfileRepository {
 
     private val instance = RetrofitBuilder().instance(ProfileApi::class.java)
+    private val profileInstance = ProfileRetrofitInstance().instance(ProfileApi::class.java)
 
     suspend fun updateUser(
         auth: String,
         user: LocalUserModel
     ) = instance.updateUserData(
-            auth = auth,
+//            auth = auth,
             user = user
         )
 
@@ -65,7 +66,7 @@ class ProfileRepository {
         onResult: (ResponseAuthModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-//        instance.refreshToken(cookie = cookie).enqueue(
+//        profileInstance.refreshToken(cookie = cookie).enqueue(
 //            object : Callback<ResponseAuthModel> {
 //
 //                override fun onResponse(
@@ -83,7 +84,7 @@ class ProfileRepository {
     }
 
     suspend fun refreshTokenNew(cookie: String)
-        = instance.refreshToken(cookie)
+        = profileInstance.refreshToken(cookie)
 
     fun getRegions(
         auth: String,

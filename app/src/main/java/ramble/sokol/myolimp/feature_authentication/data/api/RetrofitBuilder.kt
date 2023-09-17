@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.component.KoinComponent
 import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.feature_profile.data.Constants.BASE_URL
 import ramble.sokol.myolimp.utils.interceptors.AuthorizedInterceptor
 import ramble.sokol.myolimp.utils.interceptors.NetworkConnectionInterceptor
 import ramble.sokol.myolimp.utils.interceptors.ReceivedCookiesInterceptor
@@ -27,7 +28,7 @@ class RetrofitBuilder : KoinComponent {
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()

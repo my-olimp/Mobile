@@ -33,7 +33,6 @@ import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
-import ramble.sokol.myolimp.utils.exceptions.NetworkConnectivityException
 import java.io.File
 import java.io.FileOutputStream
 
@@ -52,15 +51,16 @@ class ProfileViewModel (
     private val userDatabase : UserDatabase = UserDatabase.invoke(context)
     private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
 
+    private val _user = userRepository.getUser()
+
     private val _state = MutableStateFlow(
         ProfileState()
     )
 
-    private val _user = userRepository.getUser()
-
     val state = combine(_state, _user) { state, user ->
         state.copy(
             user = user,
+            id = user.id,
             firstName = user.firstName,
             secondName = user.secondName,
             thirdName = user.thirdName,
@@ -82,10 +82,32 @@ class ProfileViewModel (
         ProfileState()
     )
 
-//    private val _educationState = MutableStateFlow(
-//        ProfileEducationState()
-//    )
-//    private val educationState = _educationState.asStateFlow()
+    init {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    id = _user.first().id,
+                    firstName = _user.first().firstName,
+                    secondName = _user.first().secondName,
+                    thirdName = _user.first().thirdName,
+                    dateOfBirth = _user.first().dateOfBirth,
+                    snils = _user.first().snils,
+                    gender = _user.first().gender,
+                    region = _user.first().region,
+                    city = _user.first().city,
+                    school = _user.first().school,
+                    phone = _user.first().phone,
+                    email = _user.first().email,
+                    grade = _user.first().grade,
+                    profileImg = _user.first().profileImg,
+                    hasThird = _user.first().hasThird,
+                )
+            }
+
+            Log.i(TAG, "fn - ${_state.value.secondName} - ${state.value.secondName}")
+            Log.i(TAG, "fn - ${_state.value.firstName} - ${state.value.firstName}")
+        }
+    }
 
     fun onEvent (
         event: ProfileEvent
@@ -95,57 +117,72 @@ class ProfileViewModel (
                 _state.update {
                     it.copy(
                         firstName = event.firstName
-
                     )
                 }
             }
 
             is ProfileEvent.OnSecondNameChanged -> {
-                _state.value = _state.value.copy(
-                    secondName = event.secondName
-                )
+                _state.update {
+                    it.copy(
+                        secondName = event.secondName
+                    )
+                }
             }
 
             is ProfileEvent.OnThirdNameChanged -> {
-                _state.value = _state.value.copy(
-                    thirdName = event.thirdName
-                )
+                _state.update {
+                    it.copy(
+                        thirdName = event.thirdName
+                    )
+                }
             }
 
             is ProfileEvent.OnDobChanged -> {
-                _state.value = _state.value.copy(
-                    dateOfBirth = event.dob
-                )
+                _state.update {
+                    it.copy(
+                        dateOfBirth = event.dob
+                    )
+                }
             }
 
             is ProfileEvent.OnGenderChanged -> {
-                _state.value = _state.value.copy(
-                    gender = event.gender
-                )
+                _state.update {
+                    it.copy(
+                        gender = event.gender
+                    )
+                }
             }
 
             is ProfileEvent.OnSnilsChanged -> {
-                _state.value = _state.value.copy(
-                    snils = event.snils
-                )
+                _state.update {
+                    it.copy(
+                        snils = event.snils
+                    )
+                }
             }
 
             is ProfileEvent.OnImgChanged -> {
-                _state.value = _state.value.copy(
-                    profileImg = event.uri.toString()
-                )
+                _state.update {
+                    it.copy(
+                        profileImg = event.uri.toString()
+                    )
+                }
             }
 
             is ProfileEvent.OnMarkerClicked -> {
-                _state.value = _state.value.copy(
-                    hasThird = event.hasThird
-                )
+                _state.update {
+                    it.copy(
+                        hasThird = event.hasThird
+                    )
+                }
             }
 
             is ProfileEvent.OnImgDelete -> {
-                _state.value = _state.value.copy(
-                    profileImg = null
-                )
+                _state.update {
+                    it.copy(
+                        profileImg = null
+                    )
+                }
             }
 
             is ProfileEvent.OnSave -> {
@@ -160,10 +197,12 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnPersonalInfoSave -> {
-                viewModelScope.launch {
-                    updateUserData()
+                if (checkPersonalDataCorrectness()) {
+                    viewModelScope.launch {
+                        updateUserData()
+                    }
+                    SheetRouter.navigateTo(SheetNavigation.Empty())
                 }
-                SheetRouter.navigateTo(SheetNavigation.Empty())
             }
 
             is ProfileEvent.OnImgSave -> {
@@ -179,10 +218,12 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnRegionChanged -> {
-                _state.value = _state.value.copy(
-                    region = event.region,
-                    regionError = false
-                )
+                _state.update {
+                    it.copy(
+                        region = event.region,
+                        regionError = false
+                    )
+                }
                 viewModelScope.launch {
                     updateCitiesList()
                     updateSchoolsList()
@@ -190,36 +231,46 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnCityChanged -> {
-                _state.value = _state.value.copy(
-                    city = event.city,
-                    cityError = false
-                )
+                _state.update {
+                    it.copy(
+                        city = event.city,
+                        cityError = false
+                    )
+                }
             }
 
             is ProfileEvent.OnSchoolChanged -> {
-                _state.value = _state.value.copy(
-                    school = event.school,
-                    schoolError = false
-                )
+                _state.update {
+                    it.copy(
+                        school = event.school,
+                        schoolError = false
+                    )
+                }
             }
 
             is ProfileEvent.OnGradeChanged -> {
-                _state.value = _state.value.copy(
-                    grade = event.grade,
-                    gradeError = false
-                )
+                _state.update {
+                    it.copy(
+                        grade = event.grade,
+                        gradeError = false
+                    )
+                }
             }
 
             is ProfileEvent.OnPhoneChanged -> {
-                _state.value = _state.value.copy(
-                    phone = event.phone
-                )
+                _state.update {
+                    it.copy(
+                        phone = event.phone
+                    )
+                }
             }
 
             is ProfileEvent.OnEmailChanged -> {
-                _state.value = _state.value.copy(
-                    email = event.email
-                )
+                _state.update {
+                    it.copy(
+                        email = event.email
+                    )
+                }
             }
 
             is ProfileEvent.OnLogOut -> {
@@ -243,10 +294,6 @@ class ProfileViewModel (
                         Log.i(TAG, "exception - ${ex.message}")
                     }
                 }
-            }
-
-            is ProfileEvent.OnRefreshToken -> {
-//                refreshToken()
             }
 
             ProfileEvent.OnUploadError -> TODO()
@@ -280,85 +327,78 @@ class ProfileViewModel (
         }
     }
 
+    private fun checkPersonalDataCorrectness(): Boolean {
 
+        Log.i(TAG, "${_state.value.secondName} - ${state.value.secondName}")
+        Log.i(TAG, "${_state.value.firstName} - ${state.value.firstName}")
 
-    private fun refreshToken() {
-        viewModelScope.launch {
-            try {
-
-                repository.refreshToken (
-                    cookie = dataStore.getToken(COOKIES).first()
-                        ?: throw Exception("no cookie token"),
-                    onResult = { result ->
-
-                        if (result != null) {
-                            Log.i(TAG, "completed - $result")
-
-                            // save token in data store
-                            saveToken(result.code)
-
-                            _state.update {
-                                it.copy(
-
-                                    id = result.user.id,
-
-                                    firstName = result.user.firstName ?: "",
-                                    secondName = result.user.secondName ?: "",
-                                    thirdName = result.user.thirdName ?: "",
-
-                                    gender = result.user.gender ?: "",
-                                    dateOfBirth = result.user.dateOfBirth ?: "",
-
-                                    profileImg = "https://storage.yandexcloud.net/myolimp/user/avatar/${result.user.id}.webp",
-
-                                    email = result.user.email ?: "",
-                                    phone = result.user.phone ?: "",
-                                    snils = result.user.snils ?: "",
-
-                                    grade = result.user.grade ?: 0,
-                                    accountType = result.user.accountType ?: "",
-
-//                                    region = (result.user.region
-//                                        ?: ResponseRegionModel()).asRegion(),
-//                                    city = (result.user.city ?: ResponseCityModel()).asCity(),
-//                                    school = (result.user.school
-//                                        ?: ResponseSchoolModel()).asSchool(),
-
-                                    )
-                            }
-
-                            Log.i(TAG, "user - ${userRepository.getUser()}")
-
-                        } else {
-                            Log.i(TAG, "can not get user")
-                        }
-                    },
-                    onError = {
-
-                        if (it is NetworkConnectivityException) {
-                            Log.i(TAG, "there is no network - $it")
-                        }
-
-                        Log.i(TAG, "error occurred - $it")
-                    }
+        if (_state.value.firstName.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    firstNameError = true
                 )
-            } catch (ex: Exception) {
-                Log.i(TAG, "exception - ${ex.message}")
             }
+            return false
         }
+
+        if (_state.value.secondName.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    secondNameError = true
+                )
+            }
+            return false
+        }
+
+        if (_state.value.thirdName.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    thirdNameError = true
+                )
+            }
+            return false
+        }
+        if (_state.value.dateOfBirth.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    dobError = true
+                )
+            }
+            return false
+        }
+        if (_state.value.snils != null && _state.value.snils!!.length != 11 || _state.value.snils != null && !_state.value.snils!!.isDigitsOnly()) {
+            _state.update {
+                it.copy(
+                    snilsError = true
+                )
+            }
+            return false
+        }
+
+        return true
+
     }
 
     private suspend fun updateUserData() {
         try {
             val user = LocalUserModel(
-                id = "12",
-                firstName = _state.value.firstName!!,
-                secondName = _state.value.firstName!!,
-                thirdName = _state.value.firstName!!,
-                email = "awd@mail.ru",
+                id = state.value.id ?: throw Exception("no user id"),
+                firstName = _state.value.firstName,
+                secondName = _state.value.secondName,
+                thirdName = state.value.thirdName,
+                email = _state.value.email,
+                dateOfBirth = _state.value.dateOfBirth,
+                gender = _state.value.gender,
+                snils = _state.value.snils,
+                region = _state.value.region,
+                school = _state.value.school,
+                city = _state.value.city,
+                phone = _state.value.phone,
+                grade = _state.value.grade,
             )
 
-            Log.i(TAG, "useeeer - $user")
+            Log.i(TAG, "user - $user")
+
             val response = repository.updateUser(
                 auth = dataStore.getToken(ACCESS_TOKEN).first()
                     ?: throw Exception("No access token"),
@@ -366,6 +406,11 @@ class ProfileViewModel (
             )
 
             Log.i(TAG, "response - ${response.body()}")
+
+            if (response.body() != null) {
+                userRepository.updateUser(response.body() ?: throw Exception("empty user body"))
+            }
+
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
         }
@@ -397,17 +442,6 @@ class ProfileViewModel (
             Log.i(TAG, "response - success")
         } catch (ex: Exception) {
             Log.i(TAG, "ex - ${ex.message}")
-        }
-    }
-
-    private fun saveToken(
-        token: String
-    ) {
-        viewModelScope.launch {
-            dataStore.setToken(
-                key = ACCESS_TOKEN,
-                value = token
-            )
         }
     }
 

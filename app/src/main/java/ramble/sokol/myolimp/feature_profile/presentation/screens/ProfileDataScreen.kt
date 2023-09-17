@@ -135,7 +135,7 @@ fun ProfileDataScreen(
                         .align(CenterHorizontally)
                         .clip(CircleShape),
 //                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
-                    model = state.value.profileImg,
+                    model = state.value.profileImg ?: R.drawable.ic_default_img,
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )

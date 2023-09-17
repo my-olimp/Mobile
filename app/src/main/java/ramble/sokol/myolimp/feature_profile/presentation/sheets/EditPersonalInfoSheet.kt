@@ -41,10 +41,19 @@ fun EditPersonalInfoSheet(
             previousData = state.value.secondName ?: "Loading",
             label = stringResource(R.string.second_name),
             isEnabled = true,
+            isError = state.value.secondNameError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSecondNameChanged(it))
             }
         )
+
+        if (state.value.secondNameError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Быстро ввел фамилию")
+            }
+        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -52,21 +61,39 @@ fun EditPersonalInfoSheet(
             previousData = state.value.firstName ?: "Loading",
             label = stringResource(R.string.name),
             isEnabled = true,
+            isError = state.value.firstNameError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnFirstNameChanged(it))
             }
         )
+
+        if (state.value.firstNameError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Сори, если еще не определился с именем")
+            }
+        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
             previousData = state.value.thirdName ?: "Loading",
             label = stringResource(R.string.third_name),
-            isEnabled = !state.value.hasThird,
+            isEnabled = state.value.hasThird,
+            isError = state.value.thirdNameError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnThirdNameChanged(it))
             }
         )
+
+        if (state.value.thirdNameError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Где отчество")
+            }
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -86,9 +113,18 @@ fun EditPersonalInfoSheet(
 
         CalendarInput(
             label = stringResource(id = R.string.dob),
-            previousData = state.value.dateOfBirth ?: "Loading"
+            previousData = state.value.dateOfBirth ?: "Loading",
+            isError = state.value.dobError,
         ) {
             viewModel.onEvent(ProfileEvent.OnDobChanged(it))
+        }
+
+        if (state.value.dobError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Ты типо еще не родился?")
+            }
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -108,11 +144,12 @@ fun EditPersonalInfoSheet(
         OutlinedText(
             previousData = state.value.snils ?: "Loading",
             label = stringResource(R.string.snils),
-            isEnabled = state.value.snilsError,
+            isError = state.value.snilsError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSnilsChanged(it))
             }
         )
+
         if (state.value.snilsError) {
             Row(
                 horizontalArrangement = Arrangement.Start

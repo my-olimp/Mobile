@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -47,19 +45,22 @@ class LocalUserViewModel : ViewModel(), KoinComponent {
 
                 Log.i(TAG, "refresh - $token / access - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
 
-                val response = apiRepository.refreshTokenNew(cookie = token)
+                apiRepository.refreshToken(
+                    cookie = token,
+                    onResult = {
+                        Log.i(TAG, "response - $it")
 
-                Log.i(TAG, "response - ${response.body()} - ${response.code()}")
-
-                if (response.body() != null) {
-
-                    saveUser(response.body()?.user ?: throw Exception("empty user body"))
-
-                } else {
-                    isError.value = true
-
-                    Log.i(TAG, "error - ${response.errorBody()} - ${response.body()}")
-                }
+                        if (it != null) {
+                            saveUser(it.user)
+                        } else {
+                            isError.value = true
+                        }
+                    },
+                    onError = {
+                        isError.value = true
+                        Log.i(TAG, "error - $it")
+                    }
+                )
 
             } catch (ex : Exception) {
                 Log.i(TAG, "saveUser: $ex")

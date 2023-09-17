@@ -27,7 +27,7 @@ interface ProfileApi {
     )
     @PATCH("user/")
     suspend fun updateUserData(
-        @Header("Authorization") auth: String,
+//        @Header("Authorization") auth: String,
         @Body user: LocalUserModel,
     ): Response<LocalUserModel>
 
