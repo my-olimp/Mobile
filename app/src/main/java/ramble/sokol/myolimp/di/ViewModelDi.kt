@@ -9,6 +9,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpView
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
+import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 
@@ -60,5 +61,10 @@ val viewModelsModule = module {
     /* Library */
     viewModel {
         LibraryViewModel()
+    }
+
+    /* Article Library */
+    viewModel {
+        ArticleViewModel()
     }
 }

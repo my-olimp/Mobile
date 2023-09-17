@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.HorizontalLine
 import ramble.sokol.myolimp.feature_library.presenation.components.PartItem
 import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
@@ -50,6 +52,8 @@ fun PreviewArticleScreen() {
 fun ArticleScreen(
     navigator: DestinationsNavigator
 ) {
+
+    val viewModel = getViewModel<ArticleViewModel>().also { it.fetchArticle() }
 
     var partState by remember {
         mutableIntStateOf(0)
