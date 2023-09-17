@@ -40,13 +40,17 @@ class AuthorizedInterceptor : Interceptor {
 
         if (response.code >= 400) {
             return runBlocking {
+
+                // to close previous
+                response.close()
+
                 Log.i(TAG, "update token")
 
                 val token = getRefreshToken()
 
                 Log.i(TAG, "refresh - $token")
 
-                val response = ProfileRepository().refreshTokenNew(
+                val response = ProfileRepository().refreshToken(
                     cookie = token ?: throw Exception("no cookie")
                 )
 
@@ -63,11 +67,9 @@ class AuthorizedInterceptor : Interceptor {
                 requestBuilder = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $accessToken")
 
-                Log.i(TAG, "end newRequest")
                 return@runBlocking chain.proceed(requestBuilder.build())
             }
         }
-        Log.i(TAG, "end response")
         return response
     }
 

@@ -45,22 +45,17 @@ class LocalUserViewModel : ViewModel(), KoinComponent {
 
                 Log.i(TAG, "refresh - $token / access - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
 
-                apiRepository.refreshToken(
+                val response = apiRepository.refreshToken(
                     cookie = token,
-                    onResult = {
-                        Log.i(TAG, "response - $it")
-
-                        if (it != null) {
-                            saveUser(it.user)
-                        } else {
-                            isError.value = true
-                        }
-                    },
-                    onError = {
-                        isError.value = true
-                        Log.i(TAG, "error - $it")
-                    }
                 )
+
+                Log.i(TAG, "response - ${response.body()}")
+
+                if (response.body() != null) {
+                    saveUser(response.body()?.user ?: throw Exception("empty user body"))
+                } else {
+                    isError.value = true
+                }
 
             } catch (ex : Exception) {
                 Log.i(TAG, "saveUser: $ex")

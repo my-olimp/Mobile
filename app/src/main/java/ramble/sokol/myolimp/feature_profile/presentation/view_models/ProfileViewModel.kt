@@ -65,6 +65,7 @@ class ProfileViewModel (
             secondName = user.secondName,
             thirdName = user.thirdName,
             dateOfBirth = user.dateOfBirth,
+            accountType = user.accountType,
             snils = user.snils,
             gender = user.gender,
             region = user.region,
@@ -91,11 +92,12 @@ class ProfileViewModel (
                     secondName = _user.first().secondName,
                     thirdName = _user.first().thirdName,
                     dateOfBirth = _user.first().dateOfBirth,
+                    accountType = _user.first().accountType,
                     snils = _user.first().snils,
                     gender = _user.first().gender,
-                    region = _user.first().region,
-                    city = _user.first().city,
-                    school = _user.first().school,
+//                    region = _user.first().region,
+//                    city = _user.first().city,
+//                    school = _user.first().school,
                     phone = _user.first().phone,
                     email = _user.first().email,
                     grade = _user.first().grade,
@@ -328,10 +330,6 @@ class ProfileViewModel (
     }
 
     private fun checkPersonalDataCorrectness(): Boolean {
-
-        Log.i(TAG, "${_state.value.secondName} - ${state.value.secondName}")
-        Log.i(TAG, "${_state.value.firstName} - ${state.value.firstName}")
-
         if (_state.value.firstName.isNullOrEmpty()) {
             _state.update {
                 it.copy(
@@ -376,7 +374,6 @@ class ProfileViewModel (
         }
 
         return true
-
     }
 
     private suspend fun updateUserData() {
@@ -388,6 +385,7 @@ class ProfileViewModel (
                 thirdName = state.value.thirdName,
                 email = _state.value.email,
                 dateOfBirth = _state.value.dateOfBirth,
+                accountType = _state.value.accountType,
                 gender = _state.value.gender,
                 snils = _state.value.snils,
                 region = _state.value.region,
@@ -400,8 +398,6 @@ class ProfileViewModel (
             Log.i(TAG, "user - $user")
 
             val response = repository.updateUser(
-                auth = dataStore.getToken(ACCESS_TOKEN).first()
-                    ?: throw Exception("No access token"),
                 user = user
             )
 

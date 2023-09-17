@@ -21,10 +21,8 @@ class ProfileRepository {
     private val profileInstance = ProfileRetrofitInstance().instance(ProfileApi::class.java)
 
     suspend fun updateUser(
-        auth: String,
         user: LocalUserModel
     ) = instance.updateUserData(
-//            auth = auth,
             user = user
         )
 
@@ -61,11 +59,11 @@ class ProfileRepository {
         }
     }
 
-    fun refreshToken(
-        cookie: String,
-        onResult: (ResponseAuthModel?) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
+//    fun refreshToken(
+//        cookie: String,
+//        onResult: (ResponseAuthModel?) -> Unit,
+//        onError: (Throwable) -> Unit
+//    ) {
 //        profileInstance.refreshToken(cookie = cookie).enqueue(
 //            object : Callback<ResponseAuthModel> {
 //
@@ -81,9 +79,9 @@ class ProfileRepository {
 //                }
 //            }
 //        )
-    }
+//    }
 
-    suspend fun refreshTokenNew(cookie: String)
+    suspend fun refreshToken(cookie: String)
         = profileInstance.refreshToken(cookie)
 
     fun getRegions(
