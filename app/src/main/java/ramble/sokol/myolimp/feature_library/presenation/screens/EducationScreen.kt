@@ -17,11 +17,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.EducationTask
+import ramble.sokol.myolimp.feature_library.presenation.components.SubjectItem
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
@@ -29,7 +31,8 @@ import ramble.sokol.myolimp.ui.theme.regularType
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EducationScreen(
-    viewModel: ArticleViewModel
+    viewModel: ArticleViewModel,
+    blockId: Int
 ) {
 
     val state = viewModel.state.collectAsState()
@@ -54,7 +57,7 @@ fun EducationScreen(
                 .padding(horizontal = 18.dp)
         ) {
             Text(
-                text = "",
+                text = state.value.article.title,
                 style = mediumType(
                     fontSize = 20.sp
                 )
@@ -63,7 +66,12 @@ fun EducationScreen(
             Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "Автор: Иван Иванов",
+                text = stringResource(
+                    id = R.string.article_author,
+                    state.value.article.author.firstName,
+                    state.value.article.author.secondName,
+                    state.value.article.author.thirdName
+                    ),
                 style = regularType(
                     fontSize = 12.sp,
                     letterSpacing = 0.24.sp
@@ -81,10 +89,13 @@ fun EducationScreen(
                 for (i in 0..10) {
                     SubjectItem(subjectText = "subject $i")
                 }
+                //back has no tags :)
+                /*state.value.article.tags.forEach {
+                    SubjectItem(subjectText = it)
+                }*/
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-
 
             /*INTRODUCTION*/
             Text(

@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
+import ramble.sokol.myolimp.feature_library.domain.states.TaskState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class ArticleViewModel: ViewModel() {
@@ -31,7 +33,32 @@ class ArticleViewModel: ViewModel() {
     fun onEvent(
         event: ArticleEvent
     ) {
-        /*TODO*/
+        when(event) {
+            is ArticleEvent.OnCheckAnswer -> {
+                when(event.answer == state.value.article.blocks[event.blockId].questions[event.taskNum].answer) {
+                    true -> {
+                        val map = state.value.answers
+                        map[event.taskId]?.let {
+                            it.isError = false
+                            it.isSuccess = true
+                        }
+                        _state.update {
+                            it.copy(answers = map)
+                        }
+                    }
+                    false -> {
+                        val map = state.value.answers
+                        map[event.taskId]?.let {
+                            it.isError = true
+                            it.isSuccess = false
+                        }
+                        _state.update {
+                            it.copy(answers = map)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun fetchArticle(id: Int = 1) {

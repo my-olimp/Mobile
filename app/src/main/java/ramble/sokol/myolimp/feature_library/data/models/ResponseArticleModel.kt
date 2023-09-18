@@ -7,9 +7,9 @@ data class ResponseArticleModel(
     @SerializedName("id") val id: Int = -1,
     @SerializedName("title") val title: String = "",
     @SerializedName("author") val authorModel: ResponseAuthorModel = ResponseAuthorModel(),
-    @SerializedName("tags") val listTags: List<String> /*TODO tags???*/,
+    @SerializedName("tags") val listTags: List<String>,
     @SerializedName("subject") val subject: String = "",
-    @SerializedName("image") val image: String = "",
+    @SerializedName("image") val image: String? = null,
     @SerializedName("blocks") val listBlocks : List<ResponseBlockModel> = listOf()
 ) {
     fun asArticleModel() = ArticleModel(
@@ -18,7 +18,7 @@ data class ResponseArticleModel(
         author = authorModel.asAuthorModel(),
         tags = listTags,
         subject = subject,
-        image = image,
+        image = image ?: "",
         blocks = if(listBlocks.isNotEmpty())listBlocks.toListBlocks() else listOf()
     )
 }

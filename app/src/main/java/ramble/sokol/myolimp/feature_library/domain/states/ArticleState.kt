@@ -4,5 +4,6 @@ import ramble.sokol.myolimp.feature_library.data.models.ResponseArticleModel
 import ramble.sokol.myolimp.feature_library.domain.models.ArticleModel
 
 data class ArticleState(
-    val article: ArticleModel = ArticleModel()
+    val article: ArticleModel = ArticleModel(),
+    val answers: HashMap<Int,TaskState> = hashMapOf()
 )

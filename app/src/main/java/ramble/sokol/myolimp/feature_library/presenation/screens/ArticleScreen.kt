@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,8 @@ fun ArticleScreen(
 ) {
 
     val viewModel = getViewModel<ArticleViewModel>().also { it.fetchArticle() }
+    
+    val state = viewModel.state.collectAsState()
 
     var partState by remember {
         mutableIntStateOf(0)
@@ -146,52 +149,44 @@ fun ArticleScreen(
             HorizontalLine()
 
             /*                      after search box                    */
+
+            //не уверен что тут нужен lazyrow а не просто row
+
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 5.dp, horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-
-                for(i in 0..15) {
-                    item {
+                    items(state.value.article.blocks.size) {
                         PartItem(
-                            onClick = { id ->
-                                partState = id
-                            },
-                            itemId = i,
-                            selected = partState == i
+                            itemId = it,
+                            selected = partState == it,
+                            partType = state.value.article.blocks[it].type
+                        ) { id ->
+                            partState = id
+                        }
+                    }
+            }
+
+            HorizontalLine()
+            /*              select parts               */
+            if(state.value.article.blocks.isNotEmpty()) {
+                when {
+                    state.value.article.blocks[partState].type == "p" -> {
+                        ExaminationScreen(
+                            viewModel = viewModel,
+                            blockId = partState
                         )
                     }
+                    /*TODO на будущее поменять*/else -> {
+                    EducationScreen(
+                        viewModel = viewModel,
+                        blockId = partState
+                    )
+                }
                 }
             }
-            /*              select parts               */
-            when(partState) {
-                0 -> EducationScreen(viewModel)
-                else -> ExaminationScreen()
-            }
         }
-    }
-}
-
-@Composable
-fun SubjectItem(subjectText: String) {
-    Column(
-        modifier = Modifier
-            .border(
-                width = 0.5.dp,
-                shape = RoundedCornerShape(5.dp),
-                color = BlueStart
-            )
-            .padding(horizontal = 3.dp, vertical = 2.dp)
-    ) {
-        Text(
-            text = subjectText,
-            color = BlueStart,
-            style = regularType(
-                fontSize = 10.sp,
-                letterSpacing = 0.2.sp
-            )
-        )
     }
 }
