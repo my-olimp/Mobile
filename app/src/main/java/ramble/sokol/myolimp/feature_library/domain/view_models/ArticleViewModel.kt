@@ -6,14 +6,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
-import ramble.sokol.myolimp.feature_library.domain.states.TaskState
 import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class ArticleViewModel: ViewModel() {

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +21,6 @@ import ramble.sokol.myolimp.feature_library.presenation.components.ExaminationTa
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.regularType
 
-
-data class Task(
-    val taskText: String,
-    val taskAnswer: String
-)
 
 
 @Composable
