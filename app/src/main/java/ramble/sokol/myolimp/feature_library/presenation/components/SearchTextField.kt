@@ -33,7 +33,9 @@ import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
+import ramble.sokol.myolimp.ui.theme.OutlineText
 import ramble.sokol.myolimp.ui.theme.White
+import ramble.sokol.myolimp.ui.theme.regularType
 
 @Composable
 fun SearchTextField (
@@ -61,17 +63,15 @@ fun SearchTextField (
             .onFocusChanged {
                 hasFocus = it.isFocused
             },
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
         label = {
             Row {
                 Text(
                     text = stringResource(R.string.search),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(400),
-                        color = if (hasFocus) BlueStart else GreyProfileData,
+                    style = regularType(
+                        color = if(hasFocus) BlueStart else GreyProfileData,
                         letterSpacing = 0.3.sp,
+                        fontSize = 14.sp
                     )
                 )
             }
@@ -81,6 +81,7 @@ fun SearchTextField (
             focusedLabelColor = BlueStart,
             cursorColor = BlueStart,
             backgroundColor = White,
+            unfocusedBorderColor = OutlineText
 
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),

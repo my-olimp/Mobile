@@ -34,26 +34,29 @@ class ArticleViewModel: ViewModel() {
         /*TODO*/
     }
 
-    fun fetchArticle() {
+    fun fetchArticle(id: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.extractArticleById(
                     auth = dataStore.getToken(Constants.ACCESS_TOKEN)
                         ?: throw Exception("No access token"),
-                    id = 1 /*TODO replace this*/,
+                    id = id /*TODO replace this*/,
                     onResult = { article ->
                         Log.i(TAG, "response article is : $article")
                         if (article != null) {
                             _state.update {
-                                it.copy(article = article)
+                                it.copy(article = article.asArticleModel())
                             }
+                            Log.i(TAG,"new article model is: ${_state.value.article}")
                         }
                     },
                     onError = {
                         Log.i(TAG, "response with exception")
                     }
                 )
-            } catch (_: Exception) {}
+            } catch (e: Exception) {
+                Log.i(TAG,"request isn't sent with ${e.message}")
+            }
         }
     }
 }

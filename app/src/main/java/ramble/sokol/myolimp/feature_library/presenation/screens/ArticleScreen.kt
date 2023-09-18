@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
@@ -39,6 +40,7 @@ import ramble.sokol.myolimp.feature_library.presenation.components.PartItem
 import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.regularType
@@ -71,11 +73,12 @@ fun ArticleScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
                 SearchTextField(
                     modifier = Modifier
+                        .height(IntrinsicSize.Max)
                         .weight(0.68f),
                     onTextChanged = {
                         //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
@@ -85,14 +88,14 @@ fun ArticleScreen(
                     }
                 )
 
-                Spacer(modifier = Modifier.fillMaxWidth(0.01f))
+                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
 
                 Box(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.15f)
-                        .padding(top = 8.dp)
+                        //.fillMaxHeight()
+                        .weight(0.16f)
                         .clip(RoundedCornerShape(8.dp))
+                        .padding(top = 8.dp)
                         .background(
                             color = White,
                             shape = RoundedCornerShape(size = 8.dp)
@@ -104,21 +107,21 @@ fun ArticleScreen(
                     Icon(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(12.dp),
-                        painter = painterResource(id = R.drawable.ic_library_sorting),
+                            .padding(14.dp),
+                        painter = painterResource(id = R.drawable.ic_library_share),
                         contentDescription = "bookmark",
-                        //tint = if (state.value.isShowingFavourites) White else GreyProfileData,
+                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
                     )
                 }
 
-                Spacer(modifier = Modifier.fillMaxWidth(0.01f))
+                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
 
                 Box(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(0.15f)
-                        .padding(top = 8.dp)
+                        //.fillMaxHeight()
+                        .weight(0.16f)
                         .clip(RoundedCornerShape(8.dp))
+                        .padding(top = 8.dp)
                         .background(
                             color = White,
                             shape = RoundedCornerShape(size = 8.dp)
@@ -130,10 +133,10 @@ fun ArticleScreen(
                     Icon(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(12.dp),
+                            .padding(14.dp),
                         painter = painterResource(id = R.drawable.ic_calendar_favourite),
                         contentDescription = "bookmark",
-                        //tint = if (state.value.isShowingFavourites) White else GreyProfileData,
+                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
                     )
                 }
             }
@@ -164,7 +167,7 @@ fun ArticleScreen(
             }
             /*              select parts               */
             when(partState) {
-                0 -> EducationScreen()
+                0 -> EducationScreen(viewModel)
                 else -> ExaminationScreen()
             }
         }
