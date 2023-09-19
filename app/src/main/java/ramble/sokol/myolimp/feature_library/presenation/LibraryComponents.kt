@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation.components
+package ramble.sokol.myolimp.feature_library.presenation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,7 +42,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
@@ -117,31 +116,34 @@ fun SearchTextField(
             )
         },
         trailingIcon = {
-            Icon(
-                modifier = Modifier
-                    .size(20.dp)
-                    .clip(CircleShape)
-                    .clickable {
-                        textValue.value = ""
-                        focusManager.clearFocus()
-                        onCancelSearching()
-                    },
-                tint = if (hasFocus) BlueStart else GreyProfileData,
-                painter = painterResource(id = R.drawable.ic_profile_cancel),
-                contentDescription = "search"
-            )
+            if (hasFocus && textValue.value.isNotEmpty()) {
+                Icon(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            textValue.value = ""
+                            focusManager.clearFocus()
+                            onCancelSearching()
+                        },
+                    tint = if (hasFocus) BlueStart else GreyProfileData,
+                    painter = painterResource(id = R.drawable.ic_profile_cancel),
+                    contentDescription = "search"
+                )
+            }
         }
     )
 }
 
 @Composable
 fun FilterIcon(
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isActive: Boolean = false
 ) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.background(
+        modifier = modifier.background(
             color = if (isActive) BlueStart else White,
             shape = RoundedCornerShape(5.dp)
         )
@@ -156,12 +158,13 @@ fun FilterIcon(
 
 @Composable
 fun FavoriteIcon(
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isActive: Boolean = false
 ) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier.background(
+        modifier = modifier.background(
             color = if (isActive) BlueStart else White,
             shape = RoundedCornerShape(5.dp)
         )
@@ -177,11 +180,12 @@ fun FavoriteIcon(
 
 @Composable
 fun LibraryBox(
-    title: String
+    title: String,
+    content: @Composable () -> Unit
 ) {
     Column(
         modifier = Modifier
-            .padding(top = 12.dp, bottom = 18.dp, start = 12.dp, end = 12.dp)
+            .padding(top = 12.dp, bottom = 18.dp, start = 12.dp)
             .fillMaxWidth()
             .background(
                 color = White,
@@ -201,7 +205,7 @@ fun LibraryBox(
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-
+        content()
     }
 }
 
