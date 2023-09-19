@@ -12,6 +12,7 @@ import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 val viewModelsModule = module {
     /*
@@ -20,7 +21,7 @@ val viewModelsModule = module {
 
     /* ProfileScreen */
     viewModel {
-        ProfileViewModel()
+        ProfileViewModel(get())
     }
 
     /* Calendar */
@@ -66,5 +67,10 @@ val viewModelsModule = module {
     /* Article Library */
     viewModel {
         ArticleViewModel()
+    }
+    
+    /* SplashScreen */
+    viewModel {
+        LocalUserViewModel()
     }
 }

@@ -9,8 +9,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
@@ -20,11 +22,13 @@ import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEma
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
-import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 class SignUpViewModel : ViewModel(), KoinComponent {
     companion object {
@@ -34,6 +38,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
     private val context by inject<Context>()
 
     private val repository = SignUpRepository()
+    private val localUser = LocalUserViewModel()
 
     private val _state = MutableStateFlow(
         SignUpState()
@@ -201,7 +206,12 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                 if (it != null) {
 
                     // save token in data store
-                    saveToken(it.code)
+                    saveData(
+                        it.code,
+                        it.user
+                    )
+
+                    // load user
 
                     // TODO: Make SnackBar
 
@@ -320,14 +330,19 @@ class SignUpViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    private fun saveToken(
-        token: String
+    private fun saveData(
+        token: String,
+        user: LocalUserModel
     ) {
-        viewModelScope.launch {
+        runBlocking {
             dataStore.setToken(
-                key = Constants.ACCESS_TOKEN,
+                key = ACCESS_TOKEN,
                 value = token
             )
+
+            Log.i(TAG, "code - ${dataStore.getToken(ACCESS_TOKEN).first()}")
+
+            localUser.saveUser(user)
         }
     }
 }

@@ -1,6 +1,8 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -35,35 +38,62 @@ fun EditPersonalInfoSheet(
     ) {
 
         OutlinedText(
-            previousData = state.value.secondName,
+            previousData = state.value.secondName ?: "Loading",
             label = stringResource(R.string.second_name),
             isEnabled = true,
+            isError = state.value.secondNameError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSecondNameChanged(it))
             }
         )
 
+        if (state.value.secondNameError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Быстро ввел фамилию")
+            }
+        }
+
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.firstName,
+            previousData = state.value.firstName ?: "Loading",
             label = stringResource(R.string.name),
             isEnabled = true,
+            isError = state.value.firstNameError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnFirstNameChanged(it))
             }
         )
 
+        if (state.value.firstNameError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Сори, если еще не определился с именем")
+            }
+        }
+
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.thirdName,
+            previousData = state.value.thirdName ?: "Loading",
             label = stringResource(R.string.third_name),
-            isEnabled = !state.value.hasThird,
+            isEnabled = state.value.hasThird,
+            isError = state.value.thirdNameError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnThirdNameChanged(it))
             }
         )
+
+        if (state.value.thirdNameError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Где отчество")
+            }
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -83,9 +113,18 @@ fun EditPersonalInfoSheet(
 
         CalendarInput(
             label = stringResource(id = R.string.dob),
-            previousData = state.value.dateOfBirth
+            previousData = state.value.dateOfBirth ?: "Loading",
+            isError = state.value.dobError,
         ) {
             viewModel.onEvent(ProfileEvent.OnDobChanged(it))
+        }
+
+        if (state.value.dobError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = "Ты типо еще не родился?")
+            }
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -94,7 +133,7 @@ fun EditPersonalInfoSheet(
            options =  listOf(
                "Мужской", "Женский"
            ),
-            previousData = state.value.gender,
+            previousData = state.value.gender ?: "Loading",
             label = stringResource(id = R.string.gender)
         ) {
             viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
@@ -103,13 +142,21 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.snils,
+            previousData = state.value.snils ?: "Loading",
             label = stringResource(R.string.snils),
-            isEnabled = true,
+            isError = state.value.snilsError,
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSnilsChanged(it))
             }
         )
+
+        if (state.value.snilsError) {
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ShowError(text = stringResource(R.string.null_snils_error_text))
+            }
+        }
         
         Spacer(modifier = Modifier.height(34.dp))
 
@@ -117,7 +164,7 @@ fun EditPersonalInfoSheet(
             text = stringResource(id = R.string.save),
             padding = 0.dp
         ) {
-            viewModel.onEvent(ProfileEvent.OnSave)
+            viewModel.onEvent(ProfileEvent.OnPersonalInfoSave)
         }
     }
 }

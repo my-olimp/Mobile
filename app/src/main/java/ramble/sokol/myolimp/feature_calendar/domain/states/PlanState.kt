@@ -3,7 +3,7 @@ package ramble.sokol.myolimp.feature_calendar.domain.states
 import ramble.sokol.myolimp.feature_calendar.data.models.PlanModel
 import java.time.LocalDate
 
-data class PlanState(
+data class PlanState (
     val plans: List<PlanModel> = emptyList(),
 
     val title: String = "",

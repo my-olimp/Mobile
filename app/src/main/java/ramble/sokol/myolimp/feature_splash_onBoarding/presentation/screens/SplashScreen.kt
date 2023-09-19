@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,11 +32,14 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_profile.data.Constants.ACCESS_TOKEN
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -48,6 +52,10 @@ fun SplashScreen(
     OlimpTheme (
         isSplashScreen = true
     ) {
+
+        val splashViewModel = getViewModel<LocalUserViewModel>()
+        val user = splashViewModel.user.collectAsState()
+        val isError = splashViewModel.isError.value
 
         val version = "v.0.4.2"
 
@@ -67,34 +75,39 @@ fun SplashScreen(
         val repository = CodeDataStore()
 
         LaunchedEffect(
-            key1 = true
+            key1 = Unit
         ) {
             delay(2000L)
 
-            val token = repository.getToken(ACCESS_TOKEN)
+            try {
 
-            // after that user won't be able to go to previous page
-            navigator.popBackStack()
+                splashViewModel.getUser()
 
-            if (token != null) {
-                /*
+                repository.getToken(ACCESS_TOKEN).first() ?: throw Exception("no access")
+
+                // after that user won't be able to go to previous page
+                navigator.popBackStack()
+
+                if (!isError) {
+                    /*
                     After delay launch home screen
                 */
 
-                Log.i("CODE-GEET", "code - $token")
+//                Log.i(TAG, "us - ${user.value.first()}")
 
-                navigator.navigate(HomeScreenDestination)
-
-            } else {
-                /*
+                    navigator.navigate(HomeScreenDestination)
+                } else {
+                    /*
                     After delay launch onBoarding
                 */
 
-                // if user is not registered
+                    // if user is not registered
+                    navigator.navigate(OnBoardingScreenDestination)
+                }
+
+            } catch (ex: Exception) {
                 navigator.navigate(OnBoardingScreenDestination)
-
             }
-
         }
 
         Column(

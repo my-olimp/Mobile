@@ -49,7 +49,7 @@ fun EditEducationSheet (
             options = state.value.regionList.toListString().ifEmpty {
                 stringArrayResource(id = R.array.region).toList()
             },
-            previousData = state.value.region.name,
+            previousData = state.value.region?.name ?: "Loading",
             label = stringResource(R.string.region_profile),
             isError = state.value.regionError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region_profile)
@@ -65,7 +65,7 @@ fun EditEducationSheet (
             options = state.value.cityList.toListString().ifEmpty {
                 stringArrayResource(id = R.array.city).toList()
             },
-            previousData = state.value.city.name,
+            previousData = state.value.city?.name ?: "Loading",
             label = stringResource(R.string.city_profile),
             isError = state.value.cityError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city_profile)
@@ -81,7 +81,7 @@ fun EditEducationSheet (
             options = state.value.schoolList.toListString().ifEmpty {
                 stringArrayResource(id = R.array.school).toList()
             },
-            previousData = state.value.school.name,
+            previousData = state.value.school?.name ?: "Loading",
             label = stringResource(R.string.school),
             isError = state.value.schoolError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)

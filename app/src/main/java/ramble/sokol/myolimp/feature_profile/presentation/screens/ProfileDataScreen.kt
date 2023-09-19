@@ -97,9 +97,9 @@ fun ProfileDataScreen(
 //        mutableStateOf(viewModel.state.value.profileImg)
 //    }
 
-    LaunchedEffect(key1 = Unit, block = {
-        viewModel.onEvent(ProfileEvent.OnRefreshToken)
-    })
+//    LaunchedEffect(key1 = Unit, block = {
+//        viewModel.onEvent(ProfileEvent.OnRefreshToken)
+//    })
 
     BottomBarTheme(
         navController = navController
@@ -135,7 +135,7 @@ fun ProfileDataScreen(
                         .align(CenterHorizontally)
                         .clip(CircleShape),
 //                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
-                    model = state.value.profileImg,
+                    model = state.value.profileImg ?: R.drawable.ic_default_img,
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -243,7 +243,7 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.id),
-                    content = state.value.id
+                    content = state.value.id ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -257,21 +257,21 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.dob),
-                    content = state.value.dateOfBirth
+                    content = state.value.dateOfBirth ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.gender),
-                    content = state.value.gender
+                    content = state.value.gender ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.snils),
-                    content = state.value.snils
+                    content = state.value.snils ?: "Loading"
                 )
             }
 
@@ -303,21 +303,21 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.region),
-                    content = state.value.region.name
+                    content = state.value.region?.name ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.city),
-                    content = state.value.city.name
+                    content = state.value.city?.name ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.school),
-                    content = state.value.school.name
+                    content = state.value.school?.name ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -356,14 +356,14 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.email),
-                    content = state.value.email
+                    content = state.value.email ?: "Loading"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.phone_number),
-                    content = state.value.phone
+                    content = state.value.phone ?: "Loading"
                 )
             }
 

@@ -28,7 +28,8 @@ data class UserModel(
     val regionError: Boolean = false,
     val cityError: Boolean = false,
     val schoolError: Boolean = false,
-    val gradeError: Boolean = false
+    val gradeError: Boolean = false,
+    val snilsError: Boolean = false
 ) {
     fun toUserModelEntity() = UserModelEntity(
         firstName = if (firstName == "") null else firstName,

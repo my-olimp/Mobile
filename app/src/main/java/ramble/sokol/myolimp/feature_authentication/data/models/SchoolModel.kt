@@ -1,5 +1,9 @@
 package ramble.sokol.myolimp.feature_authentication.data.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class ResponseSchoolModel(
@@ -12,10 +16,11 @@ data class ResponseSchoolModel(
     }
 }
 
+@Entity
 data class School (
-    val id: Int = -1,
-    val name: String = "",
-    val regionId : Int = -1
+    @PrimaryKey @ColumnInfo("school_id") val id: Int = -1,
+    @ColumnInfo("school_name") val name: String = "",
+    @ColumnInfo("school_region_id")val regionId : Int = -1
 )
 
 

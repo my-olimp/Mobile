@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
@@ -17,7 +18,6 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEdu
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
-import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class RegisterEducationViewModel : ViewModel() {
 
@@ -100,7 +100,7 @@ class RegisterEducationViewModel : ViewModel() {
             val userData = state.value
             try {
                 repository.registerEducation(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
                     data = UserEducationDataModel(
                         regionId = userData.region.number,
                         cityId = userData.city.id,
@@ -147,7 +147,7 @@ class RegisterEducationViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
                     onResult = { response ->
                         Log.i(TAG,"response regions $response")
                         if(response != null) {
@@ -173,7 +173,7 @@ class RegisterEducationViewModel : ViewModel() {
             try {
                 Log.i(TAG,"try to request with $regionId region id")
                 repository.getCities(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("no access token"),
+                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
                     data = regionId,
                     onResult = { list ->
                         Log.i(TAG,"cities request response is $list")
@@ -198,7 +198,7 @@ class RegisterEducationViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getSchools(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("No access token"),
+                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
                     data = regionId,
                     onResult = { list ->
                         Log.i(TAG,"response of school request: $list")

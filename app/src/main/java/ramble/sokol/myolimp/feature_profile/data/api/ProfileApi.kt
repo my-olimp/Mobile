@@ -1,19 +1,23 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
+import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface ProfileApi {
@@ -23,17 +27,17 @@ interface ProfileApi {
     )
     @PATCH("user/")
     suspend fun updateUserData(
-        @Header("Authorization") auth: String,
-        @Body user: UserModelEntity,
-    ): Response<ResponseUserModel>
+//        @Header("Authorization") auth: String,
+        @Body user: LocalUserModel,
+    ): Response<LocalUserModel>
 
 
-    @Headers("Content-Type: application/json")
-    @POST("user/avatar/")
-    suspend fun updateUserImg(
+    @Multipart
+    @POST("/user/avatar/")
+    suspend fun uploadImage(
         @Header("Authorization") auth: String,
-        @Body imgArray: String,
-    )
+        @Part image: MultipartBody.Part
+    ): Call<Void>?
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/logout/")
@@ -43,9 +47,9 @@ interface ProfileApi {
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/refresh_token/")
-    fun refreshToken(
+    suspend fun refreshToken(
         @Header("Cookie") cookie: String,
-    ) : Call<ResponseAuthModel>
+    ) : Response<ResponseAuthModel>
 
     @Headers("Content-Type: application/json")
     @GET("user/location/cities")

@@ -2,13 +2,14 @@ package ramble.sokol.myolimp.utils.interceptors
 
 import android.util.Log
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.IOException
 import org.koin.core.component.KoinComponent
-import ramble.sokol.myolimp.feature_profile.data.Constants.COOKIES
-import ramble.sokol.myolimp.utils.CookiesDataStore
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.COOKIES
 
 class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
 
@@ -16,7 +17,7 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
         private const val TAG = "InterceptorReceivedCookies"
     }
 
-    private val cookiesDataStore = CookiesDataStore()
+    private val codeDataStore = CodeDataStore()
     private val scope = MainScope()
 
     @Throws(IOException::class)
@@ -29,7 +30,7 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
         if (originalResponse.headers("Set-Cookie").isNotEmpty()) {
 
             scope.launch {
-                var cookie = cookiesDataStore.getCookies(COOKIES)
+                var cookie = codeDataStore.getToken(COOKIES).first()
 
                 Log.i(TAG, "begin - $cookie")
 
@@ -42,12 +43,10 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
                     Log.i(TAG, header)
                 }
 
-                if (cookie != null) {
-                    cookiesDataStore.setCookies(
-                        value = cookie,
-                        key = COOKIES
-                    )
-                }
+                codeDataStore.setToken(
+                    value = cookie ?: throw Exception("no cookies"),
+                    key = COOKIES
+                )
 
                 Log.i(TAG, "end - $cookie")
             }
