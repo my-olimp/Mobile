@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.RegisterEducationScreenDestination
@@ -89,7 +90,7 @@ class RegisterInfoViewModel : ViewModel() {
     ) {
         try {
             repository.registerInfo(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
                 data = userModel,
                 onResult = {
                     Log.i(TAG,"response: $it")

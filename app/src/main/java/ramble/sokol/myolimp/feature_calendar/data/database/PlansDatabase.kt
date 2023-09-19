@@ -6,6 +6,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 @Database(
     entities = [PlanModel::class],
@@ -13,6 +15,7 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 abstract class PlansDatabase : RoomDatabase() {
+
     abstract fun getPlansDao() : PlansDao
 
     companion object {

@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -67,7 +66,6 @@ internal fun RegisterImageScreen(
             viewModel.onEvent(event)
         },
         navigator = navigator,
-        onNext = viewModel::onNext,
         snilsValue = state.snils,
         selectedProfileImg = state.profileImg
     )
@@ -82,7 +80,6 @@ fun PrevRegisterImageScreen() {
 @Composable
 fun RegisterImageScreen(
     onEvent: (RegistrationImageEvent) -> Unit,
-    onNext: (File, Bitmap, DestinationsNavigator) -> Unit,
     snilsValue: String,
     navigator: DestinationsNavigator,
     selectedProfileImg: Uri?
@@ -168,7 +165,7 @@ fun RegisterImageScreen(
                         val pngFile = File(context.cacheDir, "converted_image.png")
                         if (pngFile.exists()) pngFile.delete()
                         pngFile.createNewFile()
-                        onNext(pngFile, bitmap, navigator)
+                        onEvent(RegistrationImageEvent.OnSubmit(pngFile, bitmap, navigator))
                     } catch (e: Exception) {
                         onEvent(RegistrationImageEvent.OnUploadError)
                     }

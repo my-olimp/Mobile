@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
@@ -16,7 +17,6 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubject
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterSubjectsRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterSubjectsState
-import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class RegisterSubjectsViewModel : ViewModel() {
 
@@ -96,7 +96,7 @@ class RegisterSubjectsViewModel : ViewModel() {
             Log.i(TAG, "ids - $chosenSubjectsIds")
 
             repository.updateSubjects(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN)?: throw Exception("No access token"),
+                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
                 subjects = RequestSubjects(chosenSubjectsIds),
                 onResult = {
 
@@ -117,7 +117,7 @@ class RegisterSubjectsViewModel : ViewModel() {
         // get subjects
         viewModelScope.launch {
             repository.getSchools(
-                auth = dataStore.getToken(Constants.ACCESS_TOKEN) ?: throw Exception("No access token"),
+                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
                 onResult = { subjects->
                     if (subjects != null) {
 

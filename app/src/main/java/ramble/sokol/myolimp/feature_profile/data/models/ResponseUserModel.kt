@@ -12,7 +12,7 @@ data class ResponseUserModel(
     @SerializedName("third_name") val thirdName: String? = null,
     @SerializedName("data_of_birth") val dateOfBirth: String? = null,
     @SerializedName("gender") val gender: String? = null,
-    @SerializedName("snils") val snils: String? = null,
+    @SerializedName("SNILS") val snils: String? = null,
     @SerializedName("region") val region: ResponseRegionModel? = null,
     @SerializedName("city") val city: ResponseCityModel? = null,
     @SerializedName("school") val school: ResponseSchoolModel? = null,
