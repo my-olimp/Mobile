@@ -50,25 +50,26 @@ fun ExaminationScreen(
             items(state.value.article.blocks[blockId].questions.size) {
                 with(state.value.article.blocks[blockId].questions[it]) {
                     ExaminationTask(
-                        taskText = this.questionText,
+                        taskText = questionText,
                         taskLabel = stringResource(id = R.string.article_answer_type_float),
                         taskNumber = it.plus(1),
-                        taskState = state.value.answers[this.id] ?: TaskState(),
+                        taskState = state.value.answers[id] ?: TaskState(),
+                        explanationText = explanation,
                         onTextChanged = { newValue ->
                             viewModel.onEvent(ArticleEvent.OnAnswerTyped(
-                                taskId = this.id,
+                                taskId = id,
                                 taskNum = it,
                                 answer = newValue,
                                 blockId = blockId
                             ))
-                            Log.i("ViewModelArticle","new value is : ${state.value.answers[this.id]}")
+                            Log.i("ViewModelArticle","new value is : ${state.value.answers[id]}")
                         }
                     ) {
                         viewModel.onEvent(ArticleEvent.OnCheckAnswer(
                             taskNum = it,
-                            taskId = this.id,
+                            taskId = id,
                             blockId = blockId,
-                            answer = state.value.answers[this.id]?.answer ?: ""
+                            answer = state.value.answers[id]?.answer ?: ""
                         ))
                     }
                 }

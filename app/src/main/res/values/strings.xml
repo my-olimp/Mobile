@@ -179,4 +179,6 @@
     <string name="article_task_number">Задание %1$d</string>
     <string name="article_answer_type_float">Число или дробь</string>
     <string name="article_question_error">Неверно, попробуйте снова</string>
+    <string name="article_question_show_answer">Показать решение</string>
+    <string name="article_question_solution">Решение</string>
 </resources>
