@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserConverter
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 
 @Database(
     entities = [LocalUserModel::class],

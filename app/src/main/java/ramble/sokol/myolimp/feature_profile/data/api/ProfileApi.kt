@@ -1,13 +1,11 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
 import okhttp3.MultipartBody
-import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
-import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body

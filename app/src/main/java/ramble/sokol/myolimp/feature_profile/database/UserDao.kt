@@ -6,7 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 
 @Dao
 interface UserDao {

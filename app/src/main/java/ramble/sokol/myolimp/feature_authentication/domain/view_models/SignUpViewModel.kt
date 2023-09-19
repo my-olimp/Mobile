@@ -27,7 +27,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRep
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 class SignUpViewModel : ViewModel(), KoinComponent {

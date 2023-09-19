@@ -17,8 +17,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.LoginRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
-import ramble.sokol.myolimp.feature_profile.data.Constants
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 class LoginViewModel : ViewModel() {

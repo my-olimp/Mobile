@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
-import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class ArticleViewModel: ViewModel() {
 
@@ -38,7 +38,7 @@ class ArticleViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.extractArticleById(
-                    auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
                         ?: throw Exception("No access token"),
                     id = 1 /*TODO replace this*/,
                     onResult = { article ->

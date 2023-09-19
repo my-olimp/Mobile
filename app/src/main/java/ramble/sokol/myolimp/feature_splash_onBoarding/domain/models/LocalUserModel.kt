@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models
+package ramble.sokol.myolimp.feature_splash_onBoarding.domain.models
 
 import androidx.room.Embedded
 import androidx.room.Entity
