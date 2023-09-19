@@ -55,8 +55,12 @@ fun ExaminationScreen(
                         taskNumber = it.plus(1),
                         taskState = state.value.answers[this.id] ?: TaskState(),
                         onTextChanged = { newValue ->
-                            if(state.value.answers[this.id] == null)state.value.answers[this.id] = TaskState(answer = newValue)
-                            else state.value.answers[this.id]?.answer = newValue
+                            viewModel.onEvent(ArticleEvent.OnAnswerTyped(
+                                taskId = this.id,
+                                taskNum = it,
+                                answer = newValue,
+                                blockId = blockId
+                            ))
                             Log.i("ViewModelArticle","new value is : ${state.value.answers[this.id]}")
                         }
                     ) {
