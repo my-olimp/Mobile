@@ -174,6 +174,7 @@
     <string name="choose_necessary_subjects">Выберите или введите в поиск предметы, к которым готовитесь</string>
     <string name="popular_subjects">Популярные дисциплины</string>
     <string name="no_subjects_found">Предмет не найден :(</string>
+    <string name="answer">Ответить</string>
     <string name="null_snils_error_text">Необходимо ввести снилс</string>
     <string name="library_articles_title">Статьи</string>
 </resources>

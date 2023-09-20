@@ -14,6 +14,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataS
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 
 class LocalUserViewModel : ViewModel(), KoinComponent {
 

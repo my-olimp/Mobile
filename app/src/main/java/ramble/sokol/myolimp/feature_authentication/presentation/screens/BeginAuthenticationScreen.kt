@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
 import ramble.sokol.myolimp.destinations.SignUpScreenDestination
@@ -110,8 +111,8 @@ fun BeginAuthenticationScreen (
             FilledBtn(
                 text = "[Beta]"
             ) {
-                navigator.navigate(ProfileScreenDestination)
-                //navigator.navigate(RegisterEducationScreenDestination)
+                //navigator.navigate(ProfileScreenDestination)
+                navigator.navigate(ArticleScreenDestination)
             }
         }
     }

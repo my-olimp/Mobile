@@ -3,7 +3,7 @@ package ramble.sokol.myolimp.feature_profile.domain.states
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.School
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 
 data class ProfileState (
     val user: LocalUserModel = LocalUserModel(),

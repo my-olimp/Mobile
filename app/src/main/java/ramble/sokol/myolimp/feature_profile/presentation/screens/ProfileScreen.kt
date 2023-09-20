@@ -37,6 +37,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
@@ -191,7 +192,7 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_favourite),
                     content = stringResource(R.string.profile_favourite_content)
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(ArticleScreenDestination)
                 }
 
                 Spacer(

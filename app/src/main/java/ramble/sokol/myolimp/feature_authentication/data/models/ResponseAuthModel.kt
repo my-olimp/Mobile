@@ -1,8 +1,7 @@
 package ramble.sokol.myolimp.feature_authentication.data.models
 
 import com.google.gson.annotations.SerializedName
-import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import java.io.Serializable
 
 data class ResponseAuthModel (
