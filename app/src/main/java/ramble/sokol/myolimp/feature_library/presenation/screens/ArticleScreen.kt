@@ -34,9 +34,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
+import ramble.sokol.myolimp.feature_library.presenation.SearchTextField
 import ramble.sokol.myolimp.feature_library.presenation.components.HorizontalLine
 import ramble.sokol.myolimp.feature_library.presenation.components.PartItem
-import ramble.sokol.myolimp.feature_library.presenation.components.SearchTextField
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.OlimpTheme

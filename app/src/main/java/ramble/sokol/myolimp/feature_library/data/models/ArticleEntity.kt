@@ -6,7 +6,7 @@ import ramble.sokol.myolimp.feature_library.domain.models.ArticleModel
 data class ArticleEntity(
     val author: Author,
     val id: Int,
-    val image: Any,
+    val image: Any?,
     val subject: String,
     val tags: List<String>,
     val title: String
