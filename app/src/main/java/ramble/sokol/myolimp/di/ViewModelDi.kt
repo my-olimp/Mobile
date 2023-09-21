@@ -10,9 +10,7 @@ import ramble.sokol.myolimp.feature_authentication.presentation.view_models.Regi
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
-import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.screens.SplashScreen
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
 
@@ -59,11 +57,6 @@ val viewModelsModule = module {
     /* Register Subjects */
     viewModel {
         RegisterSubjectsViewModel()
-    }
-
-    /* Library */
-    viewModel {
-        LibraryViewModel()
     }
 
     /* Article Library */

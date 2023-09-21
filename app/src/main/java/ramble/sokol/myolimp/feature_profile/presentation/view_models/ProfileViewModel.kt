@@ -85,6 +85,8 @@ class ProfileViewModel (
 
     init {
         viewModelScope.launch {
+            Log.i(TAG, "user = ${_user.first()}")
+
             _state.update {
                 it.copy(
                     id = _user.first().id,
