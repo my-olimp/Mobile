@@ -32,9 +32,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.navigation.popUpTo
@@ -55,6 +57,7 @@ import ramble.sokol.myolimp.ui.theme.MainBackground
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
+
 
 @Destination
 @Composable
@@ -119,7 +122,9 @@ fun HomeScreen(
                                 // show creating sheet
                                 navController.navigate(
                                     CreateCalendarScreenDestination(
-                                        date = LocalDate.now().toString(),
+                                        date = LocalDate
+                                            .now()
+                                            .toString(),
                                         fromHome = true
                                     )
                                 ) {
@@ -248,7 +253,6 @@ fun HomeScreen(
                         .horizontalScroll(scroll)
                 ) {
                     fragments.forEach {
-
                         Column(
                             modifier = Modifier
                                 .size(120.dp)

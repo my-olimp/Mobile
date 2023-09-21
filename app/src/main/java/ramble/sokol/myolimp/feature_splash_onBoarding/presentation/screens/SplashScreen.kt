@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.screens
 
-import android.util.Log
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -39,7 +38,9 @@ import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.LocalUserResult
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -53,10 +54,8 @@ fun SplashScreen(
         isSplashScreen = true
     ) {
 
-        val splashViewModel = getViewModel<LocalUserViewModel>()
-        val user = splashViewModel.user.collectAsState()
-        val isError = splashViewModel.isError.value
-
+        val splashViewModel = getViewModel<SplashViewModel>()
+        val state = splashViewModel.state.collectAsState()
         val version = "v.0.4.2"
 
         val transition = rememberInfiniteTransition(label = "")
@@ -72,41 +71,25 @@ fun SplashScreen(
             ), label = ""
         )
 
-        val repository = CodeDataStore()
+        when (state.value) {
+            is LocalUserResult.Error -> {
+                // error occurred
+                LaunchedEffect(key1 = Unit){
+                    delay(1000)
 
-        LaunchedEffect(
-            key1 = Unit
-        ) {
-            delay(2000L)
-
-            try {
-
-                splashViewModel.getUser()
-
-                repository.getToken(ACCESS_TOKEN).first() ?: throw Exception("no access")
-
-                // after that user won't be able to go to previous page
-                navigator.popBackStack()
-
-                if (!isError) {
-                    /*
-                    After delay launch home screen
-                */
-
-//                Log.i(TAG, "us - ${user.value.first()}")
-
-                    navigator.navigate(HomeScreenDestination)
-                } else {
-                    /*
-                    After delay launch onBoarding
-                */
-
-                    // if user is not registered
                     navigator.navigate(OnBoardingScreenDestination)
                 }
+            }
+            is LocalUserResult.Loading -> {
+                // loading
+            }
+            is LocalUserResult.Success -> {
+                // successfully got user
+                LaunchedEffect(key1 = Unit){
+                    delay(1000)
 
-            } catch (ex: Exception) {
-                navigator.navigate(OnBoardingScreenDestination)
+                    navigator.navigate(HomeScreenDestination)
+                }
             }
         }
 

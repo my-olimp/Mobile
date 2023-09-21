@@ -175,10 +175,15 @@
     <string name="popular_subjects">Популярные дисциплины</string>
     <string name="no_subjects_found">Предмет не найден :(</string>
     <string name="answer">Ответить</string>
+<<<<<<< HEAD
     <string name="article_author">Автор: %1$s %2$s %3$s</string>
     <string name="article_task_number">Задание %1$d</string>
     <string name="article_answer_type_float">Число или дробь</string>
     <string name="article_question_error">Неверно, попробуйте снова</string>
     <string name="article_question_show_answer">Показать решение</string>
     <string name="article_question_solution">Решение</string>
+=======
+    <string name="null_snils_error_text">Необходимо ввести снилс</string>
+    <string name="library_articles_title">Статьи</string>
+>>>>>>> dev
 </resources>
