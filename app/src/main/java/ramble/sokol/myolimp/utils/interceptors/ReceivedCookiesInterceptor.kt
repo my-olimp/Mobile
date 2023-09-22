@@ -32,8 +32,6 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
             scope.launch {
                 var cookie = codeDataStore.getToken(COOKIES).first()
 
-                Log.i(TAG, "begin - $cookie")
-
                 for (header in originalResponse.headers("Set-Cookie")) {
 
                     if(header.contains("refresh")) {
@@ -48,10 +46,11 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
                     key = COOKIES
                 )
 
-                Log.i(TAG, "end - $cookie")
+                Log.i(TAG, "cookie - $cookie")
             }
-
         }
+
+        Log.i(TAG, "returning")
 
         return originalResponse
     }

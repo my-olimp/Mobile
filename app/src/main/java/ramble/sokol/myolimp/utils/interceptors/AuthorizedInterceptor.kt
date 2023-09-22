@@ -1,9 +1,7 @@
 package ramble.sokol.myolimp.utils.interceptors
 
 import android.util.Log
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -41,17 +39,16 @@ class AuthorizedInterceptor : Interceptor {
         Log.i(TAG, "response code - ${response.code}")
 
         if (response.code >= 400) {
+            // to close previous
+            response.close()
 
-            MainScope().launch {
-                // to close previous
-                response.close()
+            Log.i(TAG, "update token")
 
-                Log.i(TAG, "update token")
+            val token = getRefreshToken()
 
-                val token = getRefreshToken()
+            Log.i(TAG, "refresh - $token")
 
-                Log.i(TAG, "refresh - $token")
-
+            runBlocking {
                 val response = ProfileRepository().refreshToken(
                     cookie = token ?: throw Exception("no cookie")
                 )
@@ -68,14 +65,15 @@ class AuthorizedInterceptor : Interceptor {
 
                 requestBuilder = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $accessToken")
-
             }
 
-            Log.i(TAG, "returning")
+            Log.i(TAG, "returning 2")
 
             return chain.proceed(requestBuilder.build())
 
         }
+        Log.i(TAG, "returning 1")
+
         return response
     }
 

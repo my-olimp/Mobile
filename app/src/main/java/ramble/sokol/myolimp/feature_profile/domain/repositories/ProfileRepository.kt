@@ -58,28 +58,6 @@ class ProfileRepository {
         }
     }
 
-//    fun refreshToken(
-//        cookie: String,
-//        onResult: (ResponseAuthModel?) -> Unit,
-//        onError: (Throwable) -> Unit
-//    ) {
-//        profileInstance.refreshToken(cookie = cookie).enqueue(
-//            object : Callback<ResponseAuthModel> {
-//
-//                override fun onResponse(
-//                    call: Call<ResponseAuthModel>,
-//                    response: Response<ResponseAuthModel>
-//                ) {
-//                    onResult(response.body())
-//                }
-//
-//                override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
-//                    onError(t)
-//                }
-//            }
-//        )
-//    }
-
     suspend fun refreshToken(cookie: String)
         = profileInstance.refreshToken(cookie)
 
