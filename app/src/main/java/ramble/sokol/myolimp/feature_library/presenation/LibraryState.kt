@@ -6,5 +6,6 @@ data class LibraryState (
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val isShowingFavourites: Boolean = false,
-    val articles: List<ArticleModel> = emptyList()
+    val articles: List<ArticleModel> = emptyList(),
+    val userSubjects: List<String> = emptyList()
 )

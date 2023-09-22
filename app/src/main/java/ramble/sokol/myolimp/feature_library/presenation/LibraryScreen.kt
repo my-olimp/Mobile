@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -92,21 +93,52 @@ fun LibraryScreen(
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
-            LibraryBox(title = stringResource(R.string.library_articles_title)) {
-                if (state.value.isLoading) {
-                    LoadingCircular()
-                }
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items(state.value.articles) { article ->
-                        LibraryItem(
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item {
+                    LibraryBox(title = stringResource(R.string.library_articles_title)) {
+                        if (state.value.isLoading) {
+                            LoadingCircular()
+                        }
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            items(state.value.articles) { article ->
+                                LibraryItem(
 //                            type = article.blocks,
-                            subject = article.subject,
-                            title = article.title,
-                        )
+                                    subject = article.subject,
+                                    title = article.title,
+                                )
+                            }
+                        }
+                    }
+                }
+                items(state.value.userSubjects) { subject ->
+                    LibraryBox(title = subject) {
+                        if (state.value.isLoading) {
+                            LoadingCircular()
+                        } else {
+                            val subjectArticles = state.value.articles.filter { it.subject == subject }
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                items(subjectArticles) { article ->
+                                    LibraryItem(
+                                        subject = article.subject,
+                                        title = article.title,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -115,9 +147,11 @@ fun LibraryScreen(
 }
 
 @Composable
-internal fun LoadingCircular() {
+internal fun LoadingCircular(
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
