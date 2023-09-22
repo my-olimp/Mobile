@@ -1,7 +1,9 @@
 package ramble.sokol.myolimp.utils.interceptors
 
 import android.util.Log
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -39,8 +41,8 @@ class AuthorizedInterceptor : Interceptor {
         Log.i(TAG, "response code - ${response.code}")
 
         if (response.code >= 400) {
-            return runBlocking {
 
+            MainScope().launch {
                 // to close previous
                 response.close()
 
@@ -67,15 +69,19 @@ class AuthorizedInterceptor : Interceptor {
                 requestBuilder = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $accessToken")
 
-                return@runBlocking chain.proceed(requestBuilder.build())
             }
+
+            Log.i(TAG, "returning")
+
+            return chain.proceed(requestBuilder.build())
+
         }
         return response
     }
 
     private fun getAccessToken() : String?
         = runBlocking {
-        return@runBlocking CodeDataStore().getToken(ACCESS_TOKEN).first<String?>()
+            return@runBlocking CodeDataStore().getToken(ACCESS_TOKEN).first<String?>()
     }
 
     private fun saveAccess(

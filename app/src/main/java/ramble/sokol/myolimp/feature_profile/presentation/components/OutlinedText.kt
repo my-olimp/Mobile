@@ -23,6 +23,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
+import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
@@ -31,6 +32,7 @@ fun OutlinedText (
     label: String,
     isEnabled: Boolean = true,
     isError: Boolean = false,
+    isSuccess: Boolean = false,
     isEmail: Boolean = false,
     onTextChanged: (String) -> Unit,
 ) {
@@ -68,9 +70,9 @@ fun OutlinedText (
             }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = BlueStart,
-            focusedLabelColor = BlueStart,
-            cursorColor = BlueStart,
+            focusedBorderColor = if(isSuccess) SuccessStatus else BlueStart,
+            focusedLabelColor = if(isSuccess) SuccessStatus else BlueStart,
+            cursorColor = if(isSuccess) SuccessStatus else BlueStart,
             backgroundColor = White,
             errorBorderColor = MessageError
         ),

@@ -13,6 +13,8 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataS
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
+import ramble.sokol.myolimp.feature_library.domain.states.TaskState
+
 
 class ArticleViewModel: ViewModel() {
 
@@ -31,29 +33,82 @@ class ArticleViewModel: ViewModel() {
     fun onEvent(
         event: ArticleEvent
     ) {
-        /*TODO*/
+        when(event) {
+            is ArticleEvent.OnCheckAnswer -> {
+                when(event.answer == state.value.article.blocks[event.blockId].questions[event.taskNum].answer) {
+                    true -> {
+                        val map = state.value.answers
+                        map[event.taskId]?.let {
+                            it.isError = false
+                            it.isSuccess = true
+                        }
+                        _state.update {
+                            it.copy(
+                                answers = map,
+                                status = !state.value.status
+                            )
+                        }
+                    }
+                    false -> {
+                        val map = state.value.answers
+                        map[event.taskId]?.let {
+                            it.isError = true
+                            it.isSuccess = false
+                        }
+                        _state.update {
+                            it.copy(
+                                answers = map,
+                                status = !state.value.status
+                            )
+                        }
+                    }
+                }
+            }
+            is ArticleEvent.OnAnswerTyped -> {
+                val map = state.value.answers
+                if(map[event.taskId] == null){
+                    map[event.taskId] = TaskState(answer = event.answer)
+                } else {
+                    map[event.taskId]?.let {
+                        it.answer = event.answer
+                        it.isError = false
+                        it.isSuccess = false
+                    }
+                }
+                _state.update {
+                    it.copy(
+                        answers = map,
+                        status = !state.value.status
+                    )
+                }
+                Log.i(TAG,"state updated: ${_state.value.answers[event.taskId]}")
+            }
+        }
     }
 
-    fun fetchArticle() {
+    fun fetchArticle(id: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.extractArticleById(
                     auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
                         ?: throw Exception("No access token"),
-                    id = 1 /*TODO replace this*/,
+                    id = id /*TODO replace this*/,
                     onResult = { article ->
                         Log.i(TAG, "response article is : $article")
                         if (article != null) {
                             _state.update {
-                                it.copy(article = article)
+                                it.copy(article = article.asArticleModel())
                             }
+                            Log.i(TAG,"new article model is: ${_state.value.article}")
                         }
                     },
                     onError = {
                         Log.i(TAG, "response with exception")
                     }
                 )
-            } catch (_: Exception) {}
+            } catch (e: Exception) {
+                Log.i(TAG,"request isn't sent with ${e.message}")
+            }
         }
     }
 }
