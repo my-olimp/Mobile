@@ -27,6 +27,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
+import ramble.sokol.myolimp.ui.theme.MainPageBlue
 
 @Destination
 @Composable
@@ -43,7 +44,7 @@ fun LibraryScreen(
          search & bookmarks
         */
         Column(
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
@@ -55,7 +56,6 @@ fun LibraryScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
-
                 SearchTextField(
                     modifier = Modifier
                         .weight(0.68f),
@@ -117,9 +117,11 @@ fun LibraryScreen(
 @Composable
 internal fun LoadingCircular() {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = MainPageBlue
+        )
     }
 }

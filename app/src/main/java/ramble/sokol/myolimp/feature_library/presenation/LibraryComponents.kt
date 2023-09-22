@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
@@ -177,7 +178,6 @@ fun FavoriteIcon(
     }
 }
 
-
 @Composable
 fun LibraryBox(
     title: String,
@@ -185,12 +185,12 @@ fun LibraryBox(
 ) {
     Column(
         modifier = Modifier
-            .padding(top = 12.dp, bottom = 18.dp, start = 12.dp)
-            .fillMaxWidth()
             .background(
                 color = White,
                 shape = RoundedCornerShape(25.dp)
             )
+            .fillMaxWidth()
+            .padding(top = 12.dp, bottom = 18.dp, start = 12.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
