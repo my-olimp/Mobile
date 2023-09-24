@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_library.data.repository
 
+import org.json.JSONArray
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_library.data.remote.LibraryAPI
 import ramble.sokol.myolimp.feature_library.domain.models.ArticleModel
@@ -19,6 +20,11 @@ class LibraryRepositoryImpl(val database: UserDatabase) {
     }
 
     suspend fun getUserSubjects(): List<String> {
-        return database.getUserDao().getUserSubjects()
+        val jsonArray = JSONArray(database.getUserDao().getUserSubjects())
+        val list = mutableListOf<String>()
+        for (i in 0 until jsonArray.length()) {
+            list.add(jsonArray.getString(i))
+        }
+        return list
     }
 }

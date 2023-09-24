@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_library.presenation
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,10 @@ class LibraryViewModel(context: Context) : ViewModel() {
     private val userDatabase : UserDatabase = UserDatabase(context)
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
 
+    companion object {
+        private const val TAG = "ViewModelLibrary"
+    }
+
 
     init {
         viewModelScope.launch {
@@ -34,15 +39,27 @@ class LibraryViewModel(context: Context) : ViewModel() {
                     isLoading = true
                 )
             }
-            _state.update { curValue ->
-                curValue.copy(
-                    articles = libraryRepository.getArticles(
-                        auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
-                            ?: throw Exception("No access token")
-                    ),
-                    userSubjects = libraryRepository.getUserSubjects(),
-                    isLoading = false
-                )
+            try {
+                _state.update { curValue ->
+                    curValue.copy(
+                        articles = libraryRepository.getArticles(
+                            auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
+                                ?: throw Exception("No access token")
+                        ),
+                        userSubjects = libraryRepository.getUserSubjects(),
+                        isLoading = false
+                    )
+                }
+            } catch (e: Exception) {
+                Log.i(TAG, "init ex: ${e.message}")
+                _state.update { curValue ->
+                    curValue.copy(
+                        isLoading = false,
+                        isError = true
+                    )
+                }
+            } finally {
+
             }
         }
     }
@@ -62,6 +79,14 @@ class LibraryViewModel(context: Context) : ViewModel() {
                 _state.update {
                     it.copy(
                         isShowingFavourites = event.isShowing
+                    )
+                }
+            }
+
+            is LibraryEvent.OnShowFilterBottomSheet -> {
+                _state.update {
+                    it.copy(
+                        isShownFilterBottomSheet = true
                     )
                 }
             }

@@ -74,4 +74,8 @@ val viewModelsModule = module {
     viewModel {
         SplashViewModel()
     }
+
+    viewModel {
+        LibraryViewModel(get())
+    }
 }

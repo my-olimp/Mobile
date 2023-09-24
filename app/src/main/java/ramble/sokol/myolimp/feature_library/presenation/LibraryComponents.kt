@@ -182,21 +182,24 @@ fun FavoriteIcon(
     }
 }
 
+
 @Composable
 fun LibraryBox(
     title: String,
-    content: @Composable () -> Unit
+    isLearnMore: Boolean = true,
+    content: @Composable () -> Unit = { Text("") }
 ) {
     Column(
         modifier = Modifier
+            .fillMaxWidth()
             .background(
                 color = White,
                 shape = RoundedCornerShape(25.dp)
             )
-            .fillMaxWidth()
-            .padding(top = 12.dp, bottom = 18.dp, start = 12.dp)
+            .padding(top = 12.dp, bottom = 18.dp, start = 12.dp, end = 16.dp)
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -205,25 +208,32 @@ fun LibraryBox(
                 style = regularType(
                     color = BlackProfile,
                     fontSize = 18.sp
-                )
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable { }
             ) {
-                Text(
-                    text = stringResource(R.string.learn_more),
-                    style = regularType(
-                        color = MainPageBlue,
-                        fontSize = 12.sp
+                if (isLearnMore) {
+                    Text(
+                        text = stringResource(R.string.learn_more),
+                        style = regularType(
+                            color = MainPageBlue,
+                            fontSize = 12.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = stringResource(R.string.learn_more),
-                    tint = MainPageBlue,
-                )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = stringResource(R.string.learn_more),
+                        modifier = Modifier.size(16.dp),
+                        tint = MainPageBlue,
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))

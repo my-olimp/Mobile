@@ -75,7 +75,7 @@ fun LibraryScreen(
                         .padding(top = 8.dp)
                         .clip(RoundedCornerShape(8.dp)), //try remove
                     onClick = {
-                        viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+                        viewModel.onEvent(LibraryEvent.OnShowFilterBottomSheet)
                     },
                     isActive = state.value.isShowingFavourites
                 )
@@ -101,7 +101,10 @@ fun LibraryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 item {
-                    LibraryBox(title = stringResource(R.string.library_articles_title)) {
+                    LibraryBox(
+                        title = stringResource(R.string.library_articles_title),
+                        isLearnMore = false
+                    ) {
                         if (state.value.isLoading) {
                             LoadingCircular()
                         }
@@ -122,21 +125,17 @@ fun LibraryScreen(
                 }
                 items(state.value.userSubjects) { subject ->
                     LibraryBox(title = subject) {
-                        if (state.value.isLoading) {
-                            LoadingCircular()
-                        } else {
-                            val subjectArticles = state.value.articles.filter { it.subject == subject }
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                items(subjectArticles) { article ->
-                                    LibraryItem(
-                                        subject = article.subject,
-                                        title = article.title,
-                                    )
-                                }
+                        val subjectArticles = state.value.articles.filter { it.subject == subject }
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            items(subjectArticles) { article ->
+                                LibraryItem(
+                                    subject = article.subject,
+                                    title = article.title,
+                                )
                             }
                         }
                     }

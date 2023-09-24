@@ -23,5 +23,5 @@ interface UserDao {
     fun getUser(): Flow<LocalUserModel>
 
     @Query("SELECT subjects FROM user LIMIT 1")
-    suspend fun getUserSubjects(): List<String>
+    suspend fun getUserSubjects(): String
 }

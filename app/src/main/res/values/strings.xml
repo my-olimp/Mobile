@@ -183,6 +183,6 @@
     <string name="article_question_solution">Решение</string>
     <string name="null_snils_error_text">Необходимо ввести снилс</string>
     <string name="library_articles_title">Статьи</string>
-    <string name="learn_more">подробнее\n</string>
+    <string name="learn_more">подробнее</string>
 
 </resources>
