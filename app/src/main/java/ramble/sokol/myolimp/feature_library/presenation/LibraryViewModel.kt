@@ -24,7 +24,7 @@ class LibraryViewModel(context: Context) : ViewModel() {
     private val _state = MutableStateFlow(LibraryState())
     val state = _state.asStateFlow()
 
-    private val userDatabase : UserDatabase = UserDatabase(context)
+    private val userDatabase: UserDatabase = UserDatabase(context)
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
 
     companion object {
@@ -94,16 +94,16 @@ class LibraryViewModel(context: Context) : ViewModel() {
                         bottomSheetSubjectsMap = libraryState.bottomSheetSubjectsMap.mapValues {
                             if (it.key == event.subjectName) it.value.not() else it.value
                         },
-                        isFilterActive = libraryState.bottomSheetSubjectsMap.values.any { it }
                     )
                 }
             }
+
             is LibraryEvent.OnFilterSubjectFromBottomSheet -> {
                 _state.update { libraryState ->
                     libraryState.copy(
-                        userSubjects = state.value.userSubjects.filter { subject ->
+                        filteredSubjects = state.value.userSubjects.filter { subject ->
                             state.value.bottomSheetSubjectsMap[subject] ?: false
-                        }
+                        },
                     )
                 }
             }

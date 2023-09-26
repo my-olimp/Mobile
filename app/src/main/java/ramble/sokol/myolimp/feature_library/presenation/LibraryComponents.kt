@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,9 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,12 +52,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.CalendarFocusedText
+import ramble.sokol.myolimp.ui.theme.CalendarUnFocusedText
+import ramble.sokol.myolimp.ui.theme.CheckboxUnselectedColor
+import ramble.sokol.myolimp.ui.theme.CloseIconColor
+import ramble.sokol.myolimp.ui.theme.ErrorAccent
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.MainBackground
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
+import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
@@ -311,4 +324,90 @@ fun LibrarySubtitleText(
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SubjectsPickerBottomSheet(
+    subjectsMap: Map<String, Boolean> = mapOf("Инф" to true, "Мат" to false, "Физ" to false),
+    onEvent: (LibraryEvent) -> Unit = {},
+    onHideSheet: () -> Unit = {},
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp).fillMaxSize()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.subject),
+                style = regularType(
+                    color = CalendarUnFocusedText,
+                    fontSize = 18.sp
+                ),
+            )
+            IconButton(
+                onClick = {
+                    onHideSheet()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Close bottom sheet",
+                    tint = CloseIconColor
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            subjectsMap.keys.forEach { subjectTitle ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Checkbox(
+                        checked = subjectsMap[subjectTitle] ?: false,
+                        onCheckedChange = {
+                            onEvent(
+                                LibraryEvent.OnCheckboxSubject(subjectTitle)
+                            )
+                        },
+                        modifier = Modifier.size(24.dp),
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = CalendarFocusedText,
+                            uncheckedColor = CheckboxUnselectedColor,
+                            checkmarkColor = White,
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Text(
+                        text = subjectTitle,
+                        style = regularType(
+                            color = SheetTitle,
+                            fontSize = 18.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(48.dp))
+        FilledBtn(
+            text = stringResource(R.string.button_show_text),
+            isEnabled = subjectsMap.any { it.value } //At least one true
+        ) {
+            onHideSheet()
+            onEvent(LibraryEvent.OnFilterSubjectFromBottomSheet)
+        }
+    }
 }
