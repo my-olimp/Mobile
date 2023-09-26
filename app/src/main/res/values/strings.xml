@@ -184,5 +184,6 @@
     <string name="null_snils_error_text">Необходимо ввести снилс</string>
     <string name="library_articles_title">Статьи</string>
     <string name="learn_more">подробнее</string>
+    <string name="button_show_text">Показать</string>
 
 </resources>

@@ -50,6 +50,11 @@ class LibraryViewModel(context: Context) : ViewModel() {
                         isLoading = false
                     )
                 }
+                _state.update { curValue ->
+                    curValue.copy(
+                        bottomSheetSubjectsMap = curValue.userSubjects.associateWith { false }
+                    )
+                }
             } catch (e: Exception) {
                 Log.i(TAG, "init ex: ${e.message}")
                 _state.update { curValue ->
@@ -83,10 +88,22 @@ class LibraryViewModel(context: Context) : ViewModel() {
                 }
             }
 
-            is LibraryEvent.OnShowFilterBottomSheet -> {
-                _state.update {
-                    it.copy(
-                        isShownFilterBottomSheet = true
+            is LibraryEvent.OnCheckboxSubject -> {
+                _state.update { libraryState ->
+                    libraryState.copy(
+                        bottomSheetSubjectsMap = libraryState.bottomSheetSubjectsMap.mapValues {
+                            if (it.key == event.subjectName) it.value.not() else it.value
+                        },
+                        isFilterActive = libraryState.bottomSheetSubjectsMap.values.any { it }
+                    )
+                }
+            }
+            is LibraryEvent.OnFilterSubjectFromBottomSheet -> {
+                _state.update { libraryState ->
+                    libraryState.copy(
+                        userSubjects = state.value.userSubjects.filter { subject ->
+                            state.value.bottomSheetSubjectsMap[subject] ?: false
+                        }
                     )
                 }
             }

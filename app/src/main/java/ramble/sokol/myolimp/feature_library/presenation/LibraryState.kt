@@ -7,8 +7,9 @@ data class LibraryState (
     val isError: Boolean = false,
     val searchQuery: String = "",
     val isShowingFavourites: Boolean = false,
-    val isShownFilterBottomSheet: Boolean = false,
     val isFilterActive: Boolean = false,
     val articles: List<ArticleModel> = emptyList(),
-    val userSubjects: List<String> = emptyList()
+    val userSubjects: List<String> = emptyList(),
+
+    val bottomSheetSubjectsMap: Map<String, Boolean> = emptyMap(),
 )
