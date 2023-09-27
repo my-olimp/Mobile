@@ -66,10 +66,8 @@ fun ExaminationScreen(
                         }
                     ) {
                         viewModel.onEvent(ArticleEvent.OnCheckAnswer(
-                            taskNum = it,
                             taskId = id,
-                            blockId = blockId,
-                            answer = state.value.answers[id]?.answer ?: ""
+                            blockId = blockId
                         ))
                     }
                 }

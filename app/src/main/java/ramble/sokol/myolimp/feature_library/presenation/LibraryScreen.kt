@@ -103,7 +103,7 @@ fun LibraryScreen(
                 ) {
                     items(state.value.articles) { article ->
                         LibraryItem(
-                            type = article.type,
+                           // type = article.type,
                             subject = article.subject,
                             title = article.title,
                         )
