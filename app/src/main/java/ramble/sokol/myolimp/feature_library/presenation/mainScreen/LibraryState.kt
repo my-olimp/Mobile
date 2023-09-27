@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation
+package ramble.sokol.myolimp.feature_library.presenation.mainScreen
 
 import ramble.sokol.myolimp.feature_library.domain.models.ArticleModel
 

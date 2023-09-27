@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,12 +51,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BlueStart
@@ -62,7 +62,6 @@ import ramble.sokol.myolimp.ui.theme.CalendarFocusedText
 import ramble.sokol.myolimp.ui.theme.CalendarUnFocusedText
 import ramble.sokol.myolimp.ui.theme.CheckboxUnselectedColor
 import ramble.sokol.myolimp.ui.theme.CloseIconColor
-import ramble.sokol.myolimp.ui.theme.ErrorAccent
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.MainBackground
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
@@ -71,11 +70,51 @@ import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
 
-//@Preview
-//@Composable
-//fun PrevSearchTextField() {
-//    SearchTextField(Modifier, {}, {})
-//}
+
+@Composable
+fun LibrarySearchBar(
+    onSearchTextChanged: (String) -> Unit,
+    onShowFilterBottomSheet: () -> Unit,
+    onShowFavourites: (Boolean) -> Unit,
+    isFilterActive: Boolean = false,
+    isFavoriteActive: Boolean = false
+) {
+    Row(
+        modifier = Modifier
+            .height(intrinsicSize = IntrinsicSize.Max)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        SearchTextField(
+            modifier = Modifier
+                .weight(0.68f),
+            onTextChanged = onSearchTextChanged,
+            onCancelSearching = { onSearchTextChanged("") }
+        )
+        Spacer(modifier = Modifier.fillMaxWidth(0.01f))
+        FilterIcon(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(0.15f)
+                .padding(top = 8.dp)
+                .clip(RoundedCornerShape(8.dp)), //try remove
+            onClick = onShowFilterBottomSheet,
+            isActive = isFilterActive
+        )
+        Spacer(modifier = Modifier.fillMaxWidth(0.01f))
+        FavoriteIcon(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(0.15f)
+                .padding(top = 8.dp)
+                .clip(RoundedCornerShape(8.dp)), //try remove
+            onClick = { onShowFavourites(!isFavoriteActive) },
+            isActive = isFavoriteActive
+        )
+    }
+}
 
 @Composable
 fun SearchTextField(
@@ -326,15 +365,16 @@ fun LibrarySubtitleText(
     )
 }
 
-@Preview(showBackground = true)
 @Composable
 fun SubjectsPickerBottomSheet(
-    subjectsMap: Map<String, Boolean> = mapOf("Инф" to true, "Мат" to false, "Физ" to false),
-    onEvent: (LibraryEvent) -> Unit = {},
-    onHideSheet: () -> Unit = {},
+    subjectsMap: Map<String, Boolean>,
+    onEvent: (LibraryEvent) -> Unit,
+    onHideSheet: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp).fillMaxSize()
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 32.dp)
+            .fillMaxSize()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

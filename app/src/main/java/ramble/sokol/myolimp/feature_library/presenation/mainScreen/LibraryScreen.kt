@@ -1,17 +1,12 @@
-package ramble.sokol.myolimp.feature_library.presenation
+package ramble.sokol.myolimp.feature_library.presenation.mainScreen
 
-import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,11 +17,11 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -34,6 +29,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_library.presenation.LibraryBox
+import ramble.sokol.myolimp.feature_library.presenation.LibraryItem
+import ramble.sokol.myolimp.feature_library.presenation.LibrarySearchBar
+import ramble.sokol.myolimp.feature_library.presenation.SubjectsPickerBottomSheet
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
 
@@ -41,7 +40,7 @@ import ramble.sokol.myolimp.ui.theme.MainPageBlue
 @Destination
 @Composable
 fun LibraryScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     val viewModel = getViewModel<LibraryViewModel>()
     val state = viewModel.state.collectAsState()
@@ -72,47 +71,17 @@ fun LibraryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Row(
-                    modifier = Modifier
-                        .height(intrinsicSize = IntrinsicSize.Max)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    SearchTextField(
-                        modifier = Modifier
-                            .weight(0.68f),
-                        onTextChanged = {
-                            viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
-                        },
-                        onCancelSearching = {
-                            viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
-                        }
-                    )
-                    Spacer(modifier = Modifier.fillMaxWidth(0.01f))
-                    FilterIcon(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.15f)
-                            .padding(top = 8.dp)
-                            .clip(RoundedCornerShape(8.dp)), //try remove
-                        onClick = { coroutineScope.launch { modalSheetState.show() } },
-                        isActive = state.value.filteredSubjects != emptyList<String>()
-                    )
-                    Spacer(modifier = Modifier.fillMaxWidth(0.01f))
-                    FavoriteIcon(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.15f)
-                            .padding(top = 8.dp)
-                            .clip(RoundedCornerShape(8.dp)), //try remove
-                        onClick = {
-                            viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-                        },
-                        isActive = state.value.isShowingFavourites
-                    )
-                }
+                LibrarySearchBar(
+                    onSearchTextChanged = { newValue ->
+                        viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(newValue))
+                    },
+                    onShowFavourites = { newValue ->
+                        viewModel.onEvent(LibraryEvent.OnShowFavourites(newValue))
+                    },
+                    onShowFilterBottomSheet = { coroutineScope.launch { modalSheetState.show() } },
+                    isFilterActive = state.value.filteredSubjects != emptyList<String>(),
+                    isFavoriteActive = state.value.isShowingFavourites
+                )
                 Spacer(modifier = Modifier.height(12.dp))
                 LazyColumn(
                     modifier = Modifier

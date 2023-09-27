@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation
+package ramble.sokol.myolimp.feature_library.presenation.mainScreen
 
 sealed interface LibraryEvent {
     data class OnSearchQueryUpdated(val query: String): LibraryEvent
