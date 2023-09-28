@@ -10,6 +10,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -19,15 +20,21 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
+import ramble.sokol.myolimp.feature_authentication.data.models.City
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.School
 import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
 import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.COOKIES
+import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
@@ -56,6 +63,10 @@ class ProfileViewModel (
     private val _state = MutableStateFlow(
         ProfileState()
     )
+
+    private val _educationState = MutableStateFlow(ProfileEducationState())
+
+    val educationState = _educationState.asStateFlow()
 
     val state = combine(_state, _user) { state, user ->
         state.copy(
@@ -95,9 +106,9 @@ class ProfileViewModel (
                     accountType = _user.first().accountType,
                     snils = _user.first().snils,
                     gender = _user.first().gender,
-//                    region = _user.first().region,
-//                    city = _user.first().city,
-//                    school = _user.first().school,
+                    region = _user.first().region,
+                    city = _user.first().city,
+                    school = _user.first().school,
                     phone = _user.first().phone,
                     email = _user.first().email,
                     grade = _user.first().grade,
@@ -188,14 +199,32 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnSave -> {
-                if (isValidData()) {
-                    viewModelScope.launch {
-                        updateUserData()
+                when(event.sheetName) {
+                    "e" -> {
+                        if(isValidData()) {
+                            _state.update {
+                                it.copy(
+                                    region = educationState.value.region,
+                                    city = educationState.value.city,
+                                    school = educationState.value.school,
+                                    grade = educationState.value.grade
+                                )
+                            }
+                            viewModelScope.launch {
+                                updateUserData()
+                            }
+                        } else Log.i(TAG,"education data isnt valid")
                     }
-                    SheetRouter.navigateTo(SheetNavigation.Empty())
-                } else {
-                    Log.i(TAG, "data is not valid")
+                    "s" -> {
+                        if(isSnilsValid()) {
+                            viewModelScope.launch {
+                                updateUserData()
+                            }
+                        } else Log.i(TAG,"snils isnt valid")
+                    }
+                    else -> Log.i(TAG,"on save with unknown symbol")
                 }
+                SheetRouter.navigateTo(SheetNavigation.Empty())
             }
 
             is ProfileEvent.OnPersonalInfoSave -> {
@@ -220,7 +249,7 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnRegionChanged -> {
-                _state.update {
+                _educationState.update {
                     it.copy(
                         region = event.region,
                         regionError = false
@@ -233,7 +262,7 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnCityChanged -> {
-                _state.update {
+                _educationState.update {
                     it.copy(
                         city = event.city,
                         cityError = false
@@ -242,7 +271,7 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnSchoolChanged -> {
-                _state.update {
+                _educationState.update {
                     it.copy(
                         school = event.school,
                         schoolError = false
@@ -251,7 +280,7 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnGradeChanged -> {
-                _state.update {
+                _educationState.update {
                     it.copy(
                         grade = event.grade,
                         gradeError = false
@@ -302,29 +331,16 @@ class ProfileViewModel (
             
             is ProfileEvent.OnAttachSheet -> {
                 updateMenus()
-//                with(state.value) {
-//                    _educationState.update {
-//                        it.copy(
-//                            region = this.region,
-//                            city = this.city,
-//                            school = this.school,
-//                            grade = this.grade
-//                        )
-//                    }
-//                }
-            }
-
-            is ProfileEvent.OnCancelSheet -> {
-//                with(educationState.value) {
-//                    _state.update {
-//                        it.copy(
-//                            region = this.region,
-//                            city = this.city,
-//                            school = this.school,
-//                            grade = this.grade
-//                        )
-//                    }
-//                }
+                with(state.value) {
+                    _educationState.update {
+                        it.copy(
+                            region = this.region ?: Region(),
+                            city = this.city ?: City(),
+                            school = this.school ?: School(),
+                            grade = this.grade ?: 0
+                        )
+                    }
+                }
             }
         }
     }
@@ -378,8 +394,8 @@ class ProfileViewModel (
 
     private suspend fun updateUserData() {
         try {
-            val user = LocalUserModel(
-                id = state.value.id ?: throw Exception("no user id"),
+            val user = RequestUserModel(
+                id = state.value.id?.toInt() ?: throw Exception("no user id"),
                 firstName = _state.value.firstName,
                 secondName = _state.value.secondName,
                 thirdName = state.value.thirdName,
@@ -388,9 +404,9 @@ class ProfileViewModel (
                 accountType = _state.value.accountType,
                 gender = _state.value.gender,
                 snils = _state.value.snils,
-                region = _state.value.region,
-                school = _state.value.school,
-                city = _state.value.city,
+                regionId = _state.value.region?.number,
+                schoolId = _state.value.school?.id,
+                cityId = _state.value.city?.id,
                 phone = _state.value.phone,
                 grade = _state.value.grade,
             )
@@ -404,7 +420,10 @@ class ProfileViewModel (
             Log.i(TAG, "response - ${response.body()}")
 
             if (response.body() != null) {
-                userRepository.updateUser(response.body() ?: throw Exception("empty user body"))
+                val responseModel: ResponseUserModel? = response.body()
+                userRepository.updateUser(responseModel?.toLocalUserModel()
+                    ?: throw Exception("empty response user model")
+                )
             }
 
         } catch (ex: Exception) {
@@ -450,7 +469,7 @@ class ProfileViewModel (
                     onResult = { list ->
                         Log.i(TAG, "response region list: $list")
                         if (list != null) {
-                            _state.update {
+                            _educationState.update {
                                 it.copy(regionList = list.asListRegion())
                             }
                         }
@@ -471,12 +490,11 @@ class ProfileViewModel (
                 repository.getCities(
                     auth = dataStore.getToken(ACCESS_TOKEN).first()
                         ?: throw Exception("no access token"),
-                    regionId = state.value.region?.number
-                        ?: throw Exception("null region"),
+                    regionId = educationState.value.region.number,
                     onResult = { list ->
                         Log.i(TAG, "response city list: $list")
                         if (list != null) {
-                            _state.update {
+                            _educationState.update {
                                 it.copy(cityList = list.asListCity())
                             }
                         }
@@ -497,12 +515,11 @@ class ProfileViewModel (
                 repository.getSchools(
                     auth = dataStore.getToken(ACCESS_TOKEN).first()
                         ?: throw Exception("no access token"),
-                    regionId = state.value.region?.number
-                        ?: throw Exception("null region"),
+                    regionId = educationState.value.region.number,
                     onResult = { list ->
                         Log.i(TAG, "response school list: $list")
                         if (list != null) {
-                            _state.update {
+                            _educationState.update {
                                 it.copy(schoolList = list.asListSchool())
                             }
                         }
@@ -521,27 +538,42 @@ class ProfileViewModel (
 
         var isValid = true
 
-        with(state.value) {
+        with(educationState.value) {
             if (this.regionList.find { it == this.region } == null) {
                 isValid = false
-                _state.update { it.copy(regionError = true) }
+                _educationState.update { it.copy(regionError = true) }
             }
             if (this.cityList.find { it == this.city } == null) {
                 isValid = false
-                _state.update { it.copy(cityError = true) }
+                _educationState.update { it.copy(cityError = true) }
             }
             if (this.schoolList.find { it == this.school } == null) {
                 isValid = false
-                _state.update { it.copy(schoolError = true) }
+                _educationState.update { it.copy(schoolError = true) }
             }
             if (this.grade == 0) {
                 isValid = false
-                _state.update { it.copy(gradeError = true) }
+                _educationState.update { it.copy(gradeError = true) }
             }
-            if (snils != null && snils.length != 11 || snils != null && !snils.isDigitsOnly()) {
-                isValid = false
-                _state.update { it.copy(snilsError = true) }
+        }
+
+        return isValid
+    }
+
+    private fun isSnilsValid(): Boolean{
+
+        var isValid = true
+
+        if(state.value.snils != null) {
+            state.value.snils?.let {
+                if(it.length != 11 && !it.isDigitsOnly()) {
+                    isValid = false
+                    _state.update { state -> state.copy(snilsError = true) }
+                }
             }
+        } else {
+            isValid = false
+            _state.update { state -> state.copy(snilsError = true) }
         }
 
         return isValid
@@ -559,7 +591,7 @@ class ProfileViewModel (
     }
 
     private fun refreshErrors() {
-        _state.update {
+        _educationState.update {
             it.copy(
                 regionError = false,
                 cityError = false,

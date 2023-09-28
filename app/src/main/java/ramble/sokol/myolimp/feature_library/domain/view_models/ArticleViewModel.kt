@@ -66,7 +66,7 @@ class ArticleViewModel: ViewModel() {
                 repository.extractArticleById(
                     auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
                         ?: throw Exception("No access token"),
-                    id = id /*TODO replace this*/,
+                    id = id,
                     onResult = { article ->
                         Log.i(TAG, "response article is : $article")
                         if (article != null) {

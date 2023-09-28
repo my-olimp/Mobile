@@ -25,19 +25,10 @@ data class ProfileState (
     val hasThird: Boolean = true,
     val accountType: String? = null,
 
-    val regionList: List<Region> = listOf(),
-    val cityList: List<City> = listOf(),
-    val schoolList: List<School> = listOf(),
 
     val firstNameError: Boolean = false,
     val secondNameError: Boolean = false,
     val thirdNameError: Boolean = false,
     val dobError: Boolean = false,
     val snilsError: Boolean = false,
-
-    val regionError: Boolean = false,
-    val cityError: Boolean = false,
-    val schoolError: Boolean = false,
-    val gradeError: Boolean = false,
-
     )

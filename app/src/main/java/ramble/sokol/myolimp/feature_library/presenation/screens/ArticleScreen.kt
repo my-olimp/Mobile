@@ -161,8 +161,8 @@ fun ArticleScreen(
             HorizontalLine()
             /*              select parts               */
             if(state.value.article.blocks.isNotEmpty()) {
-                when {
-                    state.value.article.blocks[partState].type == "p" -> {
+                when (state.value.article.blocks[partState].type) {
+                    "p" -> {
                         ExaminationScreen(
                             viewModel = viewModel,
                             blockId = partState
