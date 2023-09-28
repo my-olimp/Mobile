@@ -135,7 +135,7 @@ fun ProfileDataScreen(
                         .align(CenterHorizontally)
                         .clip(CircleShape),
 //                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
-                    model = state.value.profileImg ?: R.drawable.ic_default_img,
+                    model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -264,7 +264,9 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.gender),
-                    content = state.value.gender ?: "Loading"
+                    content = if (state.value.gender == "m" ) stringResource(R.string.man_gender) else stringResource(
+                        R.string.women_gender
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

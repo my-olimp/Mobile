@@ -185,5 +185,7 @@
     <string name="library_articles_title">Статьи</string>
     <string name="learn_more">подробнее</string>
     <string name="button_show_text">Показать</string>
+    <string name="man_gender">Мужской</string>
+    <string name="women_gender">Женский</string>
 
 </resources>
