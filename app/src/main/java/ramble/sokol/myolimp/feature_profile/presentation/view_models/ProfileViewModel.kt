@@ -424,6 +424,27 @@ class ProfileViewModel (
                 userRepository.updateUser(responseModel?.toLocalUserModel()
                     ?: throw Exception("empty response user model")
                 )
+                with(responseModel) {
+                    _state.update { state ->
+                        state.copy(
+                            id = id.toString(),
+                            firstName = firstName,
+                            secondName = secondName,
+                            thirdName = thirdName,
+                            dateOfBirth = dateOfBirth,
+                            gender = gender,
+                            snils = snils,
+                            region = region?.asRegion(),
+                            school = school?.asSchool(),
+                            city = city?.asCity(),
+                            phone = phone,
+                            email = email,
+                            grade = grade,
+                            accountType = accountType,
+                            profileImg = profileImg
+                        )
+                    }
+                }
             }
 
         } catch (ex: Exception) {
