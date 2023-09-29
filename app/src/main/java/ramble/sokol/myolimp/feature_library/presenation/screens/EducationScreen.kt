@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
@@ -119,5 +120,19 @@ fun EducationScreen(
                 taskText = "Задача 2. (МГУ, социологич. ф-т, 2004 ) Решите уравнение:\nx3 + 9x2 + 18x − 2(x 2 + 9x) − 36\n √ x + 3 \nРешение:\n Если поддаться искушению раскрыть скобки и привести подобные слагаемые (тем более что сократится 18x), то в возникшем кубическом уравнении придётся подбирать корень с целью разложить левую часть на множители. Данная процедура описана в следующем пункте и не представляет здесь никаких сложностей, однако необходимости в ней сейчас нет. Дело в том, что несколько вычурная запись условия содержит подсказку, как именно надо группировать слагаемые. Имеем: \nx3 + 9x2 + 18x − 2(x2 + 9x) − 36 = x(x2 + 9x) − 2(x2 + 9x) + 18x − 36 = (x 2 + 9x)(x − 2) + 18(x − 2) = (x − 2)(x2 + 9x + 18) = (x − 2)(x + 3)(x + 6).\nНаше уравнение, таким образом, равносильно системе\n (x − 2)(x + 3)(x + 6) = 0, \n x + 3 > 0, \nрешением которой служит x = 2.\nОтвет: 2. "
             )
         }
+
+        // Custom View
+        Text(text = "\\E = mc^2")
     }
+}
+
+@Composable
+fun RenderLatex(latex: String) {
+    val annotatedString = buildAnnotatedString {
+        append("$$")
+        append(latex)
+        append("$$")
+    }
+
+    Text(text = annotatedString)
 }
