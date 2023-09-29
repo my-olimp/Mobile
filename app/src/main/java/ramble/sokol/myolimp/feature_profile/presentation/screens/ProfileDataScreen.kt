@@ -376,9 +376,7 @@ fun ProfileDataScreen(
         sheetState = sheetState,
         isCenter = isCenter,
         name = sheetName,
-        onDetach = {
-            viewModel.onEvent(ProfileEvent.OnCancelSheet)
-        }
+
     ) {
         Crossfade(targetState = SheetRouter.currentSheet, label = "") {
             when (it.value) {

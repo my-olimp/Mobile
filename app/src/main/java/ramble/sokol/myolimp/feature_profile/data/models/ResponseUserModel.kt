@@ -4,9 +4,10 @@ import com.google.gson.annotations.SerializedName
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 
 data class ResponseUserModel(
-    @SerializedName("id") val id: String? = null,
+    @SerializedName("id") val id: Int? = null,
     @SerializedName("first_name") val firstName: String? = null,
     @SerializedName("second_name") val secondName: String? = null,
     @SerializedName("third_name") val thirdName: String? = null,
@@ -21,4 +22,22 @@ data class ResponseUserModel(
     @SerializedName("grade") val grade: Int? = null,
     @SerializedName("account_type") val accountType: String? = null,
     @SerializedName("image") val profileImg: String? = null
-)
+) {
+    fun toLocalUserModel() = LocalUserModel(
+        id = id.toString(),
+        firstName = firstName,
+        secondName = secondName,
+        thirdName = thirdName,
+        dateOfBirth = dateOfBirth,
+        gender = gender,
+        snils = snils,
+        phone = phone,
+        email = email,
+        grade = grade,
+        accountType = accountType,
+        profileImg = profileImg,
+        region = region?.asRegion(),
+        city = city?.asCity(),
+        school = school?.asSchool()
+    )
+}

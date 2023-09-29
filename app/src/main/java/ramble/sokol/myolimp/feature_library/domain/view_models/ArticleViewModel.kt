@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_library.data.models.RequestAnswerModel
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
@@ -35,34 +36,7 @@ class ArticleViewModel: ViewModel() {
     ) {
         when(event) {
             is ArticleEvent.OnCheckAnswer -> {
-                when(event.answer == state.value.article.blocks[event.blockId].questions[event.taskNum].answer) {
-                    true -> {
-                        val map = state.value.answers
-                        map[event.taskId]?.let {
-                            it.isError = false
-                            it.isSuccess = true
-                        }
-                        _state.update {
-                            it.copy(
-                                answers = map,
-                                status = !state.value.status
-                            )
-                        }
-                    }
-                    false -> {
-                        val map = state.value.answers
-                        map[event.taskId]?.let {
-                            it.isError = true
-                            it.isSuccess = false
-                        }
-                        _state.update {
-                            it.copy(
-                                answers = map,
-                                status = !state.value.status
-                            )
-                        }
-                    }
-                }
+                    checkAnswer(taskId = event.taskId, blockId = event.blockId )
             }
             is ArticleEvent.OnAnswerTyped -> {
                 val map = state.value.answers
@@ -92,7 +66,7 @@ class ArticleViewModel: ViewModel() {
                 repository.extractArticleById(
                     auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
                         ?: throw Exception("No access token"),
-                    id = id /*TODO replace this*/,
+                    id = id,
                     onResult = { article ->
                         Log.i(TAG, "response article is : $article")
                         if (article != null) {
@@ -108,6 +82,58 @@ class ArticleViewModel: ViewModel() {
                 )
             } catch (e: Exception) {
                 Log.i(TAG,"request isn't sent with ${e.message}")
+            }
+        }
+    }
+
+    private fun checkAnswer(taskId: Int,blockId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.checkAnswer(
+                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
+                    id = blockId,
+                    body = RequestAnswerModel(
+                        id = taskId,
+                        answer = state.value.answers[taskId]?.answer ?: ""
+                    ),
+                    onResult = {
+                        Log.i(TAG,"response body $it")
+                        if(it != null) {
+                            val map = state.value.answers
+                            when(it.isCorrect) {
+                                false -> {
+                                    map[taskId]?.let { taskState ->
+                                        taskState.isError = true
+                                        taskState.isSuccess = false
+                                    }
+                                    _state.update { state ->
+                                        state.copy(
+                                            answers = map,
+                                            status = !state.status
+                                        )
+                                    }
+                                }
+                                true -> {
+                                    map[taskId]?.let { taskState ->
+                                        taskState.isError = false
+                                        taskState.isSuccess = true
+                                    }
+                                    _state.update { state ->
+                                        state.copy(
+                                            answers = map,
+                                            status = !state.status
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    onError = {
+                        Log.i(TAG,"response error ${it.message}")
+                    }
+                )
+            } catch(e: Exception) {
+                Log.i(TAG,"request cast ${e.message}")
             }
         }
     }

@@ -29,7 +29,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 fun EditEducationSheet (
     viewModel: ProfileViewModel
 ) {
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.educationState.collectAsState()
     val isUpdated = remember {
         mutableStateOf(false)
     }
@@ -49,7 +49,7 @@ fun EditEducationSheet (
             options = state.value.regionList.toListString().ifEmpty {
                 stringArrayResource(id = R.array.region).toList()
             },
-            previousData = state.value.region?.name ?: "Loading",
+            previousData = state.value.region.name,
             label = stringResource(R.string.region_profile),
             isError = state.value.regionError,
             errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region_profile)
@@ -112,7 +112,7 @@ fun EditEducationSheet (
             text = stringResource(id = R.string.save),
             padding = 0.dp
         ) {
-            viewModel.onEvent(ProfileEvent.OnSave)
+            viewModel.onEvent(ProfileEvent.OnSave("e"))
         }
     }
 }

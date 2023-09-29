@@ -52,7 +52,7 @@ fun EditContactsSheet (
             text = stringResource(id = R.string.save),
             padding = 0.dp
         ) {
-            viewModel.onEvent(ProfileEvent.OnSave)
+            viewModel.onEvent(ProfileEvent.OnSave("s"))
         }
     }
 }
