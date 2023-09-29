@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
@@ -30,12 +32,20 @@ fun EditEducationSheet (
     viewModel: ProfileViewModel
 ) {
     val state = viewModel.educationState.collectAsState()
-    val isUpdated = remember {
+
+    var isLoaded by remember {
         mutableStateOf(false)
     }
-    if(!isUpdated.value){
-        viewModel.onEvent(ProfileEvent.OnAttachSheet)
-        isUpdated.value = true
+    if(!isLoaded) {
+        when {
+            state.value.region != Region() -> {
+                viewModel.onEvent(ProfileEvent.OnEducationSheetAttach(state.value.region))
+            }
+            state.value.regionList.isEmpty() && state.value.region == Region() -> viewModel.onEvent(
+                ProfileEvent.OnEducationSheetAttach(state.value.region)
+            )
+        }
+        isLoaded = true
     }
 
     Column(

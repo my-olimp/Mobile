@@ -14,8 +14,7 @@ sealed class ProfileEvent {
     data class OnImgSave(val file: File, val bitmap: Bitmap): ProfileEvent()
     data object OnImgDelete: ProfileEvent()
 
-    data object OnAttachSheet: ProfileEvent()
-
+    data class OnEducationSheetAttach(val region: Region) : ProfileEvent()
 
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()
