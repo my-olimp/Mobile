@@ -97,8 +97,9 @@ fun ProfileScreen(
                         .size(95.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(CircleShape),
-                    model = if (state.value.profileImg != null) state.value.profileImg
-                            else R.drawable.ic_default_img,
+//                    model = if (state.value.profileImg != null) state.value.profileImg
+//                            else R.drawable.ic_default_img,
+                    model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )

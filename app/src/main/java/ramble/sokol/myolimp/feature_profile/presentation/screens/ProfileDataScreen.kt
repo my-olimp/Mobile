@@ -151,8 +151,6 @@ fun ProfileDataScreen(
                     }
 
                     ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-//                        TODO
-//                        selectedImgUri = null
                         viewModel.onEvent(ProfileEvent.OnImgDelete)
                     }
                 }
