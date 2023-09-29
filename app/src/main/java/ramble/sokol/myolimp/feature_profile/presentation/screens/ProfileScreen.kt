@@ -40,6 +40,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -96,8 +97,9 @@ fun ProfileScreen(
                         .size(95.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(CircleShape),
-                    model = if (state.value.profileImg != null) state.value.profileImg
-                            else R.drawable.ic_default_img,
+//                    model = if (state.value.profileImg != null) state.value.profileImg
+//                            else R.drawable.ic_default_img,
+                    model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -179,6 +181,7 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_progress),
                     content = stringResource(R.string.profile_progress_content)
                 ) {
+                    navController.navigate(RegisterSubjectsScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 

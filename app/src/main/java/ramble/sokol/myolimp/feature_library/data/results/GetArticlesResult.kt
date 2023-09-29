@@ -8,5 +8,6 @@ data class GetArticlesResult(
     val currentPage: Int,
     @SerializedName("page_count")
     val pageCount: Int,
+    @SerializedName("pages")
     val articles: List<ArticleEntity>
 )

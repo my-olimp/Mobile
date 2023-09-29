@@ -26,6 +26,8 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryViewModel
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 
 @Destination

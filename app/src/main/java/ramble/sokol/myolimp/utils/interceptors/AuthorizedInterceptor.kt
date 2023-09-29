@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.utils.interceptors
 
+import android.os.Looper
 import android.util.Log
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -39,43 +40,57 @@ class AuthorizedInterceptor : Interceptor {
         Log.i(TAG, "response code - ${response.code}")
 
         if (response.code >= 400) {
-            return runBlocking {
+            // to close previous
+            response.close()
 
-                // to close previous
-                response.close()
+            Log.i(TAG, "update token")
 
-                Log.i(TAG, "update token")
+            val token = getRefreshToken()
 
-                val token = getRefreshToken()
+            Log.i(TAG, "refresh - $token")
 
-                Log.i(TAG, "refresh - $token")
+            runBlocking {
 
-                val response = ProfileRepository().refreshToken(
+                val currentThread = Thread.currentThread()
+                if (currentThread == Looper.getMainLooper().thread) {
+                    Log.i(TAG, "Coroutine is running on the main thread")
+                } else {
+                    Log.i(TAG, "Coroutine is running on a background thread: ${currentThread.name}")
+                }
+
+                val result = ProfileRepository().refreshToken(
                     cookie = token ?: throw Exception("no cookie")
                 )
 
-                Log.i(TAG, "new refresh body - ${response.body()}")
+                Log.i(TAG, "new refresh body - ${result.body()}")
 
-                val accessToken = response.body()?.code
+                val access = result.body()?.code
 
                 saveAccess(
-                    accessToken ?: throw AuthorizedException()
+                    access ?: throw AuthorizedException()
                 )
 
-                Log.i(TAG, "newToken - $accessToken")
+                Log.i(TAG, "newToken - $access")
 
                 requestBuilder = originalRequest.newBuilder()
-                    .header("Authorization", "Bearer $accessToken")
+                    .header("Authorization", "Bearer $access")
 
-                return@runBlocking chain.proceed(requestBuilder.build())
             }
+
+            Log.i(TAG, "returning 2")
+
+            return chain.proceed(requestBuilder.build())
+
         }
+
+        Log.i(TAG, "returning 1")
+
         return response
     }
 
     private fun getAccessToken() : String?
         = runBlocking {
-        return@runBlocking CodeDataStore().getToken(ACCESS_TOKEN).first<String?>()
+            return@runBlocking CodeDataStore().getToken(ACCESS_TOKEN).first<String?>()
     }
 
     private fun saveAccess(

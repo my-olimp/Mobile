@@ -2,7 +2,6 @@ package ramble.sokol.myolimp.feature_profile.data.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import ramble.sokol.myolimp.feature_profile.data.Constants
 import ramble.sokol.myolimp.feature_profile.data.Constants.BASE_URL
 import ramble.sokol.myolimp.utils.interceptors.NetworkConnectionInterceptor
 import ramble.sokol.myolimp.utils.interceptors.ReceivedCookiesInterceptor

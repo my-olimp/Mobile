@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.utils.converters.Converters
 
 @Database(
     entities = [LocalUserModel::class],
-    version = 4,
+    version = 8,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class UserDatabase : RoomDatabase() {
 
     abstract fun getUserDao() : UserDao
@@ -35,5 +38,4 @@ abstract class UserDatabase : RoomDatabase() {
             .build()
 
     }
-
 }
