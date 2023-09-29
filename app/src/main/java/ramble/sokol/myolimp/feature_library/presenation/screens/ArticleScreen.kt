@@ -159,6 +159,7 @@ fun ArticleScreen(
             }
 
             HorizontalLine()
+
             /*              select parts               */
             if(state.value.article.blocks.isNotEmpty()) {
                 when (state.value.article.blocks[partState].type) {
@@ -169,11 +170,11 @@ fun ArticleScreen(
                         )
                     }
                     /*TODO на будущее поменять*/else -> {
-                    EducationScreen(
-                        viewModel = viewModel,
-                        blockId = partState
-                    )
-                }
+                        EducationScreen(
+                            viewModel = viewModel,
+                            blockId = partState
+                        )
+                    }
                 }
             }
         }
