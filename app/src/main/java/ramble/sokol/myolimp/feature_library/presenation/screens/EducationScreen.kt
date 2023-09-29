@@ -86,13 +86,9 @@ fun EducationScreen(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                for (i in 0..10) {
-                    SubjectItem(subjectText = "subject $i")
-                }
-                //back has no tags :)
-                /*state.value.article.tags.forEach {
+                state.value.article.tags.forEach {
                     SubjectItem(subjectText = it)
-                }*/
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
