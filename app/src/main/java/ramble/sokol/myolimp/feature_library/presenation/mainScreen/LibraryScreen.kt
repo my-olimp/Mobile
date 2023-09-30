@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_library.presenation.mainScreen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +33,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.feature_library.presenation.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.LibraryItem
-import ramble.sokol.myolimp.feature_library.presenation.LibrarySearchBar
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibrarySearchBar
 import ramble.sokol.myolimp.feature_library.presenation.SubjectsPickerBottomSheet
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.MainPageBlue

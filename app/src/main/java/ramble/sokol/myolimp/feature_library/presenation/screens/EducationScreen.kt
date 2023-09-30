@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
-import ramble.sokol.myolimp.feature_library.presenation.components.EducationTask
-import ramble.sokol.myolimp.feature_library.presenation.components.SubjectItem
+import ramble.sokol.myolimp.feature_library.presenation.components.article.EducationTask
+import ramble.sokol.myolimp.feature_library.presenation.components.article.SubjectItem
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
