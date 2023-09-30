@@ -3,7 +3,6 @@ package ramble.sokol.myolimp.feature_main.presenation.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,11 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -26,15 +23,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -52,11 +46,11 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cre
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.feature_main.data.models.AdviceArticle
+import ramble.sokol.myolimp.feature_main.data.models.OlympiadModel
 import ramble.sokol.myolimp.feature_main.presenation.components.CompletedPlanItem
+import ramble.sokol.myolimp.feature_main.presenation.components.OlympiadItem
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.MainBackground
-import ramble.sokol.myolimp.ui.theme.MainPageBlue
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
@@ -75,8 +69,7 @@ fun HomeScreen(
     }
 
     val fragments = getFragments()
-
-    val scroll = rememberScrollState()
+    val olympiads= getOlympiads()
 
     BottomBarTheme(
         navController = navController
@@ -88,6 +81,35 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+
+            // Olympiads
+            LibraryBox(
+                title = "Ближайшие олимпиады",
+                action = "",
+                onActionClicked = {
+                    // update destination
+                    navController.navigate(LibraryScreenDestination) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    items(olympiads) {
+                        OlympiadItem(item = it)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -243,6 +265,38 @@ private fun getFragments() : List<AdviceArticle> {
             type = stringResource(R.string.test),
             subject = stringResource(R.string.math),
             title = "Уравнения высших порядков"
+        )
+    )
+
+    return items
+}
+
+@Composable
+private fun getOlympiads() : List<OlympiadModel> {
+
+    val items = mutableListOf<OlympiadModel>()
+
+    items.add(
+        OlympiadModel(
+            name = "Региональный этап ВСОШ по математике",
+            icon = R.drawable.ic_home_olympiad_vshe,
+            time = "Завтра"
+        )
+    )
+
+    items.add(
+        OlympiadModel(
+            name = "Заключительный этап Высшей Пробы по математике",
+            icon = R.drawable.ic_home_olympiad_vshe,
+            time = "15 марта"
+        )
+    )
+
+    items.add(
+        OlympiadModel(
+            name = "Заключительный этап ВСОШ по математике",
+            icon = R.drawable.ic_home_olympiad_vshe,
+            time = "18 апреля"
         )
     )
 
