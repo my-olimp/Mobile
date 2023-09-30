@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_library.data.repository
 
+import android.graphics.pdf.PdfDocument.Page
 import org.json.JSONArray
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_library.data.remote.LibraryAPI
@@ -12,11 +13,31 @@ class LibraryRepositoryImpl(val database: UserDatabase) {
     private val libraryInstance = RetrofitBuilder().instance(LibraryAPI::class.java)
 
     suspend fun getArticles(
-        auth: String
-    ): List<ArticleModel> {
-        return libraryInstance.getArticles(auth).articles.map { articleEntity ->
-            articleEntity.toArticleModel()
+        page: Int,
+        query: String,
+        isShowFavourites: Boolean,
+        onSuccess: (List<ArticleModel>) -> Unit,
+        onError: (String?) -> Unit
+    ) {
+
+        val result = libraryInstance.getArticles(
+            page = page,
+            love = if (isShowFavourites) 1 else 0,
+            query = query
+        )
+
+        if (result.isSuccessful && result.body() != null) {
+
+            onSuccess(result?.body()?.articles?.map {
+                it.toArticleModel()
+            } ?: emptyList())
+
+        } else {
+
+            onError(result.message())
+
         }
+
     }
 
     suspend fun getUserSubjects(): List<String> {

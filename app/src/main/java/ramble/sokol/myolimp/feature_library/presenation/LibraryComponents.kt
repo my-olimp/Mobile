@@ -82,8 +82,7 @@ fun LibrarySearchBar(
     Row(
         modifier = Modifier
             .height(intrinsicSize = IntrinsicSize.Max)
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom
     ) {
