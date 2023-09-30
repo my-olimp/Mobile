@@ -1,5 +1,7 @@
 package ramble.sokol.myolimp.feature_library.presenation.screens
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
@@ -52,6 +56,8 @@ fun ArticleScreen(
     var partState by remember {
         mutableIntStateOf(0)
     }
+
+    Latex()
 
     OlimpTheme {
         Column(
@@ -177,6 +183,51 @@ fun ArticleScreen(
                     }
                 }
             }
+
         }
     }
 }
+
+@Composable
+private fun Latex() {
+
+    val context = LocalContext.current
+
+    AndroidView(
+        factory = {
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+            }
+        },
+        update = {webView ->
+            webView.loadData(
+                formatLaTeXHtml(""),
+                "text/html", "utf-8"
+            )
+        }
+    )
+}
+
+private fun formatLaTeXHtml(latex: String): String {
+    return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width">
+          <title>MathJax example</title>
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+          <script id="MathJax-script" async
+                  src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js">
+          </script>
+        </head>
+        <body>
+        <p>
+          When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+          \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]
+        </p>
+        </body>
+        </html>
+    """.trimIndent()
+}
+

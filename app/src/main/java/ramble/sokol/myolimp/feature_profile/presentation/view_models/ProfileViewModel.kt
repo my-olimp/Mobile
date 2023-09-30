@@ -39,7 +39,6 @@ import ramble.sokol.myolimp.feature_profile.domain.states.ProfileState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
-import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import java.io.File
 import java.io.FileOutputStream
 

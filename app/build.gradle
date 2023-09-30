@@ -130,7 +130,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
     // Latex Converter
-//    implementation "io.nano:android-tex:1.0.0"
+//    implementation 'io.github.kexanie.library:KotTeX:0.1.1'
 
     // Instabug
     implementation 'com.instabug.library:instabug:12.1.0'
