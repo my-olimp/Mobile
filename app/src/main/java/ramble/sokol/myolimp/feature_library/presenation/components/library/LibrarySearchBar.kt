@@ -36,7 +36,9 @@ fun LibrarySearchBar(
             onTextChanged = onSearchTextChanged,
             onCancelSearching = { onSearchTextChanged("") }
         )
+
         Spacer(modifier = Modifier.fillMaxWidth(0.01f))
+
         FilterIcon(
             modifier = Modifier
                 .fillMaxHeight()
@@ -46,7 +48,9 @@ fun LibrarySearchBar(
             onClick = onShowFilterBottomSheet,
             isActive = isFilterActive
         )
+
         Spacer(modifier = Modifier.fillMaxWidth(0.01f))
+
         FavoriteIcon(
             modifier = Modifier
                 .fillMaxHeight()

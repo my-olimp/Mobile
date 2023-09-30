@@ -33,6 +33,7 @@ import ramble.sokol.myolimp.ui.theme.CheckboxUnselectedColor
 import ramble.sokol.myolimp.ui.theme.CloseIconColor
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.White
+import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
 
 @Composable
@@ -43,17 +44,18 @@ fun SubjectsPickerBottomSheet(
 ) {
     Column(
         modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 32.dp)
+            .padding(horizontal = 16.dp, vertical = 24.dp)
             .fillMaxSize()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = stringResource(R.string.subject),
-                style = regularType(
+                style = mediumType(
                     color = CalendarUnFocusedText,
                     fontSize = 18.sp
                 ),
