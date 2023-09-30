@@ -117,6 +117,14 @@ class ProfileViewModel (
                     hasThird = _user.first().hasThird,
                 )
             }
+            _educationState.update {
+                it.copy(
+                    region = state.value.region ?: Region(),
+                    city = state.value.city ?: City(),
+                    school = state.value.school ?: School(),
+                    grade = state.value.grade ?: 0
+                )
+            }
 
             Log.i(TAG, "fn - ${_state.value.secondName} - ${state.value.secondName}")
             Log.i(TAG, "fn - ${_state.value.firstName} - ${state.value.firstName}")
@@ -214,6 +222,7 @@ class ProfileViewModel (
                             viewModelScope.launch {
                                 updateUserData()
                             }
+                            SheetRouter.navigateTo(SheetNavigation.Empty())
                         } else Log.i(TAG,"education data isnt valid")
                     }
                     "s" -> {
@@ -221,11 +230,11 @@ class ProfileViewModel (
                             viewModelScope.launch {
                                 updateUserData()
                             }
+                            SheetRouter.navigateTo(SheetNavigation.Empty())
                         } else Log.i(TAG,"snils isnt valid")
                     }
                     else -> Log.i(TAG,"on save with unknown symbol")
                 }
-                SheetRouter.navigateTo(SheetNavigation.Empty())
             }
 
             is ProfileEvent.OnPersonalInfoSave -> {
@@ -328,18 +337,15 @@ class ProfileViewModel (
                 }
             }
 
-            ProfileEvent.OnUploadError -> TODO()
-            
-            is ProfileEvent.OnAttachSheet -> {
-                updateMenus()
-                with(state.value) {
-                    _educationState.update {
-                        it.copy(
-                            region = this.region ?: Region(),
-                            city = this.city ?: City(),
-                            school = this.school ?: School(),
-                            grade = this.grade ?: 0
-                        )
+            is ProfileEvent.OnUploadError -> TODO()
+
+            is ProfileEvent.OnEducationSheetAttach -> {
+                if(event.region == Region())updateRegionsList()
+                else {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        updateRegionsList()
+                        updateCitiesList()
+                        updateSchoolsList()
                     }
                 }
             }
