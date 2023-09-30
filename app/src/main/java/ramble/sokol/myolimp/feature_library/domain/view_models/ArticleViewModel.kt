@@ -30,7 +30,6 @@ class ArticleViewModel: ViewModel() {
     private val _state = MutableStateFlow(ArticleState())
     val state = _state.asStateFlow()
 
-
     fun onEvent(
         event: ArticleEvent
     ) {
@@ -57,84 +56,152 @@ class ArticleViewModel: ViewModel() {
                 }
                 Log.i(TAG,"state updated: ${_state.value.answers[event.taskId]}")
             }
+
+            is ArticleEvent.OnFavourites -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _state.update {
+                        it.copy(
+                            isLoading = true
+                        )
+                    }
+
+                    repository.addToFavourites(
+                        state.value.article.id,
+                        onResult = { result->
+                            Log.i(TAG, "result - $result")
+
+                            if (result != null) {
+                                _state.update {
+                                    it.copy(
+                                        article = it.article.copy(isFavourite = result.isFavourite)
+                                    )
+                                }
+                            } else {
+                                Log.i(TAG, "null body")
+                            }
+
+                            _state.update { state->
+                                state.copy(
+                                    isLoading = false
+                                )
+                            }
+                        },
+                        onError = {
+                            Log.i(TAG, "Error occurred - $it")
+
+                            _state.update { state->
+                                state.copy(
+                                    isLoading = false
+                                )
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 
     fun fetchArticle(id: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.extractArticleById(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
-                        ?: throw Exception("No access token"),
-                    id = id,
-                    onResult = { article ->
-                        Log.i(TAG, "response article is : $article")
-                        if (article != null) {
-                            _state.update {
-                                it.copy(article = article.asArticleModel())
-                            }
-                            Log.i(TAG,"new article model is: ${_state.value.article}")
-                        }
-                    },
-                    onError = {
-                        Log.i(TAG, "response with exception")
-                    }
+            _state.update {
+                it.copy(
+                    isLoading = true
                 )
-            } catch (e: Exception) {
-                Log.i(TAG,"request isn't sent with ${e.message}")
             }
+
+            repository.extractArticleById(
+                id = id,
+                onResult = { article ->
+                    Log.i(TAG, "response article is : $article")
+                    if (article != null) {
+                        _state.update {
+                            it.copy(article = article.asArticleModel())
+                        }
+                        Log.i(TAG,"new article model is: ${_state.value.article}")
+                    }
+
+                    _state.update { state->
+                        state.copy(
+                            isLoading = false
+                        )
+                    }
+                },
+                onError = {
+                    Log.i(TAG, "response with exception")
+
+                    _state.update { state->
+                        state.copy(
+                            isLoading = false
+                        )
+                    }
+                }
+            )
         }
     }
 
     private fun checkAnswer(taskId: Int,blockId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.checkAnswer(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
-                    id = blockId,
-                    body = RequestAnswerModel(
-                        id = taskId,
-                        answer = state.value.answers[taskId]?.answer ?: ""
-                    ),
-                    onResult = {
-                        Log.i(TAG,"response body $it")
-                        if(it != null) {
-                            val map = state.value.answers
-                            when(it.isCorrect) {
-                                false -> {
-                                    map[taskId]?.let { taskState ->
-                                        taskState.isError = true
-                                        taskState.isSuccess = false
-                                    }
-                                    _state.update { state ->
-                                        state.copy(
-                                            answers = map,
-                                            status = !state.status
-                                        )
-                                    }
+            _state.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+            repository.checkAnswer(
+                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
+                id = blockId,
+                body = RequestAnswerModel(
+                    id = taskId,
+                    answer = state.value.answers[taskId]?.answer ?: ""
+                ),
+                onResult = {
+                    Log.i(TAG,"response body $it")
+                    if(it != null) {
+                        val map = state.value.answers
+                        when(it.isCorrect) {
+                            false -> {
+                                map[taskId]?.let { taskState ->
+                                    taskState.isError = true
+                                    taskState.isSuccess = false
                                 }
-                                true -> {
-                                    map[taskId]?.let { taskState ->
-                                        taskState.isError = false
-                                        taskState.isSuccess = true
-                                    }
-                                    _state.update { state ->
-                                        state.copy(
-                                            answers = map,
-                                            status = !state.status
-                                        )
-                                    }
+                                _state.update { state ->
+                                    state.copy(
+                                        answers = map,
+                                        status = !state.status
+                                    )
+                                }
+                            }
+                            true -> {
+                                map[taskId]?.let { taskState ->
+                                    taskState.isError = false
+                                    taskState.isSuccess = true
+                                }
+                                _state.update { state ->
+                                    state.copy(
+                                        answers = map,
+                                        status = !state.status
+                                    )
                                 }
                             }
                         }
-                    },
-                    onError = {
-                        Log.i(TAG,"response error ${it.message}")
                     }
-                )
-            } catch(e: Exception) {
-                Log.i(TAG,"request cast ${e.message}")
+
+                    _state.update { state->
+                        state.copy(
+                            isLoading = false
+                        )
+                    }
+                },
+                onError = {
+                    Log.i(TAG,"response error ${it.message}")
+
+                    _state.update { state->
+                        state.copy(
+                            isLoading = true
+                        )
+                    }
+                }
+            )
             }
         }
-    }
+
 }

@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_library.presenation.mainScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -26,9 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.feature_library.presenation.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.LibraryItem
 import ramble.sokol.myolimp.feature_library.presenation.LibrarySearchBar
@@ -108,6 +110,9 @@ fun LibraryScreen(
                                         //type = article.blocks,
                                         subject = article.subject,
                                         title = article.title,
+                                        onClick = {
+                                            navController.navigate(ArticleScreenDestination(id = article.id))
+                                        }
                                     )
                                 }
                             }
@@ -131,6 +136,9 @@ fun LibraryScreen(
                                     LibraryItem(
                                         subject = article.subject,
                                         title = article.title,
+                                        onClick = {
+                                            navController.navigate(ArticleScreenDestination(id = article.id))
+                                        }
                                     )
                                 }
                             }

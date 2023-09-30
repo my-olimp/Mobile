@@ -1,7 +1,6 @@
 package ramble.sokol.myolimp.feature_library.presenation.screens
 
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,10 +34,13 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
+import ramble.sokol.myolimp.feature_library.presenation.FavoriteIcon
 import ramble.sokol.myolimp.feature_library.presenation.SearchTextField
 import ramble.sokol.myolimp.feature_library.presenation.components.HorizontalLine
 import ramble.sokol.myolimp.feature_library.presenation.components.PartItem
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LoadingCircular
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
@@ -46,10 +49,12 @@ import ramble.sokol.myolimp.ui.theme.White
 
 @[Composable Destination]
 fun ArticleScreen(
-    navigator: DestinationsNavigator
+    id: Int
 ) {
 
-    val viewModel = getViewModel<ArticleViewModel>().also { it.fetchArticle() }
+    val viewModel = getViewModel<ArticleViewModel>().also {
+        it.fetchArticle(id = id)
+    }
     
     val state = viewModel.state.collectAsState()
 
@@ -57,7 +62,7 @@ fun ArticleScreen(
         mutableIntStateOf(0)
     }
 
-    Latex()
+//    Latex()
 
     OlimpTheme {
         Column(
@@ -65,6 +70,11 @@ fun ArticleScreen(
                 .fillMaxSize()
                 .background(color = BackgroundMain)
         ) {
+
+            if (state.value.isLoading) {
+                LoadingCircular()
+            }
+
             Row(
                 modifier = Modifier
                     .height(intrinsicSize = IntrinsicSize.Max)
@@ -114,29 +124,41 @@ fun ArticleScreen(
 
                 Spacer(modifier = Modifier.fillMaxWidth(0.02f))
 
-                Box(
+//                Box(
+//                    modifier = Modifier
+//                        //.fillMaxHeight()
+//                        .weight(0.16f)
+//                        .clip(RoundedCornerShape(8.dp))
+//                        .padding(top = 8.dp)
+//                        .background(
+//                            color = White,
+//                            shape = RoundedCornerShape(size = 8.dp)
+//                        )
+//                        .clickable {
+//                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+//                        },
+//                ) {
+//                    Icon(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(14.dp),
+//                        painter = painterResource(id = R.drawable.ic_article_favorite),
+//                        contentDescription = "bookmark",
+//                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
+//                    )
+//                }
+
+                FavoriteIcon(
                     modifier = Modifier
-                        //.fillMaxHeight()
-                        .weight(0.16f)
-                        .clip(RoundedCornerShape(8.dp))
+                        .fillMaxHeight()
+                        .weight(0.15f)
                         .padding(top = 8.dp)
-                        .background(
-                            color = White,
-                            shape = RoundedCornerShape(size = 8.dp)
-                        )
-                        .clickable {
-                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-                        },
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(14.dp),
-                        painter = painterResource(id = R.drawable.ic_calendar_favourite),
-                        contentDescription = "bookmark",
-                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-                    )
-                }
+                        .clip(RoundedCornerShape(8.dp)), //try remove
+                    onClick = {
+                        viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
+                    },
+                    isActive = state.value.article.isFavourite
+                )
             }
 
             Spacer(modifier = Modifier.height(12.dp))

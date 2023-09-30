@@ -110,7 +110,9 @@ fun LibrarySearchBar(
                 .weight(0.15f)
                 .padding(top = 8.dp)
                 .clip(RoundedCornerShape(8.dp)), //try remove
-            onClick = { onShowFavourites(!isFavoriteActive) },
+            onClick = {
+                onShowFavourites(!isFavoriteActive)
+            },
             isActive = isFavoriteActive
         )
     }
@@ -299,6 +301,7 @@ fun LibraryItem(
     type: String = "",
     subject: String = "",
     title: String = "",
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -307,6 +310,7 @@ fun LibraryItem(
                 painter = backgroundPainter,
                 contentScale = ContentScale.FillBounds
             )
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
