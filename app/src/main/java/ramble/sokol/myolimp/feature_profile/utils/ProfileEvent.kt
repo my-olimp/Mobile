@@ -16,6 +16,8 @@ sealed class ProfileEvent {
 
     data class OnEducationSheetAttach(val region: Region) : ProfileEvent()
 
+    data object OnPersonalInfoSheetAttach : ProfileEvent()
+
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()
     data class OnThirdNameChanged(val thirdName: String): ProfileEvent()

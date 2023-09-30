@@ -35,6 +35,7 @@ import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
+import ramble.sokol.myolimp.feature_profile.domain.states.ProfilePersonalState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
@@ -49,7 +50,6 @@ class ProfileViewModel (
     companion object {
         private const val TAG: String = "ViewModelProfile"
     }
-
     private val dataStore = CodeDataStore()
 
     private val repository = ProfileRepository()
@@ -63,9 +63,15 @@ class ProfileViewModel (
         ProfileState()
     )
 
+    /*Education sheet state*/
     private val _educationState = MutableStateFlow(ProfileEducationState())
-
     val educationState = _educationState.asStateFlow()
+    /**/
+
+    /*PersonalInfoState*/
+    private val _personalState = MutableStateFlow(ProfilePersonalState())
+    val personalState = _personalState.asStateFlow()
+    /**/
 
     val state = combine(_state, _user) { state, user ->
         state.copy(
@@ -138,7 +144,8 @@ class ProfileViewModel (
             is ProfileEvent.OnFirstNameChanged -> {
                 _state.update {
                     it.copy(
-                        firstName = event.firstName
+                        firstName = event.firstName,
+                        firstNameError = false
                     )
                 }
             }
@@ -146,7 +153,8 @@ class ProfileViewModel (
             is ProfileEvent.OnSecondNameChanged -> {
                 _state.update {
                     it.copy(
-                        secondName = event.secondName
+                        secondName = event.secondName,
+                        secondNameError = false
                     )
                 }
             }
@@ -154,7 +162,8 @@ class ProfileViewModel (
             is ProfileEvent.OnThirdNameChanged -> {
                 _state.update {
                     it.copy(
-                        thirdName = event.thirdName
+                        thirdName = event.thirdName,
+                        thirdNameError = false
                     )
                 }
             }
@@ -162,7 +171,8 @@ class ProfileViewModel (
             is ProfileEvent.OnDobChanged -> {
                 _state.update {
                     it.copy(
-                        dateOfBirth = event.dob
+                        dateOfBirth = event.dob,
+                        dobError = false
                     )
                 }
             }
@@ -178,7 +188,8 @@ class ProfileViewModel (
             is ProfileEvent.OnSnilsChanged -> {
                 _state.update {
                     it.copy(
-                        snils = event.snils
+                        snils = event.snils,
+                        snilsError = false
                     )
                 }
             }
@@ -349,11 +360,15 @@ class ProfileViewModel (
                     }
                 }
             }
+
+            is ProfileEvent.OnPersonalInfoSheetAttach -> {
+
+            }
         }
     }
 
     private fun checkPersonalDataCorrectness(): Boolean {
-        if (_state.value.firstName.isNullOrEmpty()) {
+        /*if (_state.value.firstName.isNullOrEmpty()) {
             _state.update {
                 it.copy(
                     firstNameError = true
@@ -396,7 +411,49 @@ class ProfileViewModel (
             return false
         }
 
-        return true
+        return true*/
+
+        var isCorrect = true
+
+        if(state.value.firstName.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    firstNameError = true
+                )
+            }
+            isCorrect = false
+        }
+        if(state.value.secondName.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    secondNameError = true
+                )
+            }
+            isCorrect = false
+        }
+        if(state.value.thirdName.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    thirdNameError = true
+                )
+            }
+            isCorrect = false
+        }
+            if(state.value.dateOfBirth.isNullOrEmpty()) {
+            _state.update {
+                it.copy(
+                    dobError = true
+                )
+            }
+            isCorrect = false
+        }
+        if(!isSnilsValid()) {
+            isCorrect = false
+        }
+
+        return isCorrect
+
+
     }
 
     private suspend fun updateUserData() {

@@ -23,6 +23,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.School
 import ramble.sokol.myolimp.feature_authentication.data.models.toListString
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
+import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
@@ -60,7 +61,7 @@ fun EditEducationSheet (
             previousData = state.value.region.name,
             label = stringResource(R.string.region_profile),
             isError = state.value.regionError,
-            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region_profile)
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.region_profile)
         ) { newRegion ->
             viewModel.onEvent(ProfileEvent.OnRegionChanged(
                 state.value.regionList.find { it.name == newRegion } ?: Region()
@@ -74,7 +75,7 @@ fun EditEducationSheet (
             previousData = state.value.city.name,
             label = stringResource(R.string.city_profile),
             isError = state.value.cityError,
-            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city_profile)
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.city_profile)
         ) { newCity ->
             viewModel.onEvent(ProfileEvent.OnCityChanged(
                 state.value.cityList.find { it.name == newCity } ?: City()
@@ -88,7 +89,7 @@ fun EditEducationSheet (
             previousData = state.value.school.name,
             label = stringResource(R.string.school),
             isError = state.value.schoolError,
-            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.school)
         ) { newSchool ->
             viewModel.onEvent(ProfileEvent.OnSchoolChanged(
                 state.value.schoolList.find { it.name == newSchool } ?: School()
@@ -102,7 +103,7 @@ fun EditEducationSheet (
             label = stringResource(R.string.grade),
             options = stringArrayResource(id = R.array.grade).toList(),
             isError = state.value.gradeError,
-            errorText = errorText(id = R.string.null_textfield_error, addId = R.string.grade)
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.grade)
         ) {
             try {
                 viewModel.onEvent(ProfileEvent.OnGradeChanged(it.toInt()))
@@ -119,8 +120,4 @@ fun EditEducationSheet (
             viewModel.onEvent(ProfileEvent.OnSave("e"))
         }
     }
-}
-@Composable
-private fun errorText(id: Int,addId: Int): String {
-    return stringResource(id = id, stringResource(id = addId).lowercase())
 }

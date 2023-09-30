@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
@@ -19,6 +20,7 @@ import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_cre
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckBoxLabel
+import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
@@ -42,18 +44,11 @@ fun EditPersonalInfoSheet(
             label = stringResource(R.string.second_name),
             isEnabled = true,
             isError = state.value.secondNameError,
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.surname_error),
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSecondNameChanged(it))
             }
         )
-
-        if (state.value.secondNameError) {
-            Row(
-                horizontalArrangement = Arrangement.Start
-            ) {
-                ShowError(text = "Быстро ввел фамилию")
-            }
-        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -62,18 +57,11 @@ fun EditPersonalInfoSheet(
             label = stringResource(R.string.name),
             isEnabled = true,
             isError = state.value.firstNameError,
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.name),
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnFirstNameChanged(it))
             }
         )
-
-        if (state.value.firstNameError) {
-            Row(
-                horizontalArrangement = Arrangement.Start
-            ) {
-                ShowError(text = "Сори, если еще не определился с именем")
-            }
-        }
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -82,18 +70,12 @@ fun EditPersonalInfoSheet(
             label = stringResource(R.string.third_name),
             isEnabled = state.value.hasThird,
             isError = state.value.thirdNameError,
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.third_name),
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnThirdNameChanged(it))
             }
         )
 
-        if (state.value.thirdNameError) {
-            Row(
-                horizontalArrangement = Arrangement.Start
-            ) {
-                ShowError(text = "Где отчество")
-            }
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -115,24 +97,15 @@ fun EditPersonalInfoSheet(
             label = stringResource(id = R.string.dob),
             previousData = state.value.dateOfBirth ?: "Loading",
             isError = state.value.dobError,
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.dob_error),
         ) {
             viewModel.onEvent(ProfileEvent.OnDobChanged(it))
-        }
-
-        if (state.value.dobError) {
-            Row(
-                horizontalArrangement = Arrangement.Start
-            ) {
-                ShowError(text = "Ты типо еще не родился?")
-            }
         }
 
         Spacer(modifier = Modifier.height(14.dp))
 
         ReadOnlyDropDown(
-           options =  listOf(
-               "Мужской", "Женский"
-           ),
+           options =  stringArrayResource(id = R.array.genders).toList(),
             previousData = state.value.gender ?: "Loading",
             label = stringResource(id = R.string.gender)
         ) {
@@ -145,18 +118,11 @@ fun EditPersonalInfoSheet(
             previousData = state.value.snils ?: "Loading",
             label = stringResource(R.string.snils),
             isError = state.value.snilsError,
+            errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.snils),
             onTextChanged = {
                 viewModel.onEvent(ProfileEvent.OnSnilsChanged(it))
             }
         )
-
-        if (state.value.snilsError) {
-            Row(
-                horizontalArrangement = Arrangement.Start
-            ) {
-                ShowError(text = stringResource(R.string.null_snils_error_text))
-            }
-        }
         
         Spacer(modifier = Modifier.height(34.dp))
 

@@ -33,6 +33,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
@@ -44,6 +45,7 @@ fun CalendarInput(
     label: String,
     previousData: String,
     isError: Boolean = false,
+    errorText: String = "",
     onTextChanged: (String) -> Unit
 ) {
 
@@ -131,4 +133,7 @@ fun CalendarInput(
         enabled = false,
         isError = isError
     )
+    if(isError) {
+        ShowError(text = errorText)
+    }
 }
