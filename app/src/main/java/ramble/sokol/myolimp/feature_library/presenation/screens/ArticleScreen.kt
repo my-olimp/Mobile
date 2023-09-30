@@ -35,10 +35,10 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
-import ramble.sokol.myolimp.feature_library.presenation.FavoriteIcon
-import ramble.sokol.myolimp.feature_library.presenation.SearchTextField
 import ramble.sokol.myolimp.feature_library.presenation.components.article.HorizontalLine
 import ramble.sokol.myolimp.feature_library.presenation.components.article.PartItem
+import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
+import ramble.sokol.myolimp.feature_library.presenation.components.library.FavoriteIcon
 import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LoadingCircular
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.GreyProfileData

@@ -25,7 +25,7 @@ fun LibrarySubtitleText(
                 color = MainBackground,
                 shape = RoundedCornerShape(size = 4.dp)
             )
-            .padding(horizontal = 2.dp, vertical = 1.dp),
+            .padding(horizontal = 2.dp, vertical = 2.dp),
         style = regularType(
             color = White,
             fontSize = 8.sp

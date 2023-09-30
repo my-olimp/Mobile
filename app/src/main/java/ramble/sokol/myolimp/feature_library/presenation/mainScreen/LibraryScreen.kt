@@ -31,10 +31,10 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
-import ramble.sokol.myolimp.feature_library.presenation.LibraryBox
-import ramble.sokol.myolimp.feature_library.presenation.LibraryItem
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibrarySearchBar
-import ramble.sokol.myolimp.feature_library.presenation.SubjectsPickerBottomSheet
+import ramble.sokol.myolimp.feature_library.presenation.components.library.SubjectsPickerBottomSheet
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
 
@@ -97,7 +97,17 @@ fun LibraryScreen(
                     item {
                         LibraryBox(
                             title = stringResource(R.string.library_articles_title),
-                            isLearnMore = false
+                            action = stringResource(R.string.learn_more),
+                            onActionClicked = {
+                                // TODO open subject screen
+//                                navController.navigate(LibraryScreenDestination) {
+//                                    popUpTo(NavGraphs.root) {
+//                                        saveState = true
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
+                            }
                         ) {
                             if (state.value.isLoading) {
                                 LoadingCircular()
@@ -126,7 +136,20 @@ fun LibraryScreen(
                         state.value.filteredSubjects
                     }
                     items(userSubjects) { subject ->
-                        LibraryBox(title = subject) {
+                        LibraryBox(
+                            title = subject,
+                            action = stringResource(R.string.learn_more),
+                            onActionClicked = {
+                                // TODO open subject screen
+//                                navController.navigate(LibraryScreenDestination) {
+//                                    popUpTo(NavGraphs.root) {
+//                                        saveState = true
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
+                            }
+                        ) {
                             val subjectArticles =
                                 state.value.articles.filter { it.subject == subject }
                             LazyRow(

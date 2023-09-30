@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,6 +49,8 @@ import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.feature_main.data.models.AdviceArticle
 import ramble.sokol.myolimp.feature_main.presenation.components.CompletedPlanItem
 import ramble.sokol.myolimp.ui.theme.BlackProfile
@@ -82,11 +86,11 @@ fun HomeScreen(
         Column (
             modifier = Modifier
                 .fillMaxSize()
+                .padding(16.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
                     .background(
                         White,
                         RoundedCornerShape(25.dp)
@@ -156,7 +160,7 @@ fun HomeScreen(
 
                     ImageWithText(
                         drawable = R.drawable.ic_main_no_plans,
-                        text = "У вас еще нет планов"
+                        text = stringResource(R.string.don_t_have_plans)
                     )
 
                 } else {
@@ -175,148 +179,39 @@ fun HomeScreen(
 
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+            
             // 1st step
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(
-                        White,
-                        RoundedCornerShape(25.dp)
-                    )
-                    .padding(
-                        horizontal = 20.dp,
-                        vertical = 12.dp
-                    )
+            LibraryBox(
+                title = stringResource(R.string.first_step),
+                action = stringResource(R.string.nav_library_name),
+                onActionClicked = {
+                    // update destination
+                    navController.navigate(LibraryScreenDestination) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = stringResource(R.string.first_step),
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(R.font.medium)),
-                            fontWeight = FontWeight(500),
-                            color = BlackProfile,
-                            letterSpacing = 0.36.sp,
-                        )
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .clickable {
-                                // update destination
-                                navController.navigate(LibraryScreenDestination) {
-                                    popUpTo(NavGraphs.root) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.nav_library_name),
-                            style = TextStyle(
-                                fontSize = 13.sp,
-                                fontFamily = FontFamily(Font(R.font.medium)),
-                                fontWeight = FontWeight(500),
-                                color = MainPageBlue,
-                                letterSpacing = 0.26.sp,
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_main_next_step),
-                            contentDescription = "open library"
-                        )
-                    }
-                }
-
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(scroll)
-                ) {
-                    fragments.forEach {
-                        Column(
-                            modifier = Modifier
-                                .size(120.dp)
-                                .padding(end = 8.dp)
-                                .paint(
-                                    painterResource(R.drawable.ic_main_background_blue),
-                                    contentScale = ContentScale.FillBounds
-                                )
-                                .padding(all = 12.dp),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column {
-                                Text(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MainBackground,
-                                            shape = RoundedCornerShape(size = 4.dp)
-                                        )
-                                        .padding(4.dp),
-                                    text = it.type,
-                                    style = TextStyle(
-                                        fontSize = 8.sp,
-                                        fontFamily = FontFamily(Font(R.font.medium)),
-                                        fontWeight = FontWeight(400),
-                                        color = White,
-                                    )
-                                )
-
-                                Spacer(modifier = Modifier.height(4.dp))
-
-                                Text(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MainBackground,
-                                            shape = RoundedCornerShape(size = 4.dp)
-                                        )
-                                        .padding(4.dp),
-                                    text = it.subject,
-                                    style = TextStyle(
-                                        fontSize = 8.sp,
-                                        fontFamily = FontFamily(Font(R.font.medium)),
-                                        fontWeight = FontWeight(400),
-                                        color = White,
-                                    )
-                                )
+                    items(fragments) { article ->
+                        LibraryItem(
+                            subject = article.subject,
+                            title = article.title,
+                            type = article.type,
+                            onClick = {
+//                                navController.navigate(ArticleScreenDestination(id = article.id))
                             }
-
-
-                            Text(
-                                text = it.title,
-                                style = TextStyle(
-                                    fontSize = 12.sp,
-                                    fontFamily = FontFamily(Font(R.font.bold)),
-                                    fontWeight = FontWeight(500),
-                                    color = White,
-                                    letterSpacing = 0.22.sp,
-                                )
-                            )
-
-                        }
-
+                        )
                     }
                 }
-
             }
         }
     }
