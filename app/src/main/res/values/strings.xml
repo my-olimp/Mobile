@@ -188,4 +188,7 @@
     <string name="man_gender">Мужской</string>
     <string name="women_gender">Женский</string>
     <string name="don_t_have_plans">У вас еще нет планов</string>
+    <string name="pass_email_to_restore_password">Введите почту, для которой вы хотите восстановить доступ</string>
+    <string name="check_email_code_send">Проверьте свою почту.\nМы отправили вам ссылку для восстановления пароля</string>
+    <string name="resend_code_again">Отправить код повторно %1$d:%2$d</string>
 </resources>
