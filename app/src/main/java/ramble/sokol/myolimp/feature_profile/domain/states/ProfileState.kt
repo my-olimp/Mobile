@@ -30,5 +30,5 @@ data class ProfileState (
     val secondNameError: Boolean = false,
     val thirdNameError: Boolean = false,
     val dobError: Boolean = false,
-    val snilsError: Boolean = false,
+    val snilsError: Boolean = false
     )

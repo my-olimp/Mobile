@@ -9,11 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -34,7 +31,9 @@ import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.feature_profile.domain.states.ProfileContactsState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
+import ramble.sokol.myolimp.feature_profile.domain.states.ProfilePersonalState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
@@ -49,7 +48,6 @@ class ProfileViewModel (
     companion object {
         private const val TAG: String = "ViewModelProfile"
     }
-
     private val dataStore = CodeDataStore()
 
     private val repository = ProfileRepository()
@@ -59,39 +57,25 @@ class ProfileViewModel (
 
     private val _user = userRepository.getUser()
 
-    private val _state = MutableStateFlow(
-        ProfileState()
-    )
+    /*General state*/
+    private val _state = MutableStateFlow(ProfileState())
+    val state = _state.asStateFlow()
+    /**/
 
+    /*Education sheet state*/
     private val _educationState = MutableStateFlow(ProfileEducationState())
-
     val educationState = _educationState.asStateFlow()
+    /**/
 
-    val state = combine(_state, _user) { state, user ->
-        state.copy(
-            user = user,
-            id = user.id,
-            firstName = user.firstName,
-            secondName = user.secondName,
-            thirdName = user.thirdName,
-            dateOfBirth = user.dateOfBirth,
-            accountType = user.accountType,
-            snils = user.snils,
-            gender = user.gender,
-            region = user.region,
-            city = user.city,
-            school = user.school,
-            phone = user.phone,
-            email = user.email,
-            grade = user.grade,
-            profileImg = user.profileImg,
-            hasThird = user.hasThird,
-        )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(),
-        ProfileState()
-    )
+    /*Personal info sheet state*/
+    private val _personalState = MutableStateFlow(ProfilePersonalState())
+    val personalState = _personalState.asStateFlow()
+    /**/
+
+    /*Contacts info sheet state*/
+    private val _contactsState = MutableStateFlow(ProfileContactsState())
+    val contactsState = _contactsState.asStateFlow()
+    /**/
 
     init {
         viewModelScope.launch {
@@ -114,7 +98,7 @@ class ProfileViewModel (
                     email = _user.first().email,
                     grade = _user.first().grade,
                     profileImg = _user.first().profileImg,
-                    hasThird = _user.first().hasThird,
+                    hasThird = _user.first().hasThird
                 )
             }
             _educationState.update {
@@ -125,9 +109,22 @@ class ProfileViewModel (
                     grade = state.value.grade ?: 0
                 )
             }
-
-            Log.i(TAG, "fn - ${_state.value.secondName} - ${state.value.secondName}")
-            Log.i(TAG, "fn - ${_state.value.firstName} - ${state.value.firstName}")
+            _personalState.update {
+                it.copy(
+                    firstName = state.value.firstName,
+                    secondName = state.value.secondName,
+                    thirdName = state.value.thirdName,
+                    dateOfBirth = state.value.dateOfBirth,
+                    gender = state.value.gender,
+                    snils = state.value.snils
+                )
+            }
+            _contactsState.update {
+                it.copy(
+                    email = state.value.email,
+                    phone = state.value.phone
+                )
+            }
         }
     }
 
@@ -136,39 +133,43 @@ class ProfileViewModel (
     ) {
         when (event) {
             is ProfileEvent.OnFirstNameChanged -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
-                        firstName = event.firstName
+                        firstName = event.firstName,
+                        firstNameError = false
                     )
                 }
             }
 
             is ProfileEvent.OnSecondNameChanged -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
-                        secondName = event.secondName
+                        secondName = event.secondName,
+                        secondNameError = false
                     )
                 }
             }
 
             is ProfileEvent.OnThirdNameChanged -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
-                        thirdName = event.thirdName
+                        thirdName = event.thirdName,
+                        thirdNameError = false
                     )
                 }
             }
 
             is ProfileEvent.OnDobChanged -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
-                        dateOfBirth = event.dob
+                        dateOfBirth = event.dob,
+                        dobError = false
                     )
                 }
             }
 
             is ProfileEvent.OnGenderChanged -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
                         gender = event.gender
                     )
@@ -176,9 +177,10 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnSnilsChanged -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
-                        snils = event.snils
+                        snils = event.snils,
+                        snilsError = false
                     )
                 }
             }
@@ -192,7 +194,7 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnMarkerClicked -> {
-                _state.update {
+                _personalState.update {
                     it.copy(
                         hasThird = event.hasThird
                     )
@@ -207,56 +209,25 @@ class ProfileViewModel (
                 }
             }
 
-            is ProfileEvent.OnSave -> {
-                when(event.sheetName) {
-                    "e" -> {
-                        if(isValidData()) {
-                            _state.update {
-                                it.copy(
-                                    region = educationState.value.region,
-                                    city = educationState.value.city,
-                                    school = educationState.value.school,
-                                    grade = educationState.value.grade
-                                )
-                            }
-                            viewModelScope.launch {
-                                updateUserData()
-                            }
-                            SheetRouter.navigateTo(SheetNavigation.Empty())
-                        } else Log.i(TAG,"education data isnt valid")
-                    }
-                    "s" -> {
-                        if(isSnilsValid()) {
-                            viewModelScope.launch {
-                                updateUserData()
-                            }
-                            SheetRouter.navigateTo(SheetNavigation.Empty())
-                        } else Log.i(TAG,"snils isnt valid")
-                    }
-                    else -> Log.i(TAG,"on save with unknown symbol")
-                }
-            }
 
-            is ProfileEvent.OnPersonalInfoSave -> {
-                if (checkPersonalDataCorrectness()) {
-                    viewModelScope.launch {
-                        updateUserData()
-                    }
-                    SheetRouter.navigateTo(SheetNavigation.Empty())
-                }
-            }
-
-            is ProfileEvent.OnImgSave -> {
-                viewModelScope.launch {
-                    updateUserImg(
-                        file = event.file,
-                        bitmap = event.bitmap,
-                        onResult = {
-                            Log.i("TEMP", "hide sheet")
-                            SheetRouter.navigateTo(SheetNavigation.Empty()) }
+            is ProfileEvent.OnPhoneChanged -> {
+                _contactsState.update {
+                    it.copy(
+                        phone = event.phone,
+                        phoneError = false
                     )
                 }
             }
+
+            is ProfileEvent.OnEmailChanged -> {
+                _contactsState.update {
+                    it.copy(
+                        email = event.email,
+                        emailError = false
+                    )
+                }
+            }
+
 
             is ProfileEvent.OnRegionChanged -> {
                 _educationState.update {
@@ -298,18 +269,67 @@ class ProfileViewModel (
                 }
             }
 
-            is ProfileEvent.OnPhoneChanged -> {
-                _state.update {
-                    it.copy(
-                        phone = event.phone
-                    )
-                }
+            is ProfileEvent.OnEducationInfoSave -> {
+                if (isValidData()) {
+                    _state.update {
+                        it.copy(
+                            region = educationState.value.region,
+                            city = educationState.value.city,
+                            school = educationState.value.school,
+                            grade = educationState.value.grade
+                        )
+                    }
+                    viewModelScope.launch {
+                        updateEducation()
+                    }
+                    SheetRouter.navigateTo(SheetNavigation.Empty())
+                } else Log.i(TAG, "education data isn't valid")
             }
 
-            is ProfileEvent.OnEmailChanged -> {
-                _state.update {
-                    it.copy(
-                        email = event.email
+            is ProfileEvent.OnContactsInfoSave -> {
+                if(isContactsValid()) {
+                    _state.update {
+                        it.copy(
+                            email = contactsState.value.email,
+                            phone = contactsState.value.phone
+                        )
+                    }
+                    viewModelScope.launch(Dispatchers.IO) {
+                        updateContacts()
+                    }
+                    SheetRouter.navigateTo(SheetNavigation.Empty())
+                } else Log.i(TAG,"contacts data isn't valid")
+            }
+
+            is ProfileEvent.OnPersonalInfoSave -> {
+                if (checkPersonalDataCorrectness()) {
+                    with(personalState.value) {
+                        _state.update {
+                            it.copy(
+                                firstName = firstName,
+                                secondName = secondName,
+                                thirdName = thirdName,
+                                dateOfBirth = dateOfBirth,
+                                gender = gender,
+                                snils = snils
+                            )
+                        }
+                    }
+                    viewModelScope.launch {
+                        updatePersonalInfo()
+                    }
+                    SheetRouter.navigateTo(SheetNavigation.Empty())
+                } else Log.i(TAG,"personal info isn't valid")
+            }
+
+            is ProfileEvent.OnImgSave -> {
+                viewModelScope.launch {
+                    updateUserImg(
+                        file = event.file,
+                        bitmap = event.bitmap,
+                        onResult = {
+                            Log.i("TEMP", "hide sheet")
+                            SheetRouter.navigateTo(SheetNavigation.Empty()) }
                     )
                 }
             }
@@ -341,122 +361,157 @@ class ProfileViewModel (
 
             is ProfileEvent.OnEducationSheetAttach -> {
                 if(event.region == Region())updateRegionsList()
-                else {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        updateRegionsList()
-                        updateCitiesList()
-                        updateSchoolsList()
-                    }
-                }
+                else updateMenus()
             }
         }
     }
 
     private fun checkPersonalDataCorrectness(): Boolean {
-        if (_state.value.firstName.isNullOrEmpty()) {
-            _state.update {
+        var isCorrect = true
+
+        if(personalState.value.firstName.isNullOrEmpty()) {
+            _personalState.update {
                 it.copy(
                     firstNameError = true
                 )
             }
-            return false
+            isCorrect = false
         }
-
-        if (_state.value.secondName.isNullOrEmpty()) {
-            _state.update {
+        if(personalState.value.secondName.isNullOrEmpty()) {
+            _personalState.update {
                 it.copy(
                     secondNameError = true
                 )
             }
-            return false
+            isCorrect = false
         }
-
-        if (_state.value.thirdName.isNullOrEmpty()) {
-            _state.update {
+        if(personalState.value.thirdName.isNullOrEmpty()) {
+            _personalState.update {
                 it.copy(
                     thirdNameError = true
                 )
             }
-            return false
+            isCorrect = false
         }
-        if (_state.value.dateOfBirth.isNullOrEmpty()) {
-            _state.update {
+            if(personalState.value.dateOfBirth.isNullOrEmpty()) {
+            _personalState.update {
                 it.copy(
                     dobError = true
                 )
             }
-            return false
+            isCorrect = false
         }
-        if (_state.value.snils != null && _state.value.snils!!.length != 11 || _state.value.snils != null && !_state.value.snils!!.isDigitsOnly()) {
-            _state.update {
-                it.copy(
-                    snilsError = true
-                )
-            }
-            return false
+        if(!isSnilsValid()) {
+            isCorrect = false
         }
 
-        return true
+        return isCorrect
+
+
     }
 
-    private suspend fun updateUserData() {
+
+    private suspend fun updatePersonalInfo() {
         try {
-            val user = RequestUserModel(
-                id = state.value.id?.toInt() ?: throw Exception("no user id"),
-                firstName = _state.value.firstName,
-                secondName = _state.value.secondName,
+
+            val requestModel = RequestUserModel(
+                firstName = state.value.firstName,
+                secondName = state.value.secondName,
                 thirdName = state.value.thirdName,
-                email = _state.value.email,
-                dateOfBirth = _state.value.dateOfBirth,
-                accountType = _state.value.accountType,
-                gender = _state.value.gender,
-                snils = _state.value.snils,
-                regionId = _state.value.region?.number,
-                schoolId = _state.value.school?.id,
-                cityId = _state.value.city?.id,
-                phone = _state.value.phone,
-                grade = _state.value.grade,
+                gender = genderCheck(),
+                snils = state.value.snils,
+                dateOfBirth = state.value.dateOfBirth
             )
 
-            Log.i(TAG, "user - $user")
+            Log.i(TAG,"on update personal info request - $requestModel")
 
             val response = repository.updateUser(
-                user = user
+                user = requestModel
+            )
+            Log.i(TAG,"on update personal info response - ${response.body()}")
+
+            if(response.body() != null) {
+                updateDatabase(response.body() as ResponseUserModel)
+            }
+        } catch (e: Exception) {
+            Log.i(TAG,"throwed ${e.message}")
+        }
+    }
+
+    private suspend fun updateEducation() {
+        try {
+            val requestModel = RequestUserModel (
+                regionId = state.value.region?.number,
+                schoolId = state.value.school?.id,
+                cityId = state.value.city?.id,
+                grade = state.value.grade
             )
 
-            Log.i(TAG, "response - ${response.body()}")
+            Log.i(TAG,"on update education info request - $requestModel")
 
-            if (response.body() != null) {
-                val responseModel: ResponseUserModel? = response.body()
-                userRepository.updateUser(responseModel?.toLocalUserModel()
-                    ?: throw Exception("empty response user model")
-                )
-                with(responseModel) {
-                    _state.update { state ->
-                        state.copy(
-                            id = id.toString(),
-                            firstName = firstName,
-                            secondName = secondName,
-                            thirdName = thirdName,
-                            dateOfBirth = dateOfBirth,
-                            gender = gender,
-                            snils = snils,
-                            region = region?.asRegion(),
-                            school = school?.asSchool(),
-                            city = city?.asCity(),
-                            phone = phone,
-                            email = email,
-                            grade = grade,
-                            accountType = accountType,
-                            profileImg = profileImg
-                        )
-                    }
-                }
+            val response = repository.updateUser(
+                user = requestModel
+            )
+
+            Log.i(TAG,"on update education info response - ${response.body()}")
+
+            if(response.body() != null) {
+                updateDatabase(response.body() as ResponseUserModel)
             }
 
-        } catch (ex: Exception) {
-            Log.i(TAG, "ex - ${ex.message}")
+        } catch (e: Exception) {
+            Log.i(TAG,"throwed ${e.message}")
         }
+    }
+
+    private suspend fun updateContacts() {
+        try {
+            val requestModel = RequestUserModel (
+                email = state.value.email,
+                phone = state.value.phone
+            )
+
+            Log.i(TAG,"on update contacts info request - $requestModel")
+
+            val response = repository.updateUser(
+                user = requestModel
+            )
+
+            Log.i(TAG,"on update contacts info response - ${response.body()}")
+
+            if(response.body() != null) {
+                updateDatabase(response.body() as ResponseUserModel)
+            }
+        } catch(e: Exception) {
+            Log.i(TAG,"throwed ${e.message}")
+        }
+    }
+
+    private suspend fun updateDatabase(response: ResponseUserModel) {
+        with(response) {
+            _state.update { state ->
+                state.copy(
+                    id = id.toString(),
+                    firstName = firstName,
+                    secondName = secondName,
+                    thirdName = thirdName,
+                    dateOfBirth = dateOfBirth,
+                    gender = gender,
+                    snils = snils,
+                    region = region?.asRegion(),
+                    school = school?.asSchool(),
+                    city = city?.asCity(),
+                    phone = phone,
+                    email = email,
+                    grade = grade,
+                    accountType = accountType,
+                    profileImg = profileImg
+                )
+            }
+        }
+        userRepository.updateUser(
+            user = response.toLocalUserModel()
+        )
     }
 
     private suspend fun updateUserImg(
@@ -588,20 +643,39 @@ class ProfileViewModel (
         return isValid
     }
 
+    private fun isContactsValid() : Boolean {
+        var isValid = true
+        with(contactsState.value) {
+            if(phone == null || phone.length != 11) {
+                _contactsState.update {
+                    it.copy(phoneError = true)
+                }
+                isValid = false
+            }
+            if(email.isNullOrEmpty()) {
+                _contactsState.update {
+                    it.copy(emailError = true)
+                }
+                isValid = false
+            }
+        }
+        return isValid
+    }
+
     private fun isSnilsValid(): Boolean{
 
         var isValid = true
 
-        if(state.value.snils != null) {
-            state.value.snils?.let {
-                if(it.length != 11 && !it.isDigitsOnly()) {
+        if(personalState.value.snils != null) {
+            personalState.value.snils?.let {
+                if(it.length != 11 || !it.isDigitsOnly()) {
                     isValid = false
-                    _state.update { state -> state.copy(snilsError = true) }
+                    _personalState.update { state -> state.copy(snilsError = true) }
                 }
             }
         } else {
             isValid = false
-            _state.update { state -> state.copy(snilsError = true) }
+            _personalState.update { state -> state.copy(snilsError = true) }
         }
 
         return isValid
@@ -609,7 +683,16 @@ class ProfileViewModel (
 
     private fun updateMenus() {
         viewModelScope.launch(Dispatchers.IO) {
-            refreshErrors()
+
+            _educationState.update {
+                it.copy(
+                    regionError = false,
+                    cityError = false,
+                    schoolError = false,
+                    gradeError = false
+                )
+            }
+
             updateRegionsList()
             if (state.value.region?.name != "") {
                 updateCitiesList()
@@ -617,15 +700,11 @@ class ProfileViewModel (
             }
         }
     }
-
-    private fun refreshErrors() {
-        _educationState.update {
-            it.copy(
-                regionError = false,
-                cityError = false,
-                schoolError = false,
-                gradeError = false
-            )
+    private fun genderCheck() : String? {
+        return when(state.value.gender?.lowercase()) {
+            "мужской" -> "m"
+            "женский" -> "f"
+            else -> null
         }
     }
 }

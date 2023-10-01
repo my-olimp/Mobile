@@ -7,7 +7,6 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionMod
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -29,7 +28,7 @@ interface ProfileApi {
     suspend fun updateUserData(
 //        @Header("Authorization") auth: String,
         @Body user: RequestUserModel,
-    ): Response<ResponseUserModel>
+    ): Response<ResponseUserModel> //Call<ResponseUserModel>
 
 
     @Multipart

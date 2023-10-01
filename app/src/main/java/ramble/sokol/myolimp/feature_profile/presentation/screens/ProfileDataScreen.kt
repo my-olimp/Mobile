@@ -115,6 +115,7 @@ fun ProfileDataScreen(
             /*
                 Top Bar
             */
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -293,6 +294,7 @@ fun ProfileDataScreen(
                         vertical = 16.dp
                     )
             ) {
+
                 ProfileSectionTitle(
                     text = stringResource(R.string.education)
                 ) {
@@ -303,21 +305,21 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.region),
-                    content = state.value.region?.name ?: "Loading"
+                    content = state.value.region?.name ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.city),
-                    content = state.value.city?.name ?: "Loading"
+                    content = state.value.city?.name ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.school),
-                    content = state.value.school?.name ?: "Loading"
+                    content = state.value.school?.name ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -356,14 +358,14 @@ fun ProfileDataScreen(
 
                 ProfileSectionContent(
                     title = stringResource(R.string.email),
-                    content = state.value.email ?: "Loading"
+                    content = state.value.email ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 ProfileSectionContent(
                     title = stringResource(R.string.phone_number),
-                    content = state.value.phone ?: "Loading"
+                    content = state.value.phone ?: ""
                 )
             }
 
