@@ -98,7 +98,8 @@ class ProfileViewModel (
                     email = _user.first().email,
                     grade = _user.first().grade,
                     profileImg = _user.first().profileImg,
-                    hasThird = _user.first().hasThird
+                    hasThird = _user.first().hasThird,
+                    isLoaded = true
                 )
             }
             _educationState.update {

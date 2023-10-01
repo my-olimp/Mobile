@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +54,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout
+import ramble.sokol.myolimp.feature_profile.presentation.components.Loader
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileFilledBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileOutlinedBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileSectionContent
@@ -104,346 +108,357 @@ fun ProfileDataScreen(
     BottomBarTheme(
         navController = navController
     ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 52.dp),
-            horizontalAlignment = CenterHorizontally,
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Center
         ) {
-            /*
+
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 52.dp),
+                horizontalAlignment = CenterHorizontally,
+            ) {
+                /*
                 Top Bar
             */
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(
-                        color = White, shape = RoundedCornerShape(
-                            topStart = 0.dp, topEnd = 0.dp, bottomEnd = 40.dp, bottomStart = 40.dp
-                        )
-                    ),
-                horizontalAlignment = CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-
-                AsyncImage(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .size(95.dp)
-                        .align(CenterHorizontally)
-                        .clip(CircleShape),
-//                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
-                    model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
-                    contentDescription = "user logo",
-                    contentScale = ContentScale.Crop
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    ProfileFilledBtn(text = stringResource(R.string.edit)) {
-                        SheetRouter.navigateTo(SheetNavigation.EditPhoto)
-                    }
-
-                    ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-                        viewModel.onEvent(ProfileEvent.OnImgDelete)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /*
-                Achievements
-            */
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(size = 25.dp)
-                    )
-                    .padding(
-                        horizontal = 18.dp,
-                        vertical = 16.dp
-                    )
-            ) {
-
-                ProfileSectionTitle(
-                    text = stringResource(R.string.achivement),
-                    isShowEdit = false
-                ) {}
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Image(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .align(CenterHorizontally),
-                    painter = painterResource(id = R.drawable.ic_profile_no_achivement),
-                    contentDescription = "image description"
-                )
+                        .wrapContentHeight()
+                        .background(
+                            color = White, shape = RoundedCornerShape(
+                                topStart = 0.dp,
+                                topEnd = 0.dp,
+                                bottomEnd = 40.dp,
+                                bottomStart = 40.dp
+                            )
+                        ),
+                    horizontalAlignment = CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = stringResource(R.string.with_out_achivement),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(400),
-                        color = GreyProfileAchivement,
-                        letterSpacing = 0.3.sp,
-                        textAlign = TextAlign.Center
+                    AsyncImage(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .size(95.dp)
+                            .align(CenterHorizontally)
+                            .clip(CircleShape),
+//                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
+                        model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
+                        contentDescription = "user logo",
+                        contentScale = ContentScale.Crop
                     )
-                )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        ProfileFilledBtn(text = stringResource(R.string.edit)) {
+                            SheetRouter.navigateTo(SheetNavigation.EditPhoto)
+                        }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
+                            viewModel.onEvent(ProfileEvent.OnImgDelete)
+                        }
+                    }
 
-            /*
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                /*
+                Achievements
+            */
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 25.dp)
+                        )
+                        .padding(
+                            horizontal = 18.dp,
+                            vertical = 16.dp
+                        )
+                ) {
+
+                    ProfileSectionTitle(
+                        text = stringResource(R.string.achivement),
+                        isShowEdit = false
+                    ) {}
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(CenterHorizontally),
+                        painter = painterResource(id = R.drawable.ic_profile_no_achivement),
+                        contentDescription = "image description"
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        text = stringResource(R.string.with_out_achivement),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.regular)),
+                            fontWeight = FontWeight(400),
+                            color = GreyProfileAchivement,
+                            letterSpacing = 0.3.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                /*
                 Personal Data
             */
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(size = 25.dp)
-                    )
-                    .padding(
-                        horizontal = 18.dp,
-                        vertical = 16.dp
-                    )
-            ) {
-
-                ProfileSectionTitle(
-                    text = stringResource(R.string.personal_data)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 25.dp)
+                        )
+                        .padding(
+                            horizontal = 18.dp,
+                            vertical = 16.dp
+                        )
                 ) {
-                    SheetRouter.navigateTo(SheetNavigation.EditPersonalData)
+
+                    ProfileSectionTitle(
+                        text = stringResource(R.string.personal_data)
+                    ) {
+                        SheetRouter.navigateTo(SheetNavigation.EditPersonalData)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.id),
+                        content = state.value.id ?: "Loading"
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.name_surname),
+                        content = "${state.value.firstName} ${state.value.secondName} ${state.value.thirdName}"
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.dob),
+                        content = state.value.dateOfBirth ?: "Loading"
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.gender),
+                        content = if (state.value.gender == "m") stringResource(R.string.man_gender) else stringResource(
+                            R.string.women_gender
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.snils),
+                        content = state.value.snils ?: "Loading"
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                ProfileSectionContent(
-                    title = stringResource(R.string.id),
-                    content = state.value.id ?: "Loading"
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.name_surname),
-                    content = "${state.value.firstName} ${state.value.secondName} ${state.value.thirdName}"
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.dob),
-                    content = state.value.dateOfBirth ?: "Loading"
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.gender),
-                    content = if (state.value.gender == "m" ) stringResource(R.string.man_gender) else stringResource(
-                        R.string.women_gender
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.snils),
-                    content = state.value.snils ?: "Loading"
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /*
+                /*
                 Education
             */
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(size = 25.dp)
-                    )
-                    .padding(
-                        horizontal = 18.dp,
-                        vertical = 16.dp
-                    )
-            ) {
-
-                ProfileSectionTitle(
-                    text = stringResource(R.string.education)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 25.dp)
+                        )
+                        .padding(
+                            horizontal = 18.dp,
+                            vertical = 16.dp
+                        )
                 ) {
-                    SheetRouter.navigateTo(SheetNavigation.EditEducation)
+
+                    ProfileSectionTitle(
+                        text = stringResource(R.string.education)
+                    ) {
+                        SheetRouter.navigateTo(SheetNavigation.EditEducation)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.region),
+                        content = state.value.region?.name ?: ""
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.city),
+                        content = state.value.city?.name ?: ""
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.school),
+                        content = state.value.school?.name ?: ""
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.grade),
+                        content = "${state.value.grade}"
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                ProfileSectionContent(
-                    title = stringResource(R.string.region),
-                    content = state.value.region?.name ?: ""
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.city),
-                    content = state.value.city?.name ?: ""
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.school),
-                    content = state.value.school?.name ?: ""
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.grade),
-                    content = "${state.value.grade}"
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            /*
+                /*
                 Contacts
             */
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .background(
-                        color = White,
-                        shape = RoundedCornerShape(size = 25.dp)
-                    )
-                    .padding(
-                        horizontal = 18.dp,
-                        vertical = 16.dp
-                    )
-            ) {
-                ProfileSectionTitle(
-                    text = stringResource(R.string.contacts)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 25.dp)
+                        )
+                        .padding(
+                            horizontal = 18.dp,
+                            vertical = 16.dp
+                        )
                 ) {
-                    SheetRouter.navigateTo(SheetNavigation.EditContacts)
+                    ProfileSectionTitle(
+                        text = stringResource(R.string.contacts)
+                    ) {
+                        SheetRouter.navigateTo(SheetNavigation.EditContacts)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.email),
+                        content = state.value.email ?: ""
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    ProfileSectionContent(
+                        title = stringResource(R.string.phone_number),
+                        content = state.value.phone ?: ""
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                ProfileSectionContent(
-                    title = stringResource(R.string.email),
-                    content = state.value.email ?: ""
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                ProfileSectionContent(
-                    title = stringResource(R.string.phone_number),
-                    content = state.value.phone ?: ""
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-        }
-    }
-
-    BottomSheetLayout(
-        sheetState = sheetState,
-        isCenter = isCenter,
-        name = sheetName,
-
-    ) {
-        Crossfade(targetState = SheetRouter.currentSheet, label = "") {
-            when (it.value) {
-
-                is SheetNavigation.EditPhoto -> {
-                    EditPhotoSheet(viewModel = viewModel)
-
-                    isCenter = true
-                    sheetName = stringResource(R.string.profile_image)
-
-                    LaunchedEffect(key1 = true, block = {
-                        coroutineScope.launch {
-                            sheetState.show()
-                        }
-                    })
-                }
-
-                is SheetNavigation.EditPersonalData -> {
-                    EditPersonalInfoSheet(viewModel = viewModel)
-
-                    isCenter = false
-                    sheetName = stringResource(R.string.personal_info)
-
-                    LaunchedEffect(key1 = true, block = {
-                        coroutineScope.launch {
-                            sheetState.show()
-                        }
-                    })
-                }
-
-                is SheetNavigation.EditEducation -> {
-                    EditEducationSheet(viewModel = viewModel)
-
-                    isCenter = false
-                    sheetName = stringResource(R.string.education)
-
-                    LaunchedEffect(key1 = true, block = {
-                        coroutineScope.launch {
-                            sheetState.show()
-                        }
-                    })
-                }
-
-                is SheetNavigation.EditContacts -> {
-                    EditContactsSheet(viewModel = viewModel)
-
-                    isCenter = false
-                    sheetName = stringResource(R.string.education)
-
-                    LaunchedEffect(key1 = true, block = {
-                        coroutineScope.launch {
-                            sheetState.show()
-                        }
-                    })
-                }
-
-                is SheetNavigation.Empty -> {
-                    (it.value as SheetNavigation.Empty).onDetach.invoke()
-                    LaunchedEffect(key1 = true, block = {
-                        coroutineScope.launch {
-                            sheetState.hide()
-                        }
-                    })
-                }
             }
         }
+
+        BottomSheetLayout(
+            sheetState = sheetState,
+            isCenter = isCenter,
+            name = sheetName,
+
+            ) {
+            Crossfade(targetState = SheetRouter.currentSheet, label = "") {
+                when (it.value) {
+
+                    is SheetNavigation.EditPhoto -> {
+                        EditPhotoSheet(viewModel = viewModel)
+
+                        isCenter = true
+                        sheetName = stringResource(R.string.profile_image)
+
+                        LaunchedEffect(key1 = true, block = {
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        })
+                    }
+
+                    is SheetNavigation.EditPersonalData -> {
+                        EditPersonalInfoSheet(viewModel = viewModel)
+
+                        isCenter = false
+                        sheetName = stringResource(R.string.personal_info)
+
+                        LaunchedEffect(key1 = true, block = {
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        })
+                    }
+
+                    is SheetNavigation.EditEducation -> {
+                        EditEducationSheet(viewModel = viewModel)
+
+                        isCenter = false
+                        sheetName = stringResource(R.string.education)
+
+                        LaunchedEffect(key1 = true, block = {
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        })
+                    }
+
+                    is SheetNavigation.EditContacts -> {
+                        EditContactsSheet(viewModel = viewModel)
+
+                        isCenter = false
+                        sheetName = stringResource(R.string.education)
+
+                        LaunchedEffect(key1 = true, block = {
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        })
+                    }
+
+                    is SheetNavigation.Empty -> {
+                        (it.value as SheetNavigation.Empty).onDetach.invoke()
+                        LaunchedEffect(key1 = true, block = {
+                            coroutineScope.launch {
+                                sheetState.hide()
+                            }
+                        })
+                    }
+                }
+            }
+        }
+        if(!state.value.isLoaded)Loader()
     }
 }
