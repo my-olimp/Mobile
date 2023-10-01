@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,7 +55,10 @@ fun SendCodeScreen() {
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_send_code),
-                    contentDescription = "vector send code"
+                    contentDescription = "vector send code",
+                    modifier = Modifier
+                        .height(293.dp) /*remove that  TODO*/
+                        .width(295.dp)
                 )
 
                 VerticalSpacer(height = 32.dp)
