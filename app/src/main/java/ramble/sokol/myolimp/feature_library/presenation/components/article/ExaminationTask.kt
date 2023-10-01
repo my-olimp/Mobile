@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation.components
+package ramble.sokol.myolimp.feature_library.presenation.components.article
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -106,6 +106,6 @@ fun ExaminationTask(
                 )
             }
         }
-        if(taskState.isError)Explanation(isVisible = isExpanded, solutionText = explanationText)
+        if(taskState.isError) Explanation(isVisible = isExpanded, solutionText = explanationText)
     }
 }

@@ -7,5 +7,6 @@ data class ArticleModel (
     val tags: List<String> = listOf(),
     val subject: String = "",
     val image: String = "",
+    val isFavourite: Boolean = false,
     val blocks: List<BlockModel> = listOf()
 )

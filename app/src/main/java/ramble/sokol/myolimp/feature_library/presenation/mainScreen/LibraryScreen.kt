@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -17,7 +18,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -26,13 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_library.presenation.LibraryBox
-import ramble.sokol.myolimp.feature_library.presenation.LibraryItem
-import ramble.sokol.myolimp.feature_library.presenation.LibrarySearchBar
-import ramble.sokol.myolimp.feature_library.presenation.SubjectsPickerBottomSheet
+import ramble.sokol.myolimp.destinations.ArticleScreenDestination
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibrarySearchBar
+import ramble.sokol.myolimp.feature_library.presenation.components.library.SubjectsPickerBottomSheet
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
 
@@ -69,7 +71,9 @@ fun LibraryScreen(
             Column(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
             ) {
                 LibrarySearchBar(
                     onSearchTextChanged = { newValue ->
@@ -93,7 +97,17 @@ fun LibraryScreen(
                     item {
                         LibraryBox(
                             title = stringResource(R.string.library_articles_title),
-                            isLearnMore = false
+                            action = stringResource(R.string.learn_more),
+                            onActionClicked = {
+                                // TODO open subject screen
+//                                navController.navigate(LibraryScreenDestination) {
+//                                    popUpTo(NavGraphs.root) {
+//                                        saveState = true
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
+                            }
                         ) {
                             if (state.value.isLoading) {
                                 LoadingCircular()
@@ -108,6 +122,9 @@ fun LibraryScreen(
                                         //type = article.blocks,
                                         subject = article.subject,
                                         title = article.title,
+                                        onClick = {
+                                            navController.navigate(ArticleScreenDestination(id = article.id))
+                                        }
                                     )
                                 }
                             }
@@ -119,7 +136,20 @@ fun LibraryScreen(
                         state.value.filteredSubjects
                     }
                     items(userSubjects) { subject ->
-                        LibraryBox(title = subject) {
+                        LibraryBox(
+                            title = subject,
+                            action = stringResource(R.string.learn_more),
+                            onActionClicked = {
+                                // TODO open subject screen
+//                                navController.navigate(LibraryScreenDestination) {
+//                                    popUpTo(NavGraphs.root) {
+//                                        saveState = true
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
+                            }
+                        ) {
                             val subjectArticles =
                                 state.value.articles.filter { it.subject == subject }
                             LazyRow(
@@ -131,6 +161,9 @@ fun LibraryScreen(
                                     LibraryItem(
                                         subject = article.subject,
                                         title = article.title,
+                                        onClick = {
+                                            navController.navigate(ArticleScreenDestination(id = article.id))
+                                        }
                                     )
                                 }
                             }

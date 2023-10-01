@@ -17,7 +17,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.states.TaskState
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
-import ramble.sokol.myolimp.feature_library.presenation.components.ExaminationTask
+import ramble.sokol.myolimp.feature_library.presenation.components.article.ExaminationTask
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.regularType
 

@@ -3,6 +3,7 @@ package ramble.sokol.myolimp.feature_library.data.api
 import ramble.sokol.myolimp.feature_library.data.models.RequestAnswerModel
 import ramble.sokol.myolimp.feature_library.data.models.ResponseAnswerModel
 import ramble.sokol.myolimp.feature_library.data.models.ResponseArticleModel
+import ramble.sokol.myolimp.feature_library.domain.models.ResponseFavourites
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,7 +17,6 @@ interface LibraryApi {
     @Headers("Content-Type: application/json",)
     @GET("library/article/{id}")
     fun extractArticleById(
-        @Header("Authorization") auth: String,
         @Path("id") id: Int
     ): Call<ResponseArticleModel>
 
@@ -27,5 +27,11 @@ interface LibraryApi {
         @Path("id") id: Int,
         @Body body : RequestAnswerModel
     ) : Call<ResponseAnswerModel>
+
+    @Headers("Content-Type: application/json")
+    @POST("library/article/love/{id}/")
+    fun addToFavourites(
+        @Path("id") id: Int,
+    ) : Call<ResponseFavourites>
 
 }

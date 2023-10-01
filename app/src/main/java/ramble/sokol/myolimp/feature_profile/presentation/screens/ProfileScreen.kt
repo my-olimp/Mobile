@@ -195,7 +195,7 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_favourite),
                     content = stringResource(R.string.profile_favourite_content)
                 ) {
-                    navController.navigate(ArticleScreenDestination)
+                    navController.navigate(ArticleScreenDestination(1))
                 }
 
                 Spacer(

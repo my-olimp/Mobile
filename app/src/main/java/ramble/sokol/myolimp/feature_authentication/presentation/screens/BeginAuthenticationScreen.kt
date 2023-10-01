@@ -112,7 +112,7 @@ fun BeginAuthenticationScreen (
                 text = "[Beta]"
             ) {
                 //navigator.navigate(ProfileScreenDestination)
-                navigator.navigate(ArticleScreenDestination)
+                navigator.navigate(ArticleScreenDestination(1))
             }
         }
     }

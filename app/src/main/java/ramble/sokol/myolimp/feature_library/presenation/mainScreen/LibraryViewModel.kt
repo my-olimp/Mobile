@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
@@ -15,22 +14,15 @@ import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 
 class LibraryViewModel(context: Context) : ViewModel() {
 
-//    companion object {
-//        private const val TAG = "ViewModelLibrary"
-//    }
-
-    private val dataStore = CodeDataStore()
+    companion object {
+        private const val TAG = "ViewModelLibrary"
+    }
 
     private val _state = MutableStateFlow(LibraryState())
     val state = _state.asStateFlow()
 
     private val userDatabase: UserDatabase = UserDatabase(context)
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
-
-    companion object {
-        private const val TAG = "ViewModelLibrary"
-    }
-
 
     init {
         viewModelScope.launch {
@@ -39,33 +31,17 @@ class LibraryViewModel(context: Context) : ViewModel() {
                     isLoading = true
                 )
             }
-            try {
-                _state.update { curValue ->
-                    curValue.copy(
-                        articles = libraryRepository.getArticles(
-                            auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
-                                ?: throw Exception("No access token")
-                        ),
-                        userSubjects = libraryRepository.getUserSubjects(),
-                        isLoading = false
-                    )
-                }
-                _state.update { curValue ->
-                    curValue.copy(
-                        bottomSheetSubjectsMap = curValue.userSubjects.associateWith { false }
-                    )
-                }
-            } catch (e: Exception) {
-                Log.i(TAG, "init ex: ${e.message}")
-                _state.update { curValue ->
-                    curValue.copy(
-                        isLoading = false,
-                        isError = true
-                    )
-                }
-            } finally {
 
+            val subjects = libraryRepository.getUserSubjects()
+
+            _state.update {
+                it.copy(
+                    userSubjects = subjects,
+                    bottomSheetSubjectsMap = subjects.associateWith { false }
+                )
             }
+
+            searchArticles()
         }
     }
 
@@ -77,7 +53,8 @@ class LibraryViewModel(context: Context) : ViewModel() {
                         searchQuery = event.query
                     )
                 }
-                // TODO search
+
+                searchArticles()
             }
 
             is LibraryEvent.OnShowFavourites -> {
@@ -86,6 +63,8 @@ class LibraryViewModel(context: Context) : ViewModel() {
                         isShowingFavourites = event.isShowing
                     )
                 }
+
+                searchArticles()
             }
 
             is LibraryEvent.OnCheckboxSubject -> {
@@ -107,6 +86,41 @@ class LibraryViewModel(context: Context) : ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    private fun searchArticles() {
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+
+        viewModelScope.launch {
+            libraryRepository.getArticles(
+                page = state.value.currentPage,
+                isShowFavourites = state.value.isShowingFavourites,
+                query = state.value.searchQuery,
+                onSuccess = { articles->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            articles = articles
+                        )
+                    }
+                },
+                onError = { error->
+
+                    Log.i(TAG, "error occurred - $error")
+
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isError = true
+                        )
+                    }
+                }
+            )
         }
     }
 }

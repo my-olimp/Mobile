@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation.components
+package ramble.sokol.myolimp.feature_library.presenation.components.article
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

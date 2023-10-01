@@ -36,7 +36,7 @@ import ramble.sokol.myolimp.feature_authentication.presentation.components.Subje
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
-import ramble.sokol.myolimp.feature_library.presenation.SearchTextField
+import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackRegistrationData
 import ramble.sokol.myolimp.ui.theme.BlackRegistrationSubjects
