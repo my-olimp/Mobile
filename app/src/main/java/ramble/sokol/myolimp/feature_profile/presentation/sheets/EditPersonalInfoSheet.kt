@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
@@ -30,7 +29,7 @@ fun EditPersonalInfoSheet(
     viewModel: ProfileViewModel
 ) {
 
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.personalState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -40,7 +39,7 @@ fun EditPersonalInfoSheet(
     ) {
 
         OutlinedText(
-            previousData = state.value.secondName ?: "Loading",
+            previousData = state.value.secondName ?: "",
             label = stringResource(R.string.second_name),
             isEnabled = true,
             isError = state.value.secondNameError,
@@ -53,7 +52,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.firstName ?: "Loading",
+            previousData = state.value.firstName ?: "",
             label = stringResource(R.string.name),
             isEnabled = true,
             isError = state.value.firstNameError,
@@ -66,7 +65,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.thirdName ?: "Loading",
+            previousData = state.value.thirdName ?: "",
             label = stringResource(R.string.third_name),
             isEnabled = state.value.hasThird,
             isError = state.value.thirdNameError,
@@ -95,7 +94,7 @@ fun EditPersonalInfoSheet(
 
         CalendarInput(
             label = stringResource(id = R.string.dob),
-            previousData = state.value.dateOfBirth ?: "Loading",
+            previousData = state.value.dateOfBirth ?: "",
             isError = state.value.dobError,
             errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.dob_error),
         ) {
@@ -106,7 +105,7 @@ fun EditPersonalInfoSheet(
 
         ReadOnlyDropDown(
            options =  stringArrayResource(id = R.array.genders).toList(),
-            previousData = state.value.gender ?: "Loading",
+            previousData = genderCheck(state.value.gender),
             label = stringResource(id = R.string.gender)
         ) {
             viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
@@ -115,7 +114,7 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedText(
-            previousData = state.value.snils ?: "Loading",
+            previousData = state.value.snils ?: "",
             label = stringResource(R.string.snils),
             isError = state.value.snilsError,
             errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.snils),
@@ -132,5 +131,13 @@ fun EditPersonalInfoSheet(
         ) {
             viewModel.onEvent(ProfileEvent.OnPersonalInfoSave)
         }
+    }
+}
+
+private fun genderCheck(gender: String?): String {
+    return when(gender) {
+        "m" -> "Мужской"
+        "f" -> "Женский"
+        else -> ""
     }
 }

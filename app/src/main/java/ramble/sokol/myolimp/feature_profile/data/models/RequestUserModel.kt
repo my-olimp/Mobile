@@ -7,7 +7,7 @@ data class RequestUserModel(
     @SerializedName("first_name")val firstName: String? = null,
     @SerializedName("second_name")val secondName: String? = null,
     @SerializedName("third_name")val thirdName: String? = null,
-    @SerializedName("date_of_birth")val dateOfBirth: String? = null,
+    @SerializedName("data_of_birth")val dateOfBirth: String? = null,
     @SerializedName("gender")val gender: String? = null,
     @SerializedName("SNILS")val snils: String? = null,
     @SerializedName("phone_number")val phone: String? = null,

@@ -195,5 +195,6 @@
     <string name="women_gender">Женский</string>
     <string name="surname_error">Фамилию</string>
     <string name="dob_error">Дату рождения</string>
+    <string name="email_error">Почту</string>
 
 </resources>

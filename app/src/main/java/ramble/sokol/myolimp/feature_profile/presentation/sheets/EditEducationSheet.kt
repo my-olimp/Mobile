@@ -38,14 +38,7 @@ fun EditEducationSheet (
         mutableStateOf(false)
     }
     if(!isLoaded) {
-        when {
-            state.value.region != Region() -> {
-                viewModel.onEvent(ProfileEvent.OnEducationSheetAttach(state.value.region))
-            }
-            state.value.regionList.isEmpty() && state.value.region == Region() -> viewModel.onEvent(
-                ProfileEvent.OnEducationSheetAttach(state.value.region)
-            )
-        }
+        viewModel.onEvent(ProfileEvent.OnEducationSheetAttach(state.value.region))
         isLoaded = true
     }
 
@@ -117,7 +110,7 @@ fun EditEducationSheet (
             text = stringResource(id = R.string.save),
             padding = 0.dp
         ) {
-            viewModel.onEvent(ProfileEvent.OnSave("e"))
+            viewModel.onEvent(ProfileEvent.OnEducationInfoSave)
         }
     }
 }

@@ -9,14 +9,14 @@ import ramble.sokol.myolimp.feature_authentication.data.models.School
 import java.io.File
 
 sealed class ProfileEvent {
-    data class OnSave(val sheetName: String): ProfileEvent()
+    data object OnEducationInfoSave: ProfileEvent()
     data object OnPersonalInfoSave: ProfileEvent()
+
+    data object OnContactsInfoSave : ProfileEvent()
     data class OnImgSave(val file: File, val bitmap: Bitmap): ProfileEvent()
     data object OnImgDelete: ProfileEvent()
 
     data class OnEducationSheetAttach(val region: Region) : ProfileEvent()
-
-    data object OnPersonalInfoSheetAttach : ProfileEvent()
 
     data class OnFirstNameChanged(val firstName: String): ProfileEvent()
     data class OnSecondNameChanged(val secondName: String): ProfileEvent()
