@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation.components
+package ramble.sokol.myolimp.feature_library.presenation.components.article
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

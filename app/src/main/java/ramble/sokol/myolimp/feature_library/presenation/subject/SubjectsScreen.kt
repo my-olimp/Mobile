@@ -26,10 +26,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
-import ramble.sokol.myolimp.feature_library.presenation.LibrarySearchBar
-import ramble.sokol.myolimp.feature_library.presenation.SubjectsPickerBottomSheet
-import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
-import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryViewModel
+import ramble.sokol.myolimp.feature_library.presenation.components.library.LibrarySearchBar
 import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LoadingCircular
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.SheetTitle

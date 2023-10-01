@@ -6,6 +6,7 @@ import ramble.sokol.myolimp.feature_library.data.api.LibraryApi
 import ramble.sokol.myolimp.feature_library.data.models.RequestAnswerModel
 import ramble.sokol.myolimp.feature_library.data.models.ResponseAnswerModel
 import ramble.sokol.myolimp.feature_library.data.models.ResponseArticleModel
+import ramble.sokol.myolimp.feature_library.domain.models.ResponseFavourites
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,12 +16,11 @@ class LibraryRepository {
     private val instance = RetrofitBuilder().instance(LibraryApi::class.java)
 
     fun extractArticleById(
-        auth: String,
         id: Int,
         onResult: (ResponseArticleModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.extractArticleById(auth,id).enqueue(
+        instance.extractArticleById(id).enqueue(
             object: Callback<ResponseArticleModel> {
                 override fun onResponse(
                     call: Call<ResponseArticleModel>,
@@ -57,6 +57,32 @@ class LibraryRepository {
                 }
 
                 override fun onFailure(call: Call<ResponseAnswerModel>, t: Throwable) {
+                    onError(t)
+                }
+
+            }
+        )
+    }
+
+    fun addToFavourites(
+        id: Int,
+        onResult: (ResponseFavourites?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+
+        Log.i("ViewModelArticleLibrary","id $id")
+
+        instance.addToFavourites(id).enqueue(
+            object : Callback<ResponseFavourites> {
+                override fun onResponse(
+                    call: Call<ResponseFavourites>,
+                    response: Response<ResponseFavourites>
+                ) {
+                    Log.i("ViewModelArticleLibrary","favourites ${response.code()}")
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<ResponseFavourites>, t: Throwable) {
                     onError(t)
                 }
 
