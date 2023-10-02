@@ -191,4 +191,7 @@
     <string name="pass_email_to_restore_password">Введите почту, для которой вы хотите восстановить доступ</string>
     <string name="check_email_code_send">Проверьте свою почту.\nМы отправили вам ссылку для восстановления пароля</string>
     <string name="resend_code_again">Отправить код повторно %1$d:%2$d</string>
+    <string name="something_wrong">Что-то не так</string>
+    <string name="check_your_connection">Кажется, нет интернета. Проверьте сеть и перезагрузите приложение</string>
+    <string name="reload">Перезагрузить</string>
 </resources>
