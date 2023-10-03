@@ -11,15 +11,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.SendCodeScreenDestination
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.ForgotPasswordViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
@@ -28,10 +33,16 @@ import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
 import ramble.sokol.myolimp.ui.theme.regularType
 
-@[Preview(showBackground = true) Composable]
-fun PassEmailScreen(
 
+
+@[Composable Destination]
+fun PassEmailScreen(
+    navigator: DestinationsNavigator
 ) {
+
+    val viewModel = getViewModel<ForgotPasswordViewModel>()
+    val state = viewModel.state.collectAsState()
+
     OlimpTheme(
         navigationBarColor = SecondaryScreen
     ) {
@@ -65,8 +76,9 @@ fun PassEmailScreen(
                 VerticalSpacer(height = 14.dp)
 
                 OutlinedText(
-                    previousData = ""/*TODO*/,
-                    label = stringResource(id = R.string.email)
+                    previousData = state.value.email,
+                    label = stringResource(id = R.string.email),
+                    isError = state.value.emailError
                 ) {
                     /*TODO*/
                 }
@@ -77,7 +89,7 @@ fun PassEmailScreen(
                     text = stringResource(id = R.string.next),
                     padding = 0.dp
                 ) {
-                    /*TODO*/
+
                 }
             }
         }
