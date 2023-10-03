@@ -25,10 +25,11 @@ data class ProfileState (
     val hasThird: Boolean = true,
     val accountType: String? = null,
 
+    val isLoaded: Boolean = false,
 
     val firstNameError: Boolean = false,
     val secondNameError: Boolean = false,
     val thirdNameError: Boolean = false,
     val dobError: Boolean = false,
-    val snilsError: Boolean = false,
+    val snilsError: Boolean = false
     )

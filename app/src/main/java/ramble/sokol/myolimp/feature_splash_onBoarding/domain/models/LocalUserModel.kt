@@ -3,11 +3,13 @@ package ramble.sokol.myolimp.feature_splash_onBoarding.domain.models
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.RoomWarnings
 import com.google.gson.annotations.SerializedName
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.School
 
+@SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 @Entity(
     tableName = "user"
 )
