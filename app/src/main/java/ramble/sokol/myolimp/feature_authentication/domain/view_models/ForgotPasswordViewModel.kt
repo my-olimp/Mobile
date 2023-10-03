@@ -14,6 +14,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.RequestForgotPass
 import ramble.sokol.myolimp.feature_authentication.domain.events.ForgotPasswordEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.ForgotPasswordRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.ForgotPasswordState
+import ramble.sokol.myolimp.utils.enums.ResponseCode
 
 class ForgotPasswordViewModel : ViewModel() {
 
@@ -47,7 +48,8 @@ class ForgotPasswordViewModel : ViewModel() {
                 repository.sendEmail(
                     body = RequestForgotPasswordModel(state.value.email),
                     onResult = { code ->
-                        if(code == 200) {
+                        Log.i(TAG,"response code - $code")
+                        if(code == ResponseCode.SUCCESS.code) {
                             navigator.navigate(SendCodeScreenDestination)
                         } else throw Exception("another code: $code")
                     },
