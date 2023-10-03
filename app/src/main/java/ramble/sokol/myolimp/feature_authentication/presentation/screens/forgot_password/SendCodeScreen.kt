@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,19 +20,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.ui.theme.BlackProfile
+import ramble.sokol.myolimp.feature_authentication.domain.events.SendCodeEvent
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.SendCodeViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.components.MinuteTimerText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.Transparent
 import ramble.sokol.myolimp.ui.theme.mediumType
-import ramble.sokol.myolimp.ui.theme.regularType
 
 @[Composable Destination]
 fun SendCodeScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    email: String
 ) {
+
+    val viewModel = getViewModel<SendCodeViewModel>()
+    val state = viewModel.state.collectAsState()
+
     OlimpTheme(
         navigationBarColor = SecondaryScreen
     ) {
@@ -79,14 +87,14 @@ fun SendCodeScreen(
                 verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier
                     .padding(bottom = 32.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(id = R.string.resend_code_again,/*TODO*/1,14),
-                    textAlign = TextAlign.Center,
-                    style = regularType(color = BlackProfile)
-                )
+                MinuteTimerText(timerValue = state.value.timer, needToUpdate = state.value.updatedTimer) {
+                   viewModel.onEvent(SendCodeEvent.OnResendCode(navigator, email))
+                    /*TODO нужно придумать как лочить кнопку после отправки запроса*/
+                }
             }
         }
     }

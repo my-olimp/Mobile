@@ -1,14 +1,14 @@
 package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
-import ramble.sokol.myolimp.feature_authentication.data.api.ForgotPasswordApi
+import ramble.sokol.myolimp.feature_authentication.data.api.SendCodeApi
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestForgotPasswordModel
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import retrofit2.Callback
 import retrofit2.Response
 
-class ForgotPasswordRepository {
+class SendCodeRepository {
 
-    private val instance = ProfileRetrofitInstance().instance(ForgotPasswordApi::class.java)
+    private val instance = ProfileRetrofitInstance().instance(SendCodeApi::class.java)
 
     fun sendEmail(
         body: RequestForgotPasswordModel,
