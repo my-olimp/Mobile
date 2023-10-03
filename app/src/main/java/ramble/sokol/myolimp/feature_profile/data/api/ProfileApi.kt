@@ -1,11 +1,11 @@
 package ramble.sokol.myolimp.feature_profile.data.api
 
 import okhttp3.MultipartBody
-import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
+import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
 import retrofit2.Response
@@ -26,9 +26,9 @@ interface ProfileApi {
     )
     @PATCH("user/")
     suspend fun updateUserData(
-        @Header("Authorization") auth: String,
-        @Body user: UserModelEntity,
-    ): Response<ResponseUserModel>
+//        @Header("Authorization") auth: String,
+        @Body user: RequestUserModel,
+    ): Response<ResponseUserModel> //Call<ResponseUserModel>
 
 
     @Multipart
@@ -46,9 +46,9 @@ interface ProfileApi {
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/refresh_token/")
-    fun refreshToken(
+    suspend fun refreshToken(
         @Header("Cookie") cookie: String,
-    ) : Call<ResponseAuthModel>
+    ) : Response<ResponseAuthModel>
 
     @Headers("Content-Type: application/json")
     @GET("user/location/cities")

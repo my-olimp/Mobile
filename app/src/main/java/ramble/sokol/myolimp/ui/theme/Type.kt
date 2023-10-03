@@ -39,22 +39,28 @@ val Typography = Typography(
 
 fun regularType(
     color: Color = BlackRegistrationData,
-    fontSize: TextUnit = 14.sp
+    fontSize: TextUnit = 14.sp,
+    letterSpacing: TextUnit = 0.sp,
+    lineHeight: TextUnit = TextUnit.Unspecified
 ) = TextStyle(
         fontSize = fontSize,
         fontFamily = FontFamily(Font(R.font.regular)),
         fontWeight = FontWeight(400),
-        color = color
+        color = color,
+        letterSpacing = letterSpacing,
+        lineHeight = lineHeight
 )
 
 fun mediumType(
     color: Color = BlackProfile,
     fontSize: TextUnit = 18.sp,
-    letterSpacing: TextUnit = 0.4.sp
+    letterSpacing: TextUnit = 0.4.sp,
+    lineHeight: TextUnit = TextUnit.Unspecified
 ) = TextStyle(
     fontSize = fontSize,
     fontFamily = FontFamily(Font(R.font.medium)),
     fontWeight = FontWeight(500),
     color = color,
-    letterSpacing = letterSpacing
+    letterSpacing = letterSpacing,
+    lineHeight = lineHeight
 )

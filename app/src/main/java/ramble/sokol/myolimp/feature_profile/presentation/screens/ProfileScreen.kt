@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +37,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -58,9 +59,9 @@ fun ProfileScreen(
     val state = viewModel.state.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = Unit, block = {
-        viewModel.onEvent(ProfileEvent.OnRefreshToken)
-    })
+//    LaunchedEffect(key1 = Unit, block = {
+//        viewModel.onEvent(ProfileEvent.OnRefreshToken)
+//    })
 
     BottomBarTheme(
         navController = navController
@@ -96,8 +97,9 @@ fun ProfileScreen(
                         .size(95.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(CircleShape),
-                    model = if (state.value.profileImg != null) state.value.profileImg
-                            else R.drawable.ic_default_img,
+//                    model = if (state.value.profileImg != null) state.value.profileImg
+//                            else R.drawable.ic_default_img,
+                    model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
                     contentDescription = "user logo",
                     contentScale = ContentScale.Crop
                 )
@@ -118,7 +120,9 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
-                    modifier = Modifier.padding(bottom = 16.dp), text = state.value.accountType, style = TextStyle(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = state.value.accountType ?: "Loading",
+                    style = TextStyle(
                         fontSize = 13.sp,
                         fontFamily = FontFamily(Font(R.font.medium)),
                         fontWeight = FontWeight(500),
@@ -177,6 +181,7 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_progress),
                     content = stringResource(R.string.profile_progress_content)
                 ) {
+                    navController.navigate(RegisterSubjectsScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 
@@ -190,7 +195,7 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_favourite),
                     content = stringResource(R.string.profile_favourite_content)
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(ArticleScreenDestination(1))
                 }
 
                 Spacer(

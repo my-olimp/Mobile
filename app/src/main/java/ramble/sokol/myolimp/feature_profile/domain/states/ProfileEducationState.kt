@@ -8,5 +8,15 @@ data class ProfileEducationState(
     val region: Region = Region(),
     val city: City = City(),
     val school: School = School(),
-    val grade: Int = 0
-)
+    val grade: Int = 0,
+
+    val regionError: Boolean = false,
+    val cityError: Boolean = false,
+    val schoolError: Boolean = false,
+    val gradeError: Boolean = false,
+
+    val regionList: List<Region> = listOf(),
+    val cityList: List<City> = listOf(),
+    val schoolList: List<School> = listOf()
+
+    )

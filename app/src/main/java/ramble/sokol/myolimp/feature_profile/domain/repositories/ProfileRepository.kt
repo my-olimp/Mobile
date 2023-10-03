@@ -3,13 +3,13 @@ package ramble.sokol.myolimp.feature_profile.domain.repositories
 import android.util.Log
 import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
-import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
-import ramble.sokol.myolimp.feature_profile.domain.models.UserModel
+import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,13 +18,12 @@ import retrofit2.Response
 class ProfileRepository {
 
     private val instance = RetrofitBuilder().instance(ProfileApi::class.java)
+    private val profileInstance = ProfileRetrofitInstance().instance(ProfileApi::class.java)
 
     suspend fun updateUser(
-        auth: String,
-        user: UserModel
-    ) = ProfileRetrofitInstance.api.updateUserData(
-            auth = auth,
-            user = user.toUserModelEntity()
+        user: RequestUserModel
+    ) = instance.updateUserData(
+            user = user
         )
 
     suspend fun uploadImg(
@@ -60,27 +59,8 @@ class ProfileRepository {
         }
     }
 
-    fun refreshToken(
-        cookie: String,
-        onResult: (ResponseAuthModel?) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        instance.refreshToken(cookie = cookie).enqueue(
-            object : Callback<ResponseAuthModel> {
-
-                override fun onResponse(
-                    call: Call<ResponseAuthModel>,
-                    response: Response<ResponseAuthModel>
-                ) {
-                    onResult(response.body())
-                }
-
-                override fun onFailure(call: Call<ResponseAuthModel>, t: Throwable) {
-                    onError(t)
-                }
-            }
-        )
-    }
+    suspend fun refreshToken(cookie: String)
+        = profileInstance.refreshToken(cookie)
 
     fun getRegions(
         auth: String,

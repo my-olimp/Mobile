@@ -1,5 +1,8 @@
 package ramble.sokol.myolimp.feature_authentication.data.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class ResponseRegionModel(
@@ -11,9 +14,10 @@ data class ResponseRegionModel(
     }
 }
 
+@Entity
 data class Region(
-    val number: Int = -1,
-    val name: String = ""
+    @PrimaryKey val number: Int = -1,
+    @ColumnInfo("region_name") val name: String = ""
 )
 
 fun List<ResponseRegionModel>.asListRegion(): List<Region> {

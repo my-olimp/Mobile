@@ -38,6 +38,7 @@ class NetworkConnectionInterceptor : Interceptor, KoinComponent {
     override fun intercept(
         chain: Interceptor.Chain
     ): Response {
+
         val response = chain.proceed(chain.request())
 
         if (!isConnected) {

@@ -20,9 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
+import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
@@ -31,7 +33,9 @@ fun OutlinedText (
     label: String,
     isEnabled: Boolean = true,
     isError: Boolean = false,
+    isSuccess: Boolean = false,
     isEmail: Boolean = false,
+    errorText: String = "",
     onTextChanged: (String) -> Unit,
 ) {
 
@@ -68,9 +72,9 @@ fun OutlinedText (
             }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = BlueStart,
-            focusedLabelColor = BlueStart,
-            cursorColor = BlueStart,
+            focusedBorderColor = if(isSuccess) SuccessStatus else BlueStart,
+            focusedLabelColor = if(isSuccess) SuccessStatus else BlueStart,
+            cursorColor = if(isSuccess) SuccessStatus else BlueStart,
             backgroundColor = White,
             errorBorderColor = MessageError
         ),
@@ -88,4 +92,7 @@ fun OutlinedText (
         isError = isError,
         enabled = isEnabled
     )
+    if(isError) {
+        ShowError(text = errorText)
+    }
 }

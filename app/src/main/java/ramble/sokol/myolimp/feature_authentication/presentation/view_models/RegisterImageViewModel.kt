@@ -9,6 +9,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -68,7 +69,7 @@ class RegisterImageViewModel : ViewModel() {
 
                         //Upload image
                         repository.registerImageDocs(
-                            auth = dataStore.getToken(Constants.ACCESS_TOKEN)
+                            auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
                                 ?: throw Exception("No access token"),
                             data = UserDocsDataModel(
                                 snils = state.value.snils

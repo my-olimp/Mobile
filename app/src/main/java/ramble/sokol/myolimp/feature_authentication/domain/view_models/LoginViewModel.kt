@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
@@ -15,7 +17,8 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.LoginRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
-import ramble.sokol.myolimp.feature_profile.data.Constants
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 class LoginViewModel : ViewModel() {
     companion object {
@@ -23,6 +26,7 @@ class LoginViewModel : ViewModel() {
     }
 
     private val repository = LoginRepository()
+    private val localUser = LocalUserViewModel()
 
     private val dataStore = CodeDataStore()
 
@@ -67,7 +71,7 @@ class LoginViewModel : ViewModel() {
                         // TODO: Make SnackBar
 
 //                        Toast.makeText(context,
-//                            context.getString(R.string.success_autherization_message), Toast.LENGTH_SHORT).show()
+//                            context.getString(R.string.success_authorization_message), Toast.LENGTH_SHORT).show()
 
                         event.navigator.navigate(
                             HomeScreenDestination()
@@ -110,7 +114,10 @@ class LoginViewModel : ViewModel() {
                             if (it?.code != null) {
                                 
                                 // save token in data store
-                                saveToken(it.code)
+                                saveData(
+                                    it.code,
+                                    it.user
+                                )
 
                                 // navigate to main screen
                                 onSuccess()
@@ -177,14 +184,25 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private fun saveToken(
-        token: String
+    private fun saveData(
+        token: String,
+        user: LocalUserModel
     ) {
-        viewModelScope.launch {
-            dataStore.setToken(
-                key = Constants.ACCESS_TOKEN,
-                value = token
-            )
+        runBlocking {
+            try {
+                Log.i(TAG, "code - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
+    
+                dataStore.setToken(
+                    key = CodeDataStore.ACCESS_TOKEN,
+                    value = token
+                )
+    
+                Log.i(TAG, "code - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
+    
+                localUser.saveUser(user)
+            } catch (ex : Exception) {
+                Log.i(TAG, "saveData: ${ex.message}")
+            }
         }
     }
 

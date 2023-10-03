@@ -119,6 +119,12 @@
     <string name="type_of_activity">Вид деятельности</string>
     <string name="further">Дальше</string>
     <string name="pupil">Ученик</string>
+
+    <string-array name="genders">
+        <item>Мужской</item>
+        <item>Женский</item>
+    </string-array>
+
     <string-array name="activity_type">
         <item>Ученик</item>
         <item>Тренер/учитель</item>
@@ -174,5 +180,27 @@
     <string name="choose_necessary_subjects">Выберите или введите в поиск предметы, к которым готовитесь</string>
     <string name="popular_subjects">Популярные дисциплины</string>
     <string name="no_subjects_found">Предмет не найден :(</string>
+    <string name="answer">Ответить</string>
+    <string name="article_author">Автор: %1$s %2$s %3$s</string>
+    <string name="article_task_number">Задание %1$d</string>
+    <string name="article_answer_type_float">Число или дробь</string>
+    <string name="article_question_error">Неверно, попробуйте снова</string>
+    <string name="article_question_show_answer">Показать решение</string>
+    <string name="article_question_solution">Решение</string>
     <string name="null_snils_error_text">Необходимо ввести снилс</string>
+    <string name="library_articles_title">Статьи</string>
+    <string name="learn_more">Подробнее</string>
+    <string name="button_show_text">Показать</string>
+    <string name="man_gender">Мужской</string>
+    <string name="women_gender">Женский</string>
+    <string name="surname_error">Фамилию</string>
+    <string name="dob_error">Дату рождения</string>
+    <string name="email_error">Почту</string>
+    <string name="don_t_have_plans">У вас еще нет планов</string>
+    <string name="pass_email_to_restore_password">Введите почту, для которой вы хотите восстановить доступ</string>
+    <string name="check_email_code_send">Проверьте свою почту.\nМы отправили вам ссылку для восстановления пароля</string>
+    <string name="resend_code_again">Отправить код повторно %1$d:%2$d</string>
+    <string name="something_wrong">Что-то не так</string>
+    <string name="check_your_connection">Кажется, нет интернета. Проверьте сеть и перезагрузите приложение</string>
+    <string name="reload">Перезагрузить</string>
 </resources>
