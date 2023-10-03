@@ -26,9 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
-import ramble.sokol.myolimp.destinations.SendCodeScreenDestination
+import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_authentication.presentation.components.OutlinedBtn
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.GreySecondary
@@ -94,7 +93,7 @@ fun BeginAuthenticationScreen (
             FilledBtn(
                 text = stringResource(R.string.register)
             ) {
-                navigator.navigate(SendCodeScreenDestination)
+                navigator.navigate(SignUpScreenDestination)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -103,15 +102,6 @@ fun BeginAuthenticationScreen (
                 text = stringResource(R.string.login)
             ) {
                 navigator.navigate(LoginScreenDestination)
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            FilledBtn(
-                text = "[Beta]"
-            ) {
-                //navigator.navigate(ProfileScreenDestination)
-                navigator.navigate(ArticleScreenDestination(1))
             }
         }
     }

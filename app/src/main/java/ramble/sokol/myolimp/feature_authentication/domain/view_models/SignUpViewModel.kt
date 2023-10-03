@@ -16,8 +16,8 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
-import ramble.sokol.myolimp.destinations.CodeCheckerScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
+import ramble.sokol.myolimp.destinations.SendCodeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
@@ -73,10 +73,11 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                 //                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
 
                       event.navigator.navigate(
-                          CodeCheckerScreenDestination(
+                          /*CodeCheckerScreenDestination(
                               email = _state.value.email,
                               password = _state.value.password,
-                          )
+                          )*/
+                          SendCodeScreenDestination
                       )
                   }
                 )

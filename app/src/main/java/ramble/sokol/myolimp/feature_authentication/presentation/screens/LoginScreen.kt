@@ -29,7 +29,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.PassEmailScreenDestination
-import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
+import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
@@ -165,8 +165,7 @@ fun LoginScreen(
                     content = stringResource(R.string.not_registered),
                     offer = stringResource(R.string.register_account)
                 ) {
-                    //navigator.navigate(SignUpScreenDestination)
-                    navigator.navigate(RegisterInfoScreenDestination)
+                    navigator.navigate(SignUpScreenDestination)
                 }
             }
         }
