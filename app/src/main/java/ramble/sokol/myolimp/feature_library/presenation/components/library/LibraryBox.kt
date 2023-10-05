@@ -62,31 +62,32 @@ fun LibraryBox(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            if(action != "") {
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            onActionClicked()
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = action,
+                        style = regularType(
+                            color = MainPageBlue,
+                            fontSize = 13.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable {
-                        onActionClicked()
-                    },
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = action,
-                    style = regularType(
-                        color = MainPageBlue,
-                        fontSize = 13.sp
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                    Spacer(modifier = Modifier.width(8.dp))
 
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_main_next_step),
-                    contentDescription = "open library",
-                )
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_main_next_step),
+                        contentDescription = "open library",
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))

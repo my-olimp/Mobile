@@ -39,6 +39,7 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
+import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
@@ -195,7 +196,7 @@ fun ProfileScreen(
                     title = stringResource(R.string.profile_favourite),
                     content = stringResource(R.string.profile_favourite_content)
                 ) {
-                    navController.navigate(ArticleScreenDestination(1))
+                    navController.navigate(ProfileLoveScreenDestination)
                 }
 
                 Spacer(
