@@ -88,6 +88,6 @@ val viewModelsModule = module {
 
     /*Profile love*/
     viewModel {
-        ProfileLoveViewModel()
+        ProfileLoveViewModel(get())
     }
 }

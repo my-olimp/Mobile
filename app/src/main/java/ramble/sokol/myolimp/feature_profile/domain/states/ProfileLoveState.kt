@@ -6,5 +6,5 @@ data class ProfileLoveState(
     val isLoaded: Boolean = false,
 
     val listArticles: List<ArticleModel> = emptyList(),
-    val subjects: List<String> = emptyList(),
+    val subjects: Map<String,Boolean> = emptyMap(),
 )

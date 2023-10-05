@@ -59,7 +59,7 @@ fun ProfileLoveScreen(
             )
 
             VerticalSpacer(height = 12.dp)
-            
+
             LibraryBox(
                 title = stringResource(id = R.string.library_articles_title),
                 onActionClicked = {}

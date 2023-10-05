@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +11,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_library.data.repository.LibraryRepositoryImpl
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileLoveRepository
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileLoveState
 
-class ProfileLoveViewModel : ViewModel() {
+class ProfileLoveViewModel(context: Context) : ViewModel() {
 
     companion object {
         const val TAG = "ViewModelProfileLove"
@@ -24,14 +28,22 @@ class ProfileLoveViewModel : ViewModel() {
 
     private val dataStore = CodeDataStore()
 
+    private val userDatabase: UserDatabase = UserDatabase(context)
+    private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
+
     private val _state = MutableStateFlow(ProfileLoveState())
     val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
             extractArticles()
-            extractSubjects()
+            val subjects = libraryRepository.getUserSubjects()
+            _state.update { it.copy(subjects = subjects.associateWith { false }) }
         }
+    }
+
+    fun onEvent(event: ProfileLoveEvent) {
+
     }
 
     private fun extractSubjects() {
@@ -44,11 +56,11 @@ class ProfileLoveViewModel : ViewModel() {
 
                 Log.i(TAG,"extracted subjects response is: $response")
 
-                if(response != null) {
+                /*if(response != null) {
                     _state.update {
                         it.copy( subjects = response )
                     }
-                }
+                }*/
 
             } catch (e: Exception) {
                 Log.i(TAG,"extracting subjects throwed ${e.message}")
