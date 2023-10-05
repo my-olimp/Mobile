@@ -23,8 +23,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.domain.events.ForgotPasswordEvent
-import ramble.sokol.myolimp.feature_authentication.domain.view_models.ForgotPasswordViewModel
+import ramble.sokol.myolimp.feature_authentication.domain.events.SendCodeEvent
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.SendCodeViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
@@ -41,7 +41,7 @@ fun PassEmailScreen(
     navigator: DestinationsNavigator
 ) {
 
-    val viewModel = getViewModel<ForgotPasswordViewModel>()
+    val viewModel = getViewModel<SendCodeViewModel>()
     val state = viewModel.state.collectAsState()
 
     OlimpTheme(
@@ -82,7 +82,7 @@ fun PassEmailScreen(
                     isError = state.value.emailError,
                     errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.email_error)
                 ) {
-                    viewModel.onEvent(ForgotPasswordEvent.OnEmailTyped(it))
+                    viewModel.onEvent(SendCodeEvent.OnEmailTyped(it))
                 }
 
                 VerticalSpacer(height = 33.dp)
@@ -91,7 +91,7 @@ fun PassEmailScreen(
                     text = stringResource(id = R.string.next),
                     padding = 0.dp
                 ) {
-                    viewModel.onEvent(ForgotPasswordEvent.OnContinue(navigator))
+                    viewModel.onEvent(SendCodeEvent.OnContinue(navigator))
                 }
             }
         }

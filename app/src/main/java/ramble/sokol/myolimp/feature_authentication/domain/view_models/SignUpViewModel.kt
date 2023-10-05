@@ -77,7 +77,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                               email = _state.value.email,
                               password = _state.value.password,
                           )*/
-                          SendCodeScreenDestination
+                          SendCodeScreenDestination(email = state.value.email)
                       )
                   }
                 )
