@@ -83,7 +83,7 @@ fun ProfileLoveScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(top = 12.dp, bottom = 12.dp, start = 16.dp, end = 12.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -97,31 +97,35 @@ fun ProfileLoveScreen(
 
                 VerticalSpacer(height = 12.dp)
 
-                LibraryBox(
-                    title = stringResource(id = R.string.library_articles_title),
-                    onActionClicked = {}
-                ) {
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                Column (
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                ){
+                    LibraryBox(
+                        title = stringResource(id = R.string.library_articles_title),
+                        onActionClicked = {}
                     ) {
-                        if(state.value.listArticles.isNotEmpty()) {
-                            items(state.value.listArticles) { article ->
-                                if(subjects.contains(article.subject)) {
-                                    LibraryItem(
-                                        subject = article.subject,
-                                        title = article.title,
-                                        onClick = {
-                                            navController.navigate(ArticleScreenDestination(id = article.id))
-                                        }
-                                    )
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (state.value.listArticles.isNotEmpty()) {
+                                items(state.value.listArticles) { article ->
+                                    if (subjects.contains(article.subject)) {
+                                        LibraryItem(
+                                            subject = article.subject,
+                                            title = article.title,
+                                            onClick = {
+                                                navController.navigate(ArticleScreenDestination(id = article.id))
+                                            }
+                                        )
+                                    }
                                 }
-                            }
 
-                        } else {
-                            item {
-                                TextReplacer(replacer = stringResource(id = R.string.have_no_loved_articles))
+                            } else {
+                                item {
+                                    TextReplacer(replacer = stringResource(id = R.string.have_no_loved_articles))
+                                }
                             }
                         }
                     }
