@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -18,14 +23,20 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
 import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.CalendarFocusedText
@@ -39,14 +50,17 @@ import ramble.sokol.myolimp.ui.theme.regularType
 
 @Composable
 fun CheckListBottomSheet(
-    subjectsMap: Map<String, Boolean>,
-    onEvent: (ProfileLoveEvent) -> Unit,
+    subjects: HashMap<String,Boolean>,
+    onChooseItem: (String,Boolean) -> Unit,
+    onFilter: () -> Unit,
     onHideSheet: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 24.dp)
             .fillMaxSize()
+            .nestedScroll(rememberNestedScrollInteropConnection())
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier
@@ -81,19 +95,18 @@ fun CheckListBottomSheet(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            subjectsMap.keys.forEach { subjectTitle ->
+            subjects.forEach { (subjectTitle,checked) ->
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable { onChooseItem(subjectTitle,!checked) }
+                    ,
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Checkbox(
-                        checked = subjectsMap[subjectTitle] ?: false,
-                        onCheckedChange = {
-                            onEvent(
-                                ProfileLoveEvent.OnCheckboxSubject(subjectTitle)
-                            )
-                        },
+                        checked = checked,
+                        onCheckedChange = null,
                         modifier = Modifier.size(24.dp),
                         colors = CheckboxDefaults.colors(
                             checkedColor = CalendarFocusedText,
@@ -117,10 +130,10 @@ fun CheckListBottomSheet(
         Spacer(modifier = Modifier.height(48.dp))
         FilledBtn(
             text = stringResource(R.string.button_show_text),
-            isEnabled = subjectsMap.any { it.value } //At least one true
+            isEnabled = subjects.any { it.value } //At least one true
         ) {
             onHideSheet()
-            onEvent(ProfileLoveEvent.OnFilterSubjectFromBottomSheet)
+            onFilter()
         }
     }
 }

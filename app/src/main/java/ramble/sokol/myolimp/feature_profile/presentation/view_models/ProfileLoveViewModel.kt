@@ -26,8 +26,6 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
 
     private val repository = ProfileLoveRepository()
 
-    private val dataStore = CodeDataStore()
-
     private val userDatabase: UserDatabase = UserDatabase(context)
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
 
@@ -38,47 +36,55 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
         viewModelScope.launch {
             extractArticles()
             val subjects = libraryRepository.getUserSubjects()
-            _state.update { it.copy(subjects = subjects.associateWith { false }) }
-        }
-    }
-
-    fun onEvent(event: ProfileLoveEvent) {
-
-    }
-
-    private fun extractSubjects() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = repository.extractSubjects(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
-                    ?: throw Exception("No access token")
-                ).body()
-
-                Log.i(TAG,"extracted subjects response is: $response")
-
-                /*if(response != null) {
-                    _state.update {
-                        it.copy( subjects = response )
-                    }
-                }*/
-
-            } catch (e: Exception) {
-                Log.i(TAG,"extracting subjects throwed ${e.message}")
+            _state.update {
+                it.copy(
+                    userSubjects = subjects,
+                    subjects = subjects.associateWith { false } as HashMap<String, Boolean>,
+                    isSubjectLoaded = true
+                )
             }
         }
     }
 
+    fun onEvent(event: ProfileLoveEvent) {
+        when(event) {
+            is ProfileLoveEvent.OnChooseCheckbox -> {
 
+                _state.update {
+                    it.copy(
+                      subjects = state.value.subjects.mapValues {item ->
+                          if(item.key == event.subject) !item.value else item.value
+                      } as HashMap<String, Boolean>
+                    )
+                }
+            }
+            is ProfileLoveEvent.OnFilterSubjects -> {
+                _state.update {
+                    it.copy(
+                        filteredSubjects = state.value.userSubjects.filter { subject ->
+                            state.value.subjects[subject] ?: false
+                        }
+                    )
+                }
+            }
+            is ProfileLoveEvent.OnQueryUpdate -> {
+                _state.update {
+                    it.copy(queryText = event.query)
+                }
+            }
+        }
+    }
     private fun extractArticles() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = repository.extractArticles(1,0/*LOVE*/,"").body() //have no loved articles
+                val response = repository.extractArticles(1,LOVE,state.value.queryText).body()
                 Log.i(TAG, "extract response is: $response")
 
                 if(response != null) {
                     _state.update {
                         it.copy(
-                            listArticles = response.toArticlesList()
+                            listArticles = response.toArticlesList(),
+                            isArticlesLoaded = true
                         )
                     }
                 }
