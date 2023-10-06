@@ -2,6 +2,8 @@ package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
@@ -13,9 +15,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
@@ -31,6 +36,7 @@ import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.feature_profile.domain.states.ImgState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileContactsState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileEducationState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfilePersonalState
@@ -43,11 +49,14 @@ import java.io.FileOutputStream
 
 class ProfileViewModel (
     context: Context
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     companion object {
         private const val TAG: String = "ViewModelProfile"
     }
+
+    private val context by inject<Context>()
+
     private val dataStore = CodeDataStore()
 
     private val repository = ProfileRepository()
@@ -60,6 +69,11 @@ class ProfileViewModel (
     /*General state*/
     private val _state = MutableStateFlow(ProfileState())
     val state = _state.asStateFlow()
+    /**/
+
+    /*Image state*/
+    private val _imgState = MutableStateFlow(ImgState())
+    val imgState = _imgState.asStateFlow()
     /**/
 
     /*Education sheet state*/
@@ -97,7 +111,6 @@ class ProfileViewModel (
                     phone = _user.first().phone,
                     email = _user.first().email,
                     grade = _user.first().grade,
-                    profileImg = _user.first().profileImg,
                     hasThird = _user.first().hasThird,
                     isLoaded = true
                 )
@@ -187,11 +200,12 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnImgChanged -> {
-                _state.update {
+                _imgState.update {
                     it.copy(
-                        profileImg = event.uri.toString()
+                        profileImg = event.uri
                     )
                 }
+
             }
 
             is ProfileEvent.OnMarkerClicked -> {
@@ -201,15 +215,6 @@ class ProfileViewModel (
                     )
                 }
             }
-
-            is ProfileEvent.OnImgDelete -> {
-                _state.update {
-                    it.copy(
-                        profileImg = null
-                    )
-                }
-            }
-
 
             is ProfileEvent.OnPhoneChanged -> {
                 _contactsState.update {
@@ -325,12 +330,24 @@ class ProfileViewModel (
 
             is ProfileEvent.OnImgSave -> {
                 viewModelScope.launch {
-                    updateUserImg(
-                        file = event.file,
-                        bitmap = event.bitmap,
+                    uploadImg(
                         onResult = {
-                            Log.i("TEMP", "hide sheet")
-                            SheetRouter.navigateTo(SheetNavigation.Empty()) }
+                            SheetRouter.navigateTo(SheetNavigation.Empty())
+                            _imgState.update {
+                                it.copy(
+                                    profileImg = null,
+                                    isImgChanged = true
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+
+            is ProfileEvent.OnImgUpdated -> {
+                _imgState.update {
+                    it.copy(
+                        isImgChanged = false
                     )
                 }
             }
@@ -505,8 +522,7 @@ class ProfileViewModel (
                     phone = phone,
                     email = email,
                     grade = grade,
-                    accountType = accountType,
-                    profileImg = profileImg
+                    accountType = accountType
                 )
             }
         }
@@ -515,32 +531,45 @@ class ProfileViewModel (
         )
     }
 
-    private suspend fun updateUserImg(
-        file: File,
-        bitmap: Bitmap,
-        onResult: () -> Unit,
+    private suspend fun uploadImg(
+        onResult: () -> Unit
     ) {
         try {
-            // Write the bitmap to the new File in PNG format
-            val outStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 80, outStream)
-            outStream.flush()
-            outStream.close()
 
-            //Prepate image for upload
-            val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
+            val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(
+                imgState.value.profileImg ?: Uri.EMPTY)
+            )
+
+            val pngFile = File(context.cacheDir, "converted_image.png")
+
+            if (pngFile.exists()) pngFile.delete()
+
+            withContext(Dispatchers.IO) {
+                pngFile.createNewFile()
+
+                val outStream = FileOutputStream(pngFile)
+
+                bitmap.compress(Bitmap.CompressFormat.PNG, 80, outStream)
+
+                outStream.flush()
+                outStream.close()
+            }
+
+            // Preparation image for upload
+            val requestFile = pngFile.asRequestBody("image/png".toMediaTypeOrNull())
             val body =
-                MultipartBody.Part.createFormData("image", file.name, requestFile)
+                MultipartBody.Part.createFormData("image", pngFile.name, requestFile)
+
             repository.uploadImg(
-                auth = dataStore.getToken(ACCESS_TOKEN).first()
-                    ?: throw Exception("No access token"),
                 imageBody = body,
                 onResult = onResult,
                 onError = { throw it }
             )
+
             Log.i(TAG, "response - success")
+
         } catch (ex: Exception) {
-            Log.i(TAG, "ex - ${ex.message}")
+            Log.i(TAG, "error - $ex")
         }
     }
 
@@ -709,4 +738,3 @@ class ProfileViewModel (
         }
     }
 }
-

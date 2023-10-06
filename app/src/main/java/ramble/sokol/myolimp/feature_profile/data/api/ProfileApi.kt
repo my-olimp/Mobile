@@ -21,22 +21,17 @@ import retrofit2.http.Query
 
 interface ProfileApi {
 
-    @Headers(
-        "Content-Type: application/json",
-    )
+    @Headers("Content-Type: application/json",)
     @PATCH("user/")
     suspend fun updateUserData(
-//        @Header("Authorization") auth: String,
         @Body user: RequestUserModel,
-    ): Response<ResponseUserModel> //Call<ResponseUserModel>
-
+    ): Response<ResponseUserModel>
 
     @Multipart
     @POST("/user/avatar/")
     suspend fun uploadImage(
-        @Header("Authorization") auth: String,
         @Part image: MultipartBody.Part
-    ): Call<Void>?
+    ) : Response<Unit>
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/logout/")

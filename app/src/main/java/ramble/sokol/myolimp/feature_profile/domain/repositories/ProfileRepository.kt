@@ -27,14 +27,12 @@ class ProfileRepository {
         )
 
     suspend fun uploadImg(
-        auth: String,
         imageBody: MultipartBody.Part,
         onResult: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
         try {
             instance.uploadImage(
-                auth = auth,
                 image = imageBody
             )
             onResult()

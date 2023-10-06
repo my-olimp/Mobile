@@ -10,7 +10,7 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.utils.converters.Converter
 
 @Database(
     entities = [LocalUserModel::class],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

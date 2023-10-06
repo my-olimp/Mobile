@@ -25,7 +25,6 @@ data class LocalUserModel(
     @SerializedName("email") val email: String? = null,
     @SerializedName("grade") val grade: Int? = null,
     @SerializedName("account_type") val accountType: String? = null,
-    @SerializedName("image") val profileImg: String? = null,
     val hasThird: Boolean = true,
     @SerializedName("subjects") val subjects: List<String> = emptyList(),
     @SerializedName("region") @Embedded val region: Region? = null,
