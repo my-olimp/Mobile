@@ -447,7 +447,7 @@ fun ProfileDataScreen(
                     EditContactsSheet(viewModel = viewModel)
 
                     isCenter = false
-                    sheetName = stringResource(R.string.education)
+                    sheetName = stringResource(R.string.contacts)
 
                     LaunchedEffect(key1 = true, block = {
                         coroutineScope.launch {

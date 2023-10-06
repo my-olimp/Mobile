@@ -490,7 +490,7 @@ class ProfileViewModel (
                 firstName = state.value.firstName,
                 secondName = state.value.secondName,
                 thirdName = state.value.thirdName,
-                gender = genderCheck(),
+                gender = state.value.gender,
                 snils = state.value.snils,
                 dateOfBirth = state.value.dateOfBirth
             )
@@ -506,7 +506,7 @@ class ProfileViewModel (
                 updateDatabase(response.body() as ResponseUserModel)
             }
         } catch (e: Exception) {
-            Log.i(TAG,"throwed ${e.message}")
+            Log.i(TAG,"error ${e.message}")
         }
     }
 
@@ -532,7 +532,7 @@ class ProfileViewModel (
             }
 
         } catch (e: Exception) {
-            Log.i(TAG,"throwed ${e.message}")
+            Log.i(TAG,"error - ${e.message}")
         }
     }
 
@@ -555,7 +555,7 @@ class ProfileViewModel (
                 updateDatabase(response.body() as ResponseUserModel)
             }
         } catch(e: Exception) {
-            Log.i(TAG,"throwed ${e.message}")
+            Log.i(TAG,"error - ${e.message}")
         }
     }
 
@@ -782,13 +782,6 @@ class ProfileViewModel (
                 updateCitiesList()
                 updateSchoolsList()
             }
-        }
-    }
-    private fun genderCheck() : String? {
-        return when(state.value.gender?.lowercase()) {
-            "мужской" -> "m"
-            "женский" -> "f"
-            else -> null
         }
     }
 }
