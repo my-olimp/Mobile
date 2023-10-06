@@ -164,12 +164,13 @@ fun EditPhotoSheet(
                 text = stringResource(R.string.save),
                 enabled = (selectedImgUri.toString().startsWith("content://"))
             ) {
+                selectedImgUri = null
                 viewModel.onEvent(ProfileEvent.OnImgSave)
             }
 
             ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
                 selectedImgUri = null
-//                viewModel.onEvent(ProfileEvent.OnImgDelete)
+                viewModel.onEvent(ProfileEvent.OnDeleteImg)
             }
         }
     }

@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.presentation.screens
 
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -173,8 +172,7 @@ fun ProfileDataScreen(
                         }
 
                         ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-                            //TODO
-//                            viewModel.onEvent(ProfileEvent.OnImgDelete)
+                            viewModel.onEvent(ProfileEvent.OnDeleteImg)
                         }
                     }
 

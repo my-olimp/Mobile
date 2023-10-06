@@ -292,6 +292,35 @@ class ProfileViewModel (
                 } else Log.i(TAG, "education data isn't valid")
             }
 
+            is ProfileEvent.OnDeleteImg -> {
+                viewModelScope.launch {
+
+                    _state.update {
+                        it.copy(
+                            isLoaded = false
+                        )
+                    }
+
+                    deleteImg(
+                        onResult = {
+                            SheetRouter.navigateTo(SheetNavigation.Empty())
+                        }
+                    )
+
+                    _state.update {
+                        it.copy(
+                            isLoaded = true
+                        )
+                    }
+
+                    _imgState.update {
+                        it.copy(
+                            isImgChanged = true
+                        )
+                    }
+                }
+            }
+
             is ProfileEvent.OnContactsInfoSave -> {
                 if(isContactsValid()) {
                     _state.update {
@@ -330,6 +359,13 @@ class ProfileViewModel (
 
             is ProfileEvent.OnImgSave -> {
                 viewModelScope.launch {
+
+                    _state.update {
+                        it.copy(
+                            isLoaded = false
+                        )
+                    }
+
                     uploadImg(
                         onResult = {
                             SheetRouter.navigateTo(SheetNavigation.Empty())
@@ -341,6 +377,12 @@ class ProfileViewModel (
                             }
                         }
                     )
+
+                    _state.update {
+                        it.copy(
+                            isLoaded = true
+                        )
+                    }
                 }
             }
 
@@ -375,13 +417,25 @@ class ProfileViewModel (
                 }
             }
 
-            is ProfileEvent.OnUploadError -> TODO()
-
             is ProfileEvent.OnEducationSheetAttach -> {
                 if(event.region == Region())updateRegionsList()
                 else updateMenus()
             }
         }
+    }
+
+    private suspend fun deleteImg(
+        onResult: () -> Unit
+    ) {
+        repository.deleteImg(
+            onError = {
+                Log.i(TAG, "error - $it")
+            },
+            onResult = {
+                Log.i(TAG, "successfully deleted")
+                onResult()
+            }
+        )
     }
 
     private fun checkPersonalDataCorrectness(): Boolean {

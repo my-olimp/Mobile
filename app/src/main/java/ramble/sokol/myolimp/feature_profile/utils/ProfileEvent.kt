@@ -14,9 +14,9 @@ sealed class ProfileEvent {
     data object OnContactsInfoSave : ProfileEvent()
     data object OnImgSave : ProfileEvent()
     data object OnImgUpdated : ProfileEvent()
+    data object OnDeleteImg : ProfileEvent()
 
     data class OnEducationSheetAttach(val region: Region) : ProfileEvent()
-    data object OnUploadError: ProfileEvent()
 
     data class OnImgChanged(val uri: Uri?): ProfileEvent()
 

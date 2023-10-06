@@ -41,6 +41,18 @@ class ProfileRepository {
         }
     }
 
+    suspend fun deleteImg(
+        onResult: () -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        try {
+            instance.deleteImg()
+            onResult()
+        } catch (ex: Exception) {
+            onError(ex)
+        }
+    }
+
     suspend fun logOut(
         cookie: String,
         onResult: () -> Unit,
