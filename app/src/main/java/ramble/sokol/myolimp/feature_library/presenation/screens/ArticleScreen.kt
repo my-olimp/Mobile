@@ -64,152 +64,152 @@ fun ArticleScreen(
 
 //    Latex()
 
-    MarkDown()
+    //MarkDown()
 
-//    OlimpTheme {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(color = BackgroundMain)
-//        ) {
-//
-//            if (state.value.isLoading) {
-//                LoadingCircular()
-//            }
-//
-//            Row(
-//                modifier = Modifier
-//                    .height(intrinsicSize = IntrinsicSize.Max)
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 16.dp),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//
-//                SearchTextField(
-//                    modifier = Modifier
-//                        .height(IntrinsicSize.Max)
-//                        .weight(0.68f),
-//                    onTextChanged = {
-//                        //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
-//                    },
-//                    onCancelSearching = {
-//                        //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
-//                    }
-//                )
-//
-//                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-//
-//                Box(
-//                    modifier = Modifier
-//                        //.fillMaxHeight()
-//                        .weight(0.16f)
-//                        .clip(RoundedCornerShape(8.dp))
-//                        .padding(top = 8.dp)
-//                        .background(
-//                            color = White,
-//                            shape = RoundedCornerShape(size = 8.dp)
-//                        )
-//                        .clickable {
-//                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-//                        },
-//                ) {
-//                    Icon(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(14.dp),
-//                        painter = painterResource(id = R.drawable.ic_library_share),
-//                        contentDescription = "bookmark",
-//                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-//                    )
-//                }
-//
-//                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-//
-////                Box(
-////                    modifier = Modifier
-////                        //.fillMaxHeight()
-////                        .weight(0.16f)
-////                        .clip(RoundedCornerShape(8.dp))
-////                        .padding(top = 8.dp)
-////                        .background(
-////                            color = White,
-////                            shape = RoundedCornerShape(size = 8.dp)
-////                        )
-////                        .clickable {
-////                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-////                        },
-////                ) {
-////                    Icon(
-////                        modifier = Modifier
-////                            .fillMaxSize()
-////                            .padding(14.dp),
-////                        painter = painterResource(id = R.drawable.ic_article_favorite),
-////                        contentDescription = "bookmark",
-////                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-////                    )
-////                }
-//
-//                FavoriteIcon(
-//                    modifier = Modifier
-//                        .fillMaxHeight()
-//                        .weight(0.15f)
-//                        .padding(top = 8.dp)
-//                        .clip(RoundedCornerShape(8.dp)), //try remove
-//                    onClick = {
-//                        viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
-//                    },
-//                    isActive = state.value.article.isFavourite
-//                )
-//            }
-//
-//            Spacer(modifier = Modifier.height(12.dp))
-//
-//            HorizontalLine()
-//
-//            /*                      after search box                    */
-//
-//            //не уверен что тут нужен lazyrow а не просто row
-//
-//            LazyRow(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(vertical = 5.dp, horizontal = 16.dp),
-//                horizontalArrangement = Arrangement.spacedBy(5.dp)
-//            ) {
-//                    items(state.value.article.blocks.size) {
-//                        PartItem(
-//                            itemId = it,
-//                            selected = partState == it,
-//                            partType = state.value.article.blocks[it].type
-//                        ) { id ->
-//                            partState = id
-//                        }
-//                    }
-//            }
-//
-//            HorizontalLine()
-//
-//            /*              select parts               */
-//            if(state.value.article.blocks.isNotEmpty()) {
-//                when (state.value.article.blocks[partState].type) {
-//                    "p" -> {
-//                        ExaminationScreen(
-//                            viewModel = viewModel,
-//                            blockId = partState
-//                        )
-//                    }
-//                    /*TODO на будущее поменять*/else -> {
-//                        EducationScreen(
-//                            viewModel = viewModel,
-//                            blockId = partState
-//                        )
-//                    }
-//                }
-//            }
-//
-//        }
-//    }
+    OlimpTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = BackgroundMain)
+        ) {
+
+            if (state.value.isLoading) {
+                LoadingCircular()
+            }
+
+            Row(
+                modifier = Modifier
+                    .height(intrinsicSize = IntrinsicSize.Max)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                SearchTextField(
+                    modifier = Modifier
+                        .height(IntrinsicSize.Max)
+                        .weight(0.68f),
+                    onTextChanged = {
+                        //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
+                    },
+                    onCancelSearching = {
+                        //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
+                    }
+                )
+
+                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+
+                Box(
+                    modifier = Modifier
+                        //.fillMaxHeight()
+                        .weight(0.16f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .padding(top = 8.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .clickable {
+                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+                        },
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(14.dp),
+                        painter = painterResource(id = R.drawable.ic_library_share),
+                        contentDescription = "bookmark",
+                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
+                    )
+                }
+
+                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+
+                Box(
+                    modifier = Modifier
+                        //.fillMaxHeight()
+                        .weight(0.16f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .padding(top = 8.dp)
+                        .background(
+                            color = White,
+                            shape = RoundedCornerShape(size = 8.dp)
+                        )
+                        .clickable {
+                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+                        },
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(14.dp),
+                        painter = painterResource(id = R.drawable.ic_article_favorite),
+                        contentDescription = "bookmark",
+                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
+                    )
+                }
+
+                FavoriteIcon(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.15f)
+                        .padding(top = 8.dp)
+                        .clip(RoundedCornerShape(8.dp)), //try remove
+                    onClick = {
+                        viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
+                    },
+                    isActive = state.value.article.isFavourite
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            HorizontalLine()
+
+            /*                      after search box                    */
+
+            //не уверен что тут нужен lazyrow а не просто row
+
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                    items(state.value.article.blocks.size) {
+                        PartItem(
+                            itemId = it,
+                            selected = partState == it,
+                            partType = state.value.article.blocks[it].type
+                        ) { id ->
+                            partState = id
+                        }
+                    }
+            }
+
+            HorizontalLine()
+
+            /*              select parts               */
+            if(state.value.article.blocks.isNotEmpty()) {
+                when (state.value.article.blocks[partState].type) {
+                    "p" -> {
+                        ExaminationScreen(
+                            viewModel = viewModel,
+                            blockId = partState
+                        )
+                    }
+                    /*TODO на будущее поменять*/else -> {
+                        EducationScreen(
+                            viewModel = viewModel,
+                            blockId = partState
+                        )
+                    }
+                }
+            }
+
+        }
+    }
 }
 
 @Composable

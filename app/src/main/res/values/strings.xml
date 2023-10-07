@@ -204,4 +204,6 @@
     <string name="something_wrong">Что-то не так</string>
     <string name="check_your_connection">Кажется, нет интернета. Проверьте сеть и перезагрузите приложение</string>
     <string name="reload">Перезагрузить</string>
+    <string name="have_no_loved_articles">У тебя нет любимых статей</string>
+    <string name="have_no_loved_articles_with_filter">У тебя нет любимых статей по этим предметам</string>
 </resources>
