@@ -10,6 +10,7 @@ import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -21,22 +22,21 @@ import retrofit2.http.Query
 
 interface ProfileApi {
 
-    @Headers(
-        "Content-Type: application/json",
-    )
+    @Headers("Content-Type: application/json",)
     @PATCH("user/")
     suspend fun updateUserData(
-//        @Header("Authorization") auth: String,
         @Body user: RequestUserModel,
-    ): Response<ResponseUserModel> //Call<ResponseUserModel>
-
+    ): Response<ResponseUserModel>
 
     @Multipart
     @POST("/user/avatar/")
     suspend fun uploadImage(
-        @Header("Authorization") auth: String,
         @Part image: MultipartBody.Part
-    ): Call<Void>?
+    ) : Response<Unit>
+
+    @Headers("Content-Type: application/json")
+    @DELETE("user/avatar/")
+    suspend fun deleteImg() : Response<Unit>
 
     @Headers("Content-Type: application/json")
     @POST("user/auth/logout/")

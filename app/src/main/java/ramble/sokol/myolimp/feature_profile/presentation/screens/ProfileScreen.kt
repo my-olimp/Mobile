@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_profile.presentation.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
@@ -58,11 +63,24 @@ fun ProfileScreen(
 
     val viewModel = getViewModel<ProfileViewModel>()
     val state = viewModel.state.collectAsState()
+    val imgState = viewModel.imgState.collectAsState()
     val context = LocalContext.current
 
-//    LaunchedEffect(key1 = Unit, block = {
-//        viewModel.onEvent(ProfileEvent.OnRefreshToken)
-//    })
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current.applicationContext)
+            .data("https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp")
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.DISABLED)
+            .diskCachePolicy(CachePolicy.DISABLED)
+            .build()
+    )
+
+    LaunchedEffect(key1 = imgState.value.isImgChanged) {
+        painter.onForgotten()
+        painter.onRemembered()
+
+        viewModel.onEvent(ProfileEvent.OnImgUpdated)
+    }
 
     BottomBarTheme(
         navController = navController
@@ -92,19 +110,16 @@ fun ProfileScreen(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                AsyncImage(
+                Image(
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .size(95.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(CircleShape),
-//                    model = if (state.value.profileImg != null) state.value.profileImg
-//                            else R.drawable.ic_default_img,
-                    model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
-                    contentDescription = "user logo",
+                    painter = painter,
+                    contentDescription = "custom transition based on painter state",
                     contentScale = ContentScale.Crop
                 )
-
 
                 Spacer(modifier = Modifier.height(8.dp))
 

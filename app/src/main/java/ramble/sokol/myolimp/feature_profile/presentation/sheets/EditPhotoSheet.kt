@@ -1,11 +1,9 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +21,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,33 +40,50 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegistrationImageEvent
-import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.DrawableWrapper
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileFilledBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileOutlinedBtn
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.White
-import java.io.File
 
 @Composable
 fun EditPhotoSheet(
     viewModel: ProfileViewModel
 ) {
 
+    val state = viewModel.state.collectAsState()
+    val imgState = viewModel.imgState.collectAsState()
+
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current.applicationContext)
+            .data("https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp")
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.DISABLED)
+            .diskCachePolicy(CachePolicy.DISABLED)
+            .build()
+    )
+
+    LaunchedEffect(key1 = imgState.value.isImgChanged) {
+        painter.onForgotten()
+        painter.onRemembered()
+
+        viewModel.onEvent(ProfileEvent.OnImgUpdated)
+    }
+
     var selectedImgUri by remember {
-        mutableStateOf(viewModel.state.value.profileImg)
+        mutableStateOf(viewModel.imgState.value.profileImg)
     }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {uri ->
-            // TODO
-            selectedImgUri = uri.toString()
+            selectedImgUri = uri
             viewModel.onEvent(ProfileEvent.OnImgChanged(uri))
         }
     )
@@ -78,12 +95,12 @@ fun EditPhotoSheet(
             .padding(top = 32.dp)
     ) {
 
-        AsyncImage(
+        Image(
             modifier = Modifier
                 .size(175.dp)
                 .align(CenterHorizontally)
                 .clip(CircleShape),
-            model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
+            painter = if (selectedImgUri != null) rememberAsyncImagePainter(selectedImgUri) else painter,
             contentDescription = "user logo",
             contentScale = ContentScale.Crop
         )
@@ -143,27 +160,17 @@ fun EditPhotoSheet(
                 .padding(vertical = 24.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            val context = LocalContext.current
             ProfileFilledBtn(
                 text = stringResource(R.string.save),
                 enabled = (selectedImgUri.toString().startsWith("content://"))
             ) {
-                try {
-                    val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(
-                        selectedImgUri?.toUri() ?: Uri.EMPTY))
-                    val pngFile = File(context.cacheDir, "converted_image.png")
-                    if (pngFile.exists()) pngFile.delete()
-                    pngFile.createNewFile()
-                    viewModel.onEvent(ProfileEvent.OnImgSave(pngFile, bitmap))
-                } catch (e: Exception) {
-                    Log.i("Edit photo sheet", "PNG convertation error, $e")
-                    viewModel.onEvent(ProfileEvent.OnUploadError)
-                }
+                selectedImgUri = null
+                viewModel.onEvent(ProfileEvent.OnImgSave)
             }
 
             ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
                 selectedImgUri = null
-                viewModel.onEvent(ProfileEvent.OnImgDelete)
+                viewModel.onEvent(ProfileEvent.OnDeleteImg)
             }
         }
     }

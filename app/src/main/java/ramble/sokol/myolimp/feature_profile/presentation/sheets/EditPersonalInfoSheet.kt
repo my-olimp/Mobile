@@ -1,8 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.presentation.sheets
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,11 +14,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
-import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckBoxLabel
 import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 
@@ -30,6 +28,7 @@ fun EditPersonalInfoSheet(
 ) {
 
     val state = viewModel.personalState.collectAsState()
+    val genders = stringArrayResource(id = R.array.genders).toList()
 
     Column(
         modifier = Modifier
@@ -104,11 +103,13 @@ fun EditPersonalInfoSheet(
         Spacer(modifier = Modifier.height(14.dp))
 
         ReadOnlyDropDown(
-           options =  stringArrayResource(id = R.array.genders).toList(),
-            previousData = genderCheck(state.value.gender),
+            options = genders,
+            previousData = if (state.value.gender == "m") stringResource(id = R.string.man_gender) else stringResource(id = R.string.women_gender),
             label = stringResource(id = R.string.gender)
         ) {
-            viewModel.onEvent(ProfileEvent.OnGenderChanged(it))
+            viewModel.onEvent(ProfileEvent.OnGenderChanged(
+                if (genders[0] == it) "m" else "f"
+            ))
         }
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -131,13 +132,5 @@ fun EditPersonalInfoSheet(
         ) {
             viewModel.onEvent(ProfileEvent.OnPersonalInfoSave)
         }
-    }
-}
-
-private fun genderCheck(gender: String?): String {
-    return when(gender) {
-        "m" -> "Мужской"
-        "f" -> "Женский"
-        else -> ""
     }
 }

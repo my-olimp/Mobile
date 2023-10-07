@@ -27,16 +27,26 @@ class ProfileRepository {
         )
 
     suspend fun uploadImg(
-        auth: String,
         imageBody: MultipartBody.Part,
         onResult: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
         try {
             instance.uploadImage(
-                auth = auth,
                 image = imageBody
             )
+            onResult()
+        } catch (ex: Exception) {
+            onError(ex)
+        }
+    }
+
+    suspend fun deleteImg(
+        onResult: () -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        try {
+            instance.deleteImg()
             onResult()
         } catch (ex: Exception) {
             onError(ex)

@@ -35,7 +35,6 @@ data class ResponseUserModel(
         email = email,
         grade = grade,
         accountType = accountType,
-        profileImg = profileImg,
         region = region?.asRegion(),
         city = city?.asCity(),
         school = school?.asSchool()

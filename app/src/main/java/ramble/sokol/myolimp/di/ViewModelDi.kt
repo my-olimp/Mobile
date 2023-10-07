@@ -2,7 +2,7 @@ package ramble.sokol.myolimp.di
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import ramble.sokol.myolimp.feature_authentication.domain.view_models.ForgotPasswordViewModel
+import ramble.sokol.myolimp.feature_authentication.domain.view_models.SendCodeViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEducationViewModel
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
@@ -83,7 +83,7 @@ val viewModelsModule = module {
 
     /*Forgot password*/
     viewModel {
-        ForgotPasswordViewModel()
+        SendCodeViewModel()
     }
 
     /*Profile love*/

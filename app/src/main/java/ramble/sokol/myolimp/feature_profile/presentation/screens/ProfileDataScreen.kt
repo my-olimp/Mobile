@@ -30,12 +30,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -46,7 +46,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -93,17 +95,24 @@ fun ProfileDataScreen(
     var sheetName by remember {
         mutableStateOf("")
     }
-//    var selectedImgUri by remember {
-//        mutableStateOf(state.value.profileImg)
-//    }
 
-//    var selectedImgUri by remember {
-//        mutableStateOf(viewModel.state.value.profileImg)
-//    }
+    val imgState = viewModel.imgState.collectAsState()
 
-//    LaunchedEffect(key1 = Unit, block = {
-//        viewModel.onEvent(ProfileEvent.OnRefreshToken)
-//    })
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current.applicationContext)
+            .data("https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp")
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.DISABLED)
+            .diskCachePolicy(CachePolicy.DISABLED)
+            .build()
+    )
+
+    LaunchedEffect(key1 = imgState.value.isImgChanged, block = {
+        painter.onForgotten()
+        painter.onRemembered()
+
+        viewModel.onEvent(ProfileEvent.OnImgUpdated)
+    })
 
     BottomBarTheme(
         navController = navController
@@ -114,7 +123,6 @@ fun ProfileDataScreen(
         ) {
 
 
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -122,7 +130,7 @@ fun ProfileDataScreen(
                     .padding(bottom = 52.dp),
                 horizontalAlignment = CenterHorizontally,
             ) {
-                /*
+            /*
                 Top Bar
             */
 
@@ -142,15 +150,14 @@ fun ProfileDataScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    AsyncImage(
+                    Image(
                         modifier = Modifier
                             .padding(top = 8.dp)
                             .size(95.dp)
                             .align(CenterHorizontally)
                             .clip(CircleShape),
-//                    model = if (selectedImgUri != null) selectedImgUri else R.drawable.ic_default_img,
-                        model = "https://storage.yandexcloud.net/myolimp/user/avatar/${state.value.id}.webp",
-                        contentDescription = "user logo",
+                        painter = painter,
+                        contentDescription = "custom transition based on painter state",
                         contentScale = ContentScale.Crop
                     )
 
@@ -165,7 +172,7 @@ fun ProfileDataScreen(
                         }
 
                         ProfileOutlinedBtn(text = stringResource(R.string.delete)) {
-                            viewModel.onEvent(ProfileEvent.OnImgDelete)
+                            viewModel.onEvent(ProfileEvent.OnDeleteImg)
                         }
                     }
 
@@ -174,7 +181,7 @@ fun ProfileDataScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                /*
+            /*
                 Achievements
             */
                 Column(
@@ -386,79 +393,79 @@ fun ProfileDataScreen(
 
             }
         }
+    }
 
-        BottomSheetLayout(
-            sheetState = sheetState,
-            isCenter = isCenter,
-            name = sheetName,
+    BottomSheetLayout (
+        sheetState = sheetState,
+        isCenter = isCenter,
+        name = sheetName,
 
-            ) {
-            Crossfade(targetState = SheetRouter.currentSheet, label = "") {
-                when (it.value) {
+    ) {
+        Crossfade(targetState = SheetRouter.currentSheet, label = "") {
+            when (it.value) {
 
-                    is SheetNavigation.EditPhoto -> {
-                        EditPhotoSheet(viewModel = viewModel)
+                is SheetNavigation.EditPhoto -> {
+                    EditPhotoSheet(viewModel = viewModel)
 
-                        isCenter = true
-                        sheetName = stringResource(R.string.profile_image)
+                    isCenter = true
+                    sheetName = stringResource(R.string.profile_image)
 
-                        LaunchedEffect(key1 = true, block = {
-                            coroutineScope.launch {
-                                sheetState.show()
-                            }
-                        })
-                    }
+                    LaunchedEffect(key1 = true, block = {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    })
+                }
 
-                    is SheetNavigation.EditPersonalData -> {
-                        EditPersonalInfoSheet(viewModel = viewModel)
+                is SheetNavigation.EditPersonalData -> {
+                    EditPersonalInfoSheet(viewModel = viewModel)
 
-                        isCenter = false
-                        sheetName = stringResource(R.string.personal_info)
+                    isCenter = false
+                    sheetName = stringResource(R.string.personal_info)
 
-                        LaunchedEffect(key1 = true, block = {
-                            coroutineScope.launch {
-                                sheetState.show()
-                            }
-                        })
-                    }
+                    LaunchedEffect(key1 = true, block = {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    })
+                }
 
-                    is SheetNavigation.EditEducation -> {
-                        EditEducationSheet(viewModel = viewModel)
+                is SheetNavigation.EditEducation -> {
+                    EditEducationSheet(viewModel = viewModel)
 
-                        isCenter = false
-                        sheetName = stringResource(R.string.education)
+                    isCenter = false
+                    sheetName = stringResource(R.string.education)
 
-                        LaunchedEffect(key1 = true, block = {
-                            coroutineScope.launch {
-                                sheetState.show()
-                            }
-                        })
-                    }
+                    LaunchedEffect(key1 = true, block = {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    })
+                }
 
-                    is SheetNavigation.EditContacts -> {
-                        EditContactsSheet(viewModel = viewModel)
+                is SheetNavigation.EditContacts -> {
+                    EditContactsSheet(viewModel = viewModel)
 
-                        isCenter = false
-                        sheetName = stringResource(R.string.education)
+                    isCenter = false
+                    sheetName = stringResource(R.string.contacts)
 
-                        LaunchedEffect(key1 = true, block = {
-                            coroutineScope.launch {
-                                sheetState.show()
-                            }
-                        })
-                    }
+                    LaunchedEffect(key1 = true, block = {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    })
+                }
 
-                    is SheetNavigation.Empty -> {
-                        (it.value as SheetNavigation.Empty).onDetach.invoke()
-                        LaunchedEffect(key1 = true, block = {
-                            coroutineScope.launch {
-                                sheetState.hide()
-                            }
-                        })
-                    }
+                is SheetNavigation.Empty -> {
+                    (it.value as SheetNavigation.Empty).onDetach.invoke()
+                    LaunchedEffect(key1 = true, block = {
+                        coroutineScope.launch {
+                            sheetState.hide()
+                        }
+                    })
                 }
             }
         }
-        if(!state.value.isLoaded)Loader()
     }
+    if(!state.value.isLoaded) Loader()
 }

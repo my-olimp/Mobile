@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
-import ramble.sokol.myolimp.ui.theme.GreyInactive
+import ramble.sokol.myolimp.ui.theme.DisabledBlue
 import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
@@ -33,7 +33,7 @@ fun ProfileFilledBtn (
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = BlueStart,
-            disabledContainerColor = GreyInactive
+            disabledContainerColor = DisabledBlue
         ),
         onClick = onClick
     ) {
