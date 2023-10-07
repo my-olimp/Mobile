@@ -66,7 +66,7 @@ fun LoveTopBar(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(top = 8.dp, end = 4.dp)
+                    .padding(top = 10.dp, end = 7.dp)
             ) {
                 Icon(
                     modifier = Modifier
@@ -75,7 +75,8 @@ fun LoveTopBar(
                         .background(
                             color = if (itemCount == 0) White else BlueStart,
                             shape = RoundedCornerShape(size = 8.dp)
-                        ),
+                        )
+                        .padding(vertical = 4.dp, horizontal = 4.dp),
                     painter = painterResource(id = R.drawable.ic_setting_love),
                     contentDescription = "open filter love",
                     tint = if (itemCount == 0) GreyProfileData else White
