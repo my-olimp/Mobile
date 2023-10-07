@@ -26,11 +26,7 @@ class RegisterSubjectsViewModel : ViewModel() {
     val state = _state.asStateFlow()
 
     init {
-        _state.update {
-            it.copy(
-                isLoading = false
-            )
-        }
+        updateLoading(true)
         getSubjects()
     }
 
@@ -93,6 +89,8 @@ class RegisterSubjectsViewModel : ViewModel() {
             repository.updateSubjects(
                 subjects = RequestSubjects(state.value.chosenSubjects),
                 onResult = {
+                    updateLoading(false)
+
                     if (it != null) {
                         navigator.navigate(RegisterImageScreenDestination)
                     }
@@ -111,13 +109,14 @@ class RegisterSubjectsViewModel : ViewModel() {
             repository.getSubjects(
                 onResult = { subjects->
                     if (subjects != null) {
-
                         _state.update {
                             it.copy(
                                 subjects = subjects
                             )
                         }
+                        updateLoading(false)
                     }
+
                     Log.i(TAG, "success - $subjects")
                 },
                 onError = {
@@ -125,5 +124,11 @@ class RegisterSubjectsViewModel : ViewModel() {
                 }
             )
         }
+    }
+
+    private fun updateLoading(isLoading: Boolean) = _state.update {
+        it.copy(
+            isLoading = isLoading
+        )
     }
 }
