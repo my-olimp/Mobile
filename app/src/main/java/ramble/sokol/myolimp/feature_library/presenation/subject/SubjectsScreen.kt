@@ -34,7 +34,7 @@ import ramble.sokol.myolimp.ui.theme.mediumType
 
 @OptIn(ExperimentalMaterialApi::class)
 @[Composable Destination]
-fun SubjectsScreen(
+fun SubjectsScreen2(
     navController: NavController,
     navigator: DestinationsNavigator,
     subjectId: Long
