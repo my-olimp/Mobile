@@ -34,7 +34,7 @@ import ramble.sokol.myolimp.ui.theme.mediumType
 @[Composable Destination]
 fun SendCodeScreen(
     navigator: DestinationsNavigator,
-    email: String
+    email: String,
 ) {
 
     val viewModel = getViewModel<SendCodeViewModel>()
