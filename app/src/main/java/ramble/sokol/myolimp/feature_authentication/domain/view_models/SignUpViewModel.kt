@@ -71,13 +71,11 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
                 //                          Toast.makeText(context,
                 //                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
-
                       event.navigator.navigate(
-                          /*CodeCheckerScreenDestination(
-                              email = _state.value.email,
-                              password = _state.value.password,
-                          )*/
-                          SendCodeScreenDestination(email = state.value.email)
+                          SendCodeScreenDestination(
+                              email = state.value.email,
+                              isRegistering = true
+                          )
                       )
                   }
                 )
