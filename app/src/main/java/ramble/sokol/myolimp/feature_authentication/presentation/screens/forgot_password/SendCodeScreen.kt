@@ -35,6 +35,7 @@ import ramble.sokol.myolimp.ui.theme.mediumType
 fun SendCodeScreen(
     navigator: DestinationsNavigator,
     email: String,
+    isRegistering: Boolean = false
 ) {
 
     val viewModel = getViewModel<SendCodeViewModel>()
@@ -74,13 +75,15 @@ fun SendCodeScreen(
                 VerticalSpacer(height = 32.dp)
 
                 Text(
-                    text = stringResource(id = R.string.check_email_code_send),
+                    text = if(isRegistering) stringResource(id = R.string.check_email_registraion_end_code_send)
+                    else stringResource(id = R.string.check_email_code_send),
                     style = mediumType(
                         color = SheetTitle,
                         letterSpacing = 0.36.sp,
                         fontSize = 18.sp
                     ),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier  = Modifier.padding(horizontal = 32.dp)
                 )
             }
             Column(
@@ -92,7 +95,7 @@ fun SendCodeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 MinuteTimerText(timerValue = state.value.timer, needToUpdate = state.value.updatedTimer) {
-                   viewModel.onEvent(SendCodeEvent.OnResendCode(navigator, email))
+                   viewModel.onEvent(SendCodeEvent.OnResendCode(navigator, email, isRegistering))
                     /*TODO нужно придумать как лочить кнопку после отправки запроса*/
                 }
             }

@@ -1,7 +1,9 @@
 package ramble.sokol.myolimp.feature_profile.presentation.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,9 +40,9 @@ import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckListBottomSheet
 import ramble.sokol.myolimp.feature_profile.presentation.components.LoveTopBar
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileLoveViewModel
-import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.mediumType
+import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
+import ramble.sokol.myolimp.ui.theme.regularType
 
 @OptIn(ExperimentalMaterialApi::class)
 @[Composable Destination]
@@ -57,6 +60,8 @@ fun ProfileLoveScreen(
     )
 
     val subjects = state.value.filteredSubjects.ifEmpty { state.value.userSubjects }
+
+    val articles = state.value.listArticles.filter { subjects.contains(it.subject) }
 
 
     BottomBarTheme(
@@ -100,50 +105,53 @@ fun ProfileLoveScreen(
                 Column (
                     modifier = Modifier.padding(horizontal = 4.dp)
                 ){
-                    LibraryBox(
-                        title = stringResource(id = R.string.library_articles_title),
-                        onActionClicked = {}
-                    ) {
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            if (state.value.listArticles.isNotEmpty()) {
-                                items(state.value.listArticles) { article ->
-                                    if (subjects.contains(article.subject)) {
-                                        LibraryItem(
-                                            subject = article.subject,
-                                            title = article.title,
-                                            onClick = {
-                                                navController.navigate(ArticleScreenDestination(id = article.id))
-                                            }
-                                        )
-                                    }
-                                }
 
-                            } else {
-                                item {
-                                    TextReplacer(replacer = stringResource(id = R.string.have_no_loved_articles))
+                    if(articles.isNotEmpty()) {
+                        LibraryBox(
+                            title = stringResource(id = R.string.library_articles_title),
+                            onActionClicked = {}
+                        ) {
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                items(articles) { article ->
+                                    LibraryItem(
+                                        subject = article.subject,
+                                        title = article.title,
+                                        onClick = {
+                                            navController.navigate(ArticleScreenDestination(id = article.id))
+                                        }
+                                    )
                                 }
                             }
                         }
+                    } else {
+                       Image(
+                           painter = painterResource(id = R.drawable.ic_no_loved_items),
+                           contentDescription = "no loved items icon",
+                           modifier = Modifier
+                               .padding(start = 38.dp, end = 38.dp, top = 80.dp)
+                               .fillMaxHeight(0.4F)
+                               .fillMaxWidth()
+                       ) 
+                        
+                       VerticalSpacer(height = 32.dp)
+                       
+                       Text(
+                           text = stringResource(id = R.string.no_loved_yet),
+                           style = regularType(
+                               color = GreyProfileAchivement,
+                               fontSize = 16.sp,
+                               letterSpacing = 0.32.sp
+                           ),
+                           modifier = Modifier.fillMaxWidth(),
+                           textAlign = TextAlign.Center
+                       )
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-private fun TextReplacer(replacer: String) {
-    Text(
-        text = replacer,
-        style = mediumType(
-            color = BlackProfile,
-            fontSize = 14.sp
-        ),
-        textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth()
-    )
 }

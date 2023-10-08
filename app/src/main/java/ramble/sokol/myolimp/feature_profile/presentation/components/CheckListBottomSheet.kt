@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_profile.presentation.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -23,10 +21,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +31,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.CalendarFocusedText
 import ramble.sokol.myolimp.ui.theme.CalendarUnFocusedText
@@ -97,16 +90,13 @@ fun CheckListBottomSheet(
         ) {
             subjects.forEach { (subjectTitle,checked) ->
                 Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .clickable { onChooseItem(subjectTitle,!checked) }
-                    ,
+                    modifier = Modifier.clip(RoundedCornerShape(4.dp)),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Checkbox(
                         checked = checked,
-                        onCheckedChange = null,
+                        onCheckedChange = { onChooseItem(subjectTitle,it) },
                         modifier = Modifier.size(24.dp),
                         colors = CheckboxDefaults.colors(
                             checkedColor = CalendarFocusedText,
@@ -130,7 +120,7 @@ fun CheckListBottomSheet(
         Spacer(modifier = Modifier.height(48.dp))
         FilledBtn(
             text = stringResource(R.string.button_show_text),
-            isEnabled = subjects.any { it.value } //At least one true
+            //isEnabled = subjects.any { it.value } //At least one true
         ) {
             onHideSheet()
             onFilter()

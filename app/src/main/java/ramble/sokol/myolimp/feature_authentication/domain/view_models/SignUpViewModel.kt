@@ -64,11 +64,10 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                       showSnackbar(context.getString(R.string.success_send_code_message))
 
                       event.navigator.navigate(
-                          /*CodeCheckerScreenDestination(
-                              email = _state.value.email,
-                              password = _state.value.password,
-                          )*/
-                          SendCodeScreenDestination(email = state.value.email)
+                          SendCodeScreenDestination(
+                              email = state.value.email,
+                              isRegistering = true
+                          )
                       )
                   }
                 )
