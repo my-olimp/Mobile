@@ -105,7 +105,7 @@ fun LoveTopBar(
                                 .drawBehind {
                                     drawCircle(
                                         color = White,
-                                        radius = this.size.maxDimension / 1.8f
+                                        radius = this.size.maxDimension / 1.7f
                                     )
                                     drawCircle(
                                         color = CircleColor,

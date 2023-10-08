@@ -49,7 +49,6 @@ class SendCodeViewModel : ViewModel() {
     private fun sendRequest(navigator: DestinationsNavigator, resendEmail: String?, isRegistering: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-
                 if(isRegistering) {
                     repository.sendRegisterEmail(
                         body = RequestRegisterEmailModel(resendEmail ?: state.value.email),
