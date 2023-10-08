@@ -66,6 +66,21 @@ class SendCodeViewModel : ViewModel() {
                                             timer = 60
                                         )
                                     }
+                    body = RequestForgotPasswordModel(resendEmail ?: state.value.email),
+                    onResult = { code ->
+                        Log.i(TAG,"response code - $code")
+                        if(code == ResponseCode.SUCCESS.code) {
+                            if(resendEmail.isNullOrEmpty()) {
+                                navigator.navigate(SendCodeScreenDestination(
+                                    email = state.value.email
+                                ))
+                            } else {
+                                Log.i(TAG,"[resend email code]")
+                                _state.update {
+                                    it.copy(
+                                        updatedTimer = !state.value.updatedTimer,
+                                        timer = 60
+                                    )
                                 }
                             }
                         },

@@ -1,17 +1,18 @@
 package ramble.sokol.myolimp.feature_authentication.domain.repositories
 
+import android.util.Log
 import ramble.sokol.myolimp.feature_authentication.data.api.AuthenticationApi
-import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseAuthModel
+import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SignUpRepository {
 
-    private val instance = RetrofitBuilder().instance(AuthenticationApi::class.java)
+    private val instance = ProfileRetrofitInstance().instance(AuthenticationApi::class.java)
 
     fun signUp(
         data: RequestSignUpModel,

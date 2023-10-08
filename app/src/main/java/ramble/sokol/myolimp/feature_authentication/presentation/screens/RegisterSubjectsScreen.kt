@@ -1,6 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,11 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -30,7 +29,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
@@ -53,17 +51,15 @@ fun RegisterSubjectsScreen (
     val viewModel = getViewModel<RegisterSubjectsViewModel>()
     val state = viewModel.state.collectAsState()
 
-    LaunchedEffect(key1 = Unit, block = {
-        viewModel.onEvent(RegisterSubjectEvent.OnLoadSubjects)
-    })
-
     OlimpTheme(
-        navigationBarColor = SecondaryScreen
+        navigationBarColor = SecondaryScreen,
+        isLoading = state.value.isLoading
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 16.dp),
+                .padding(vertical = 24.dp, horizontal = 16.dp)
+                .blur(if (state.value.isLoading) 4.dp else 0.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -133,12 +129,8 @@ fun RegisterSubjectsScreen (
 
             if (state.value.isSearching) {
                 subjects = subjects.filter {
-                    Log.i("ViewModelRegisterSubjects", "${it.name} - ${it.name.startsWith(state.value.searchQuery)}")
-
-                    it.name.startsWith(state.value.searchQuery, ignoreCase = true)
+                    it.startsWith(state.value.searchQuery, ignoreCase = true)
                 }.toMutableList()
-
-                Log.i("ViewModelRegisterSubjects", "get - $subjects")
             }
 
             if (subjects.isEmpty()) {
@@ -156,19 +148,9 @@ fun RegisterSubjectsScreen (
                     subjects.forEach {
                         SubjectComponent(
                             subject = it,
-                            previouslySelected = state.value.chosenSubjects.contains(
-                                RequestSubjectModel(
-                                    id = it.id,
-                                    name = it.name
-                                )
-                            ),
+                            previouslySelected = state.value.chosenSubjects.contains(it),
                             onClick = { subject->
-                                viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(
-                                    RequestSubjectModel(
-                                        id = subject.id,
-                                        name = subject.name
-                                    )
-                                ))
+                                viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(subject))
                             }
                         )
                     }

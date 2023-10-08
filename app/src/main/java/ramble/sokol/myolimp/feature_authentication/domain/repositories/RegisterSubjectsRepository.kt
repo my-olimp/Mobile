@@ -4,7 +4,6 @@ import android.util.Log
 import org.koin.core.component.KoinComponent
 import ramble.sokol.myolimp.feature_authentication.data.api.RegistrationApi
 import ramble.sokol.myolimp.feature_authentication.data.api.RetrofitBuilder
-import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
@@ -15,21 +14,20 @@ class RegisterSubjectsRepository : KoinComponent {
 
     private val instance = RetrofitBuilder().instance(RegistrationApi::class.java)
 
-    fun getSchools(
-        auth: String,
-        onResult: (List<RequestSubjectModel>?) -> Unit,
+    fun getSubjects(
+        onResult: (List<String>?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.getSubjects(auth).enqueue(
-            object : Callback<List<RequestSubjectModel>> {
+        instance.getSubjects().enqueue(
+            object : Callback<List<String>> {
                 override fun onResponse(
-                    call: Call<List<RequestSubjectModel>>,
-                    response: Response<List<RequestSubjectModel>>
+                    call: Call<List<String>>,
+                    response: Response<List<String>>
                 ) {
                     onResult(response.body())
                 }
 
-                override fun onFailure(call: Call<List<RequestSubjectModel>>, t: Throwable) {
+                override fun onFailure(call: Call<List<String>>, t: Throwable) {
                     onError(t)
                 }
             }
@@ -37,12 +35,11 @@ class RegisterSubjectsRepository : KoinComponent {
     }
 
     fun updateSubjects(
-        auth: String,
         subjects: RequestSubjects,
         onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.updateSubjects(auth, subjects).enqueue(
+        instance.updateSubjects(subjects).enqueue(
             object : Callback<ResponseUserModel> {
                 override fun onResponse(
                     call: Call<ResponseUserModel>,

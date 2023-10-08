@@ -2,7 +2,6 @@ package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -16,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
+import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
 import ramble.sokol.myolimp.destinations.SendCodeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
@@ -56,21 +56,13 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                 if (checkPasswordCorrectness())
                 sendVerificationCode(
                   onError = {
-
-                      Log.i(TAG, "error")
-
-                      // TODO: Make SnackBar
-
-                //                          Toast.makeText(context,
-                //                              context.getString(R.string.register_auth_error_message), Toast.LENGTH_SHORT).show()
+                      showSnackbar(context.getString(R.string.register_auth_error_message))
                   },
                   onSent = {
                       Log.i(TAG, "sent")
 
-                      // TODO: Make SnackBar
+                      showSnackbar(context.getString(R.string.success_send_code_message))
 
-                //                          Toast.makeText(context,
-                //                              context.getString(R.string.success_send_code_message), Toast.LENGTH_SHORT).show()
                       event.navigator.navigate(
                           SendCodeScreenDestination(
                               email = state.value.email,
@@ -147,6 +139,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                 }
                 isSendingCode(event.navigator)
             }
+            is SignUpEvent.OnClosedSnackBar -> hideSnackbar()
             is SignUpEvent.OnCode6Updated -> {
                 _state.update {
                     it.copy(
@@ -212,10 +205,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
                     // load user
 
-                    // TODO: Make SnackBar
-
-//                    Toast.makeText(context,
-//                        context.getString(R.string.success_register_message), Toast.LENGTH_SHORT).show()
+                    showSnackbar(context.getString(R.string.success_register_message))
 
                     navigator.navigate(
                         RegisterInfoScreenDestination()
@@ -266,28 +256,22 @@ class SignUpViewModel : ViewModel(), KoinComponent {
         val password = _state.value.password
 
         if (password.contains(" ")) {
-            Log.i(TAG, "white space")
             _state.update {
                 it.copy(
-                    passwordError = "Пароль не может содержать в себе пробелы",
+                    passwordError = context.getString(R.string.error_password_spaces),
                 )
             }
-
             return false
         } else if (!password.matches("^[a-zA-Z0-9!@#$%^&*]*$".toRegex())) {
-            Log.i(TAG, "letters")
-
             _state.update {
                 it.copy(
-                    passwordError = "Пароль должен состоять только из букв латиницы верхнего или нижнего регистра, цифр, специальных символов(!@$%^)",
+                    passwordError = context.getString(R.string.error_password_letters),
                 )
             }
-
             return false
         }
 
         return true
-
     }
 
 
@@ -296,36 +280,29 @@ class SignUpViewModel : ViewModel(), KoinComponent {
         onError: () -> Unit
     ) {
         viewModelScope.launch {
-            try {
-                repository.sendVerificationCode(
-                    RequestSendingEmailModel(
-                        email = _state.value.email
-                    ),
-                    onResult = {
-                        if (it != null) {
-                            onSent()
-                            Log.i(TAG, "success - $it")
+            repository.sendVerificationCode(
+                RequestSendingEmailModel(
+                    email = _state.value.email
+                ),
+                onResult = {
+                    if (it != null) {
+                        onSent()
+                        Log.i(TAG, "success - $it")
 
-                            // TODO: Make SnackBar
-
-                            Toast.makeText(context, "Code - $it", Toast.LENGTH_SHORT).show()
-                        } else {
-                            // account has already registered
-                            _state.update { state->
-                                state.copy(
-                                    isEmailError = true,
-                                )
-                            }
+                        showSnackbar("Code - $it")
+                    } else {
+                        _state.update { state->
+                            state.copy(
+                                isEmailError = true,
+                            )
                         }
-                    },
-                    onError = {
-                        onError()
-                        Log.i(TAG, "error - ${it.message}")
                     }
-                )
-            } catch (ex: Exception) {
-                Log.i(TAG, "exception - ${ex.message}")
-            }
+                },
+                onError = {
+                    onError()
+                    Log.i(TAG, "error - ${it.message}")
+                }
+            )
         }
     }
 
@@ -344,4 +321,25 @@ class SignUpViewModel : ViewModel(), KoinComponent {
             localUser.saveUser(user)
         }
     }
+
+    private fun showSnackbar(
+        text: String
+    ) {
+        _state.update {
+            it.copy(
+                isShowingSnackbar = true,
+                snackbarText = text
+            )
+        }
+    }
+
+    private fun hideSnackbar() {
+        _state.update {
+            it.copy(
+                isShowingSnackbar = false,
+                snackbarText = null
+            )
+        }
+    }
+
 }

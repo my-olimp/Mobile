@@ -12,9 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
+import ramble.sokol.myolimp.feature_authentication.presentation.components.CustomSnackbar
 import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.FooterAuth
 import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
@@ -58,9 +65,25 @@ fun SignUpScreen(
     val viewModel = getViewModel<SignUpViewModel>()
     val state = viewModel.state.collectAsState()
 
+    val snackState = remember {
+        SnackbarHostState()
+    }
+    val coroutineScope = rememberCoroutineScope()
+
     OlimpTheme(
         navigationBarColor = SecondaryScreen
     ) {
+        if (state.value.isShowingSnackbar) {
+            LaunchedEffect(state.value.isShowingSnackbar) {
+                coroutineScope.launch {
+                    snackState.showSnackbar(
+                        message = state.value.snackbarText!!,
+                        actionLabel = "Close"
+                    )
+                }
+            }
+        }
+
         Column (
             modifier = Modifier
                 .background(Transparent)
@@ -105,8 +128,6 @@ fun SignUpScreen(
                 }
 
                 if (state.value.isEmailError) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
                     ErrorMessage(
                         text = stringResource(R.string.email_error_already_in_use)
                     )
@@ -147,8 +168,6 @@ fun SignUpScreen(
                 }
 
                 if (state.value.passwordError != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
                     ErrorMessage(
                         text = state.value.passwordError!!
                     )
@@ -194,6 +213,16 @@ fun SignUpScreen(
                 ) {
                     navigator.navigate(LoginScreenDestination)
                 }
+            }
+        }
+
+
+        SnackbarHost (
+            hostState = snackState,
+        ) {
+            CustomSnackbar(text = state.value.snackbarText!!) {
+                viewModel.onEvent(SignUpEvent.OnClosedSnackBar)
+                snackState.currentSnackbarData?.dismiss()
             }
         }
     }

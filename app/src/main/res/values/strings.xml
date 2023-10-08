@@ -208,4 +208,6 @@
     <string name="reload">Перезагрузить</string>
     <string name="have_no_loved_articles">У тебя нет любимых статей</string>
     <string name="have_no_loved_articles_with_filter">У тебя нет любимых статей по этим предметам</string>
+    <string name="error_password_letters">Пароль должен состоять только из букв латиницы верхнего или нижнего регистра, цифр, специальных символов(!@$%^)</string>
+    <string name="error_password_spaces">Пароль не может содержать в себе пробелы</string>
 </resources>

@@ -10,6 +10,9 @@ data class SignUpState (
     val isEmailError: Boolean = false,
     val isCodeError: Boolean = false,
 
+    val isShowingSnackbar: Boolean = false,
+    val snackbarText: String? = null,
+
     val code1: Int? = null,
     val code2: Int? = null,
     val code3: Int? = null,
