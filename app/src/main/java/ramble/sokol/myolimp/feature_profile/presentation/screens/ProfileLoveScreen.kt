@@ -62,6 +62,7 @@ fun ProfileLoveScreen(
     val subjects = state.value.filteredSubjects.ifEmpty { state.value.userSubjects }
 
     val articles = state.value.listArticles.filter { subjects.contains(it.subject) }
+//    val articles = state.value.listArticles
 
 
     BottomBarTheme(

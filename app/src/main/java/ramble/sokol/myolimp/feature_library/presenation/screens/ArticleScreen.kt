@@ -126,30 +126,6 @@ fun ArticleScreen(
 
                 Spacer(modifier = Modifier.fillMaxWidth(0.02f))
 
-                Box(
-                    modifier = Modifier
-                        //.fillMaxHeight()
-                        .weight(0.16f)
-                        .clip(RoundedCornerShape(8.dp))
-                        .padding(top = 8.dp)
-                        .background(
-                            color = White,
-                            shape = RoundedCornerShape(size = 8.dp)
-                        )
-                        .clickable {
-                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-                        },
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(14.dp),
-                        painter = painterResource(id = R.drawable.ic_article_favorite),
-                        contentDescription = "bookmark",
-                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-                    )
-                }
-
                 FavoriteIcon(
                     modifier = Modifier
                         .fillMaxHeight()
