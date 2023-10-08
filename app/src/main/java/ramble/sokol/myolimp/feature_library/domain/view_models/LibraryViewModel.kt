@@ -1,4 +1,4 @@
-package ramble.sokol.myolimp.feature_library.presenation.mainScreen
+package ramble.sokol.myolimp.feature_library.domain.view_models
 
 import android.content.Context
 import android.util.Log
@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.data.repository.LibraryRepositoryImpl
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryState
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 
 class LibraryViewModel(context: Context) : ViewModel() {

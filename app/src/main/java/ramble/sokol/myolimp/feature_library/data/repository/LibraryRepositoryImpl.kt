@@ -9,7 +9,10 @@ import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 
-class LibraryRepositoryImpl(val database: UserDatabase) {
+class LibraryRepositoryImpl(
+    val database: UserDatabase
+) {
+
     private val libraryInstance = RetrofitBuilder().instance(LibraryAPI::class.java)
 
     suspend fun getArticles(
@@ -27,17 +30,12 @@ class LibraryRepositoryImpl(val database: UserDatabase) {
         )
 
         if (result.isSuccessful && result.body() != null) {
-
             onSuccess(result?.body()?.articles?.map {
                 it.toArticleModel()
             } ?: emptyList())
-
         } else {
-
             onError(result.message())
-
         }
-
     }
 
     suspend fun getUserSubjects(): List<String> {

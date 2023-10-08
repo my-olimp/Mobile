@@ -31,6 +31,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
+import ramble.sokol.myolimp.destinations.SubjectsChapterScreenDestination
+import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibrarySearchBar
@@ -46,6 +48,7 @@ fun LibraryScreen(
 ) {
     val viewModel = getViewModel<LibraryViewModel>()
     val state = viewModel.state.collectAsState()
+
     BottomBarTheme(
         navController = navController
     ) {
@@ -97,17 +100,8 @@ fun LibraryScreen(
                     item {
                         LibraryBox(
                             title = stringResource(R.string.library_articles_title),
-                            action = stringResource(R.string.learn_more),
-                            onActionClicked = {
-                                // TODO open subject screen
-//                                navController.navigate(LibraryScreenDestination) {
-//                                    popUpTo(NavGraphs.root) {
-//                                        saveState = true
-//                                    }
-//                                    launchSingleTop = true
-//                                    restoreState = true
-//                                }
-                            }
+                            action = "",
+                            onActionClicked = {}
                         ) {
                             if (state.value.isLoading) {
                                 LoadingCircular()
@@ -140,14 +134,9 @@ fun LibraryScreen(
                             title = subject,
                             action = stringResource(R.string.learn_more),
                             onActionClicked = {
-                                // TODO open subject screen
-//                                navController.navigate(LibraryScreenDestination) {
-//                                    popUpTo(NavGraphs.root) {
-//                                        saveState = true
-//                                    }
-//                                    launchSingleTop = true
-//                                    restoreState = true
-//                                }
+                                navController.navigate(SubjectsChapterScreenDestination(
+                                    discipline = subject
+                                ))
                             }
                         ) {
                             val subjectArticles =

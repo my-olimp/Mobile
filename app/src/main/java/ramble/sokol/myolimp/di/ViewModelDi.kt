@@ -11,7 +11,8 @@ import ramble.sokol.myolimp.feature_authentication.presentation.view_models.Regi
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterSubjectsViewModel
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
-import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryViewModel
+import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
+import ramble.sokol.myolimp.feature_library.domain.view_models.SubjectsChapterViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileLoveViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
@@ -89,5 +90,10 @@ val viewModelsModule = module {
     /*Profile love*/
     viewModel {
         ProfileLoveViewModel(get())
+    }
+
+    /*Chapter vm*/
+    viewModel {
+        SubjectsChapterViewModel()
     }
 }
