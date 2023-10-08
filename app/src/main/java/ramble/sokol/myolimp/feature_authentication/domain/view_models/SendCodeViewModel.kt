@@ -53,34 +53,23 @@ class SendCodeViewModel : ViewModel() {
                     repository.sendRegisterEmail(
                         body = RequestRegisterEmailModel(resendEmail ?: state.value.email),
                         onResult = { code ->
-                            Log.i(TAG,"response register email code is $code")
+                            Log.i(TAG, "response register email code is $code")
                             when (code) {
                                 ResponseCode.FORBIDDEN.code -> {
-                                    Log.i(TAG,"forbidden request register email")
+                                    Log.i(TAG, "forbidden request register email")
                                 }
+
                                 ResponseCode.SUCCESS.code -> {
-                                    Log.i(TAG,"success response on register email ${resendEmail ?: state.value.email}")
+                                    Log.i(
+                                        TAG,
+                                        "success response on register email ${resendEmail ?: state.value.email}"
+                                    )
                                     _state.update {
                                         it.copy(
                                             updatedTimer = !state.value.updatedTimer,
                                             timer = 60
                                         )
                                     }
-                    body = RequestForgotPasswordModel(resendEmail ?: state.value.email),
-                    onResult = { code ->
-                        Log.i(TAG,"response code - $code")
-                        if(code == ResponseCode.SUCCESS.code) {
-                            if(resendEmail.isNullOrEmpty()) {
-                                navigator.navigate(SendCodeScreenDestination(
-                                    email = state.value.email
-                                ))
-                            } else {
-                                Log.i(TAG,"[resend email code]")
-                                _state.update {
-                                    it.copy(
-                                        updatedTimer = !state.value.updatedTimer,
-                                        timer = 60
-                                    )
                                 }
                             }
                         },
