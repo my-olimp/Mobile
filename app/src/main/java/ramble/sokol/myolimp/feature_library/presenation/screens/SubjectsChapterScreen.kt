@@ -38,6 +38,8 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
+import ramble.sokol.myolimp.destinations.LibraryScreenDestination
+import ramble.sokol.myolimp.destinations.SubjectsChapterScreenDestination
 import ramble.sokol.myolimp.feature_library.domain.events.ChapterEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.SubjectsChapterViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.article.Discipline
@@ -76,7 +78,10 @@ fun SubjectsChapterScreen (
         navigationBarColor = SecondaryScreen,
         statusBarColor = BackgroundMain,
         isLoading = state.value.isLoading,
-        navController = navController
+        navController = navController,
+        onReload = {
+            navController.navigate(SubjectsChapterScreenDestination(discipline = subject))
+        }
     ) {
         Column (
             modifier = Modifier

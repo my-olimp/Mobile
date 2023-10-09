@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
+import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.feature_authentication.presentation.screens.forgot_password.VerticalSpacer
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
@@ -65,13 +66,15 @@ fun ProfileLoveScreen(
     val subjects = state.value.filteredSubjects.ifEmpty { state.value.userSubjects }
 
     val articles = state.value.listArticles.filter { subjects.contains(it.subject) }
-//    val articles = state.value.listArticles
 
     BottomBarTheme(
         navigationBarColor = SecondaryScreen,
         statusBarColor = BackgroundMain,
         navController = navController,
-        isLoading = !state.value.isSubjectLoaded || !state.value.isArticlesLoaded
+        isLoading = !state.value.isSubjectLoaded || !state.value.isArticlesLoaded,
+        onReload = {
+            navController.navigate(ProfileLoveScreenDestination)
+        }
     ) {
         ModalBottomSheetLayout(
             sheetState = sheetState,

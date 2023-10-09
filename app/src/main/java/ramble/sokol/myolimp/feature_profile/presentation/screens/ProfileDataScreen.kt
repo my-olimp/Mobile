@@ -51,9 +51,12 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.LibraryScreenDestination
+import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout
@@ -116,7 +119,10 @@ fun ProfileDataScreen(
 
     BottomBarTheme(
         navController = navController,
-        isLoading = !state.value.isLoaded
+        isLoading = !state.value.isLoaded,
+        onReload = {
+            navController.navigate(ProfileDataScreenDestination)
+        }
     ) {
         Box(
             modifier = Modifier

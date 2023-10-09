@@ -47,7 +47,6 @@ import ramble.sokol.myolimp.ui.presentation.bottom_navigation.BottomNavigationBa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OlimpTheme(
-//    navController: NavController
     statusBarColor: Color = Transparent,
     navigationBarColor: Color = Transparent,
     isSplashScreen: Boolean = false,
@@ -193,6 +192,7 @@ fun BottomBarTheme(
     navigationBarColor: Color = Transparent,
     isLoading: Boolean = false,
     isError: Boolean = false,
+    onReload: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
     OlimpTheme (
@@ -200,9 +200,7 @@ fun BottomBarTheme(
         statusBarColor = statusBarColor,
         isLoading = isLoading,
         isError = isError,
-        onReload = {
-
-        },
+        onReload = onReload,
         content = {
             Scaffold(
                 bottomBar = {

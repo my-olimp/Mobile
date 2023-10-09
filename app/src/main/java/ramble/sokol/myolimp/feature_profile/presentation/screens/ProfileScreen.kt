@@ -41,8 +41,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.NewsScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
+import ramble.sokol.myolimp.destinations.ProfileScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
@@ -80,7 +82,10 @@ fun ProfileScreen(
     }
 
     BottomBarTheme(
-        navController = navController
+        navController = navController,
+        onReload = {
+            navController.navigate(ProfileScreenDestination)
+        }
     ) {
 
         Column(
@@ -260,7 +265,10 @@ fun NewsScreen(
     navController: NavController
 ) {
     BottomBarTheme(
-        navController = navController
+        navController = navController,
+        onReload = {
+            navController.navigate(NewsScreenDestination)
+        }
     ) {
         Text(
             modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "NewsScreen"
