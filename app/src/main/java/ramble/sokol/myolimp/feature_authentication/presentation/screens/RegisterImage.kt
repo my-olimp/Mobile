@@ -58,6 +58,7 @@ internal fun RegisterImageScreen(
     var selectedImgUri by remember {
         mutableStateOf(state.profileImg)
     }
+
     RegisterImageScreen(
         onEvent = { event ->
             if (event is RegistrationImageEvent.OnImageChanged) {
@@ -94,83 +95,85 @@ fun RegisterImageScreen(
     val context = LocalContext.current
 
     OlimpTheme(
-        navigationBarColor = SecondaryScreen
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Transparent)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        navigationBarColor = SecondaryScreen,
+        onReload = {},
+        content = {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Transparent)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.auth_my_olimp),
-                    contentDescription = "image auth my olimp"
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp, horizontal = 16.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextHeaderWithCounter(
-                        headerText = stringResource(R.string.register_image_screen_title),
-                        counterText = stringResource(R.string.four_of_four)
+                    Image(
+                        painter = painterResource(id = R.drawable.auth_my_olimp),
+                        contentDescription = "image auth my olimp"
                     )
-                }
-                Spacer(modifier = Modifier.height(32.dp))
-                IconButton(
-                    onClick = {
-                        launcher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextHeaderWithCounter(
+                            headerText = stringResource(R.string.register_image_screen_title),
+                            counterText = stringResource(R.string.four_of_four)
                         )
-                    },
-                    modifier = Modifier.size(150.dp)
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .size(150.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .clip(CircleShape),
-                        model = selectedProfileImg ?: R.drawable.ic_default_img,
-                        contentDescription = "user logo",
-                        contentScale = ContentScale.Crop
+                    }
+                    Spacer(modifier = Modifier.height(32.dp))
+                    IconButton(
+                        onClick = {
+                            launcher.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        },
+                        modifier = Modifier.size(150.dp)
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .size(150.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .clip(CircleShape),
+                            model = selectedProfileImg ?: R.drawable.ic_default_img,
+                            contentDescription = "user logo",
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedText(
+                        previousData = snilsValue,
+                        label = stringResource(R.string.label_snils),
+                        isEnabled = true,
+                        onTextChanged = {
+                            onEvent(RegistrationImageEvent.OnSnilsChanged(it))
+                        },
+                        isError = false
                     )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedText(
-                    previousData = snilsValue,
-                    label = stringResource(R.string.label_snils),
-                    isEnabled = true,
-                    onTextChanged = {
-                        onEvent(RegistrationImageEvent.OnSnilsChanged(it))
-                    },
-                    isError = false
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                FilledBtn(
-                    text = stringResource(id = R.string.further),
-                    padding = 0.dp,
-                    isEnabled = (selectedProfileImg != null && snilsValue.isNotEmpty())
-                ) {
-                    try {
-                        val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedProfileImg ?: Uri.EMPTY))
-                        val pngFile = File(context.cacheDir, "converted_image.png")
-                        if (pngFile.exists()) pngFile.delete()
-                        pngFile.createNewFile()
-                        onEvent(RegistrationImageEvent.OnSubmit(pngFile, bitmap, navigator))
-                    } catch (e: Exception) {
-                        onEvent(RegistrationImageEvent.OnUploadError)
+                    Spacer(modifier = Modifier.height(24.dp))
+                    FilledBtn(
+                        text = stringResource(id = R.string.further),
+                        padding = 0.dp,
+                        isEnabled = (selectedProfileImg != null && snilsValue.isNotEmpty())
+                    ) {
+                        try {
+                            val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedProfileImg ?: Uri.EMPTY))
+                            val pngFile = File(context.cacheDir, "converted_image.png")
+                            if (pngFile.exists()) pngFile.delete()
+                            pngFile.createNewFile()
+                            onEvent(RegistrationImageEvent.OnSubmit(pngFile, bitmap, navigator))
+                        } catch (e: Exception) {
+                            onEvent(RegistrationImageEvent.OnUploadError)
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }

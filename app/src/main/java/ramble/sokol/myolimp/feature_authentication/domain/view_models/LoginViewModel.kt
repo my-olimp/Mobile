@@ -88,7 +88,8 @@ class LoginViewModel : ViewModel() {
                         _state.update {
                             it.copy(
                                 isPasswordError = true,
-                                isEmailError = true
+                                isEmailError = true,
+                                isLoading = false
                             )
                         }
                     }

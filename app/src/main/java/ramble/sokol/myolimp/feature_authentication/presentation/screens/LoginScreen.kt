@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +36,6 @@ import ramble.sokol.myolimp.destinations.PassEmailScreenDestination
 import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.LoginViewModel
-import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.FooterAuth
 import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
@@ -66,7 +66,8 @@ fun LoginScreen(
             Column(
                 modifier = Modifier
                     .background(Transparent)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .blur(if (state.value.isLoading) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -99,37 +100,23 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(22.dp))
 
                     OutlinedText(
-                        previousData = "",
+                        previousData = state.value.email,
                         label = stringResource(id = R.string.email),
-                        isError = state.value.isEmailError
+                        isError = state.value.isEmailError,
+                        errorText = stringResource(R.string.email_error_msg)
                     ) {
                         viewModel.onEvent(LoginEvent.OnEmailUpdated(it))
-                    }
-
-                    if (state.value.isEmailError) {
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        ErrorMessage(
-                            text = stringResource(R.string.email_error_msg)
-                        )
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     PasswordField(
-                        previousData = "",
+                        previousData = state.value.password,
                         label = stringResource(id = R.string.password),
-                        isError = state.value.isPasswordError
+                        isError = state.value.isPasswordError,
+                        errorText = stringResource(R.string.error_password_msg)
                     ) {
                         viewModel.onEvent(LoginEvent.OnPasswordUpdated(it))
-                    }
-
-                    if (state.value.isPasswordError) {
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        ErrorMessage(
-                            text = stringResource(R.string.error_password_msg)
-                        )
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -149,8 +136,7 @@ fun LoginScreen(
                             .clip(RoundedCornerShape(4.dp))
                             .clickable {
                                 navigator.navigate(PassEmailScreenDestination)
-                            }
-                        ,
+                            },
                         text = stringResource(R.string.forgot_password),
                         style = TextStyle(
                             fontSize = 13.sp,

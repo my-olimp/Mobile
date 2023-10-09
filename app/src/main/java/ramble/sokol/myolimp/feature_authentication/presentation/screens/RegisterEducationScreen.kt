@@ -152,14 +152,8 @@ fun RegisterEducationScreen(
 }
 
 @Composable
-private fun errorText(id: Int,addId: Int): String {
-    return stringResource(id = id, stringResource(id = addId).lowercase())
-}
-
-
-
-
-
-
-
+private fun errorText(
+    id: Int,
+    addId: Int
+): String = stringResource(id = id, stringResource(id = addId).lowercase())
 

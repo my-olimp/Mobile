@@ -92,6 +92,7 @@ fun OutlinedText (
         isError = isError,
         enabled = isEnabled
     )
+
     if(isError) {
         ShowError(text = errorText)
     }

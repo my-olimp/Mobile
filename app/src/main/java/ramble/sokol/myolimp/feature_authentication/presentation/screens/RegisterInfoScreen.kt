@@ -59,150 +59,152 @@ fun RegisterInfoScreen(
     val activityType = stringArrayResource(id = R.array.activity_type)
 
     OlimpTheme(
-        navigationBarColor = SecondaryScreen
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Transparent)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        navigationBarColor = SecondaryScreen,
+        onReload = {},
+        content = {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Transparent)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.auth_my_olimp),
-                    contentDescription = "image auth my olimp"
-                )
-
-                Spacer(modifier = Modifier.padding(top = 16.dp))
-
-                TextHeaderWithCounter(
-                    headerText = stringResource(id = R.string.individual_data),
-                    counterText = stringResource(id = R.string.one_of_four)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedText(
-                    previousData = state.value.fio,
-                    label = stringResource(id = R.string.name_surname),
-                    isEnabled = true,
-                    onTextChanged = {
-                        viewModel.onEvent(
-                            RegistrationInfoEvent.OnNameSurnameChanged(it)
-                        )
-                    },
-                    isError = state.value.fioError
-                )
-                if (state.value.fioError) {
-                    ShowError(
-                        text = stringResource(
-                            id = R.string.null_textfield_error,
-                            stringResource(id = R.string.name_surname).lowercase()
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp, horizontal = 16.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.gender) + ':',
-                        style = regularType(color = GreyProfileData)
+
+                    Image(
+                        painter = painterResource(id = R.drawable.auth_my_olimp),
+                        contentDescription = "image auth my olimp"
                     )
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.padding(top = 16.dp))
 
-                    RadioText(
-                        header = stringResource(id = R.string.female_gender),
-                        textStyle = regularType(),
-                        selected = isSelected.value,
-                        onClick = {
-                            isSelected.value = true
-                            viewModel.onEvent(
-                                event = RegistrationInfoEvent.OnGenderChanged("f")
-                            )
-                        }
+                    TextHeaderWithCounter(
+                        headerText = stringResource(id = R.string.individual_data),
+                        counterText = stringResource(id = R.string.one_of_four)
                     )
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-
-                    RadioText(
-                        header = stringResource(id = R.string.male_gender),
-                        textStyle = regularType(),
-                        selected = !(isSelected.value),
-                        onClick = {
-                            isSelected.value = false
+                    OutlinedText(
+                        previousData = state.value.fio,
+                        label = stringResource(id = R.string.name_surname),
+                        isEnabled = true,
+                        onTextChanged = {
                             viewModel.onEvent(
-                                event = RegistrationInfoEvent.OnGenderChanged("m")
+                                RegistrationInfoEvent.OnNameSurnameChanged(it)
                             )
                         },
+                        isError = state.value.fioError
                     )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                CalendarInput(
-                    label = stringResource(id = R.string.dob),
-                    previousData = state.value.bdate,
-                    isError = state.value.bdateError
-                ) {
-                    viewModel.onEvent(RegistrationInfoEvent.OnDobChanged(it))
-                }
-                if (state.value.bdateError) {
-                    ShowError(
-                        text = stringResource(
-                            id = R.string.null_textfield_error,
-                            stringResource(id = R.string.error_date)
+                    if (state.value.fioError) {
+                        ShowError(
+                            text = stringResource(
+                                id = R.string.null_textfield_error,
+                                stringResource(id = R.string.name_surname).lowercase()
+                            )
                         )
-                    )
-                }
+                    }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                ReadOnlyDropDown(
-                    options = activityType.toList(),
-                    previousData = state.value.activityType,
-                    label = stringResource(id = R.string.type_of_activity),
-                    isError = state.value.activityTypeError
-                ) {
-                    viewModel.onEvent(
-                        RegistrationInfoEvent.OnActivityTypeChanged(
-                            activityType = if (it == activityType[0]) "s" else "t"
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.gender) + ':',
+                            style = regularType(color = GreyProfileData)
                         )
-                    )
-                }
-                if (state.value.activityTypeError) {
-                    ShowError(
-                        text = stringResource(
-                            id = R.string.null_textfield_error,
-                            stringResource(id = R.string.type_of_activity).lowercase()
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        RadioText(
+                            header = stringResource(id = R.string.female_gender),
+                            textStyle = regularType(),
+                            selected = isSelected.value,
+                            onClick = {
+                                isSelected.value = true
+                                viewModel.onEvent(
+                                    event = RegistrationInfoEvent.OnGenderChanged("f")
+                                )
+                            }
                         )
-                    )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+
+                        RadioText(
+                            header = stringResource(id = R.string.male_gender),
+                            textStyle = regularType(),
+                            selected = !(isSelected.value),
+                            onClick = {
+                                isSelected.value = false
+                                viewModel.onEvent(
+                                    event = RegistrationInfoEvent.OnGenderChanged("m")
+                                )
+                            },
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    CalendarInput(
+                        label = stringResource(id = R.string.dob),
+                        previousData = state.value.bdate,
+                        isError = state.value.bdateError
+                    ) {
+                        viewModel.onEvent(RegistrationInfoEvent.OnDobChanged(it))
+                    }
+                    if (state.value.bdateError) {
+                        ShowError(
+                            text = stringResource(
+                                id = R.string.null_textfield_error,
+                                stringResource(id = R.string.error_date)
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    ReadOnlyDropDown(
+                        options = activityType.toList(),
+                        previousData = state.value.activityType,
+                        label = stringResource(id = R.string.type_of_activity),
+                        isError = state.value.activityTypeError
+                    ) {
+                        viewModel.onEvent(
+                            RegistrationInfoEvent.OnActivityTypeChanged(
+                                activityType = if (it == activityType[0]) "s" else "t"
+                            )
+                        )
+                    }
+                    if (state.value.activityTypeError) {
+                        ShowError(
+                            text = stringResource(
+                                id = R.string.null_textfield_error,
+                                stringResource(id = R.string.type_of_activity).lowercase()
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    FilledBtn(
+                        text = stringResource(id = R.string.further),
+                        padding = 0.dp
+                    ) {
+                        viewModel.onEvent(RegistrationInfoEvent.OnNext(navigator))
+                    }
+
                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                FilledBtn(
-                    text = stringResource(id = R.string.further),
-                    padding = 0.dp
-                ) {
-                    viewModel.onEvent(RegistrationInfoEvent.OnNext(navigator))
-                }
-
             }
         }
-    }
+    )
 }

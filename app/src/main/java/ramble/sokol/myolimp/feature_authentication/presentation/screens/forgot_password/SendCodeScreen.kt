@@ -42,63 +42,65 @@ fun SendCodeScreen(
     val state = viewModel.state.collectAsState()
 
     OlimpTheme(
-        navigationBarColor = SecondaryScreen
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Transparent)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        navigationBarColor = SecondaryScreen,
+        onReload = {},
+        content = {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 32.dp, horizontal = 12.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Transparent)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.auth_my_olimp),
-                    contentDescription = "image auth my olimp"
-                )
-                VerticalSpacer(height = 64.dp)
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_send_code),
-                    contentDescription = "vector send code",
+                Column(
                     modifier = Modifier
-                        .fillMaxHeight(0.4F)
                         .fillMaxWidth()
-                )
+                        .padding(vertical = 32.dp, horizontal = 12.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-                VerticalSpacer(height = 32.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.auth_my_olimp),
+                        contentDescription = "image auth my olimp"
+                    )
+                    VerticalSpacer(height = 64.dp)
 
-                Text(
-                    text = if(isRegistering) stringResource(id = R.string.check_email_registraion_end_code_send)
-                    else stringResource(id = R.string.check_email_code_send),
-                    style = mediumType(
-                        color = SheetTitle,
-                        letterSpacing = 0.36.sp,
-                        fontSize = 18.sp
-                    ),
-                    textAlign = TextAlign.Center,
-                    modifier  = Modifier.padding(horizontal = 32.dp)
-                )
-            }
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier
-                    .padding(bottom = 32.dp)
-                    .fillMaxWidth()
-                ,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MinuteTimerText(timerValue = state.value.timer, needToUpdate = state.value.updatedTimer) {
-                   viewModel.onEvent(SendCodeEvent.OnResendCode(navigator, email, isRegistering))
-                    /*TODO нужно придумать как лочить кнопку после отправки запроса*/
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_send_code),
+                        contentDescription = "vector send code",
+                        modifier = Modifier
+                            .fillMaxHeight(0.4F)
+                            .fillMaxWidth()
+                    )
+
+                    VerticalSpacer(height = 32.dp)
+
+                    Text(
+                        text = if(isRegistering) stringResource(id = R.string.check_email_registraion_end_code_send)
+                        else stringResource(id = R.string.check_email_code_send),
+                        style = mediumType(
+                            color = SheetTitle,
+                            letterSpacing = 0.36.sp,
+                            fontSize = 18.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier  = Modifier.padding(horizontal = 32.dp)
+                    )
+                }
+                Column(
+                    verticalArrangement = Arrangement.Bottom,
+                    modifier = Modifier
+                        .padding(bottom = 32.dp)
+                        .fillMaxWidth()
+                    ,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    MinuteTimerText(timerValue = state.value.timer, needToUpdate = state.value.updatedTimer) {
+                       viewModel.onEvent(SendCodeEvent.OnResendCode(navigator, email, isRegistering))
+                        /*TODO нужно придумать как лочить кнопку после отправки запроса*/
+                    }
                 }
             }
         }
-    }
+    )
 }
