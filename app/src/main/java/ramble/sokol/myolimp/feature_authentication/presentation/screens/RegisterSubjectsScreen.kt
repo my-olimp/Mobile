@@ -29,6 +29,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.SubjectComponent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
@@ -53,119 +54,124 @@ fun RegisterSubjectsScreen (
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
-        isLoading = state.value.isLoading
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 16.dp)
-                .blur(if (state.value.isLoading) 4.dp else 0.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
-        ) {
+        isLoading = state.value.isLoading,
+        onReload = {
+            navigator.navigate(RegisterSubjectsScreenDestination)
+        },
+        content = {
 
-            Image(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(CenterHorizontally),
-                painter = painterResource(id = R.drawable.auth_my_olimp),
-                contentDescription = "image auth my olimp"
-            )
+                    .padding(vertical = 24.dp, horizontal = 16.dp)
+                    .blur(if (state.value.isLoading) 4.dp else 0.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
 
-            Spacer(modifier = Modifier.padding(top = 16.dp))
-
-            TextHeaderWithCounter(
-                headerText = stringResource(id = R.string.subjects),
-                counterText = stringResource(id = R.string.three_of_four)
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SearchTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onTextChanged = {
-                    viewModel.onEvent(RegisterSubjectEvent.OnSearchQueryUpdated(it))
-                    viewModel.onEvent(RegisterSubjectEvent.OnSearched(true))
-                },
-                onCancelSearching = {
-                    viewModel.onEvent(RegisterSubjectEvent.OnSearchQueryUpdated(""))
-                    viewModel.onEvent(RegisterSubjectEvent.OnSearched(false))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = stringResource(R.string.choose_necessary_subjects),
-                style = TextStyle(
-                    fontSize = 11.sp,
-                    fontFamily = FontFamily(Font(R.font.regular)),
-                    fontWeight = FontWeight(400),
-                    color = BlackRegistrationSubjects,
-                    letterSpacing = 0.22.sp,
-                    textAlign = TextAlign.Start
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(CenterHorizontally),
+                    painter = painterResource(id = R.drawable.auth_my_olimp),
+                    contentDescription = "image auth my olimp"
                 )
-            )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.padding(top = 16.dp))
 
-            Text(
-                text = stringResource(R.string.popular_subjects),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.medium)),
-                    fontWeight = FontWeight(500),
-                    color = BlackRegistrationData,
-                    letterSpacing = 0.32.sp,
+                TextHeaderWithCounter(
+                    headerText = stringResource(id = R.string.subjects),
+                    counterText = stringResource(id = R.string.three_of_four)
                 )
-            )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // subjects
-
-            var subjects = state.value.subjects
-
-            if (state.value.isSearching) {
-                subjects = subjects.filter {
-                    it.startsWith(state.value.searchQuery, ignoreCase = true)
-                }.toMutableList()
-            }
-
-            if (subjects.isEmpty()) {
-                ImageWithText(
-                    drawable = R.drawable.ic_main_no_plans,
-                    text = stringResource(R.string.no_subjects_found)
-                )
-            } else {
-                FlowRow(
+                SearchTextField(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    maxItemsInEachRow = 4
-                ) {
-                    subjects.forEach {
-                        SubjectComponent(
-                            subject = it,
-                            previouslySelected = state.value.chosenSubjects.contains(it),
-                            onClick = { subject->
-                                viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(subject))
-                            }
-                        )
+                    onTextChanged = {
+                        viewModel.onEvent(RegisterSubjectEvent.OnSearchQueryUpdated(it))
+                        viewModel.onEvent(RegisterSubjectEvent.OnSearched(true))
+                    },
+                    onCancelSearching = {
+                        viewModel.onEvent(RegisterSubjectEvent.OnSearchQueryUpdated(""))
+                        viewModel.onEvent(RegisterSubjectEvent.OnSearched(false))
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = stringResource(R.string.choose_necessary_subjects),
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(400),
+                        color = BlackRegistrationSubjects,
+                        letterSpacing = 0.22.sp,
+                        textAlign = TextAlign.Start
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = stringResource(R.string.popular_subjects),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.medium)),
+                        fontWeight = FontWeight(500),
+                        color = BlackRegistrationData,
+                        letterSpacing = 0.32.sp,
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // subjects
+
+                var subjects = state.value.subjects
+
+                if (state.value.isSearching) {
+                    subjects = subjects.filter {
+                        it.startsWith(state.value.searchQuery, ignoreCase = true)
+                    }.toMutableList()
+                }
+
+                if (subjects.isEmpty()) {
+                    ImageWithText(
+                        drawable = R.drawable.ic_main_no_plans,
+                        text = stringResource(R.string.no_subjects_found)
+                    )
+                } else {
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        maxItemsInEachRow = 4
+                    ) {
+                        subjects.forEach {
+                            SubjectComponent(
+                                subject = it,
+                                previouslySelected = state.value.chosenSubjects.contains(it),
+                                onClick = { subject->
+                                    viewModel.onEvent(RegisterSubjectEvent.OnSubjectClicked(subject))
+                                }
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            FilledBtn(
-                text = stringResource(id = R.string.further),
-                padding = 0.dp,
-                isEnabled = state.value.isNextEnabled
-            ) {
-                viewModel.onEvent(RegisterSubjectEvent.OnNext(navigator))
+                Spacer(modifier = Modifier.height(24.dp))
+
+                FilledBtn(
+                    text = stringResource(id = R.string.further),
+                    padding = 0.dp,
+                    isEnabled = state.value.isNextEnabled
+                ) {
+                    viewModel.onEvent(RegisterSubjectEvent.OnNext(navigator))
+                }
             }
         }
-    }
+    )
 }

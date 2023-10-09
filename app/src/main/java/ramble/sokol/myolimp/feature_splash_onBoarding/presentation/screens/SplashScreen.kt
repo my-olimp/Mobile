@@ -31,15 +31,11 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.LocalUserResult
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme

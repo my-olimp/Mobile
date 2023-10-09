@@ -40,18 +40,9 @@ fun BottomNavigationBar(
         backgroundColor = White,
     ) {
 
-//        val currentDestination = BottomNavigationDestinations.values().filter {
-//            navController.isRouteOnBackStack(it.direction)
-//        }.last()
-
         BottomNavigationDestinations.values().forEach {
 
-            // get the last destination
-//            val isOpened = it == currentDestination
-
             val isOpened = navController.isRouteOnBackStack(it.direction)
-
-//            Log.i("current-destination", "${it.direction} - ${navController.currentBackStackEntry} - $isOpened")
 
             BottomNavigationItem(
                 selected = isOpened,

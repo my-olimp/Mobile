@@ -68,10 +68,11 @@ class LoginViewModel : ViewModel() {
                 loginToAccount(
                     onSuccess = {
 
-                        // TODO: Make SnackBar
-
-//                        Toast.makeText(context,
-//                            context.getString(R.string.success_authorization_message), Toast.LENGTH_SHORT).show()
+                        _state.update { state->
+                            state.copy(
+                                isLoading = false
+                            )
+                        }
 
                         event.navigator.navigate(
                             HomeScreenDestination()
@@ -100,6 +101,13 @@ class LoginViewModel : ViewModel() {
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
+
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+
         if(isDataValid()) {
             viewModelScope.launch {
                 try {
@@ -110,6 +118,7 @@ class LoginViewModel : ViewModel() {
                             password = _state.value.password,
                         ),
                         onResult = {
+
                             // all correct
                             if (it?.code != null) {
                                 
@@ -144,7 +153,12 @@ class LoginViewModel : ViewModel() {
 
                     Log.i(TAG, "exception - ${ex.message}")
 
-                    onError()
+                    _state.update {
+                        it.copy(
+                            isError = true
+                        )
+                    }
+
                 }
             }
         }

@@ -46,12 +46,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
-import com.ramcosta.composedestinations.navigation.popUpTo
 import org.koin.androidx.compose.getViewModel
-import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CalendarScreenDestination
-import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
@@ -111,224 +108,229 @@ fun CreateCalendarScreen (
         })
     }
 
-    OlimpTheme {
+    OlimpTheme (
+        onReload = {
 
-        ModalBottomSheetLayout(
-            sheetState = bottomState,
-            sheetShape = RoundedCornerShape(
-                topStart = 40.dp,
-                topEnd = 40.dp
-            ),
-            sheetContent = {
+        },
+        content = {
 
-                if (state.isShowingCalendar) {
-//                     showing date picker
+            ModalBottomSheetLayout(
+                sheetState = bottomState,
+                sheetShape = RoundedCornerShape(
+                    topStart = 40.dp,
+                    topEnd = 40.dp
+                ),
+                sheetContent = {
 
-                    CalendarSheet(
-                        onEvent = viewModel::onEvent,
-//                        selectedDate = LocalDate.now().toString()
-                    )
+                    if (state.isShowingCalendar) {
+    //                     showing date picker
 
-                }
-            },
-        ) {
+                        CalendarSheet(
+                            onEvent = viewModel::onEvent,
+    //                        selectedDate = LocalDate.now().toString()
+                        )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .verticalScroll(scroll)
-                    .padding(vertical = 18.dp, horizontal = 32.dp)
+                    }
+                },
             ) {
 
-                // Top Bar
-
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .verticalScroll(scroll)
+                        .padding(vertical = 18.dp, horizontal = 32.dp)
                 ) {
 
-                    Text(
-                        text = stringResource(R.string.create_plan),
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily(Font(R.font.medium)),
-                            fontWeight = FontWeight(500),
-                            color = Color(0xFF222222),
-                            textAlign = TextAlign.Center,
-                            letterSpacing = 0.4.sp,
-                        )
-                    )
+                    // Top Bar
 
-                    Image(
+                    Row(
                         modifier = Modifier
-                            .clickable {
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
-                                Log.i(PlansViewModel.TAG, "${state.date} - $date")
-
-                                if (fromHome) {
-                                    // navigate to home if from home
-
-                                    navController.navigate(
-                                        HomeScreenDestination()
-                                    )
-                                } else {
-                                    viewModel.onEvent(
-                                        Event.SaveDate(date)
-                                    )
-
-                                    navController.navigate(
-                                        CalendarScreenDestination()
-                                    )
-                                }
-                            },
-                        painter = painterResource(id = R.drawable.ic_profile_cancel),
-                        contentDescription = "close",
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Name
-
-                OutlinedText(
-                    previousData = state.title,
-                    label = stringResource(R.string.name_plan),
-                    onTextChanged = {
-                        viewModel.onEvent(Event.OnTitleUpdated(it))
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Type
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Row {
-                        SelectableText(
-                            text = stringResource(R.string.event),
-                            state = state,
-                            onTextClick = {
-                                viewModel.onEvent(Event.OnTypeUpdated(it))
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        SelectableText(
-                            text = stringResource(R.string.task),
-                            state = state,
-                            onTextClick = {
-                                viewModel.onEvent(Event.OnTypeUpdated(it))
-                            }
-                        )
-                    }
-
-                    // Bookmark
-
-                    Box(
-                        modifier = Modifier
-                            .heightIn(max = 46.dp)
-                            .background(
-                                color = if (state.isFavourite) Color(0xFF3579F8) else Color(
-                                    0xFFFFFFFF
-                                ),
-                                shape = RoundedCornerShape(size = 8.dp)
+                        Text(
+                            text = stringResource(R.string.create_plan),
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily(Font(R.font.medium)),
+                                fontWeight = FontWeight(500),
+                                color = Color(0xFF222222),
+                                textAlign = TextAlign.Center,
+                                letterSpacing = 0.4.sp,
                             )
-                            .clickable {
-                                viewModel.onEvent(Event.OnFavouriteClick(!state.isFavourite))
-                            },
+                        )
 
-                        ) {
-                        Icon(
+                        Image(
                             modifier = Modifier
-                                .padding(12.dp),
-                            painter = painterResource(id = R.drawable.ic_calendar_favourite),
-                            contentDescription = "bookmark",
-                            tint = if (state.isFavourite) Color(0xFFFFFFFF) else Color(0xFF757575),
+                                .clickable {
+
+                                    Log.i(PlansViewModel.TAG, "${state.date} - $date")
+
+                                    if (fromHome) {
+                                        // navigate to home if from home
+
+                                        navController.navigate(
+                                            HomeScreenDestination()
+                                        )
+                                    } else {
+                                        viewModel.onEvent(
+                                            Event.SaveDate(date)
+                                        )
+
+                                        navController.navigate(
+                                            CalendarScreenDestination()
+                                        )
+                                    }
+                                },
+                            painter = painterResource(id = R.drawable.ic_profile_cancel),
+                            contentDescription = "close",
                         )
                     }
-                }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                // Data
+                    // Name
 
-                DateInput(
-                    label = stringResource(R.string.data_plan),
-                    state = state,
-                    onEvent = viewModel::onEvent,
-                )
+                    OutlinedText(
+                        previousData = state.title,
+                        label = stringResource(R.string.name_plan),
+                        onTextChanged = {
+                            viewModel.onEvent(Event.OnTitleUpdated(it))
+                        }
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                TimerPicker(
-                    startHour = state.startHour,
-                    startMinute = state.startMinute,
-                    endHour = state.endHour,
-                    endMinute = state.endMinute,
-                    onEvent = viewModel::onEvent
-                )
+                    // Type
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                // Subject
+                        Row {
+                            SelectableText(
+                                text = stringResource(R.string.event),
+                                state = state,
+                                onTextClick = {
+                                    viewModel.onEvent(Event.OnTypeUpdated(it))
+                                }
+                            )
 
-                val subjects = listOf(
-                    "Астрономия",
-                    "Английский",
-                    "Литература",
-                    "Математика",
-                    "Информатика",
-                    "Дизайн",
-                    "Другое"
-                )
+                            Spacer(modifier = Modifier.width(12.dp))
 
-                ReadOnlyDropDown(
-                    options = subjects,
-                    label = stringResource(R.string.subject),
-                    previousData = state.subject
-                ) {
-                    viewModel.onEvent(Event.OnSubjectUpdated(it))
-                }
+                            SelectableText(
+                                text = stringResource(R.string.task),
+                                state = state,
+                                onTextClick = {
+                                    viewModel.onEvent(Event.OnTypeUpdated(it))
+                                }
+                            )
+                        }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                        // Bookmark
 
-                // Color
+                        Box(
+                            modifier = Modifier
+                                .heightIn(max = 46.dp)
+                                .background(
+                                    color = if (state.isFavourite) Color(0xFF3579F8) else Color(
+                                        0xFFFFFFFF
+                                    ),
+                                    shape = RoundedCornerShape(size = 8.dp)
+                                )
+                                .clickable {
+                                    viewModel.onEvent(Event.OnFavouriteClick(!state.isFavourite))
+                                },
 
-                val colorsHex = listOf(
-                    "#FF7E50FF",
-                    "#FFFF985E",
-                    "#FF5D96FF",
-                    "#FFFF0000",
-                    "#FF000000",
-                )
+                            ) {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(12.dp),
+                                painter = painterResource(id = R.drawable.ic_calendar_favourite),
+                                contentDescription = "bookmark",
+                                tint = if (state.isFavourite) Color(0xFFFFFFFF) else Color(0xFF757575),
+                            )
+                        }
+                    }
 
-                ColorsBox(
-                    previousData = state.color,
-                    colorsHex = colorsHex
-                ) {
-                    viewModel.onEvent(Event.OnColorUpdated(it))
-                }
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    // Data
 
-                FilledBtn(
-                    text = stringResource(id = R.string.save),
-                    padding = 0.dp
-                ) {
-                    viewModel.onEvent(Event.CreatePlan(
-                        navController = navController
-                    ))
+                    DateInput(
+                        label = stringResource(R.string.data_plan),
+                        state = state,
+                        onEvent = viewModel::onEvent,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TimerPicker(
+                        startHour = state.startHour,
+                        startMinute = state.startMinute,
+                        endHour = state.endHour,
+                        endMinute = state.endMinute,
+                        onEvent = viewModel::onEvent
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Subject
+
+                    val subjects = listOf(
+                        "Астрономия",
+                        "Английский",
+                        "Литература",
+                        "Математика",
+                        "Информатика",
+                        "Дизайн",
+                        "Другое"
+                    )
+
+                    ReadOnlyDropDown(
+                        options = subjects,
+                        label = stringResource(R.string.subject),
+                        previousData = state.subject
+                    ) {
+                        viewModel.onEvent(Event.OnSubjectUpdated(it))
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Color
+
+                    val colorsHex = listOf(
+                        "#FF7E50FF",
+                        "#FFFF985E",
+                        "#FF5D96FF",
+                        "#FFFF0000",
+                        "#FF000000",
+                    )
+
+                    ColorsBox(
+                        previousData = state.color,
+                        colorsHex = colorsHex
+                    ) {
+                        viewModel.onEvent(Event.OnColorUpdated(it))
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    FilledBtn(
+                        text = stringResource(id = R.string.save),
+                        padding = 0.dp
+                    ) {
+                        viewModel.onEvent(Event.CreatePlan(
+                            navController = navController
+                        ))
+                    }
                 }
             }
         }
-    }
+    )
 }

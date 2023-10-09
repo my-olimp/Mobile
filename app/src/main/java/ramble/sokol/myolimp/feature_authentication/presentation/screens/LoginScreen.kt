@@ -30,6 +30,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.LoginScreenDestination
 import ramble.sokol.myolimp.destinations.PassEmailScreenDestination
 import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
@@ -53,123 +54,130 @@ fun LoginScreen(
     val viewModel = getViewModel<LoginViewModel>()
     val state = viewModel.state.collectAsState()
 
-    OlimpTheme(
-        navigationBarColor = SecondaryScreen
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Transparent)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+    OlimpTheme (
+        navigationBarColor = SecondaryScreen,
+        isError = state.value.isError,
+        isLoading = state.value.isLoading,
+        onReload = {
+            navigator.navigate(LoginScreenDestination)
+        },
+        content = {
+
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Transparent)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.auth_my_olimp),
-                    contentDescription = "image auth my olimp"
-                )
-
-                Spacer(modifier = Modifier.padding(top = 9.dp))
-
-                Text(
-
-                    text = stringResource(id = R.string.login_to_service),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(400),
-                        color = BlackProfile,
-                        textAlign = TextAlign.Center,
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(22.dp))
-
-                OutlinedText(
-                    previousData = "",
-                    label = stringResource(id = R.string.email),
-                    isError = state.value.isEmailError
-                ) {
-                    viewModel.onEvent(LoginEvent.OnEmailUpdated(it))
-                }
-
-                if (state.value.isEmailError) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    ErrorMessage(
-                        text = stringResource(R.string.email_error_msg)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                PasswordField(
-                    previousData = "",
-                    label = stringResource(id = R.string.password),
-                    isError = state.value.isPasswordError
-                ) {
-                    viewModel.onEvent(LoginEvent.OnPasswordUpdated(it))
-                }
-
-                if (state.value.isPasswordError) {
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    ErrorMessage(
-                        text = stringResource(R.string.error_password_msg)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                FilledBtn(
-                    padding = 0.dp,
-                    isEnabled = state.value.isLogging,
-                    text = stringResource(id = R.string.login),
-                ) {
-                    viewModel.onEvent(LoginEvent.OnLogin(navigator = navigator))
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
+                Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .clickable {
-                            navigator.navigate(PassEmailScreenDestination)
-                        }
-                    ,
-                    text = stringResource(R.string.forgot_password),
-                    style = TextStyle(
-                        fontSize = 13.sp,
-                        fontFamily = FontFamily(Font(R.font.regular)),
-                        fontWeight = FontWeight(400),
-                        color = BlackProfile,
-                        textAlign = TextAlign.Center
-                    )
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = SecondaryScreen)
-                    .padding(horizontal = 54.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                FooterAuth(
-                    content = stringResource(R.string.not_registered),
-                    offer = stringResource(R.string.register_account)
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp, horizontal = 16.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    navigator.navigate(SignUpScreenDestination)
+
+                    Image(
+                        painter = painterResource(id = R.drawable.auth_my_olimp),
+                        contentDescription = "image auth my olimp"
+                    )
+
+                    Spacer(modifier = Modifier.padding(top = 9.dp))
+
+                    Text(
+
+                        text = stringResource(id = R.string.login_to_service),
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.regular)),
+                            fontWeight = FontWeight(400),
+                            color = BlackProfile,
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(22.dp))
+
+                    OutlinedText(
+                        previousData = "",
+                        label = stringResource(id = R.string.email),
+                        isError = state.value.isEmailError
+                    ) {
+                        viewModel.onEvent(LoginEvent.OnEmailUpdated(it))
+                    }
+
+                    if (state.value.isEmailError) {
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        ErrorMessage(
+                            text = stringResource(R.string.email_error_msg)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    PasswordField(
+                        previousData = "",
+                        label = stringResource(id = R.string.password),
+                        isError = state.value.isPasswordError
+                    ) {
+                        viewModel.onEvent(LoginEvent.OnPasswordUpdated(it))
+                    }
+
+                    if (state.value.isPasswordError) {
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        ErrorMessage(
+                            text = stringResource(R.string.error_password_msg)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    FilledBtn(
+                        padding = 0.dp,
+                        isEnabled = state.value.isLogging,
+                        text = stringResource(id = R.string.login),
+                    ) {
+                        viewModel.onEvent(LoginEvent.OnLogin(navigator = navigator))
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .clickable {
+                                navigator.navigate(PassEmailScreenDestination)
+                            }
+                        ,
+                        text = stringResource(R.string.forgot_password),
+                        style = TextStyle(
+                            fontSize = 13.sp,
+                            fontFamily = FontFamily(Font(R.font.regular)),
+                            fontWeight = FontWeight(400),
+                            color = BlackProfile,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = SecondaryScreen)
+                        .padding(horizontal = 54.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    FooterAuth(
+                        content = stringResource(R.string.not_registered),
+                        offer = stringResource(R.string.register_account)
+                    ) {
+                        navigator.navigate(SignUpScreenDestination)
+                    }
                 }
             }
         }
-    }
+    )
 }

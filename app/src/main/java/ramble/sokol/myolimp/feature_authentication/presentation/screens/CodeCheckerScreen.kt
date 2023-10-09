@@ -56,9 +56,9 @@ fun CodeCheckerScreen (
         viewModel.onEvent(SignUpEvent.OnPasswordUpdated(password = password))
     })
 
-    OlimpTheme(
-        navigationBarColor = SecondaryScreen
-    ) {
+//    OlimpTheme(
+//        navigationBarColor = SecondaryScreen
+//    ) {
 
         Column (
             modifier = Modifier
@@ -149,5 +149,5 @@ fun CodeCheckerScreen (
                 }
             }
         }
-    }
+//    }
 }
