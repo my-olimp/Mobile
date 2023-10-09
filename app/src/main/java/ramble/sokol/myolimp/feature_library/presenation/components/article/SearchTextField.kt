@@ -46,7 +46,7 @@ fun SearchTextField (
     }
 
     var hasFocus by remember {
-        mutableStateOf(previousData != null)
+        mutableStateOf(previousData.isNotEmpty())
     }
 
     val focusRequester = remember {

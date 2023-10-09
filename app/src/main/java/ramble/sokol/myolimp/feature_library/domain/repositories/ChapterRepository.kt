@@ -11,13 +11,17 @@ class ChapterRepository {
     suspend fun getArticles(
         subject: String,
         page: Int,
+        isFavourites: Boolean,
+        query: String,
         onSuccess: (GetArticlesResult) -> Unit,
         onError: (String?) -> Unit
     ) {
 
         val result = instance.getArticles(
             page = page,
-            subject = subject
+            subject = subject,
+            query = query,
+            love = if (isFavourites) 1 else 0
         )
 
         if (result.isSuccessful && result.body() != null) {

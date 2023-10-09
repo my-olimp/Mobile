@@ -51,7 +51,9 @@ fun LoveTopBar(
 
         SearchTextField(
             modifier = Modifier.weight(0.83f),
-            onTextChanged = { onTextChanged(it) }
+            onTextChanged = {
+                onTextChanged(it)
+            }
         ) {
             onTextChanged("")
         }

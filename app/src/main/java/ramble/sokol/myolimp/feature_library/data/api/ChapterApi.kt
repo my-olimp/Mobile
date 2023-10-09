@@ -11,5 +11,7 @@ interface ChapterApi {
     suspend fun getArticles(
         @Path("page") page: Int,
         @Query("subject") subject: String,
+        @Query("query") query: String,
+        @Query("love") love: Int,
     ): Response<GetArticlesResult>
 }

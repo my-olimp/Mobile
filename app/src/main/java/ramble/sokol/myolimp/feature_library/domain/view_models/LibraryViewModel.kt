@@ -27,9 +27,7 @@ class LibraryViewModel(context: Context) : ViewModel() {
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
 
     private val timer = object: CountDownTimer(2000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-
-        }
+        override fun onTick(millisUntilFinished: Long) {}
 
         override fun onFinish() {
             searchArticles()
@@ -60,7 +58,6 @@ class LibraryViewModel(context: Context) : ViewModel() {
     fun onEvent(event: LibraryEvent) {
         when (event) {
             is LibraryEvent.OnSearchQueryUpdated -> {
-                Log.i(TAG, "onEvent: ${event.query}")
                 _state.update {
                     it.copy(
                         searchQuery = event.query
@@ -71,14 +68,11 @@ class LibraryViewModel(context: Context) : ViewModel() {
             }
 
             is LibraryEvent.OnEmptyQuery -> {
-                Log.i(TAG, "empty")
-
                 _state.update {
                     it.copy(
                         searchQuery = ""
                     )
                 }
-
                 timer.cancel()
             }
 
