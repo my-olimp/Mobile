@@ -53,7 +53,7 @@ fun BeginAuthenticationScreen (
 
                 Image(
                     modifier = Modifier
-                        .fillMaxHeight(0.4f)
+                        .fillMaxHeight(0.5f)
                         .fillMaxWidth(),
                     painter = painterResource(id = R.drawable.main_authentication),
                     contentDescription = "image authentication"

@@ -78,7 +78,9 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Image(
+                    Image (
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         painter = painterResource(id = R.drawable.auth_my_olimp),
                         contentDescription = "image auth my olimp"
                     )
@@ -86,10 +88,9 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.padding(top = 9.dp))
 
                     Text(
-
                         text = stringResource(id = R.string.login_to_service),
                         style = TextStyle(
-                            fontSize = 14.sp,
+                            fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.regular)),
                             fontWeight = FontWeight(400),
                             color = BlackProfile,
@@ -139,7 +140,7 @@ fun LoginScreen(
                             },
                         text = stringResource(R.string.forgot_password),
                         style = TextStyle(
-                            fontSize = 13.sp,
+                            fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.regular)),
                             fontWeight = FontWeight(400),
                             color = BlackProfile,

@@ -41,7 +41,6 @@ import ramble.sokol.myolimp.destinations.LoginScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.CustomSnackbar
-import ramble.sokol.myolimp.feature_authentication.presentation.components.ErrorMessage
 import ramble.sokol.myolimp.feature_authentication.presentation.components.FooterAuth
 import ramble.sokol.myolimp.feature_authentication.presentation.components.PasswordField
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
@@ -100,6 +99,8 @@ fun SignUpScreen(
                 ) {
 
                     Image(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         painter = painterResource(id = R.drawable.auth_my_olimp),
                         contentDescription = "image auth my olimp"
                     )
@@ -107,10 +108,11 @@ fun SignUpScreen(
                     Spacer(modifier = Modifier.padding(top = 9.dp))
 
                     Text(
-
-                        text = stringResource(id = R.string.login_to_service),
+                        modifier = Modifier
+                            .padding(horizontal = 54.dp),
+                        text = "Для создания  учетной записи укажите свои данные:",
                         style = TextStyle(
-                            fontSize = 14.sp,
+                            fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.regular)),
                             fontWeight = FontWeight(400),
                             color = BlackProfile,
@@ -123,15 +125,10 @@ fun SignUpScreen(
                     OutlinedText(
                         previousData = "",
                         label = stringResource(id = R.string.email),
-                        isError = state.value.isEmailError
+                        isError = state.value.isEmailError,
+                        errorText = stringResource(R.string.email_error_already_in_use)
                     ) {
                         viewModel.onEvent(SignUpEvent.OnEmailUpdated(it))
-                    }
-
-                    if (state.value.isEmailError) {
-                        ErrorMessage(
-                            text = stringResource(R.string.email_error_already_in_use)
-                        )
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -159,22 +156,18 @@ fun SignUpScreen(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     PasswordField(
                         previousData = "",
-                        label = stringResource(id = R.string.confirm_password)
+                        label = stringResource(id = R.string.confirm_password),
+                        isError = state.value.passwordError != null,
+                        errorText = state.value.passwordError ?: ""
                     ) {
                         viewModel.onEvent(SignUpEvent.OnConfirmedPasswordUpdated(it))
                     }
 
-                    if (state.value.passwordError != null) {
-                        ErrorMessage(
-                            text = state.value.passwordError!!
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     FilledBtn(
                         padding = 0.dp,
@@ -184,7 +177,7 @@ fun SignUpScreen(
                         viewModel.onEvent(SignUpEvent.OnSignUp(navigator = navigator))
                     }
 
-                    Spacer(modifier = Modifier.height(17.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
                         modifier = Modifier
@@ -216,7 +209,6 @@ fun SignUpScreen(
                     }
                 }
             }
-
 
             SnackbarHost (
                 hostState = snackState,

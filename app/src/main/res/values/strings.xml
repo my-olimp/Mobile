@@ -61,7 +61,7 @@
     <string name="second_name">Фамилия</string>
     <string name="star">*</string>
     <string name="no_third_name">Нет отчества</string>
-    <string name="login_to_service">Вход в сервис</string>
+    <string name="login_to_service">Войти в сервис:</string>
     <string name="region_profile">Субъект</string>
     <string name="city_profile">Населенный пункт</string>
     <string name="create_plan">Создайте план :)</string>
@@ -118,7 +118,6 @@
     <string name="male_gender">Мужской</string>
     <string name="type_of_activity">Вид деятельности</string>
     <string name="further">Дальше</string>
-    <string name="pupil">Ученик</string>
 
     <string-array name="genders">
         <item>Мужской</item>
@@ -210,4 +209,6 @@
     <string name="have_no_loved_articles_with_filter">У тебя нет любимых статей по этим предметам</string>
     <string name="error_password_letters">Пароль должен состоять только из букв латиницы верхнего или нижнего регистра, цифр, специальных символов(!@$%^)</string>
     <string name="error_password_spaces">Пароль не может содержать в себе пробелы</string>
+    <string name="student">Ученик</string>
+    <string name="teacher">Учитель</string>
 </resources>

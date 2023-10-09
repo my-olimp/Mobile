@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,13 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -37,7 +30,6 @@ import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.LocalUserResult
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
-import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
 @RootNavGraph(start = true)
@@ -50,11 +42,8 @@ fun SplashScreen(
         isSplashScreen = true,
         onReload = {},
         content = {
-
-
             val splashViewModel = getViewModel<SplashViewModel>()
             val state = splashViewModel.state.collectAsState()
-            val version = "v.0.6.7"
 
             val transition = rememberInfiniteTransition(label = "")
             val alpha by transition.animateFloat(
@@ -93,48 +82,19 @@ fun SplashScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(horizontal = 64.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
 
-                Column (
+                Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 64.dp)
-                        .weight(0.5f),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .alpha(alpha = alpha),
-                        painter = painterResource(R.drawable.splash_screen_name),
-                        contentDescription = "app image name"
-                    )
-                }
-
-                Column (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.5f)
-                        .padding(bottom = 32.dp),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        text = version,
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.regular)),
-                            fontWeight = FontWeight(300),
-                            color = GreyNavigationText,
-                            textAlign = TextAlign.Center,
-                            letterSpacing = 0.5.sp,
-                        ),
-                    )
-                }
+                        .alpha(alpha = alpha),
+                    painter = painterResource(R.drawable.splash_screen_name),
+                    contentDescription = "app image name"
+                )
             }
         }
     )

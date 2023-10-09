@@ -51,6 +51,7 @@ import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileView
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
+import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.GreyProfile
 import ramble.sokol.myolimp.ui.theme.White
 
@@ -73,6 +74,8 @@ fun ProfileScreen(
             .diskCachePolicy(CachePolicy.DISABLED)
             .build()
     )
+
+    val version = "v.0.6.8"
 
     LaunchedEffect(key1 = imgState.value.isImgChanged) {
         painter.onForgotten()
@@ -139,7 +142,14 @@ fun ProfileScreen(
 
                 Text(
                     modifier = Modifier.padding(bottom = 16.dp),
-                    text = state.value.accountType ?: "Loading",
+                    text = when (state.value.accountType) {
+                        "t" -> {
+                            stringResource(R.string.teacher)
+                        }
+                        else -> {
+                            stringResource(R.string.student)
+                        }
+                    },
                     style = TextStyle(
                         fontSize = 13.sp,
                         fontFamily = FontFamily(Font(R.font.medium)),
@@ -254,6 +264,22 @@ fun ProfileScreen(
                 ) {
                     viewModel.onEvent(ProfileEvent.OnLogOut(navigator = navController))
                 }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = version,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(300),
+                        color = GreyNavigationText,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.5.sp,
+                    ),
+                )
             }
         }
     }
