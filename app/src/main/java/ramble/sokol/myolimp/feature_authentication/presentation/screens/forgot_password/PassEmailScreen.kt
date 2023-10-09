@@ -45,57 +45,60 @@ fun PassEmailScreen(
     val state = viewModel.state.collectAsState()
 
     OlimpTheme(
-        navigationBarColor = SecondaryScreen
-    ) {
-        Column(
-            modifier = Modifier
-                .background(Transparent)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        navigationBarColor = SecondaryScreen,
+        onReload = {},
+        content = {
+
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 32.dp, horizontal = 12.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .background(Transparent)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.auth_my_olimp),
-                    contentDescription = "image auth my olimp"
-                )
-                VerticalSpacer(height = 8.dp)
-
-                Text(
-                    text = stringResource(id = R.string.pass_email_to_restore_password),
-                    style = regularType(color = BlackProfile),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 50.dp)
-                )
-
-                VerticalSpacer(height = 14.dp)
-
-                OutlinedText(
-                    previousData = state.value.email,
-                    label = stringResource(id = R.string.email),
-                    isError = state.value.emailError,
-                    errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.email_error)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp, horizontal = 12.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    viewModel.onEvent(SendCodeEvent.OnEmailTyped(it))
-                }
 
-                VerticalSpacer(height = 33.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.auth_my_olimp),
+                        contentDescription = "image auth my olimp"
+                    )
+                    VerticalSpacer(height = 8.dp)
 
-                FilledBtn(
-                    text = stringResource(id = R.string.next),
-                    padding = 0.dp
-                ) {
-                    viewModel.onEvent(SendCodeEvent.OnContinue(navigator))
+                    Text(
+                        text = stringResource(id = R.string.pass_email_to_restore_password),
+                        style = regularType(color = BlackProfile),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 50.dp)
+                    )
+
+                    VerticalSpacer(height = 14.dp)
+
+                    OutlinedText(
+                        previousData = state.value.email,
+                        label = stringResource(id = R.string.email),
+                        isError = state.value.emailError,
+                        errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.email_error)
+                    ) {
+                        viewModel.onEvent(SendCodeEvent.OnEmailTyped(it))
+                    }
+
+                    VerticalSpacer(height = 33.dp)
+
+                    FilledBtn(
+                        text = stringResource(id = R.string.next),
+                        padding = 0.dp
+                    ) {
+                        viewModel.onEvent(SendCodeEvent.OnContinue(navigator))
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable

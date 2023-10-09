@@ -83,10 +83,6 @@ class RegisterEducationViewModel : ViewModel() {
                             Log.i(TAG,"request called error")
                         }
                     )
-                } else {
-                    // TODO: Make SnackBar
-
-//                    Toast.makeText(context,"data isn't valid",Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -96,6 +92,13 @@ class RegisterEducationViewModel : ViewModel() {
         onResult: () -> Unit,
         onError: () -> Unit
     ) {
+
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             val userData = state.value
             try {
@@ -108,10 +111,24 @@ class RegisterEducationViewModel : ViewModel() {
                         grade = userData.grade.toInt()
                     ),
                     onResult = {
+
+                        _state.update { state->
+                            state.copy(
+                                isLoading = false
+                            )
+                        }
+
                         Log.i(TAG,"patch request response: $it")
                         onResult.invoke()
                     },
                     onError = {
+
+                        _state.update { state->
+                            state.copy(
+                                isLoading = false
+                            )
+                        }
+
                         onError.invoke()
                         Log.i(TAG,"patch request exception: ${it.message}")
                     }
