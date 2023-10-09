@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -56,7 +57,6 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.presentation.components.BottomSheetLayout
-import ramble.sokol.myolimp.feature_profile.presentation.components.Loader
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileFilledBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileOutlinedBtn
 import ramble.sokol.myolimp.feature_profile.presentation.components.ProfileSectionContent
@@ -115,10 +115,13 @@ fun ProfileDataScreen(
     })
 
     BottomBarTheme(
-        navController = navController
+        navController = navController,
+        isLoading = !state.value.isLoaded
     ) {
         Box(
-            Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(if (!state.value.isLoaded) 4.dp else 0.dp),
             contentAlignment = Center
         ) {
 
@@ -352,8 +355,8 @@ fun ProfileDataScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                /*
-                Contacts
+            /*
+            Contacts
             */
                 Column(
                     modifier = Modifier
@@ -371,6 +374,7 @@ fun ProfileDataScreen(
                     ProfileSectionTitle(
                         text = stringResource(R.string.contacts)
                     ) {
+//                        TODO wait for backend
                         SheetRouter.navigateTo(SheetNavigation.EditContacts)
                     }
 
@@ -467,5 +471,4 @@ fun ProfileDataScreen(
             }
         }
     }
-    if(!state.value.isLoaded) Loader()
 }
