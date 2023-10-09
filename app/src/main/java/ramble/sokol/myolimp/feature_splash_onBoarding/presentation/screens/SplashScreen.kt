@@ -56,7 +56,7 @@ fun SplashScreen(
 
         val splashViewModel = getViewModel<SplashViewModel>()
         val state = splashViewModel.state.collectAsState()
-        val version = "v.0.4.2"
+        val version = "v.0.6.6"
 
         val transition = rememberInfiniteTransition(label = "")
         val alpha by transition.animateFloat(
