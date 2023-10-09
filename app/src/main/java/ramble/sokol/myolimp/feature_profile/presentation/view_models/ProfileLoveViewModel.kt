@@ -8,12 +8,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.data.repository.LibraryRepositoryImpl
-import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileLoveRepository
@@ -91,6 +88,7 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
                     )
                 }
                 timer.cancel()
+                extractArticles()
             }
         }
     }
@@ -105,9 +103,9 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repository.extractArticles(
-                    1,
-                    LOVE,
-                    state.value.queryText
+                    page = 1,
+                    love = LOVE,
+                    query = state.value.queryText
                 ).body()
 
                 Log.i(TAG, "extract response is: $response")

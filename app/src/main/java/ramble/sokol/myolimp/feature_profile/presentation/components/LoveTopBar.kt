@@ -54,7 +54,7 @@ fun LoveTopBar(
                 .clip(RoundedCornerShape(8.dp)),
             onClick = onFilterClick,
             isActive = itemCount != 0,
-            icon = R.drawable.ic_library_sorting,
+            icon = R.drawable.ic_love_filter,
             itemsCount = itemCount
         )
     }

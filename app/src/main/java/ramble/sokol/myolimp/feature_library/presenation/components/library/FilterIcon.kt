@@ -114,7 +114,7 @@ fun FilterIcon2 (
                         shape = RoundedCornerShape(size = 8.dp)
                     )
                     .padding(vertical = 4.dp, horizontal = 4.dp),
-                painter = painterResource(id = R.drawable.ic_setting_love),
+                painter = painterResource(id = R.drawable.ic_love_filter),
                 contentDescription = "open filter love",
                 tint = White
             )
