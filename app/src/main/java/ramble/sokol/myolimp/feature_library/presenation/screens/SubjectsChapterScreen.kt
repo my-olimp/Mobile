@@ -46,6 +46,7 @@ import ramble.sokol.myolimp.feature_library.presenation.components.library.Favor
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
+import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SheetTitle
@@ -71,10 +72,11 @@ fun SubjectsChapterScreen (
         viewModel.onEvent(ChapterEvent.OnSearchArticlesBySubject(subject = subject))
     })
 
-    OlimpTheme(
+    BottomBarTheme(
         navigationBarColor = SecondaryScreen,
         statusBarColor = BackgroundMain,
-        isLoading = state.value.isLoading
+        isLoading = state.value.isLoading,
+        navController = navController
     ) {
         Column (
             modifier = Modifier

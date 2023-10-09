@@ -38,7 +38,9 @@ import ramble.sokol.myolimp.ui.theme.regularType
 fun LoveTopBar(
     onTextChanged: (String) -> Unit,
     onFilterClick: () -> Unit,
-    itemCount: Int = 0
+    onCancelSearching: () -> Unit,
+    itemCount: Int = 0,
+    previousData: String
 ) {
 
     Row(
@@ -51,11 +53,12 @@ fun LoveTopBar(
 
         SearchTextField(
             modifier = Modifier.weight(0.83f),
+            previousData = previousData,
             onTextChanged = {
                 onTextChanged(it)
             }
         ) {
-            onTextChanged("")
+            onCancelSearching()
         }
 
         Spacer(modifier = Modifier.weight(0.02f))

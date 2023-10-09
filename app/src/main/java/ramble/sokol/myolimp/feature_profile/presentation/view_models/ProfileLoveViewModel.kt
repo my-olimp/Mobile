@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.data.repository.LibraryRepositoryImpl
+import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileLoveRepository
@@ -32,6 +34,14 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
     private val _state = MutableStateFlow(ProfileLoveState())
     val state = _state.asStateFlow()
 
+    private val timer = object: CountDownTimer(2000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {}
+
+        override fun onFinish() {
+            extractArticles()
+        }
+    }
+
     init {
         viewModelScope.launch {
             extractArticles()
@@ -49,7 +59,6 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
     fun onEvent(event: ProfileLoveEvent) {
         when(event) {
             is ProfileLoveEvent.OnChooseCheckbox -> {
-
                 _state.update {
                     it.copy(
                       subjects = state.value.subjects.mapValues {item ->
@@ -71,13 +80,36 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
                 _state.update {
                     it.copy(queryText = event.query)
                 }
+
+                timer.cancel()
+                timer.start()
+            }
+            is ProfileLoveEvent.OnEmptyQuery -> {
+                _state.update {
+                    it.copy(
+                        queryText = ""
+                    )
+                }
+                timer.cancel()
             }
         }
     }
+
     private fun extractArticles() {
+        _state.update {
+            it.copy(
+                isArticlesLoaded = false
+            )
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = repository.extractArticles(1,LOVE,state.value.queryText).body()
+                val response = repository.extractArticles(
+                    1,
+                    LOVE,
+                    state.value.queryText
+                ).body()
+
                 Log.i(TAG, "extract response is: $response")
 
                 if(response != null) {
