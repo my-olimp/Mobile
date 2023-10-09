@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
+import ramble.sokol.myolimp.feature_library.presenation.components.library.IconWithCircle
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.CircleColor
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
@@ -39,7 +41,6 @@ fun LoveTopBar(
     itemCount: Int = 0
 ) {
 
-
     Row(
         modifier = Modifier
             .height(IntrinsicSize.Max)
@@ -47,6 +48,7 @@ fun LoveTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+
         SearchTextField(
             modifier = Modifier.weight(0.83f),
             onTextChanged = { onTextChanged(it) }
@@ -54,69 +56,18 @@ fun LoveTopBar(
             onTextChanged("")
         }
 
-        Spacer(modifier = Modifier.weight(0.04f))
+        Spacer(modifier = Modifier.weight(0.02f))
 
-        Box(
+        IconWithCircle(
             modifier = Modifier
-                .weight(0.13f)
-                .clip(RoundedCornerShape(8.dp))
-                .clickable {
-                    onFilterClick()
-                }
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(top = 10.dp, end = 7.dp)
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(
-                            color = if (itemCount == 0) White else BlueStart,
-                            shape = RoundedCornerShape(size = 8.dp)
-                        )
-                        .padding(vertical = 4.dp, horizontal = 4.dp),
-                    painter = painterResource(id = R.drawable.ic_setting_love),
-                    contentDescription = "open filter love",
-                    tint = if (itemCount == 0) GreyProfileData else White
-                )
-            }
-            if (itemCount != 0) {
-                Box(
-                    modifier = Modifier,
-                    contentAlignment = Alignment.TopEnd
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        Text(
-                            text = itemCount.toString(),
-                            style = regularType(
-                                color = White,
-                                fontSize = 11.sp,
-                                letterSpacing = 0.22.sp
-                            ),
-                            modifier = Modifier
-                                .drawBehind {
-                                    drawCircle(
-                                        color = White,
-                                        radius = this.size.maxDimension / 1.7f
-                                    )
-                                    drawCircle(
-                                        color = CircleColor,
-                                        radius = this.size.maxDimension / 2.0f
-                                    )
-                                }
-                        )
-                    }
-                }
-            }
-        }
+                .fillMaxHeight()
+                .weight(0.15f)
+                .clip(RoundedCornerShape(8.dp)),
+            onClick = onFilterClick,
+            isActive = itemCount != 0,
+            icon = R.drawable.ic_library_sorting,
+            itemsCount = itemCount
+        )
     }
 }
 

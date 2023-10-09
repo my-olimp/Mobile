@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -103,10 +102,16 @@ fun OlimpTheme(
 @Composable
 fun BottomBarTheme(
     navController: NavController,
+    statusBarColor: Color = Transparent,
+    navigationBarColor: Color = Transparent,
+    isLoading: Boolean = false,
     content: @Composable (PaddingValues) -> Unit
 ) {
-
-    OlimpTheme {
+    OlimpTheme (
+        navigationBarColor = navigationBarColor,
+        statusBarColor = statusBarColor,
+        isLoading = isLoading
+    ) {
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(navController = navController)

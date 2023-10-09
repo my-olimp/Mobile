@@ -14,14 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
 
 @Composable
 fun LibrarySearchBar(
+    itemCount: Int,
+    previousData: String,
     onSearchTextChanged: (String) -> Unit,
     onShowFilterBottomSheet: () -> Unit,
     onShowFavourites: (Boolean) -> Unit,
+    onCancelSearching: () -> Unit,
     isFilterActive: Boolean = false,
-    isFavoriteActive: Boolean = false
+    isFavoriteActive: Boolean = false,
 ) {
     Row(
         modifier = Modifier
@@ -30,23 +35,26 @@ fun LibrarySearchBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom
     ) {
+
         SearchTextField(
             modifier = Modifier
                 .weight(0.68f),
             onTextChanged = onSearchTextChanged,
-            onCancelSearching = { onSearchTextChanged("") }
+            onCancelSearching = onCancelSearching,
+            previousData = previousData
         )
 
         Spacer(modifier = Modifier.fillMaxWidth(0.01f))
 
-        FilterIcon(
+        IconWithCircle(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(0.15f)
-                .padding(top = 8.dp)
-                .clip(RoundedCornerShape(8.dp)), //try remove
+                .clip(RoundedCornerShape(8.dp)),
             onClick = onShowFilterBottomSheet,
-            isActive = isFilterActive
+            isActive = isFilterActive,
+            icon = R.drawable.ic_library_sorting,
+            itemsCount = itemCount
         )
 
         Spacer(modifier = Modifier.fillMaxWidth(0.01f))
@@ -56,7 +64,7 @@ fun LibrarySearchBar(
                 .fillMaxHeight()
                 .weight(0.15f)
                 .padding(top = 8.dp)
-                .clip(RoundedCornerShape(8.dp)), //try remove
+                .clip(RoundedCornerShape(8.dp)),
             onClick = {
                 onShowFavourites(!isFavoriteActive)
             },

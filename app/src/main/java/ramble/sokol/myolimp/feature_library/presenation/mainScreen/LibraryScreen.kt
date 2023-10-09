@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -37,6 +38,7 @@ import ramble.sokol.myolimp.feature_library.presenation.components.library.Libra
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibrarySearchBar
 import ramble.sokol.myolimp.feature_library.presenation.components.library.SubjectsPickerBottomSheet
+import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.MainPageBlue
 
@@ -50,7 +52,9 @@ fun LibraryScreen(
     val state = viewModel.state.collectAsState()
 
     BottomBarTheme(
-        navController = navController
+        navController = navController,
+        statusBarColor = BackgroundMain,
+        isLoading = state.value.isLoading
     ) {
         val coroutineScope = rememberCoroutineScope()
         val modalSheetState = rememberModalBottomSheetState(
@@ -60,15 +64,11 @@ fun LibraryScreen(
             sheetState = modalSheetState,
             sheetShape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
             sheetContent = {
-                if (state.value.isLoading) {
-                    LoadingCircular()
-                } else {
-                    SubjectsPickerBottomSheet(
-                        subjectsMap = state.value.bottomSheetSubjectsMap,
-                        onEvent = viewModel::onEvent,
-                        onHideSheet = { coroutineScope.launch { modalSheetState.hide() } }
-                    )
-                }
+                SubjectsPickerBottomSheet(
+                    subjectsMap = state.value.bottomSheetSubjectsMap,
+                    onEvent = viewModel::onEvent,
+                    onHideSheet = { coroutineScope.launch { modalSheetState.hide() } }
+                )
             }
         ) {
             Column(
@@ -76,6 +76,7 @@ fun LibraryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
+                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
                     .padding(horizontal = 16.dp)
             ) {
                 LibrarySearchBar(
@@ -85,9 +86,18 @@ fun LibraryScreen(
                     onShowFavourites = { newValue ->
                         viewModel.onEvent(LibraryEvent.OnShowFavourites(newValue))
                     },
-                    onShowFilterBottomSheet = { coroutineScope.launch { modalSheetState.show() } },
+                    onShowFilterBottomSheet = {
+                            coroutineScope.launch {
+                            modalSheetState.show()
+                        }
+                    },
+                    onCancelSearching = {
+                        viewModel.onEvent(LibraryEvent.OnEmptyQuery)
+                    },
+                    previousData = state.value.searchQuery,
                     isFilterActive = state.value.filteredSubjects != emptyList<String>(),
-                    isFavoriteActive = state.value.isShowingFavourites
+                    isFavoriteActive = state.value.isShowingFavourites,
+                    itemCount = state.value.filteredSubjects.count()
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 LazyColumn(
@@ -103,9 +113,6 @@ fun LibraryScreen(
                             action = "",
                             onActionClicked = {}
                         ) {
-                            if (state.value.isLoading) {
-                                LoadingCircular()
-                            }
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),

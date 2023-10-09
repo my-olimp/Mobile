@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_library.domain.view_models
 
 import android.content.Context
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +25,16 @@ class LibraryViewModel(context: Context) : ViewModel() {
 
     private val userDatabase: UserDatabase = UserDatabase(context)
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
+
+    private val timer = object: CountDownTimer(2000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+
+        }
+
+        override fun onFinish() {
+            searchArticles()
+        }
+    }
 
     init {
         viewModelScope.launch {
@@ -49,13 +60,26 @@ class LibraryViewModel(context: Context) : ViewModel() {
     fun onEvent(event: LibraryEvent) {
         when (event) {
             is LibraryEvent.OnSearchQueryUpdated -> {
+                Log.i(TAG, "onEvent: ${event.query}")
                 _state.update {
                     it.copy(
                         searchQuery = event.query
                     )
                 }
+                timer.cancel()
+                timer.start()
+            }
 
-                searchArticles()
+            is LibraryEvent.OnEmptyQuery -> {
+                Log.i(TAG, "empty")
+
+                _state.update {
+                    it.copy(
+                        searchQuery = ""
+                    )
+                }
+
+                timer.cancel()
             }
 
             is LibraryEvent.OnShowFavourites -> {
@@ -64,7 +88,6 @@ class LibraryViewModel(context: Context) : ViewModel() {
                         isShowingFavourites = event.isShowing
                     )
                 }
-
                 searchArticles()
             }
 
