@@ -146,6 +146,18 @@ class ProfileViewModel (
         event: ProfileEvent
     ) {
         when (event) {
+
+            /*TODO REMOVE AFTER TESTING*/
+            is ProfileEvent.OnChangeType -> {
+                _state.update {
+                    it.copy(
+                        accountType = event.newType
+                    )
+                }
+            }
+            /**/
+
+
             is ProfileEvent.OnFirstNameChanged -> {
                 _personalState.update {
                     it.copy(

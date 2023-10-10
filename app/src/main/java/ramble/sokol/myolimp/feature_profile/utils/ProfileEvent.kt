@@ -1,14 +1,18 @@
 package ramble.sokol.myolimp.feature_profile.utils
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.navigation.NavController
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.School
-import java.io.File
 
 sealed class ProfileEvent {
+
+    /*TODO REMOVE AFTER TESTING*/
+    data class OnChangeType(val newType: String) : ProfileEvent()
+    /**/
+
+
     data object OnEducationInfoSave: ProfileEvent()
     data object OnPersonalInfoSave: ProfileEvent()
     data object OnContactsInfoSave : ProfileEvent()

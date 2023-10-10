@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.presentation.screens.forgot_password.VerticalSpacer
 import ramble.sokol.myolimp.ui.theme.BlackOption
 import ramble.sokol.myolimp.ui.theme.GreyDescription
 
@@ -33,61 +34,64 @@ fun Reference(
     icon: Int,
     title: String,
     content: String,
+    isVisible: Boolean = true,
     isShowBack: Boolean = true,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 24.dp
-            )
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick),
-        horizontalArrangement = if (isShowBack) Arrangement.SpaceEvenly else Arrangement.Start
-    ) {
-        Image(
+    if(isVisible) {
+        Row(
             modifier = Modifier
-                .wrapContentSize(Alignment.CenterStart),
-            painter = painterResource(id = icon),
-            contentDescription = "awd"
-        )
-
-        Spacer(modifier = Modifier.width(19.dp))
-
-        Column {
-            Text(
-                text = title, style = TextStyle(
-                    fontSize = 15.sp,
-                    fontFamily = FontFamily(Font(R.font.medium)),
-                    fontWeight = FontWeight(500),
-                    color = BlackOption,
-                    letterSpacing = 0.3.sp,
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 24.dp
                 )
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = content, style = TextStyle(
-                    fontSize = 11.sp,
-                    fontFamily = FontFamily(Font(R.font.regular)),
-                    fontWeight = FontWeight(400),
-                    color = GreyDescription,
-                    letterSpacing = 0.2.sp,
-                )
-            )
-        }
-        if (isShowBack) {
+                .clip(RoundedCornerShape(20.dp))
+                .clickable(onClick = onClick),
+            horizontalArrangement = if (isShowBack) Arrangement.SpaceEvenly else Arrangement.Start
+        ) {
             Image(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically),
-                painter = painterResource(id = R.drawable.ic_profile_btn_back),
-                contentDescription = "button back",
-                alignment = Alignment.CenterEnd
+                    .wrapContentSize(Alignment.CenterStart),
+                painter = painterResource(id = icon),
+                contentDescription = "awd"
             )
-        }
-    }
 
+            Spacer(modifier = Modifier.width(19.dp))
+
+            Column {
+                Text(
+                    text = title, style = TextStyle(
+                        fontSize = 15.sp,
+                        fontFamily = FontFamily(Font(R.font.medium)),
+                        fontWeight = FontWeight(500),
+                        color = BlackOption,
+                        letterSpacing = 0.3.sp,
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = content, style = TextStyle(
+                        fontSize = 11.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(400),
+                        color = GreyDescription,
+                        letterSpacing = 0.2.sp,
+                    )
+                )
+            }
+            if (isShowBack) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterVertically),
+                    painter = painterResource(id = R.drawable.ic_profile_btn_back),
+                    contentDescription = "button back",
+                    alignment = Alignment.CenterEnd
+                )
+            }
+        }
+        VerticalSpacer(height = 29.dp)
+    }
 }

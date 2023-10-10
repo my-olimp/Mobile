@@ -211,4 +211,8 @@
     <string name="error_password_spaces">Пароль не может содержать в себе пробелы</string>
     <string name="student">Ученик</string>
     <string name="teacher">Учитель</string>
+    <string name="profile_section_olympiads">Олимпиады</string>
+    <string name="profile_section_olympiads_content">Для загрузки результатов</string>
+    <string name="profile_section_news">Мои новости и статьи</string>
+    <string name="profile_section_news_content">Чтобы рассказать о важном</string>
 </resources>
