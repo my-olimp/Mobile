@@ -5,9 +5,13 @@ import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.School
 
-interface RegistrationEducationEvent {
+sealed interface RegistrationEducationEvent {
 
-    data class OnNext(val navigator: DestinationsNavigator) : RegistrationEducationEvent
+    data object OnCancelLoader : RegistrationEducationEvent
+
+    data object OnStartLoader: RegistrationEducationEvent
+
+    data class OnNext(val navigator: DestinationsNavigator, val isWork: Boolean) : RegistrationEducationEvent
 
     data class OnSchoolChanged(val school: School) : RegistrationEducationEvent
 

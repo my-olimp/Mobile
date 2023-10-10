@@ -45,7 +45,7 @@ import ramble.sokol.myolimp.destinations.NewsScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
-import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -192,7 +192,6 @@ fun ProfileScreen(
                     content = stringResource(R.string.profile_purpose_content),
                     isVisible = state.value.accountType != "t"
                 ) {
-                    navController.navigate(RegisterSubjectsScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 
@@ -202,7 +201,6 @@ fun ProfileScreen(
                     content = stringResource(R.string.profile_progress_content),
                     isVisible = state.value.accountType != "t"
                 ) {
-                    navController.navigate(RegisterSubjectsScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 
@@ -231,7 +229,7 @@ fun ProfileScreen(
                     content = stringResource(R.string.profile_watch_content),
                     isVisible = true
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(RegisterInfoScreenDestination)
                 }
 
 
@@ -241,7 +239,7 @@ fun ProfileScreen(
                     content = stringResource(id = R.string.profile_section_news_content),
                     isVisible = state.value.accountType == "t"
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(RegisterInfoScreenDestination)
                 }
 
                 Reference(

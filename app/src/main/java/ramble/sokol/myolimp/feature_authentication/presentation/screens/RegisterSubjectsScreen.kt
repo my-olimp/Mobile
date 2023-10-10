@@ -46,7 +46,8 @@ import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 @Destination
 @Composable
 fun RegisterSubjectsScreen (
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    isWorkScreen: Boolean = false
 ) {
 
     val viewModel = getViewModel<RegisterSubjectsViewModel>()
@@ -56,7 +57,7 @@ fun RegisterSubjectsScreen (
         navigationBarColor = SecondaryScreen,
         isLoading = state.value.isLoading,
         onReload = {
-            navigator.navigate(RegisterSubjectsScreenDestination)
+            navigator.navigate(RegisterSubjectsScreenDestination(isWorkScreen))
         },
         content = {
 
@@ -169,7 +170,7 @@ fun RegisterSubjectsScreen (
                     padding = 0.dp,
                     isEnabled = state.value.isNextEnabled
                 ) {
-                    viewModel.onEvent(RegisterSubjectEvent.OnNext(navigator))
+                    viewModel.onEvent(RegisterSubjectEvent.OnNext(navigator,isWorkScreen))
                 }
             }
         }

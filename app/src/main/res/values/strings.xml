@@ -215,4 +215,15 @@
     <string name="profile_section_olympiads_content">Для загрузки результатов</string>
     <string name="profile_section_news">Мои новости и статьи</string>
     <string name="profile_section_news_content">Чтобы рассказать о важном</string>
+    <string name="work">Работа</string>
+    <string name="work_post">Должность</string>
+    <string-array name="work_array">
+        <item>Ректор</item>
+        <item>Проректор</item>
+        <item>Декан</item>
+        <item>Заведующий кафедрой</item>
+        <item>Профессор</item>
+        <item>Доцент</item>
+        <item>Старший преподаватель</item>
+    </string-array>
 </resources>

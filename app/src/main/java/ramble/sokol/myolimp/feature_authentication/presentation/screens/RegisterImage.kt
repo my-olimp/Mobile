@@ -31,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
@@ -51,7 +50,8 @@ import java.io.File
 @Destination
 @Composable
 internal fun RegisterImageScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    isWorkScreen: Boolean = false
 ) {
     val viewModel = getViewModel<RegisterImageViewModel>()
     val state by viewModel.state.collectAsState()
@@ -68,14 +68,9 @@ internal fun RegisterImageScreen(
         },
         navigator = navigator,
         snilsValue = state.snils,
-        selectedProfileImg = state.profileImg
+        selectedProfileImg = state.profileImg,
+        isHiddenSnils = isWorkScreen
     )
-}
-
-@Preview
-@Composable
-fun PrevRegisterImageScreen() {
-//    RegisterImageScreen({}, {_, _ ->}, "", null)
 }
 
 @Composable
@@ -83,7 +78,8 @@ fun RegisterImageScreen(
     onEvent: (RegistrationImageEvent) -> Unit,
     snilsValue: String,
     navigator: DestinationsNavigator,
-    selectedProfileImg: Uri?
+    selectedProfileImg: Uri?,
+    isHiddenSnils: Boolean = false
 ) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -146,21 +142,25 @@ fun RegisterImageScreen(
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedText(
-                        previousData = snilsValue,
-                        label = stringResource(R.string.label_snils),
-                        isEnabled = true,
-                        onTextChanged = {
-                            onEvent(RegistrationImageEvent.OnSnilsChanged(it))
-                        },
-                        isError = false
-                    )
+
+                    if(!isHiddenSnils) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OutlinedText(
+                            previousData = snilsValue,
+                            label = stringResource(R.string.label_snils),
+                            isEnabled = true,
+                            onTextChanged = {
+                                onEvent(RegistrationImageEvent.OnSnilsChanged(it))
+                            },
+                            isError = false
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(24.dp))
                     FilledBtn(
                         text = stringResource(id = R.string.further),
                         padding = 0.dp,
-                        isEnabled = (selectedProfileImg != null && snilsValue.isNotEmpty())
+                        isEnabled = (selectedProfileImg != null && (isHiddenSnils || snilsValue.isNotEmpty()))
                     ) {
                         try {
                             val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedProfileImg ?: Uri.EMPTY))

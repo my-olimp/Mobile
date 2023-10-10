@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -29,10 +30,11 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
-import ramble.sokol.myolimp.feature_authentication.presentation.components.ShowError
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
+import ramble.sokol.myolimp.feature_authentication.presentation.screens.forgot_password.VerticalSpacer
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
 import ramble.sokol.myolimp.feature_profile.presentation.components.CalendarInput
+import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
@@ -60,12 +62,15 @@ fun RegisterInfoScreen(
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
+        isLoading = state.value.isLoading,
         onReload = {},
         content = {
             Column(
                 modifier = Modifier
                     .background(Transparent)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+                ,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -94,23 +99,15 @@ fun RegisterInfoScreen(
                         previousData = state.value.fio,
                         label = stringResource(id = R.string.name_surname),
                         isEnabled = true,
-                        onTextChanged = {
-                            viewModel.onEvent(
-                                RegistrationInfoEvent.OnNameSurnameChanged(it)
-                            )
-                        },
-                        isError = state.value.fioError
-                    )
-                    if (state.value.fioError) {
-                        ShowError(
-                            text = stringResource(
-                                id = R.string.null_textfield_error,
-                                stringResource(id = R.string.name_surname).lowercase()
-                            )
+                        isError = state.value.fioError,
+                        errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.name_surname)
+                    ) {
+                        viewModel.onEvent(
+                            RegistrationInfoEvent.OnNameSurnameChanged(it)
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    VerticalSpacer(height = 12.dp)
 
                     Row(
                         modifier = Modifier
@@ -153,48 +150,35 @@ fun RegisterInfoScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
-
+                    VerticalSpacer(height = 12.dp)
+                    
                     CalendarInput(
                         label = stringResource(id = R.string.dob),
                         previousData = state.value.bdate,
-                        isError = state.value.bdateError
+                        isError = state.value.bdateError,
+                        errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.error_date)
                     ) {
                         viewModel.onEvent(RegistrationInfoEvent.OnDobChanged(it))
                     }
-                    if (state.value.bdateError) {
-                        ShowError(
-                            text = stringResource(
-                                id = R.string.null_textfield_error,
-                                stringResource(id = R.string.error_date)
-                            )
-                        )
-                    }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    VerticalSpacer(height = 12.dp)
 
                     ReadOnlyDropDown(
                         options = activityType.toList(),
                         previousData = state.value.activityType,
                         label = stringResource(id = R.string.type_of_activity),
-                        isError = state.value.activityTypeError
+                        isError = state.value.activityTypeError,
+                        errorText = ErrorString(id = R.string.null_textfield_error, addId = R.string.type_of_activity)
                     ) {
                         viewModel.onEvent(
                             RegistrationInfoEvent.OnActivityTypeChanged(
-                                activityType = if (it == activityType[0]) "s" else "t"
-                            )
-                        )
-                    }
-                    if (state.value.activityTypeError) {
-                        ShowError(
-                            text = stringResource(
-                                id = R.string.null_textfield_error,
-                                stringResource(id = R.string.type_of_activity).lowercase()
+                                activityType = it,
+                                requestActivityType = if (it == activityType[0]) "s" else "t"
                             )
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    VerticalSpacer(height = 24.dp)
 
                     FilledBtn(
                         text = stringResource(id = R.string.further),
@@ -202,7 +186,6 @@ fun RegisterInfoScreen(
                     ) {
                         viewModel.onEvent(RegistrationInfoEvent.OnNext(navigator))
                     }
-
                 }
             }
         }

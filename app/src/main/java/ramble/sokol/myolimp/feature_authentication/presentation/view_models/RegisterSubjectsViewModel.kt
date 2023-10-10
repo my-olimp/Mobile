@@ -67,7 +67,7 @@ class RegisterSubjectsViewModel : ViewModel() {
                 }
             }
             is RegisterSubjectEvent.OnNext -> {
-                updateUserData(event.navigator)
+                updateUserData(event.navigator,event.isWork)
             }
         }
     }
@@ -81,7 +81,8 @@ class RegisterSubjectsViewModel : ViewModel() {
     }
 
     private fun updateUserData(
-        navigator: DestinationsNavigator
+        navigator: DestinationsNavigator,
+        isWorkScreen: Boolean = false
     ) {
         viewModelScope.launch {
             Log.i(TAG, "ids - ${state.value.chosenSubjects}")
@@ -92,7 +93,7 @@ class RegisterSubjectsViewModel : ViewModel() {
                     updateLoading(false)
 
                     if (it != null) {
-                        navigator.navigate(RegisterImageScreenDestination)
+                        navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
                     }
 
                     Log.i(TAG, "result - $it")

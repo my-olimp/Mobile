@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,7 @@ import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterEd
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.EditableDropDown
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ReadOnlyDropDown
+import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
@@ -40,10 +42,11 @@ import ramble.sokol.myolimp.ui.theme.Transparent
 @Destination
 @Composable
 fun RegisterEducationScreen(
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    isWorkScreen: Boolean = false
 ) {
 
-    val viewModel = getViewModel<RegisterEducationViewModel>().also { it.loadRegions() }
+    val viewModel = getViewModel<RegisterEducationViewModel>()
 
     val state = viewModel.state.collectAsState()
 
@@ -51,14 +54,15 @@ fun RegisterEducationScreen(
         isLoading = state.value.isLoading,
         navigationBarColor = SecondaryScreen,
         onReload = {
-            navigator.navigate(RegisterEducationScreenDestination)
+            navigator.navigate(RegisterEducationScreenDestination())
         },
         content = {
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Transparent),
+                    .background(Transparent)
+                    .blur(if (state.value.isLoading) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -76,7 +80,8 @@ fun RegisterEducationScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     TextHeaderWithCounter(
-                        headerText = stringResource(id = R.string.education),
+                        headerText = if (!isWorkScreen) stringResource(id = R.string.education)
+                        else stringResource(id = R.string.work),
                         counterText = stringResource(id = R.string.two_of_four)
                     )
 
@@ -86,10 +91,9 @@ fun RegisterEducationScreen(
                     EditableDropDown(
                         previousData = state.value.region.name,
                         label = stringResource(id = R.string.region),
-                        options = state.value.regionList.toListString()
-                            .ifEmpty { stringArrayResource(id = R.array.region).toList() },
+                        options = state.value.regionList.toListString(),
                         isError = state.value.regionError,
-                        errorText = errorText(id = R.string.null_textfield_error, addId = R.string.region)
+                        errorText = ErrorString(id = R.string.null_textfield_error,addId = R.string.region)
                     ) { newRegion ->
                         viewModel.onEvent(RegistrationEducationEvent.OnRegionChanged(
                             state.value.regionList.find { it.name == newRegion } ?: Region()
@@ -101,9 +105,9 @@ fun RegisterEducationScreen(
                     EditableDropDown(
                         previousData = state.value.city.name,
                         label = stringResource(id = R.string.city_profile),
-                        options = state.value.cityList.toListString().ifEmpty { stringArrayResource(id = R.array.city).toList() },
+                        options = state.value.cityList.toListString(),
                         isError = state.value.cityError,
-                        errorText = errorText(id = R.string.null_textfield_error, addId = R.string.city)
+                        errorText = ErrorString(id = R.string.null_textfield_error,addId = R.string.city)
                     ) { newCity ->
                         viewModel.onEvent(RegistrationEducationEvent.OnCityChanged(
                             state.value.cityList.find { it.name == newCity } ?: City()
@@ -115,10 +119,9 @@ fun RegisterEducationScreen(
                     EditableDropDown(
                         previousData = state.value.school.name,
                         label = stringResource(id = R.string.school),
-                        options = state.value.schoolList.toListString()
-                            .ifEmpty { stringArrayResource(id = R.array.school).toList() },
+                        options = state.value.schoolList.toListString(),
                         isError = state.value.schoolError,
-                        errorText = errorText(id = R.string.null_textfield_error, addId = R.string.school)
+                        errorText = ErrorString(id = R.string.null_textfield_error,addId = R.string.school)
                     ) { newSchool ->
                         viewModel.onEvent(RegistrationEducationEvent.OnSchoolChanged(
                             state.value.schoolList.find { it.name == newSchool } ?: School()
@@ -128,11 +131,15 @@ fun RegisterEducationScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     ReadOnlyDropDown(
-                        options = stringArrayResource(id = R.array.grade).toList(),
+                        options = if(isWorkScreen) stringArrayResource(id = R.array.work_array).toList()
+                            else stringArrayResource(id = R.array.grade).toList(),
                         previousData = state.value.grade,
-                        label = stringResource(id = R.string.grade),
+                        label = if(isWorkScreen)stringResource(id = R.string.work_post) else stringResource(id = R.string.grade),
                         isError = state.value.gradeError,
-                        errorText = errorText(id = R.string.null_textfield_error, addId = R.string.grade)
+                        errorText = ErrorString(
+                            id = R.string.null_textfield_error,
+                            addId = if(isWorkScreen)R.string.work_post else R.string.grade
+                        )
                     ) {
                         viewModel.onEvent(RegistrationEducationEvent.OnGradeChanged(it))
                     }
@@ -143,17 +150,11 @@ fun RegisterEducationScreen(
                         text = stringResource(id = R.string.further),
                         padding = 0.dp
                     ) {
-                        viewModel.onEvent(RegistrationEducationEvent.OnNext(navigator))
+                        viewModel.onEvent(RegistrationEducationEvent.OnNext(navigator,isWorkScreen))
                     }
                 }
             }
         }
     )
 }
-
-@Composable
-private fun errorText(
-    id: Int,
-    addId: Int
-): String = stringResource(id = id, stringResource(id = addId).lowercase())
 
