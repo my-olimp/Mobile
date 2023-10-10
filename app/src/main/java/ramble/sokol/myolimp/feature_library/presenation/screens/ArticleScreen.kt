@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
@@ -66,134 +67,134 @@ fun ArticleScreen(
         mutableIntStateOf(0)
     }
 
-    //Latex()
+    Latex()
 
     //MarkDown()
 
-    OlimpTheme(
-        isLoading = state.value.isLoading,
-        onReload = {
-            navController.navigate(ArticleScreenDestination(id))
-        },
-        content = {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
-                    .background(color = BackgroundMain)
-            ) {
-
-                Row(
-                    modifier = Modifier
-                        .height(intrinsicSize = IntrinsicSize.Max)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    SearchTextField(
-                        modifier = Modifier
-                            .height(IntrinsicSize.Max)
-                            .weight(0.68f),
-                        onTextChanged = {
-                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
-                        },
-                        onCancelSearching = {
-                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-
-                    Box(
-                        modifier = Modifier
-                            //.fillMaxHeight()
-                            .weight(0.16f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .padding(top = 8.dp)
-                            .background(
-                                color = White,
-                                shape = RoundedCornerShape(size = 8.dp)
-                            )
-                            .clickable {
-                                //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-                            },
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(14.dp),
-                            painter = painterResource(id = R.drawable.ic_library_share),
-                            contentDescription = "bookmark",
-                            tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-
-                    FavoriteIcon(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.15f)
-                            .padding(top = 8.dp)
-                            .clip(RoundedCornerShape(8.dp)), //try remove
-                        onClick = {
-                            viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
-                        },
-                        isActive = state.value.article.isFavourite
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                HorizontalLine()
-
-                /*                      after search box                    */
-
-                //не уверен что тут нужен lazyrow а не просто row
-
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp, horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                        items(state.value.article.blocks.size) {
-                            PartItem(
-                                itemId = it,
-                                selected = partState == it,
-                                partType = state.value.article.blocks[it].type
-                            ) { id ->
-                                partState = id
-                            }
-                        }
-                }
-
-                HorizontalLine()
-
-                /*              select parts               */
-                if(state.value.article.blocks.isNotEmpty()) {
-                    when (state.value.article.blocks[partState].type) {
-                        "p" -> {
-                            ExaminationScreen(
-                                viewModel = viewModel,
-                                blockId = partState
-                            )
-                        }
-                        /*TODO на будущее поменять*/else -> {
-                            EducationScreen(
-                                viewModel = viewModel,
-                                blockId = partState
-                            )
-                        }
-                    }
-                }
-
-            }
-        }
-    )
+//    OlimpTheme(
+//        isLoading = state.value.isLoading,
+//        onReload = {
+//            navController.navigate(ArticleScreenDestination(id))
+//        },
+//        content = {
+//
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+//                    .background(color = BackgroundMain)
+//            ) {
+//
+//                Row(
+//                    modifier = Modifier
+//                        .height(intrinsicSize = IntrinsicSize.Max)
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//
+//                    SearchTextField(
+//                        modifier = Modifier
+//                            .height(IntrinsicSize.Max)
+//                            .weight(0.68f),
+//                        onTextChanged = {
+//                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
+//                        },
+//                        onCancelSearching = {
+//                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
+//                        }
+//                    )
+//
+//                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+//
+//                    Box(
+//                        modifier = Modifier
+//                            //.fillMaxHeight()
+//                            .weight(0.16f)
+//                            .clip(RoundedCornerShape(8.dp))
+//                            .padding(top = 8.dp)
+//                            .background(
+//                                color = White,
+//                                shape = RoundedCornerShape(size = 8.dp)
+//                            )
+//                            .clickable {
+//                                //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+//                            },
+//                    ) {
+//                        Icon(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .padding(14.dp),
+//                            painter = painterResource(id = R.drawable.ic_library_share),
+//                            contentDescription = "bookmark",
+//                            tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
+//                        )
+//                    }
+//
+//                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+//
+//                    FavoriteIcon(
+//                        modifier = Modifier
+//                            .fillMaxHeight()
+//                            .weight(0.15f)
+//                            .padding(top = 8.dp)
+//                            .clip(RoundedCornerShape(8.dp)), //try remove
+//                        onClick = {
+//                            viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
+//                        },
+//                        isActive = state.value.article.isFavourite
+//                    )
+//                }
+//
+//                Spacer(modifier = Modifier.height(12.dp))
+//
+//                HorizontalLine()
+//
+//                /*                      after search box                    */
+//
+//                //не уверен что тут нужен lazyrow а не просто row
+//
+//                LazyRow(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(vertical = 5.dp, horizontal = 16.dp),
+//                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+//                ) {
+//                        items(state.value.article.blocks.size) {
+//                            PartItem(
+//                                itemId = it,
+//                                selected = partState == it,
+//                                partType = state.value.article.blocks[it].type
+//                            ) { id ->
+//                                partState = id
+//                            }
+//                        }
+//                }
+//
+//                HorizontalLine()
+//
+//                /*              select parts               */
+//                if(state.value.article.blocks.isNotEmpty()) {
+//                    when (state.value.article.blocks[partState].type) {
+//                        "p" -> {
+//                            ExaminationScreen(
+//                                viewModel = viewModel,
+//                                blockId = partState
+//                            )
+//                        }
+//                        /*TODO на будущее поменять*/else -> {
+//                            EducationScreen(
+//                                viewModel = viewModel,
+//                                blockId = partState
+//                            )
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
+//    )
 }
 
 @Composable
@@ -242,6 +243,16 @@ fun MarkDown() {
 @Composable
 private fun Latex() {
 
+    val example = """
+        \begin{document}
+
+\[\begin{equation}
+E=mc^2
+\end{equation}\]
+
+\end{document}
+    """
+
     val context = LocalContext.current
 
     AndroidView(
@@ -252,7 +263,7 @@ private fun Latex() {
         },
         update = {webView ->
             webView.loadData(
-                formatLaTeXHtml(""),
+                formatLaTeXHtml(example),
                 "text/html", "utf-8"
             )
         }
@@ -260,25 +271,45 @@ private fun Latex() {
 }
 
 private fun formatLaTeXHtml(latex: String): String {
+
+    val goodLatex = """When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+    \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]"""
+
     return """
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width">
-          <title>MathJax example</title>
-          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-          <script id="MathJax-script" async
-                  src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js">
-          </script>
-        </head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width">
+            <title>MathJax example</title>
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+            </head>
         <body>
-        <p>
-          When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
-          \[x = {-b \pm \sqrt{b^2-4ac} \over 2a}.\]
-        </p>
+        
+            <p id="latex">
+                $latex
+                $goodLatex
+            </p>
+        
+            <script>
+                function convertLatexToHTML() {
+                    let element = document.querySelector("#latex");
+                    
+                    MathJax.tex2chtmlPromise(element, { em: 12, ex: 6, display: true })
+                        .then((data) => {
+                            console.log(data)
+        
+                            element = data;
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        });
+                }
+                convertLatexToHTML()
+            </script>
         </body>
         </html>
-    """.trimIndent()
+    """
 }
 

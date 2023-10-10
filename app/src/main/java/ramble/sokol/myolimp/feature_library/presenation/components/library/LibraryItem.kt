@@ -41,7 +41,7 @@ fun LibraryItem(
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current)
                         // TODO change
-                        .data("https://storage.yandexcloud.net/myolimp/subject/library/${ if (subject == "Биология") subject else subject.lowercase()}.svg")
+                        .data("https://storage.yandexcloud.net/myolimp/subject/library/${subject.lowercase()}.svg")
                         .decoderFactory(SvgDecoder.Factory())
                         .build()
                 ),
