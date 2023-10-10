@@ -146,6 +146,21 @@ class ProfileViewModel (
         event: ProfileEvent
     ) {
         when (event) {
+
+            /*TODO REMOVE AFTER TESTING*/
+            is ProfileEvent.OnChangeType -> {
+                _state.update {
+                    it.copy(
+                        accountType = event.newType
+                    )
+                }
+            }
+            /**/
+
+            is ProfileEvent.OnCancelEducationLoader -> _educationState.update { it.copy(isLoading = false) }
+
+            is ProfileEvent.OnStartEducatutionLoader -> _educationState.update { it.copy(isLoading = true) }
+
             is ProfileEvent.OnFirstNameChanged -> {
                 _personalState.update {
                     it.copy(
@@ -239,7 +254,10 @@ class ProfileViewModel (
                 _educationState.update {
                     it.copy(
                         region = event.region,
-                        regionError = false
+                        regionError = false,
+                        isLoading = true,
+                        cityList = emptyList(),
+                        schoolList = emptyList()
                     )
                 }
                 viewModelScope.launch {
@@ -628,6 +646,7 @@ class ProfileViewModel (
     }
 
     private fun updateRegionsList() {
+        onEvent(ProfileEvent.OnStartEducatutionLoader)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
@@ -637,16 +656,21 @@ class ProfileViewModel (
                         Log.i(TAG, "response region list: $list")
                         if (list != null) {
                             _educationState.update {
-                                it.copy(regionList = list.asListRegion())
+                                it.copy(
+                                    regionList = list.asListRegion(),
+                                    isLoading = false
+                                )
                             }
                         }
                     },
                     onError = {
                         Log.i(TAG, "region exception $it")
+                        onEvent(ProfileEvent.OnCancelEducationLoader)
                     }
                 )
             } catch (e: Exception) {
                 Log.i(TAG, "region request throw ${e.message}")
+                onEvent(ProfileEvent.OnCancelEducationLoader)
             }
         }
     }
@@ -664,14 +688,17 @@ class ProfileViewModel (
                             _educationState.update {
                                 it.copy(cityList = list.asListCity())
                             }
+                            if(educationState.value.schoolList.isNotEmpty()) onEvent(ProfileEvent.OnCancelEducationLoader)
                         }
                     },
                     onError = {
                         Log.i(TAG, "city exception $it")
+                        onEvent(ProfileEvent.OnCancelEducationLoader)
                     }
                 )
             } catch (e: Exception) {
                 Log.i(TAG, "city request throw ${e.message}")
+                onEvent(ProfileEvent.OnCancelEducationLoader)
             }
         }
     }
@@ -689,14 +716,17 @@ class ProfileViewModel (
                             _educationState.update {
                                 it.copy(schoolList = list.asListSchool())
                             }
+                            if(educationState.value.cityList.isNotEmpty()) onEvent(ProfileEvent.OnCancelEducationLoader)
                         }
                     },
                     onError = {
                         Log.i(TAG, "school exception $it")
+                        onEvent(ProfileEvent.OnCancelEducationLoader)
                     }
                 )
             } catch (e: Exception) {
                 Log.i(TAG, "school request throw ${e.message}")
+                onEvent(ProfileEvent.OnCancelEducationLoader)
             }
         }
     }

@@ -45,10 +45,11 @@ import ramble.sokol.myolimp.destinations.NewsScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
-import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
+import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
+import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
@@ -177,84 +178,78 @@ fun ProfileScreen(
                 Reference(
                     icon = R.drawable.ic_profile_data,
                     title = stringResource(R.string.profile_data),
-                    content = stringResource(R.string.profile_data_content)
+                    content = stringResource(R.string.profile_data_content),
+                    isVisible = true
                 ) {
                     navController.navigate(
                         ProfileDataScreenDestination()
                     )
                 }
 
-                Spacer(
-                     modifier = Modifier
-                        .height(29.dp)
-                )
-
                 Reference(
                     icon = R.drawable.ic_profile_purpose,
                     title = stringResource(R.string.profile_purpose),
-                    content = stringResource(R.string.profile_purpose_content)
+                    content = stringResource(R.string.profile_purpose_content),
+                    isVisible = state.value.accountType != "t"
                 ) {
-                    navController.navigate(RegisterSubjectsScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(29.dp)
-                )
 
                 Reference(
                     icon = R.drawable.ic_profile_progress,
                     title = stringResource(R.string.profile_progress),
-                    content = stringResource(R.string.profile_progress_content)
+                    content = stringResource(R.string.profile_progress_content),
+                    isVisible = state.value.accountType != "t"
                 ) {
-                    navController.navigate(RegisterSubjectsScreenDestination)
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
 
-                Spacer(
-                    modifier = Modifier
-                        .height(29.dp)
-                )
+                Reference(
+                    icon = R.drawable.ic_profile_olympiads,
+                    title = stringResource(id = R.string.profile_section_olympiads),
+                    content = stringResource(id = R.string.profile_section_olympiads_content),
+                    isVisible = state.value.accountType == "t"
+                ) {
+                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                }
+
 
                 Reference(
                     icon = R.drawable.ic_profile_favourite,
                     title = stringResource(R.string.profile_favourite),
-                    content = stringResource(R.string.profile_favourite_content)
+                    content = stringResource(R.string.profile_favourite_content),
+                    isVisible = true
                 ) {
                     navController.navigate(ProfileLoveScreenDestination)
                 }
 
-                Spacer(
-                    modifier = Modifier
-                        .height(29.dp)
-                )
-
                 Reference(
                     icon = R.drawable.ic_profile_watch,
                     title = stringResource(R.string.profile_watch),
-                    content = stringResource(R.string.profile_watch_content)
+                    content = stringResource(R.string.profile_watch_content),
+                    isVisible = true
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(RegisterInfoScreenDestination)
                 }
 
-                Spacer(
-                    modifier = Modifier
-                        .height(29.dp)
-                )
+
+                Reference(
+                    icon = R.drawable.ic_profile_news,
+                    title = stringResource(id = R.string.profile_section_news),
+                    content = stringResource(id = R.string.profile_section_news_content),
+                    isVisible = state.value.accountType == "t"
+                ) {
+                    navController.navigate(RegisterInfoScreenDestination)
+                }
 
                 Reference(
                     icon = R.drawable.ic_profile_result,
                     title = stringResource(R.string.profile_result),
-                    content = stringResource(R.string.profile_result_content)
+                    content = stringResource(R.string.profile_result_content),
+                    isVisible = state.value.accountType != "t"
                 ) {
                     Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
                 }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(29.dp)
-                )
 
                 Reference(
                     icon = R.drawable.ic_profile_logout,
@@ -266,6 +261,12 @@ fun ProfileScreen(
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))
+
+                FilledBtn(
+                    text = if(state.value.accountType == "t") "change into pupil" else "change into teacher"
+                ) {
+                    viewModel.onEvent(ProfileEvent.OnChangeType(if(state.value.accountType == "t")"p" else "t"))
+                }
 
                 Text(
                     modifier = Modifier
@@ -284,6 +285,8 @@ fun ProfileScreen(
         }
     }
 }
+
+
 
 @Destination
 @Composable

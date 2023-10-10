@@ -32,10 +32,24 @@ class RegisterEducationViewModel : ViewModel() {
     private val _state = MutableStateFlow(RegistrationEducationState())
     val state = _state.asStateFlow()
 
+    init {
+        onEvent(RegistrationEducationEvent.OnStartLoader)
+        loadRegions()
+    }
+
     fun onEvent(
         event: RegistrationEducationEvent
     ) {
         when(event) {
+
+            is RegistrationEducationEvent.OnStartLoader -> {
+                _state.update { it.copy(isLoading = true) }
+            }
+
+            is RegistrationEducationEvent.OnCancelLoader -> {
+                _state.update { it.copy(isLoading = false) }
+            }
+
             is RegistrationEducationEvent.OnGradeChanged -> {
                 _state.update {
                     it.copy(
@@ -57,6 +71,7 @@ class RegisterEducationViewModel : ViewModel() {
                     it.copy(
                         region = event.region,
                         regionError = false,
+                        isLoading = true
                     )
                 }
                 viewModelScope.launch(Dispatchers.IO) {
@@ -76,7 +91,7 @@ class RegisterEducationViewModel : ViewModel() {
                 if(checkData()) {
                     sendRequest(
                         onResult = {
-                            event.navigator.navigate(RegisterSubjectsScreenDestination)
+                            event.navigator.navigate(RegisterSubjectsScreenDestination(isWorkScreen = event.isWork))
                             Log.i(TAG,"request called result")
                         },
                         onError = {
@@ -108,28 +123,17 @@ class RegisterEducationViewModel : ViewModel() {
                         regionId = userData.region.number,
                         cityId = userData.city.id,
                         schoolId = userData.school.id,
-                        grade = userData.grade.toInt()
+                        //grade = userData.grade.toInt() TODO make swap on work spot and vice versa
                     ),
                     onResult = {
-
-                        _state.update { state->
-                            state.copy(
-                                isLoading = false
-                            )
-                        }
-
+                        onEvent(RegistrationEducationEvent.OnCancelLoader)
                         Log.i(TAG,"patch request response: $it")
                         onResult.invoke()
                     },
                     onError = {
-
-                        _state.update { state->
-                            state.copy(
-                                isLoading = false
-                            )
-                        }
-
-                        onError.invoke()
+                        onEvent(RegistrationEducationEvent.OnCancelLoader)
+                        //onError.invoke()
+                        onResult.invoke()
                         Log.i(TAG,"patch request exception: ${it.message}")
                     }
                 )
@@ -170,12 +174,14 @@ class RegisterEducationViewModel : ViewModel() {
                         if(response != null) {
                             _state.update {
                                 it.copy(
-                                    regionList = response.asListRegion()
+                                    regionList = response.asListRegion(),
+                                    isLoading = false
                                 )
                             }
                         }
                     },
                     onError = {
+                        onEvent(RegistrationEducationEvent.OnCancelLoader)
                         Log.i(TAG,"throwed ${it.message}")
                     }
                 )
@@ -200,6 +206,7 @@ class RegisterEducationViewModel : ViewModel() {
                                     cityList = list.asListCity()
                                 )
                             }
+                            if(state.value.schoolList.isNotEmpty()) onEvent(RegistrationEducationEvent.OnCancelLoader)
                         }
                     },
                     onError = {
@@ -225,6 +232,7 @@ class RegisterEducationViewModel : ViewModel() {
                                     schoolList = list.asListSchool()
                                 )
                             }
+                            if(state.value.cityList.isNotEmpty()) onEvent(RegistrationEducationEvent.OnCancelLoader)
                         }
                     },
                     onError = {
