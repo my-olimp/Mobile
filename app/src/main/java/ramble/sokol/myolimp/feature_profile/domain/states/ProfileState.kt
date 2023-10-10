@@ -21,7 +21,6 @@ data class ProfileState (
     val phone: String? = null,
     val email: String? = null,
     val grade: Int? = null,
-    val profileImg: String? = null,
     val hasThird: Boolean = true,
     val accountType: String? = null,
 
@@ -32,4 +31,4 @@ data class ProfileState (
     val thirdNameError: Boolean = false,
     val dobError: Boolean = false,
     val snilsError: Boolean = false
-    )
+)

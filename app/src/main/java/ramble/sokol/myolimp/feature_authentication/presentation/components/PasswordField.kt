@@ -36,6 +36,7 @@ fun PasswordField(
     previousData: String,
     label: String,
     isError: Boolean = false,
+    errorText: String = "",
     onTextChanged: (String) -> Unit,
 ) {
 
@@ -110,4 +111,8 @@ fun PasswordField(
             }
         }
     )
+
+    if(isError) {
+        ShowError(text = errorText)
+    }
 }

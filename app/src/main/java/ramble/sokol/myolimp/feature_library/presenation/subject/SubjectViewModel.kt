@@ -15,18 +15,11 @@ import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 
 class SubjectViewModel(context: Context) : ViewModel() {
 
-    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(SubjectState())
     val state = _state.asStateFlow()
 
     private val userDatabase: UserDatabase = UserDatabase(context)
-    private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
-
-    companion object {
-        private const val TAG = "SubjectViewModel"
-    }
-
 
     init {
         _state.update { curValue ->

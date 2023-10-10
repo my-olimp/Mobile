@@ -23,10 +23,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,16 +36,17 @@ import ramble.sokol.myolimp.ui.theme.regularType
 @Composable
 fun SearchTextField (
     modifier: Modifier,
+    previousData: String = "",
     onTextChanged: (String) -> Unit,
     onCancelSearching: () -> Unit,
 ) {
 
     val textValue = remember {
-        mutableStateOf("")
+        mutableStateOf(previousData)
     }
 
     var hasFocus by remember {
-        mutableStateOf(false)
+        mutableStateOf(previousData.isNotEmpty())
     }
 
     val focusRequester = remember {

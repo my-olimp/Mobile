@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,15 +25,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.navigate
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.article.HorizontalLine
@@ -50,6 +53,7 @@ import ramble.sokol.myolimp.ui.theme.White
 
 @[Composable Destination]
 fun ArticleScreen(
+    navController: NavController,
     id: Int
 ) {
     val viewModel = getViewModel<ArticleViewModel>().also {
@@ -62,154 +66,134 @@ fun ArticleScreen(
         mutableIntStateOf(0)
     }
 
-//    Latex()
+    //Latex()
 
-    MarkDown()
+    //MarkDown()
 
-//    OlimpTheme {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .background(color = BackgroundMain)
-//        ) {
-//
-//            if (state.value.isLoading) {
-//                LoadingCircular()
-//            }
-//
-//            Row(
-//                modifier = Modifier
-//                    .height(intrinsicSize = IntrinsicSize.Max)
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 16.dp),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//
-//                SearchTextField(
-//                    modifier = Modifier
-//                        .height(IntrinsicSize.Max)
-//                        .weight(0.68f),
-//                    onTextChanged = {
-//                        //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
-//                    },
-//                    onCancelSearching = {
-//                        //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
-//                    }
-//                )
-//
-//                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-//
-//                Box(
-//                    modifier = Modifier
-//                        //.fillMaxHeight()
-//                        .weight(0.16f)
-//                        .clip(RoundedCornerShape(8.dp))
-//                        .padding(top = 8.dp)
-//                        .background(
-//                            color = White,
-//                            shape = RoundedCornerShape(size = 8.dp)
-//                        )
-//                        .clickable {
-//                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-//                        },
-//                ) {
-//                    Icon(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(14.dp),
-//                        painter = painterResource(id = R.drawable.ic_library_share),
-//                        contentDescription = "bookmark",
-//                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-//                    )
-//                }
-//
-//                Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-//
-////                Box(
-////                    modifier = Modifier
-////                        //.fillMaxHeight()
-////                        .weight(0.16f)
-////                        .clip(RoundedCornerShape(8.dp))
-////                        .padding(top = 8.dp)
-////                        .background(
-////                            color = White,
-////                            shape = RoundedCornerShape(size = 8.dp)
-////                        )
-////                        .clickable {
-////                            //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
-////                        },
-////                ) {
-////                    Icon(
-////                        modifier = Modifier
-////                            .fillMaxSize()
-////                            .padding(14.dp),
-////                        painter = painterResource(id = R.drawable.ic_article_favorite),
-////                        contentDescription = "bookmark",
-////                        tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
-////                    )
-////                }
-//
-//                FavoriteIcon(
-//                    modifier = Modifier
-//                        .fillMaxHeight()
-//                        .weight(0.15f)
-//                        .padding(top = 8.dp)
-//                        .clip(RoundedCornerShape(8.dp)), //try remove
-//                    onClick = {
-//                        viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
-//                    },
-//                    isActive = state.value.article.isFavourite
-//                )
-//            }
-//
-//            Spacer(modifier = Modifier.height(12.dp))
-//
-//            HorizontalLine()
-//
-//            /*                      after search box                    */
-//
-//            //не уверен что тут нужен lazyrow а не просто row
-//
-//            LazyRow(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(vertical = 5.dp, horizontal = 16.dp),
-//                horizontalArrangement = Arrangement.spacedBy(5.dp)
-//            ) {
-//                    items(state.value.article.blocks.size) {
-//                        PartItem(
-//                            itemId = it,
-//                            selected = partState == it,
-//                            partType = state.value.article.blocks[it].type
-//                        ) { id ->
-//                            partState = id
-//                        }
-//                    }
-//            }
-//
-//            HorizontalLine()
-//
-//            /*              select parts               */
-//            if(state.value.article.blocks.isNotEmpty()) {
-//                when (state.value.article.blocks[partState].type) {
-//                    "p" -> {
-//                        ExaminationScreen(
-//                            viewModel = viewModel,
-//                            blockId = partState
-//                        )
-//                    }
-//                    /*TODO на будущее поменять*/else -> {
-//                        EducationScreen(
-//                            viewModel = viewModel,
-//                            blockId = partState
-//                        )
-//                    }
-//                }
-//            }
-//
-//        }
-//    }
+    OlimpTheme(
+        isLoading = state.value.isLoading,
+        onReload = {
+            navController.navigate(ArticleScreenDestination(id))
+        },
+        content = {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+                    .background(color = BackgroundMain)
+            ) {
+
+                Row(
+                    modifier = Modifier
+                        .height(intrinsicSize = IntrinsicSize.Max)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    SearchTextField(
+                        modifier = Modifier
+                            .height(IntrinsicSize.Max)
+                            .weight(0.68f),
+                        onTextChanged = {
+                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
+                        },
+                        onCancelSearching = {
+                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+
+                    Box(
+                        modifier = Modifier
+                            //.fillMaxHeight()
+                            .weight(0.16f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .padding(top = 8.dp)
+                            .background(
+                                color = White,
+                                shape = RoundedCornerShape(size = 8.dp)
+                            )
+                            .clickable {
+                                //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+                            },
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(14.dp),
+                            painter = painterResource(id = R.drawable.ic_library_share),
+                            contentDescription = "bookmark",
+                            tint = /*if (state.value.isShowingFavourites) White else*/ GreyProfileData,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+
+                    FavoriteIcon(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.15f)
+                            .padding(top = 8.dp)
+                            .clip(RoundedCornerShape(8.dp)), //try remove
+                        onClick = {
+                            viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
+                        },
+                        isActive = state.value.article.isFavourite
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                HorizontalLine()
+
+                /*                      after search box                    */
+
+                //не уверен что тут нужен lazyrow а не просто row
+
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                        items(state.value.article.blocks.size) {
+                            PartItem(
+                                itemId = it,
+                                selected = partState == it,
+                                partType = state.value.article.blocks[it].type
+                            ) { id ->
+                                partState = id
+                            }
+                        }
+                }
+
+                HorizontalLine()
+
+                /*              select parts               */
+                if(state.value.article.blocks.isNotEmpty()) {
+                    when (state.value.article.blocks[partState].type) {
+                        "p" -> {
+                            ExaminationScreen(
+                                viewModel = viewModel,
+                                blockId = partState
+                            )
+                        }
+                        /*TODO на будущее поменять*/else -> {
+                            EducationScreen(
+                                viewModel = viewModel,
+                                blockId = partState
+                            )
+                        }
+                    }
+                }
+
+            }
+        }
+    )
 }
 
 @Composable

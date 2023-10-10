@@ -26,6 +26,7 @@ import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.White
+import ramble.sokol.myolimp.ui.theme.mediumType
 
 @Composable
 fun OutlinedText (
@@ -61,12 +62,10 @@ fun OutlinedText (
 
                 Text(
                     text = stringResource(R.string.star),
-                    style = TextStyle(
+                    style = mediumType(
                         fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.medium)),
-                        fontWeight = FontWeight(500),
-                        color = if (isError) MessageError else BlueStart,
-                        letterSpacing = 0.3.sp,
+                        color = if(isError) MessageError else BlueStart,
+                        letterSpacing = 0.3.sp
                     )
                 )
             }
@@ -76,7 +75,7 @@ fun OutlinedText (
             focusedLabelColor = if(isSuccess) SuccessStatus else BlueStart,
             cursorColor = if(isSuccess) SuccessStatus else BlueStart,
             backgroundColor = White,
-            errorBorderColor = MessageError
+            errorBorderColor = MessageError,
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = androidx.compose.ui.text.input.ImeAction.Next,
@@ -92,6 +91,7 @@ fun OutlinedText (
         isError = isError,
         enabled = isEnabled
     )
+
     if(isError) {
         ShowError(text = errorText)
     }

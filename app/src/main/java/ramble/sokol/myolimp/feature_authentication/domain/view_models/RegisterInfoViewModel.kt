@@ -15,7 +15,6 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInf
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
-import ramble.sokol.myolimp.feature_profile.data.Constants
 
 class RegisterInfoViewModel : ViewModel() {
 
@@ -37,9 +36,17 @@ class RegisterInfoViewModel : ViewModel() {
         event: RegistrationInfoEvent
     ) {
         when(event) {
+
+            is RegistrationInfoEvent.OnCancelLoader -> {
+                _state.update { it.copy(isLoading = false) }
+            }
+            is RegistrationInfoEvent.OnLoaderUp -> {
+                _state.update { it.copy(isLoading = true) }
+            }
             is RegistrationInfoEvent.OnActivityTypeChanged -> {
                 _state.update {
                     it.copy(
+                        requestActivityType = event.requestActivityType,
                         activityType = event.activityType,
                         activityTypeError = false
                     )
@@ -70,11 +77,16 @@ class RegisterInfoViewModel : ViewModel() {
             }
             is RegistrationInfoEvent.OnNext -> {
                 if(isDataValid()) {
+                    onEvent(RegistrationInfoEvent.OnLoaderUp)
                     sendRequest(
                         onResult = {
-                            event.navigator.navigate(RegisterEducationScreenDestination)
+                            onEvent(RegistrationInfoEvent.OnCancelLoader)
+                            event.navigator.navigate(RegisterEducationScreenDestination(
+                                isWorkScreen = state.value.requestActivityType == "t"
+                            ))
                         },
                         onError = {
+                            onEvent(RegistrationInfoEvent.OnCancelLoader)
                             Log.i(TAG,"request failed")
                         }
                     )
@@ -117,7 +129,7 @@ class RegisterInfoViewModel : ViewModel() {
             _state.update { it.copy(bdateError = true) }
             isValid = false
         }
-        if(state.value.activityType == "") {
+        if(state.value.requestActivityType == "") {
             _state.update { it.copy(activityTypeError = true) }
             isValid = false
         }
@@ -136,7 +148,7 @@ class RegisterInfoViewModel : ViewModel() {
                     thirdName = fio[2],
                     dateOfBirth = state.value.bdate,
                     gender = state.value.gender,
-                    accountType = state.value.activityType
+                    accountType = state.value.requestActivityType
                 ),
                 onResult = onResult,
                 onError = onError

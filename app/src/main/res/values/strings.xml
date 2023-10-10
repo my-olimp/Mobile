@@ -61,7 +61,7 @@
     <string name="second_name">Фамилия</string>
     <string name="star">*</string>
     <string name="no_third_name">Нет отчества</string>
-    <string name="login_to_service">Вход в сервис</string>
+    <string name="login_to_service">Войти в сервис:</string>
     <string name="region_profile">Субъект</string>
     <string name="city_profile">Населенный пункт</string>
     <string name="create_plan">Создайте план :)</string>
@@ -118,7 +118,6 @@
     <string name="male_gender">Мужской</string>
     <string name="type_of_activity">Вид деятельности</string>
     <string name="further">Дальше</string>
-    <string name="pupil">Ученик</string>
 
     <string-array name="genders">
         <item>Мужской</item>
@@ -199,8 +198,32 @@
     <string name="don_t_have_plans">У вас еще нет планов</string>
     <string name="pass_email_to_restore_password">Введите почту, для которой вы хотите восстановить доступ</string>
     <string name="check_email_code_send">Проверьте свою почту.\nМы отправили вам ссылку для восстановления пароля</string>
-    <string name="resend_code_again">Отправить код повторно %1$d:%2$d</string>
+    <string name="check_email_registraion_end_code_send">Проверьте свою почту.\nМы отправили вам ссылку для завершения регистрации</string>
+    <string name="resend_code_again_disabled">Отправить код повторно %1$s</string>
+    <string name="no_loved_yet">Пока что вы ничего не сохранили</string>
+    <string name="resend_code_again">Отправить код повторно</string>
     <string name="something_wrong">Что-то не так</string>
     <string name="check_your_connection">Кажется, нет интернета. Проверьте сеть и перезагрузите приложение</string>
     <string name="reload">Перезагрузить</string>
+    <string name="have_no_loved_articles">У тебя нет любимых статей</string>
+    <string name="have_no_loved_articles_with_filter">У тебя нет любимых статей по этим предметам</string>
+    <string name="error_password_letters">Пароль должен состоять только из букв латиницы верхнего или нижнего регистра, цифр, специальных символов(!@$%^)</string>
+    <string name="error_password_spaces">Пароль не может содержать в себе пробелы</string>
+    <string name="student">Ученик</string>
+    <string name="teacher">Учитель</string>
+    <string name="profile_section_olympiads">Олимпиады</string>
+    <string name="profile_section_olympiads_content">Для загрузки результатов</string>
+    <string name="profile_section_news">Мои новости и статьи</string>
+    <string name="profile_section_news_content">Чтобы рассказать о важном</string>
+    <string name="work">Работа</string>
+    <string name="work_post">Должность</string>
+    <string-array name="work_array">
+        <item>Ректор</item>
+        <item>Проректор</item>
+        <item>Декан</item>
+        <item>Заведующий кафедрой</item>
+        <item>Профессор</item>
+        <item>Доцент</item>
+        <item>Старший преподаватель</item>
+    </string-array>
 </resources>

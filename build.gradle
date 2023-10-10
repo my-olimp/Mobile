@@ -3,6 +3,7 @@ buildscript {
     repositories {
         google()  // Google's Maven repository
         mavenCentral()  // Maven Central repository
+        maven { url 'https://jitpack.io' }
     }
 
     ext {
@@ -12,6 +13,7 @@ buildscript {
         compose_destinations = '1.9.53'
         nav_version = '2.7.3'
         room_version = "2.5.2"
+        coil_version = "2.4.0"
     }
 }
 

@@ -17,6 +17,8 @@ data class ProfileEducationState(
 
     val regionList: List<Region> = listOf(),
     val cityList: List<City> = listOf(),
-    val schoolList: List<School> = listOf()
+    val schoolList: List<School> = listOf(),
+
+    val isLoading: Boolean = false
 
     )

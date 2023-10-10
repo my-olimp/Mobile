@@ -4,14 +4,11 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseRegionMod
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolModel
 import okhttp3.MultipartBody
 import ramble.sokol.myolimp.feature_authentication.data.models.ResponseCityModel
-import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjectModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-
-import ramble.sokol.myolimp.feature_profile.data.models.UserModelEntity
 
 import retrofit2.Call
 
@@ -64,9 +61,7 @@ interface RegistrationApi {
 
     @Headers("Content-Type: application/json")
     @GET("user/subjects/")
-    fun getSubjects(
-        @Header("Authorization") auth: String
-    ) : Call<List<RequestSubjectModel>>
+    fun getSubjects() : Call<List<String>>
 
     @PATCH("user/")
     fun updateDocsUserData(
@@ -84,7 +79,6 @@ interface RegistrationApi {
     @Headers("Content-Type: application/json")
     @PATCH("user/")
     fun updateSubjects(
-        @Header("Authorization") auth: String,
         @Body data: RequestSubjects
     ) : Call<ResponseUserModel>
 }

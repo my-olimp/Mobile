@@ -44,75 +44,78 @@ import ramble.sokol.myolimp.ui.theme.Transparent
 fun OnBoardingScreen(
     navigator: DestinationsNavigator
 ) {
-    OlimpTheme {
-        val items = getFragments()
-        val pagerState = rememberPagerState(
-            initialPage = 0,
-            initialPageOffsetFraction = 0f
-        ) {
-            items.size
-        }
-        val coroutineScope = rememberCoroutineScope()
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Transparent),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = CenterHorizontally
-        ) {
-            HorizontalPager(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                state = pagerState,
-                pageContent = {
-                    FragmentImage(
-                        items = items,
-                        position = it,
-                        pagerState = pagerState
-                    )
-                }
-            )
-
-            Spacer(modifier = Modifier.height(22.dp))
-
-            FilledBtn(
-                text = stringResource(R.string.next)
+    OlimpTheme (
+        onReload = {},
+        content = {
+            val items = getFragments()
+            val pagerState = rememberPagerState(
+                initialPage = 0,
+                initialPageOffsetFraction = 0f
             ) {
-                if (pagerState.currentPage + 1 < items.size) {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(
-                            pagerState.currentPage + 1,
-
-                            )
-                    }
-                } else {
-                    navigator.popBackStack()
-
-                    navigator.navigate(BeginAuthenticationScreenDestination)
-                }
+                items.size
             }
+            val coroutineScope = rememberCoroutineScope()
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
+            Column(
                 modifier = Modifier
-                    .clickable {
+                    .fillMaxSize()
+                    .background(Transparent),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = CenterHorizontally
+            ) {
+                HorizontalPager(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    state = pagerState,
+                    pageContent = {
+                        FragmentImage(
+                            items = items,
+                            position = it,
+                            pagerState = pagerState
+                        )
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(22.dp))
+
+                FilledBtn(
+                    text = stringResource(R.string.next)
+                ) {
+                    if (pagerState.currentPage + 1 < items.size) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                pagerState.currentPage + 1,
+
+                                )
+                        }
+                    } else {
                         navigator.popBackStack()
 
                         navigator.navigate(BeginAuthenticationScreenDestination)
-                    },
-                text = stringResource(R.string.skip),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.regular)),
-                    fontWeight = FontWeight(500),
-                    color = if (pagerState.currentPage != 3) GreyDark else Color.Transparent,
-                    letterSpacing = 0.3.sp,
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            navigator.popBackStack()
+
+                            navigator.navigate(BeginAuthenticationScreenDestination)
+                        },
+                    text = stringResource(R.string.skip),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.regular)),
+                        fontWeight = FontWeight(500),
+                        color = if (pagerState.currentPage != 3) GreyDark else Color.Transparent,
+                        letterSpacing = 0.3.sp,
+                    )
                 )
-            )
+            }
         }
-    }
+    )
 }
 
 @Composable

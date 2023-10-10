@@ -72,7 +72,8 @@ fun HomeScreen(
     val olympiads= getOlympiads()
 
     BottomBarTheme(
-        navController = navController
+        navController = navController,
+        onReload = {}
     ) {
 
         // Today Plans

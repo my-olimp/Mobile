@@ -8,11 +8,16 @@ data class RegistrationEducationState(
     val region: Region = Region(),
     val city: City = City(),
     val school: School = School(),
+
     val grade: String = "",
+
+    val isLoading: Boolean = false,
+
     var regionError: Boolean = false,
     var cityError: Boolean = false,
     var schoolError: Boolean = false,
     var gradeError: Boolean = false,
+
     val regionList: List<Region> = listOf(),
     val cityList: List<City> = listOf(),
     val schoolList: List<School> = listOf()

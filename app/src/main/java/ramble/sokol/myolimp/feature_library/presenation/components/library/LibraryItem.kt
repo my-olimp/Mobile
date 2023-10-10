@@ -16,19 +16,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ramble.sokol.myolimp.R
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
 
 @Composable
 fun LibraryItem(
-    backgroundPainter: Painter = painterResource(id = R.drawable.ic_main_background_blue),
     type: String = "",
     subject: String = "",
     title: String = "",
@@ -38,7 +38,13 @@ fun LibraryItem(
         modifier = Modifier
             .size(120.dp)
             .paint(
-                painter = backgroundPainter,
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current)
+                        // TODO change
+                        .data("https://storage.yandexcloud.net/myolimp/subject/library/${ if (subject == "Биология") subject else subject.lowercase()}.svg")
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build()
+                ),
                 contentScale = ContentScale.FillBounds
             )
             .clip(RoundedCornerShape(20.dp))

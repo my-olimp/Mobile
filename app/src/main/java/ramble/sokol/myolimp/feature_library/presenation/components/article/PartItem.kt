@@ -27,6 +27,7 @@ fun PartItem(
     partType: String = "t",
     onClick: (Int) -> Unit
 ) {
+
     val id by remember {
         mutableIntStateOf(itemId)
     }
@@ -44,7 +45,7 @@ fun PartItem(
             }
     ) {
         Icon(
-            painter = painterResource(id = if(partType == "t")R.drawable.ic_library_read_item else R.drawable.ic_library_exam_item),
+            painter = painterResource(id = if (partType == "t") R.drawable.ic_library_read_item else R.drawable.ic_library_exam_item),
             contentDescription = "read item",
             modifier = Modifier
                 .padding(all = 4.dp)

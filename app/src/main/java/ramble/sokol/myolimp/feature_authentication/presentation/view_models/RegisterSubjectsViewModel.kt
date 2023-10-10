@@ -6,15 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
-import ramble.sokol.myolimp.feature_authentication.data.models.SubjectModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterSubjectsRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterSubjectsState
 
@@ -25,10 +21,14 @@ class RegisterSubjectsViewModel : ViewModel() {
     }
 
     private val repository = RegisterSubjectsRepository()
-    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(RegisterSubjectsState())
     val state = _state.asStateFlow()
+
+    init {
+        updateLoading(true)
+        getSubjects()
+    }
 
     fun onEvent(
         event: RegisterSubjectEvent
@@ -50,9 +50,6 @@ class RegisterSubjectsViewModel : ViewModel() {
 
                 Log.i(TAG, "chosen subjects - ${state.value.chosenSubjects}")
             }
-            is RegisterSubjectEvent.OnLoadSubjects -> {
-                getSubjects()
-            }
             is RegisterSubjectEvent.OnSearchQueryUpdated -> {
                 _state.update {
                     it.copy(
@@ -61,7 +58,6 @@ class RegisterSubjectsViewModel : ViewModel() {
                 }
 
                 Log.i(TAG, "chosen subjects - ${state.value.searchQuery}")
-
             }
             is RegisterSubjectEvent.OnSearched -> {
                 _state.update {
@@ -71,7 +67,7 @@ class RegisterSubjectsViewModel : ViewModel() {
                 }
             }
             is RegisterSubjectEvent.OnNext -> {
-                updateUserData(event.navigator)
+                updateUserData(event.navigator,event.isWork)
             }
         }
     }
@@ -85,23 +81,19 @@ class RegisterSubjectsViewModel : ViewModel() {
     }
 
     private fun updateUserData(
-        navigator: DestinationsNavigator
+        navigator: DestinationsNavigator,
+        isWorkScreen: Boolean = false
     ) {
         viewModelScope.launch {
-
-            val chosenSubjectsIds = state.value.chosenSubjects.map {
-                it.id
-            }
-
-            Log.i(TAG, "ids - $chosenSubjectsIds")
+            Log.i(TAG, "ids - ${state.value.chosenSubjects}")
 
             repository.updateSubjects(
-                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
-                subjects = RequestSubjects(chosenSubjectsIds),
+                subjects = RequestSubjects(state.value.chosenSubjects),
                 onResult = {
+                    updateLoading(false)
 
                     if (it != null) {
-                        navigator.navigate(RegisterImageScreenDestination)
+                        navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
                     }
 
                     Log.i(TAG, "result - $it")
@@ -114,61 +106,18 @@ class RegisterSubjectsViewModel : ViewModel() {
     }
 
     private fun getSubjects() {
-        // get subjects
         viewModelScope.launch {
-            repository.getSchools(
-                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
+            repository.getSubjects(
                 onResult = { subjects->
                     if (subjects != null) {
-
-                        val subjectsWithIcon = mutableListOf<SubjectModel>()
-
-                        subjects.forEach {
-                            when (it.name) {
-                                "Информатика" -> {
-                                    subjectsWithIcon.add(SubjectModel(
-                                        id = it.id,
-                                        name = it.name,
-                                        icon = R.drawable.ic_profile_subject_it
-                                    ))
-                                }
-                                "Математика" -> {
-                                    subjectsWithIcon.add(SubjectModel(
-                                        id = it.id,
-                                        name = it.name,
-                                        icon = R.drawable.ic_profile_subject_math
-                                    ))
-                                }
-                                "Физика" -> {
-                                    subjectsWithIcon.add(SubjectModel(
-                                        id = it.id,
-                                        name = it.name,
-                                        icon = R.drawable.ic_subject_phycics
-                                    ))
-                                }
-                                "Литература" -> {
-                                    subjectsWithIcon.add(SubjectModel(
-                                        id = it.id,
-                                        name = it.name,
-                                        icon = R.drawable.ic_subject_literature
-                                    ))
-                                }
-                                "Русский Язык" -> {
-                                    subjectsWithIcon.add(SubjectModel(
-                                        id = it.id,
-                                        name = it.name,
-                                        icon = R.drawable.ic_subject_russian
-                                    ))
-                                }
-                            }
-                        }
-
                         _state.update {
                             it.copy(
-                                subjects = subjectsWithIcon
+                                subjects = subjects
                             )
                         }
+                        updateLoading(false)
                     }
+
                     Log.i(TAG, "success - $subjects")
                 },
                 onError = {
@@ -176,5 +125,11 @@ class RegisterSubjectsViewModel : ViewModel() {
                 }
             )
         }
+    }
+
+    private fun updateLoading(isLoading: Boolean) = _state.update {
+        it.copy(
+            isLoading = isLoading
+        )
     }
 }
