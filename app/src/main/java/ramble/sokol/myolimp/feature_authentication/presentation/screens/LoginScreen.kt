@@ -57,7 +57,7 @@ fun LoginScreen(
     OlimpTheme (
         navigationBarColor = SecondaryScreen,
         isError = state.value.isError,
-        //isLoading = state.value.isLoading,
+        isLoading = state.value.isLoading,
         onReload = {
             navigator.navigate(LoginScreenDestination)
         },
