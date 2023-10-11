@@ -1,11 +1,9 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.view_models
 
 import android.graphics.Bitmap
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,11 +16,10 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
-import ramble.sokol.myolimp.feature_profile.data.Constants
-import java.io.File
 import java.io.FileOutputStream
 
 class RegisterImageViewModel : ViewModel() {
@@ -54,6 +51,11 @@ class RegisterImageViewModel : ViewModel() {
             }
 
             is RegistrationImageEvent.OnSubmit -> {
+
+                // TODO the same like in profile
+
+                updateLoading(true)
+
                 viewModelScope.launch {
                     try {
                         // Write the bitmap to the new File in PNG format
@@ -69,14 +71,13 @@ class RegisterImageViewModel : ViewModel() {
 
                         //Upload image
                         repository.registerImageDocs(
-                            auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()
-                                ?: throw Exception("No access token"),
                             data = UserDocsDataModel(
                                 snils = state.value.snils
                             ),
                             imageBody = body,
                             onResult = {
-                                Log.i("RegistrerImageViewModel", "success,\n $it") // TODO()
+                                updateLoading(false)
+
                                 event.navigator.navigate(
                                     HomeScreenDestination()
                                 ) {
@@ -96,15 +97,13 @@ class RegisterImageViewModel : ViewModel() {
                     }
                 }
             }
-
-            is RegistrationImageEvent.OnUploadError -> {} // TODO add error handing
         }
     }
-}
 
-sealed interface RegistrationImageEvent {
-    data class OnSnilsChanged(val snils: String) : RegistrationImageEvent
-    data class OnImageChanged(val uri: Uri?) : RegistrationImageEvent
-    data class OnSubmit(val file: File, val bitmap: Bitmap, val navigator: DestinationsNavigator) : RegistrationImageEvent
-    data object OnUploadError : RegistrationImageEvent
+    private fun updateLoading(isLoading: Boolean) = _state.update {
+        it.copy(
+            isLoading = isLoading
+        )
+    }
+
 }

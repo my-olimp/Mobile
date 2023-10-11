@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
@@ -17,16 +20,20 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.LoginRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel : ViewModel(), KoinComponent {
     companion object {
         const val TAG = "ViewModelLogin"
     }
 
     private val repository = LoginRepository()
-    private val localUser = LocalUserViewModel()
+
+    private val context by inject<Context>()
+    private var database : UserDatabase = UserDatabase.invoke(context)
+    private var userRepository : LocalUserRepository = LocalUserRepository(database = database)
 
     private val dataStore = CodeDataStore()
 
@@ -48,9 +55,6 @@ class LoginViewModel : ViewModel() {
                 }
 
                 checkAbilityLogging()
-
-                Log.i(TAG, "updated email - ${_state.value.email}")
-
             }
             is LoginEvent.OnPasswordUpdated -> {
                 _state.update {
@@ -60,8 +64,6 @@ class LoginViewModel : ViewModel() {
                 }
 
                 checkAbilityLogging()
-
-                Log.i(TAG, "updated password - ${_state.value.password}")
             }
 
             is LoginEvent.OnLogin -> {
@@ -102,7 +104,6 @@ class LoginViewModel : ViewModel() {
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-
         _state.update {
             it.copy(
                 isLoading = true
@@ -112,7 +113,6 @@ class LoginViewModel : ViewModel() {
         if(isDataValid()) {
             viewModelScope.launch {
                 try {
-
                     repository.login(
                         RequestLoginModel(
                             email = _state.value.email,
@@ -122,7 +122,7 @@ class LoginViewModel : ViewModel() {
 
                             // all correct
                             if (it?.code != null) {
-                                
+
                                 // save token in data store
                                 saveData(
                                     it.code,
@@ -205,18 +205,26 @@ class LoginViewModel : ViewModel() {
     ) {
         runBlocking {
             try {
-                Log.i(TAG, "code - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
-    
                 dataStore.setToken(
                     key = CodeDataStore.ACCESS_TOKEN,
                     value = token
                 )
     
                 Log.i(TAG, "code - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
-    
-                localUser.saveUser(user)
+
+                userRepository.saveUser(user)
+
+                Log.i(TAG, "user - ${userRepository.getUser().first()}")
+
             } catch (ex : Exception) {
-                Log.i(TAG, "saveData: ${ex.message}")
+
+                _state.update {
+                    it.copy(
+                        isError = true
+                    )
+                }
+
+                Log.i(TAG, "exception - ${ex.message}")
             }
         }
     }

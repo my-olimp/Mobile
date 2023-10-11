@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,16 +8,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.LocalUserResult
 
-class SplashViewModel : ViewModel() {
+class SplashViewModel : ViewModel(), KoinComponent {
 
     companion object {
         const val TAG = "ViewModelSplash"
     }
+
+    private val context by inject<Context>()
+    private var database : UserDatabase = UserDatabase.invoke(context)
+    private var userRepository : LocalUserRepository = LocalUserRepository(database = database)
 
     private val dataStore = CodeDataStore()
     private val apiRepository = ProfileRepository()
@@ -30,14 +39,6 @@ class SplashViewModel : ViewModel() {
                 val token = dataStore.getToken(CodeDataStore.COOKIES).first()
                     ?: throw Exception("no cookie token")
 
-                Log.i(
-                    LocalUserViewModel.TAG, "refresh - $token / access - ${
-                        dataStore.getToken(
-                            CodeDataStore.ACCESS_TOKEN
-                        ).first()
-                    }"
-                )
-
                 val response = apiRepository.refreshToken(
                     cookie = token,
                 )
@@ -45,7 +46,7 @@ class SplashViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     Log.i(TAG, "user - ${response.body()?.user}")
 
-                    LocalUserViewModel().saveUser(response.body()?.user ?: throw Exception("empty user body / local"))
+                    userRepository.saveUser(response.body()?.user ?: throw Exception("empty body"))
 
                     _state.value = LocalUserResult.Success(
                         response.body()?.user ?: throw Exception("empty user body")

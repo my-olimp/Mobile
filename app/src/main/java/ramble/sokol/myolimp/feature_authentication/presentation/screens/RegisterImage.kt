@@ -21,9 +21,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,9 +34,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
-import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_profile.presentation.components.OutlinedText
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.FilledBtn
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
@@ -47,44 +44,42 @@ import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
 import java.io.File
 
+
+//@Composable
+//internal fun RegisterImageScreen(
+//    navigator: DestinationsNavigator,
+//    isWorkScreen: Boolean = false
+//) {
+//
+//
+//    RegisterImageScreen(
+//        onEvent = { event ->
+//            if (event is RegistrationImageEvent.OnImageChanged) {
+//                selectedImgUri = event.uri
+//            }
+//            viewModel.onEvent(event)
+//        },
+//        navigator = navigator,
+//        snilsValue = state.snils,
+//        selectedProfileImg = state.profileImg,
+//        isHiddenSnils = isWorkScreen
+//    )
+//}
+
 @Destination
 @Composable
-internal fun RegisterImageScreen(
+fun RegisterImageScreen(
     navigator: DestinationsNavigator,
     isWorkScreen: Boolean = false
 ) {
+
     val viewModel = getViewModel<RegisterImageViewModel>()
     val state by viewModel.state.collectAsState()
-    var selectedImgUri by remember {
-        mutableStateOf(state.profileImg)
-    }
 
-    RegisterImageScreen(
-        onEvent = { event ->
-            if (event is RegistrationImageEvent.OnImageChanged) {
-                selectedImgUri = event.uri
-            }
-            viewModel.onEvent(event)
-        },
-        navigator = navigator,
-        snilsValue = state.snils,
-        selectedProfileImg = state.profileImg,
-        isHiddenSnils = isWorkScreen
-    )
-}
-
-@Composable
-fun RegisterImageScreen(
-    onEvent: (RegistrationImageEvent) -> Unit,
-    snilsValue: String,
-    navigator: DestinationsNavigator,
-    selectedProfileImg: Uri?,
-    isHiddenSnils: Boolean = false
-) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
-            onEvent(RegistrationImageEvent.OnImageChanged(it))
+            viewModel.onEvent(RegistrationImageEvent.OnImageChanged(it))
         }
     )
 
@@ -92,6 +87,7 @@ fun RegisterImageScreen(
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
+        isLoading = state.isLoading,
         onReload = {},
         content = {
             Column(
@@ -137,20 +133,20 @@ fun RegisterImageScreen(
                                 .size(150.dp)
                                 .align(Alignment.CenterHorizontally)
                                 .clip(CircleShape),
-                            model = selectedProfileImg ?: R.drawable.ic_default_img,
+                            model = state.profileImg ?: R.drawable.ic_default_img,
                             contentDescription = "user logo",
                             contentScale = ContentScale.Crop
                         )
                     }
 
-                    if(!isHiddenSnils) {
+                    if(!isWorkScreen) {
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedText(
-                            previousData = snilsValue,
+                            previousData = state.snils,
                             label = stringResource(R.string.label_snils),
                             isEnabled = true,
                             onTextChanged = {
-                                onEvent(RegistrationImageEvent.OnSnilsChanged(it))
+                                viewModel.onEvent(RegistrationImageEvent.OnSnilsChanged(it))
                             },
                             isError = false
                         )
@@ -160,16 +156,16 @@ fun RegisterImageScreen(
                     FilledBtn(
                         text = stringResource(id = R.string.further),
                         padding = 0.dp,
-                        isEnabled = (selectedProfileImg != null && (isHiddenSnils || snilsValue.isNotEmpty()))
+                        isEnabled = (state.profileImg != null && (isWorkScreen || state.snils.isNotEmpty()))
                     ) {
                         try {
-                            val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(selectedProfileImg ?: Uri.EMPTY))
+                            val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(state.profileImg ?: Uri.EMPTY))
                             val pngFile = File(context.cacheDir, "converted_image.png")
                             if (pngFile.exists()) pngFile.delete()
                             pngFile.createNewFile()
-                            onEvent(RegistrationImageEvent.OnSubmit(pngFile, bitmap, navigator))
+                            viewModel.onEvent(RegistrationImageEvent.OnSubmit(pngFile, bitmap, navigator))
                         } catch (e: Exception) {
-                            onEvent(RegistrationImageEvent.OnUploadError)
+//TODO
                         }
                     }
                 }

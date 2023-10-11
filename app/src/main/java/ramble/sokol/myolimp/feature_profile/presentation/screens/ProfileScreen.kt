@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -87,6 +88,7 @@ fun ProfileScreen(
 
     BottomBarTheme(
         navController = navController,
+        isLoading = !state.value.isLoaded,
         onReload = {
             navController.navigate(ProfileScreenDestination)
         }
@@ -95,6 +97,7 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .blur(if (!state.value.isLoaded) 4.dp else 0.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 52.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -265,7 +268,7 @@ fun ProfileScreen(
                 FilledBtn(
                     text = if(state.value.accountType == "t") "change into pupil" else "change into teacher"
                 ) {
-                    viewModel.onEvent(ProfileEvent.OnChangeType(if(state.value.accountType == "t")"p" else "t"))
+                    viewModel.onEvent(ProfileEvent.OnChangeType(if(state.value.accountType == "t") "p" else "t"))
                 }
 
                 Text(

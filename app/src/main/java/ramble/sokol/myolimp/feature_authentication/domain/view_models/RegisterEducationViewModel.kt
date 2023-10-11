@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
@@ -15,7 +14,6 @@ import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
 import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
 
@@ -26,8 +24,6 @@ class RegisterEducationViewModel : ViewModel() {
     }
 
     private val repository = RegistrationRepository()
-
-    private val dataStore = CodeDataStore()
 
     private val _state = MutableStateFlow(RegistrationEducationState())
     val state = _state.asStateFlow()
@@ -118,7 +114,6 @@ class RegisterEducationViewModel : ViewModel() {
             val userData = state.value
             try {
                 repository.registerEducation(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
                     data = UserEducationDataModel(
                         regionId = userData.region.number,
                         cityId = userData.city.id,
@@ -132,12 +127,13 @@ class RegisterEducationViewModel : ViewModel() {
                     },
                     onError = {
                         onEvent(RegistrationEducationEvent.OnCancelLoader)
-                        //onError.invoke()
-                        onResult.invoke()
+                        onError.invoke()
+//                        onResult.invoke()
                         Log.i(TAG,"patch request exception: ${it.message}")
                     }
                 )
             } catch (e: Exception) {
+                onError()
                 Log.i(TAG,"exception: ${e.message}")
             }
         }
@@ -164,11 +160,10 @@ class RegisterEducationViewModel : ViewModel() {
         return isValid
     }
 
-    fun loadRegions() {
+    private fun loadRegions() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getRegions(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
                     onResult = { response ->
                         Log.i(TAG,"response regions $response")
                         if(response != null) {
@@ -193,36 +188,34 @@ class RegisterEducationViewModel : ViewModel() {
 
     private fun requestCities(regionId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Log.i(TAG,"try to request with $regionId region id")
-                repository.getCities(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
-                    data = regionId,
-                    onResult = { list ->
-                        Log.i(TAG,"cities request response is $list")
-                        if(list != null) {
-                            _state.update {
-                                it.copy(
-                                    cityList = list.asListCity()
-                                )
-                            }
-                            if(state.value.schoolList.isNotEmpty()) onEvent(RegistrationEducationEvent.OnCancelLoader)
+            Log.i(TAG,"try to request with $regionId region id")
+            repository.getCities(
+                data = regionId,
+                onResult = { list ->
+                    Log.i(TAG,"cities request response is $list")
+
+                    if(list != null) {
+                        _state.update {
+                            it.copy(
+                                cityList = list.asListCity()
+                            )
                         }
-                    },
-                    onError = {
-                        Log.i(TAG,"cities request cause $it")
+                        onEvent(RegistrationEducationEvent.OnCancelLoader)
                     }
-                )
-            } catch (e: Exception) {
-                Log.i(TAG,"cities exception: ${e.message}")
-            }
+                },
+                onError = {
+                    onEvent(RegistrationEducationEvent.OnCancelLoader)
+
+                    Log.i(TAG,"cities request cause $it")
+                }
+            )
         }
     }
+
     private fun requestSchools(regionId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repository.getSchools(
-                    auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
                     data = regionId,
                     onResult = { list ->
                         Log.i(TAG,"response of school request: $list")

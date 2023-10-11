@@ -17,7 +17,6 @@ import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
-import ramble.sokol.myolimp.destinations.SendCodeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
@@ -27,8 +26,9 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRep
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.LocalUserViewModel
 
 class SignUpViewModel : ViewModel(), KoinComponent {
     companion object {
@@ -38,7 +38,10 @@ class SignUpViewModel : ViewModel(), KoinComponent {
     private val context by inject<Context>()
 
     private val repository = SignUpRepository()
-    private val localUser = LocalUserViewModel()
+
+    private var database : UserDatabase = UserDatabase.invoke(context)
+    private var userRepository : LocalUserRepository = LocalUserRepository(database = database)
+
 
     private val _state = MutableStateFlow(
         SignUpState()
@@ -54,22 +57,57 @@ class SignUpViewModel : ViewModel(), KoinComponent {
             is SignUpEvent.OnSignUp -> {
 
                 if (checkPasswordCorrectness())
+
                 sendVerificationCode(
                   onError = {
                       showSnackbar(context.getString(R.string.register_auth_error_message))
                   },
-                  onSent = {
-                      Log.i(TAG, "sent")
-
+                  onSent = { code->
                       showSnackbar(context.getString(R.string.success_send_code_message))
 
-                      event.navigator.navigate(
-                          SendCodeScreenDestination(
+                      repository.signUp(
+                          data = RequestSignUpModel(
+                              code = code,
                               email = state.value.email,
-                              isRegistering = true
-                          )
+                              firstName = "",
+                              secondName = "",
+                              thirdName = "",
+                              password = state.value.password,
+                          ),
+                          onResult = {
+                              Log.i(TAG, "completed - $it")
+
+                              if (it != null) {
+
+                                  // save token in data store
+                                  saveData(
+                                      it.code,
+                                      it.user
+                                  )
+
+                                  // load user
+
+                                  showSnackbar(context.getString(R.string.success_register_message))
+
+                                  event.navigator.navigate(
+                                      RegisterInfoScreenDestination()
+                                  ) {
+                                      popUpTo(NavGraphs.root) {
+                                          saveState = false
+                                      }
+                                      launchSingleTop = false
+                                      restoreState = false
+                                  }
+
+                              } else {
+                                  showSnackbar("Не получилось создать аккаунт")
+                              }
+                          },
+                          onError = {
+                              Log.i(TAG, "error - $it")
+                          }
                       )
-                  }
+                    }
                 )
             }
             is SignUpEvent.OnEmailUpdated -> {
@@ -276,7 +314,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
 
     private fun sendVerificationCode(
-        onSent: () -> Unit,
+        onSent: (String) -> Unit,
         onError: () -> Unit
     ) {
         viewModelScope.launch {
@@ -286,10 +324,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                 ),
                 onResult = {
                     if (it != null) {
-                        onSent()
-                        Log.i(TAG, "success - $it")
-
-                        showSnackbar("Code - $it")
+                        onSent(it)
                     } else {
                         _state.update { state->
                             state.copy(
@@ -318,7 +353,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
             Log.i(TAG, "code - ${dataStore.getToken(ACCESS_TOKEN).first()}")
 
-            localUser.saveUser(user)
+            userRepository.saveUser(user)
         }
     }
 

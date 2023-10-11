@@ -9,13 +9,16 @@ class LocalUserRepository (
     fun getUser()
             = database.getUserDao().getUser()
 
+    fun getUserById(id: String)
+            = database.getUserDao().getUserById(id = id)
+
     suspend fun saveUser(user: LocalUserModel)
             = database.getUserDao().saveUser(user = user)
 
     suspend fun updateUser(user: LocalUserModel)
             = database.getUserDao().updateUser(user = user)
 
-    suspend fun deleteUser(user: LocalUserModel)
-            = database.getUserDao().deleteUser(user = user)
+    suspend fun deleteUser(id: String)
+            = database.getUserDao().deleteUser(id = id)
 
 }

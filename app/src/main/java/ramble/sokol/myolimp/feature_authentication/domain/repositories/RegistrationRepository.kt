@@ -20,12 +20,11 @@ class RegistrationRepository {
     private val instance = RetrofitBuilder().instance(RegistrationApi::class.java)
 
     fun registerInfo(
-        auth: String,
         data: UserMainDataModel,
         onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.updateMainUserData(auth, data).enqueue(
+        instance.updateMainUserData(data).enqueue(
             object : Callback<ResponseUserModel> {
                 override fun onResponse(
                     call: Call<ResponseUserModel>,
@@ -43,18 +42,16 @@ class RegistrationRepository {
     }
 
     fun registerEducation(
-        auth: String,
         data: UserEducationDataModel,
         onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.updateEducationUserData(auth, data).enqueue(
+        instance.updateEducationUserData(data).enqueue(
             object : Callback<ResponseUserModel> {
                 override fun onResponse(
                     call: Call<ResponseUserModel>,
                     response: Response<ResponseUserModel>
                 ) {
-                    Log.i("RegistrationEducationViewModel","auth token: $auth")
                     onResult(response.body())
                 }
 
@@ -68,13 +65,12 @@ class RegistrationRepository {
 
 
     fun registerImageDocs(
-        auth: String,
         data: UserDocsDataModel,
         imageBody: MultipartBody.Part,
         onResult: (ResponseUserModel?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.uploadImage(auth, imageBody).enqueue(
+        instance.uploadImage(imageBody).enqueue(
             object : Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     Log.i("RegistrationRepository", "Image status ${response.code()}, body: ${response.body()}")  // TODO()
@@ -86,7 +82,7 @@ class RegistrationRepository {
 
             }
         )
-        instance.updateDocsUserData(auth, data).enqueue(
+        instance.updateDocsUserData(data).enqueue(
             object : Callback<ResponseUserModel> {
                 override fun onResponse(
                     call: Call<ResponseUserModel>,
@@ -99,17 +95,15 @@ class RegistrationRepository {
                 override fun onFailure(call: Call<ResponseUserModel>, t: Throwable) {
                     onError(t)
                 }
-
             }
         )
     }
 
     fun getRegions(
-        auth: String,
         onResult: (List<ResponseRegionModel>?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.getRegions(auth).enqueue(
+        instance.getRegions().enqueue(
             object : Callback<List<ResponseRegionModel>> {
 
                 override fun onResponse(
@@ -128,12 +122,11 @@ class RegistrationRepository {
     }
 
     fun getCities(
-        auth: String,
         data: Int,
         onResult: (List<ResponseCityModel>?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.getCities(auth, data).enqueue(
+        instance.getCities(data).enqueue(
             object : Callback<List<ResponseCityModel>> {
                 override fun onResponse(
                     call: Call<List<ResponseCityModel>>,
@@ -150,12 +143,11 @@ class RegistrationRepository {
     }
 
     fun getSchools(
-        auth: String,
         data: Int,
         onResult: (List<ResponseSchoolModel>?) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        instance.getSchools(auth, data).enqueue(
+        instance.getSchools(data).enqueue(
             object : Callback<List<ResponseSchoolModel>> {
                 override fun onResponse(
                     call: Call<List<ResponseSchoolModel>>,
@@ -172,5 +164,4 @@ class RegistrationRepository {
             }
         )
     }
-
 }

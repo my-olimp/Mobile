@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.view_models
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,22 +9,32 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSubjects
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubjectEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterSubjectsRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterSubjectsState
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 
-class RegisterSubjectsViewModel : ViewModel() {
+class RegisterSubjectsViewModel : ViewModel(), KoinComponent {
 
     companion object {
         const val TAG = "ViewModelRegisterSubjects"
     }
 
+    private val context by inject<Context>()
+
     private val repository = RegisterSubjectsRepository()
 
     private val _state = MutableStateFlow(RegisterSubjectsState())
     val state = _state.asStateFlow()
+
+    private val userDatabase : UserDatabase = UserDatabase.invoke(context)
+    private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
 
     init {
         updateLoading(true)
@@ -84,17 +95,24 @@ class RegisterSubjectsViewModel : ViewModel() {
         navigator: DestinationsNavigator,
         isWorkScreen: Boolean = false
     ) {
+
+        updateLoading(true)
+
         viewModelScope.launch {
-            Log.i(TAG, "ids - ${state.value.chosenSubjects}")
 
             repository.updateSubjects(
                 subjects = RequestSubjects(state.value.chosenSubjects),
                 onResult = {
-                    updateLoading(false)
 
                     if (it != null) {
+                        viewModelScope.launch {
+                            updateDatabase(it)
+                        }
+
                         navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
                     }
+
+                    updateLoading(false)
 
                     Log.i(TAG, "result - $it")
                 },
@@ -125,6 +143,12 @@ class RegisterSubjectsViewModel : ViewModel() {
                 }
             )
         }
+    }
+
+    private suspend fun updateDatabase(response: ResponseUserModel) {
+        userRepository.updateUser(
+            user = response.toLocalUserModel()
+        )
     }
 
     private fun updateLoading(isLoading: Boolean) = _state.update {

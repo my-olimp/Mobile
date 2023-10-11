@@ -17,5 +17,4 @@ sealed interface RegistrationInfoEvent {
     data class OnDobChanged(val bdate: String): RegistrationInfoEvent
 
     data class OnActivityTypeChanged(val requestActivityType: String, val activityType: String): RegistrationInfoEvent
-
 }
