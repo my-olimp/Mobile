@@ -6,8 +6,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.io.File
 
 sealed interface RegistrationImageEvent {
+    data class OnChangedScreenType(val isWorkScreen: Boolean) : RegistrationImageEvent
+
     data class OnSnilsChanged(val snils: String) : RegistrationImageEvent
     data class OnImageChanged(val uri: Uri?) : RegistrationImageEvent
-    data class OnSubmit(val file: File, val bitmap: Bitmap, val navigator: DestinationsNavigator) :
-        RegistrationImageEvent
+    data class OnSubmit(val navigator: DestinationsNavigator) : RegistrationImageEvent
 }

@@ -55,7 +55,7 @@ interface RegistrationApi {
     fun getSubjects() : Call<List<String>>
 
     @PATCH("user/")
-    fun updateDocsUserData(
+    fun updateSnils(
         @Body data: UserDocsDataModel
     ) : Call<ResponseUserModel>
 

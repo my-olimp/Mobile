@@ -1,7 +1,5 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.screens
 
-import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -42,29 +41,6 @@ import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.components.Fi
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.Transparent
-import java.io.File
-
-
-//@Composable
-//internal fun RegisterImageScreen(
-//    navigator: DestinationsNavigator,
-//    isWorkScreen: Boolean = false
-//) {
-//
-//
-//    RegisterImageScreen(
-//        onEvent = { event ->
-//            if (event is RegistrationImageEvent.OnImageChanged) {
-//                selectedImgUri = event.uri
-//            }
-//            viewModel.onEvent(event)
-//        },
-//        navigator = navigator,
-//        snilsValue = state.snils,
-//        selectedProfileImg = state.profileImg,
-//        isHiddenSnils = isWorkScreen
-//    )
-//}
 
 @Destination
 @Composable
@@ -83,7 +59,9 @@ fun RegisterImageScreen(
         }
     )
 
-    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.onEvent(RegistrationImageEvent.OnChangedScreenType(isWorkScreen = isWorkScreen))
+    })
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
@@ -158,15 +136,7 @@ fun RegisterImageScreen(
                         padding = 0.dp,
                         isEnabled = (state.profileImg != null && (isWorkScreen || state.snils.isNotEmpty()))
                     ) {
-                        try {
-                            val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(state.profileImg ?: Uri.EMPTY))
-                            val pngFile = File(context.cacheDir, "converted_image.png")
-                            if (pngFile.exists()) pngFile.delete()
-                            pngFile.createNewFile()
-                            viewModel.onEvent(RegistrationImageEvent.OnSubmit(pngFile, bitmap, navigator))
-                        } catch (e: Exception) {
-//TODO
-                        }
+                        viewModel.onEvent(RegistrationImageEvent.OnSubmit(navigator))
                     }
                 }
             }

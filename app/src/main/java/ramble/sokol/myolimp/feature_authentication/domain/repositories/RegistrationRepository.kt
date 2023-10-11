@@ -82,13 +82,20 @@ class RegistrationRepository {
 
             }
         )
-        instance.updateDocsUserData(data).enqueue(
+    }
+
+    fun updateSnils(
+        data: UserDocsDataModel,
+        onResult: (ResponseUserModel?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.updateSnils(data).enqueue(
             object : Callback<ResponseUserModel> {
                 override fun onResponse(
                     call: Call<ResponseUserModel>,
                     response: Response<ResponseUserModel>
                 ) {
-                    Log.i("RegistrationRepository", "Docs status ${response.code()}, mes: ${response.message()}")  // TODO()
+                    Log.i("RegistrationRepository", "Snils status ${response.code()}, mes: ${response.message()}")  // TODO()
                     onResult(response.body())
                 }
 
