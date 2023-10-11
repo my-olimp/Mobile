@@ -77,7 +77,7 @@ fun ProfileScreen(
             .build()
     )
 
-    val version = "v.0.6.8"
+    val version = "v.0.6.9"
 
     LaunchedEffect(key1 = imgState.value.isImgChanged) {
         painter.onForgotten()
