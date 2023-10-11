@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
@@ -78,7 +79,10 @@ class RegisterSubjectsViewModel : ViewModel(), KoinComponent {
                 }
             }
             is RegisterSubjectEvent.OnNext -> {
-                updateUserData(event.navigator,event.isWork)
+                updateUserData(
+                    event.navigator,
+                    event.isWork
+                )
             }
         }
     }
@@ -103,18 +107,17 @@ class RegisterSubjectsViewModel : ViewModel(), KoinComponent {
             repository.updateSubjects(
                 subjects = RequestSubjects(state.value.chosenSubjects),
                 onResult = {
-
-                    if (it != null) {
-                        viewModelScope.launch {
+                    runBlocking {
+                        if (it != null) {
                             updateDatabase(it)
+
+                            navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
                         }
 
-                        navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
+                        updateLoading(false)
+
+                        Log.i(TAG, "result - $it")
                     }
-
-                    updateLoading(false)
-
-                    Log.i(TAG, "result - $it")
                 },
                 onError = {
                     Log.i(TAG, "error - $it")
@@ -146,7 +149,7 @@ class RegisterSubjectsViewModel : ViewModel(), KoinComponent {
     }
 
     private suspend fun updateDatabase(response: ResponseUserModel) {
-        userRepository.updateUser(
+        userRepository.saveUser(
             user = response.toLocalUserModel()
         )
     }

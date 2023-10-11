@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -46,12 +47,20 @@ class SplashViewModel : ViewModel(), KoinComponent {
                 if (response.isSuccessful) {
                     Log.i(TAG, "user - ${response.body()?.user}")
 
+                    // save user in local storage
                     userRepository.saveUser(response.body()?.user ?: throw Exception("empty body"))
 
                     _state.value = LocalUserResult.Success(
                         response.body()?.user ?: throw Exception("empty user body")
                     )
                 } else {
+                    try {
+                        // delete user from local storage
+                        userRepository.deleteUser(userRepository.getUser().firstOrNull()?.id ?: "no user id")
+                    } catch (ex: Exception) {
+                        Log.i(TAG, "exception - $ex")
+                    }
+
                     _state.value = LocalUserResult.Error(response.message())
                 }
             } catch (ex : Exception) {

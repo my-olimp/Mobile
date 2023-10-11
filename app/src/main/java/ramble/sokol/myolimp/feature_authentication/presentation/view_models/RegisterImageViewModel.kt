@@ -25,6 +25,9 @@ import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
+import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import java.io.File
 import java.io.FileOutputStream
@@ -42,6 +45,9 @@ class RegisterImageViewModel : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(RegisterImageState())
     val state = _state.asStateFlow()
+
+    private val userDatabase : UserDatabase = UserDatabase.invoke(context)
+    private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
 
     fun onEvent(
         event: RegistrationImageEvent
@@ -72,7 +78,7 @@ class RegisterImageViewModel : ViewModel(), KoinComponent {
                     // upload img
                     uploadImg(
                         onResult = {
-                            if (state.value.isWorkScreen) {
+                            if (!state.value.isWorkScreen) {
                                 // upload snils
                                 repository.updateSnils(
                                     UserDocsDataModel(
@@ -81,7 +87,16 @@ class RegisterImageViewModel : ViewModel(), KoinComponent {
                                     onError = {
                                         updateLoading(false)
                                     },
-                                    onResult = {
+                                    onResult = { result->
+
+                                        Log.i(TAG, "result - $result")
+
+                                        if (result != null) {
+                                            viewModelScope.launch {
+                                                updateDatabase(result)
+                                            }
+                                        }
+
                                         event.navigator.navigate(
                                             HomeScreenDestination()
                                         ) {
@@ -166,6 +181,12 @@ class RegisterImageViewModel : ViewModel(), KoinComponent {
     private fun updateLoading(isLoading: Boolean) = _state.update {
         it.copy(
             isLoading = isLoading
+        )
+    }
+
+    private suspend fun updateDatabase(response: ResponseUserModel) {
+        userRepository.updateUser(
+            user = response.toLocalUserModel()
         )
     }
 
