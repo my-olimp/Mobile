@@ -1,7 +1,6 @@
 package ramble.sokol.myolimp.feature_profile.database
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
@@ -30,4 +29,7 @@ interface UserDao {
 
     @Query("SELECT subjects FROM user LIMIT 1")
     suspend fun getUserSubjects(): String
+
+    @Query("DELETE FROM user")
+    suspend fun deleteAllUsers()
 }

@@ -8,6 +8,7 @@ import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -212,9 +213,11 @@ class LoginViewModel : ViewModel(), KoinComponent {
     
                 Log.i(TAG, "code - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
 
+                userRepository.deleteUsers()
+
                 userRepository.saveUser(user)
 
-                Log.i(TAG, "user - ${userRepository.getUser().first()}")
+                Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
 
             } catch (ex : Exception) {
 

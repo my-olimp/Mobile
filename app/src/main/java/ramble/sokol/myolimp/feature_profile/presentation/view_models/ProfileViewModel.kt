@@ -425,9 +425,7 @@ class ProfileViewModel (
                 viewModelScope.launch {
                     try {
 
-                        userRepository.deleteUser(
-                            state.value.id ?: throw Exception("no user id")
-                        )
+                        userRepository.deleteUsers()
 
                         Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
 

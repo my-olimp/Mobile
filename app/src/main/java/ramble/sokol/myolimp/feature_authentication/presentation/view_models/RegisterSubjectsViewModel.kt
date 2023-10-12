@@ -149,6 +149,8 @@ class RegisterSubjectsViewModel : ViewModel(), KoinComponent {
     }
 
     private suspend fun updateDatabase(response: ResponseUserModel) {
+        userRepository.deleteUsers()
+
         userRepository.saveUser(
             user = response.toLocalUserModel()
         )

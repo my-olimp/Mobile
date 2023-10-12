@@ -54,24 +54,4 @@ class CodeDataStore : KoinComponent {
                 cookie
             }
     }
-
-//    fun getCookies() : Flow<String?> {
-//
-//        return context.dataStore.data
-//            .catch {
-//                if (it is IOException) emit(emptyPreferences())
-//                else throw it
-//            }
-//            .map {
-//                val cookie = it[COOKIES]
-//                cookie
-//            }
-//
-//        val dataStoreKey = stringPreferencesKey(key)
-//
-//        val preferences = context.dataStore.data.first()
-//
-//        return preferences[dataStoreKey]
-//    }
-
 }

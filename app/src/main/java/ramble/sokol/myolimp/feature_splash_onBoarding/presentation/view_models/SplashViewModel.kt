@@ -47,8 +47,14 @@ class SplashViewModel : ViewModel(), KoinComponent {
                 if (response.isSuccessful) {
                     Log.i(TAG, "user - ${response.body()?.user}")
 
+                    userRepository.deleteUsers()
+
+                    Log.i(TAG, "before user - ${userRepository.getUser().firstOrNull()}")
+
                     // save user in local storage
                     userRepository.saveUser(response.body()?.user ?: throw Exception("empty body"))
+
+                    Log.i(TAG, "after user - ${userRepository.getUser().firstOrNull()}")
 
                     _state.value = LocalUserResult.Success(
                         response.body()?.user ?: throw Exception("empty user body")
@@ -56,7 +62,10 @@ class SplashViewModel : ViewModel(), KoinComponent {
                 } else {
                     try {
                         // delete user from local storage
-                        userRepository.deleteUser(userRepository.getUser().firstOrNull()?.id ?: "no user id")
+                        userRepository.deleteUsers()
+
+                        Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
+
                     } catch (ex: Exception) {
                         Log.i(TAG, "exception - $ex")
                     }

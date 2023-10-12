@@ -353,6 +353,8 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
             Log.i(TAG, "code - ${dataStore.getToken(ACCESS_TOKEN).first()}")
 
+            userRepository.deleteUsers()
+
             userRepository.saveUser(user)
         }
     }
