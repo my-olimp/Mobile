@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.ui.theme.CalendarFocusedText
-import ramble.sokol.myolimp.ui.theme.CalendarSelecatableText
+import ramble.sokol.myolimp.ui.theme.CalendarSelectableText
 import ramble.sokol.myolimp.ui.theme.CalendarUnFocusedText
 import ramble.sokol.myolimp.ui.theme.White
 
@@ -33,7 +33,7 @@ fun SelectableText (
     Box(
         modifier = Modifier
             .background(
-                color = if (state.type == text) CalendarSelecatableText else White,
+                color = if (state.type == text) CalendarSelectableText else White,
                 shape = RoundedCornerShape(size = 16.dp)
             )
             .padding(14.dp)

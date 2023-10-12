@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
+import ramble.sokol.myolimp.ui.theme.GreyProfileAchievement
 
 @Composable
 fun CommentText (
@@ -25,7 +25,7 @@ fun CommentText (
             fontSize = 14.sp,
             fontFamily = FontFamily(Font(R.font.regular)),
             fontWeight = FontWeight(400),
-            color = GreyProfileAchivement,
+            color = GreyProfileAchievement,
             textAlign = TextAlign.Center,
             letterSpacing = 0.5.sp,
         )

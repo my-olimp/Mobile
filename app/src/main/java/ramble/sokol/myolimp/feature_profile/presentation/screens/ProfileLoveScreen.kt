@@ -37,14 +37,13 @@ import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.feature_authentication.presentation.screens.forgot_password.VerticalSpacer
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
-import ramble.sokol.myolimp.feature_library.presenation.mainScreen.LibraryEvent
 import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckListBottomSheet
 import ramble.sokol.myolimp.feature_profile.presentation.components.LoveTopBar
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileLoveViewModel
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
+import ramble.sokol.myolimp.ui.theme.GreyProfileAchievement
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.regularType
 
@@ -155,7 +154,7 @@ fun ProfileLoveScreen(
                        Text(
                            text = stringResource(id = R.string.no_loved_yet),
                            style = regularType(
-                               color = GreyProfileAchivement,
+                               color = GreyProfileAchievement,
                                fontSize = 16.sp,
                                letterSpacing = 0.32.sp
                            ),

@@ -18,13 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
-import ramble.sokol.myolimp.feature_library.presenation.components.article.EducationTask
 import ramble.sokol.myolimp.feature_library.presenation.components.article.SubjectItem
+import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
@@ -39,14 +41,15 @@ fun EducationScreen(
     val state = viewModel.state.collectAsState()
 
     Column (
-        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .verticalScroll(rememberScrollState())
     ){
-        /*TODO back hasn't image for test :/ */
         Image(
             painter = painterResource(id = R.drawable.library_test_image),
             contentDescription = "test image",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.height(120.dp) /*TODO wtf*/
+            modifier = Modifier.height(120.dp)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -57,6 +60,7 @@ fun EducationScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 18.dp)
         ) {
+
             Text(
                 text = state.value.article.title,
                 style = mediumType(
@@ -95,40 +99,111 @@ fun EducationScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             /*INTRODUCTION*/
-            Text(
-                text = "Методы решения уравнений третьей и четвёртой степени (формула Кардано и метод Феррари) выходят за рамки программы обычной школы. Поэтому если на олимпиаде вам попадается уравнение степени 3 или выше, то следует искать искусственный приём, приспособленный для решения именно этого уравнения. Таким приёмом может быть, например, удачная группировка с последующим разложением на множители или выявление устойчивых выражений с соответствующей заменой переменной. Данная статья посвящена уравнениям вида p(x) = 0, где p(x) — многочлен третьей степени и выше, и некоторым приёмам разложения такого многочлена на множители.\nНепосредственная группировка\nВ простейших случаях многочлен удаётся разложить на множители, удачно группируя друг с другом слагаемые.",
-                style = regularType(
-                    color = SheetTitle,
-                    letterSpacing = 0.22.sp,
-                    fontSize = 11.sp,
-                    lineHeight = 15.62.sp
-                )
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            /*TASKS*/
-            EducationTask(
-                taskText = "Задача 1. Решить уравнение 2x3 − 3x2 − 8x + 12 = 0.\nРешение:\nx2(2x − 3) − 4(2x − 3) = 0 ⇔ \n(2x − 3)(x2 − 4) = 0 ⇔ \n(2x − 3)(x − 2)(x + 2) = 0. \nОтвет: 3/2, ±2."
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            EducationTask(
-                taskText = "Задача 2. (МГУ, социологич. ф-т, 2004 ) Решите уравнение:\nx3 + 9x2 + 18x − 2(x 2 + 9x) − 36\n √ x + 3 \nРешение:\n Если поддаться искушению раскрыть скобки и привести подобные слагаемые (тем более что сократится 18x), то в возникшем кубическом уравнении придётся подбирать корень с целью разложить левую часть на множители. Данная процедура описана в следующем пункте и не представляет здесь никаких сложностей, однако необходимости в ней сейчас нет. Дело в том, что несколько вычурная запись условия содержит подсказку, как именно надо группировать слагаемые. Имеем: \nx3 + 9x2 + 18x − 2(x2 + 9x) − 36 = x(x2 + 9x) − 2(x2 + 9x) + 18x − 36 = (x 2 + 9x)(x − 2) + 18(x − 2) = (x − 2)(x2 + 9x + 18) = (x − 2)(x + 3)(x + 6).\nНаше уравнение, таким образом, равносильно системе\n (x − 2)(x + 3)(x + 6) = 0, \n x + 3 > 0, \nрешением которой служит x = 2.\nОтвет: 2. "
-            )
+            MarkDown()
         }
-
-        // Custom View
-        Text(text = "\\E = mc^2")
     }
 }
 
+@Preview
 @Composable
-fun RenderLatex(latex: String) {
-    val annotatedString = buildAnnotatedString {
-        append("$$")
-        append(latex)
-        append("$$")
-    }
+fun MarkDown() {
 
-    Text(text = annotatedString)
+    val text = """
+# Алгоритм Дейкстры
+
+> *Программирование калечит мозг, поэтому обучение ему должно трактоваться как преступление.*
+Эдсгер Вибе Дейкстра
+> 
+
+**Алгоритм Дейкстры** — алгоритм нахождения кратчайших путей от данной вершины s до всех остальных во взешенном графе (V,E) с неотрицательными весами.
+
+**Асимптотика**: 
+
+|E| ≈ |V|^2
+
+O(\,|E| · log(\,|V |\,)\,) - реализация \; для \; разреженных \;  графов
+
+## Постановка задачи
+
+Пусть дан взвешенный граф *(V, E)* с неотрицательными весами и вершина s. Необходимо найти кратчайшие пути от s до всех остальных вершин.
+Удобнее всего представлять граф либо в виде матрицы смежности (где отсутствие ребра будет заменяться ребром длины *INF*), либо в виде списка смежности. В статье будет использоваться именно список.
+Список смежности будет выглядеть как вектор векторов пар, где первый элемент в паре обозначает, куда ведёт ребро, а второй — его стоимость.
+
+## Алгоритм
+
+Заведём массив *d* длины *|V|*, где *d[i]* будет равен кратчайшему расстоянию от *s* до *i*. Изначально *d* заполнен *INF*, а *d[s] = 0*.
+Затем запустим цикл, который будет пытаться оптимизировать расстояние. Каждый раз он будет искать ближайшую необработанную вершину *i* и пытаться укоротить расстояние до его соседей. То есть для ребра *j:* 
+
+d [j.first] = min (d[j.first], d[i] + d[j.second]).
+
+Искать ближайшую вершину можно либо простым перебором, либо ис- пользуя такие типы данных как *set* и *priority_queue*. Проблема последнего способа заключается в том, что их обновление происходит за *O(log(N))*, и если это происходит часто, то скорость сильно теряется. Поэтому, если граф плотный, то есть
+
+|E| ≈ |V|^2
+
+то лучше использовать базовую реализацию, иначе через *set*.
+
+## Базовая реализация (C++)
+
+```cpp
+int N=V.size(); 
+vector <int> d(N, INF);
+d[s] = 0;
+vector <bool> visited (N, false ); 
+while (1) {
+	int mn = INF, id = −1;
+	for (int i = 0; i <N; ++i) if (!visited[i] &&d[i] <mn) {
+		mn = d [ i ] ; 
+		id = i;
+	}
+	if (id == −1) break;
+	visited[id] = true; 
+	for (auto i: V[id])
+		if (!visited[i.first] && d[i.first] > d[id] + d[i.second])
+			 d[i.first] = d[id] + d[i.second];
 }
+```
+
+## Восстановление путей
+
+Чтобы восстановить кратчайшие пути, нужно хранить в массиве p предыдущие вершины.
+
+```cpp
+int N=V.size();
+vector <int> d(N, INF), p(N, −1);
+d[s] = 0;
+vector <bool> visited (N, false ); 
+while (1) {
+	int mn = INF, id = −1;
+	for (int i = 0; i <N; ++i) if (!visited[i] &&d[i] <mn) {
+			mn = d [ i ]; 
+			id = i;
+}
+if (id == −1) break;
+visited[id] = true;
+for (auto i: V[id])
+	if (!visited[i.first] && d[i.first] > d[id] + d[i.second]) {
+		d[i.first] = d[id] + d[i.second];
+		p[i.first] = id;
+}
+```
+
+## Модификация для разреженных графов
+
+Если в графе относительно немного рёбер, то кратчайшие расстояния можно дублировать в *set ds*, чтобы быстро *(O(log(N))* вместо *O(N)* получать ближайшую необработанную вершину. При этом обновление расстояния будет происходить медленно: *O (log(N))* вместо *O(1)*
+    """
+
+    MarkdownText(
+        modifier = Modifier
+            .fillMaxWidth(),
+        markdown = text,
+        color = SheetTitle,
+        fontSize = 12.sp,
+        linkColor = BlueStart,
+        textAlign = TextAlign.Start,
+        lineHeight = 16.sp,
+        isTextSelectable = true,
+        fontResource = R.font.medium,
+
+        )
+}
+
