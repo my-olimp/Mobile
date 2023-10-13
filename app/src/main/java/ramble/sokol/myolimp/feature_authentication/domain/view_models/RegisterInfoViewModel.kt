@@ -1,22 +1,27 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ramble.sokol.myolimp.destinations.RegisterEducationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
+import ramble.sokol.myolimp.utils.OlimpViewModel
 
-class RegisterInfoViewModel : ViewModel() {
+
+
+
+class RegisterInfoViewModel : OlimpViewModel<RegistrationInfoState>(RegistrationInfoState()) {
 
     companion object {
         private const val TAG : String = "RegistrationInfoViewModel"
@@ -24,25 +29,10 @@ class RegisterInfoViewModel : ViewModel() {
 
     private val repository = RegistrationRepository()
 
-    private val dataStore = CodeDataStore()
-
-    private val _state = MutableStateFlow(
-        RegistrationInfoState()
-    )
-
-    val state = _state.asStateFlow()
-
     fun onEvent(
         event: RegistrationInfoEvent
     ) {
         when(event) {
-
-            is RegistrationInfoEvent.OnCancelLoader -> {
-                _state.update { it.copy(isLoading = false) }
-            }
-            is RegistrationInfoEvent.OnLoaderUp -> {
-                _state.update { it.copy(isLoading = true) }
-            }
             is RegistrationInfoEvent.OnActivityTypeChanged -> {
                 _state.update {
                     it.copy(
@@ -77,47 +67,12 @@ class RegisterInfoViewModel : ViewModel() {
             }
             is RegistrationInfoEvent.OnNext -> {
                 if(isDataValid()) {
-                    onEvent(RegistrationInfoEvent.OnLoaderUp)
-                    sendRequest(
-                        onResult = {
-                            onEvent(RegistrationInfoEvent.OnCancelLoader)
-                            event.navigator.navigate(RegisterEducationScreenDestination(
-                                isWorkScreen = state.value.requestActivityType == "t"
-                            ))
-                        },
-                        onError = {
-                            onEvent(RegistrationInfoEvent.OnCancelLoader)
-                            Log.i(TAG,"request failed")
-                        }
-                    )
+                    this.updateLoader(true)
+                    sendRequest(navigator = event.navigator)
                 }
             }
         }
     }
-
-    private suspend fun updateUserData(
-        userModel: UserMainDataModel,
-        onResult: () -> Unit,
-        onError: () -> Unit
-    ) {
-        try {
-            repository.registerInfo(
-                data = userModel,
-                onResult = {
-                    Log.i(TAG,"response: $it")
-                    onResult.invoke()
-                },
-                onError = {
-                    onError.invoke()
-                    Log.i(TAG,"exception: ${it.message}")
-                }
-            )
-
-        } catch (e : Exception){
-            Log.i(TAG,"exception: ${e.message}")
-        }
-    }
-
     private fun isDataValid(): Boolean {
         var isValid = true
         if (state.value.fio.split(" ").size != 3) {
@@ -135,13 +90,17 @@ class RegisterInfoViewModel : ViewModel() {
         return isValid
     }
     private fun sendRequest(
-        onResult: () -> Unit,
-        onError: () -> Unit
+        navigator: DestinationsNavigator
     ) {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.i(TAG, "1current thread: ${Thread.currentThread().name}")
+
             val fio = state.value.fio.split(" ")
-            updateUserData(
-                userModel = UserMainDataModel(
+
+            Log.i(TAG, "2current thread: ${Thread.currentThread().name}")
+
+            repository.registerInfo(
+                data = UserMainDataModel(
                     firstName = fio[0],
                     secondName = fio[1],
                     thirdName = fio[2],
@@ -149,8 +108,22 @@ class RegisterInfoViewModel : ViewModel() {
                     gender = state.value.gender,
                     accountType = state.value.requestActivityType
                 ),
-                onResult = onResult,
-                onError = onError
+                onResult = {
+                    this@RegisterInfoViewModel.updateLoader(false)
+                    Log.i(TAG, "response: $it")
+                    Log.i(TAG, "3current thread: ${Thread.currentThread().name}")
+
+                    if (it != null) {
+                        navigator.navigate(
+                            RegisterEducationScreenDestination(isWorkScreen = state.value.requestActivityType == "t")
+                        )
+                    } else castError()
+                },
+                onError = {
+                    this@RegisterInfoViewModel.updateLoader(false)
+                    Log.i(TAG, "exception: ${it.message}")
+                    castError()
+                }
             )
         }
     }

@@ -4,10 +4,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 sealed interface RegistrationInfoEvent {
 
-    data object OnCancelLoader : RegistrationInfoEvent
-
-    data object OnLoaderUp: RegistrationInfoEvent
-
     data class OnNext(val navigator: DestinationsNavigator) : RegistrationInfoEvent
 
     data class OnGenderChanged(val gender: String): RegistrationInfoEvent
