@@ -27,6 +27,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.RegisterInfoViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.RadioText
@@ -63,13 +64,14 @@ fun RegisterInfoScreen(
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
         isLoading = state.value.isLoading,
-        onReload = {},
+        isError = state.value.isError,
+        onReload = { navigator.navigate(RegisterInfoScreenDestination) },
         content = {
             Column(
                 modifier = Modifier
                     .background(Transparent)
                     .fillMaxSize()
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+                    .blur(if (state.value.isLoading || state.value.isError) 4.dp else 0.dp)
                 ,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -151,7 +153,7 @@ fun RegisterInfoScreen(
                     }
 
                     VerticalSpacer(height = 12.dp)
-                    
+
                     CalendarInput(
                         label = stringResource(id = R.string.dob),
                         previousData = state.value.bdate,
