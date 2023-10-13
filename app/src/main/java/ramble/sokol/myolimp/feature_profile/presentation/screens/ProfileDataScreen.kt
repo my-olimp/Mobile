@@ -55,7 +55,6 @@ import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
-import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
@@ -71,7 +70,7 @@ import ramble.sokol.myolimp.feature_profile.presentation.sheets.EditPhotoSheet
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.GreyProfileAchivement
+import ramble.sokol.myolimp.ui.theme.GreyProfileAchievement
 import ramble.sokol.myolimp.ui.theme.White
 
 
@@ -232,7 +231,7 @@ fun ProfileDataScreen(
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.regular)),
                             fontWeight = FontWeight(400),
-                            color = GreyProfileAchivement,
+                            color = GreyProfileAchievement,
                             letterSpacing = 0.3.sp,
                             textAlign = TextAlign.Center
                         )

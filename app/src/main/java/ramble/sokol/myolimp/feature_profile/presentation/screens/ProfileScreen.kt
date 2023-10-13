@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +42,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.EditorScreenDestination
 import ramble.sokol.myolimp.destinations.NewsScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
@@ -76,7 +78,7 @@ fun ProfileScreen(
             .build()
     )
 
-    val version = "v.0.6.8"
+    val version = "v.0.6.9"
 
     LaunchedEffect(key1 = imgState.value.isImgChanged) {
         painter.onForgotten()
@@ -87,6 +89,7 @@ fun ProfileScreen(
 
     BottomBarTheme(
         navController = navController,
+        isLoading = !state.value.isLoaded,
         onReload = {
             navController.navigate(ProfileScreenDestination)
         }
@@ -95,6 +98,7 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .blur(if (!state.value.isLoaded) 4.dp else 0.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 52.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -259,13 +263,21 @@ fun ProfileScreen(
                 ) {
                     viewModel.onEvent(ProfileEvent.OnLogOut(navigator = navController))
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FilledBtn(
+                    text = "Open Editor [BETA]"
+                ) {
+                    navController.navigate(EditorScreenDestination)
+                }
                 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FilledBtn(
                     text = if(state.value.accountType == "t") "change into pupil" else "change into teacher"
                 ) {
-                    viewModel.onEvent(ProfileEvent.OnChangeType(if(state.value.accountType == "t")"p" else "t"))
+                    viewModel.onEvent(ProfileEvent.OnChangeType(if(state.value.accountType == "t") "p" else "t"))
                 }
 
                 Text(

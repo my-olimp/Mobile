@@ -1,9 +1,8 @@
 package ramble.sokol.myolimp.utils.interceptors
 
 import android.util.Log
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.IOException
@@ -18,7 +17,6 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
     }
 
     private val codeDataStore = CodeDataStore()
-    private val scope = MainScope()
 
     @Throws(IOException::class)
     override fun intercept(
@@ -29,7 +27,7 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
 
         if (originalResponse.headers("Set-Cookie").isNotEmpty()) {
 
-            scope.launch {
+            runBlocking {
                 var cookie = codeDataStore.getToken(COOKIES).first()
 
                 for (header in originalResponse.headers("Set-Cookie")) {
@@ -46,7 +44,7 @@ class ReceivedCookiesInterceptor : Interceptor, KoinComponent {
                     key = COOKIES
                 )
 
-                Log.i(TAG, "cookie - $cookie")
+                Log.i(TAG, "cookie - ${codeDataStore.getToken(COOKIES).first()}")
             }
         }
 

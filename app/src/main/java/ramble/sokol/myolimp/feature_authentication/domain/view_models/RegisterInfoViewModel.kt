@@ -102,7 +102,6 @@ class RegisterInfoViewModel : ViewModel() {
     ) {
         try {
             repository.registerInfo(
-                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("No access token"),
                 data = userModel,
                 onResult = {
                     Log.i(TAG,"response: $it")

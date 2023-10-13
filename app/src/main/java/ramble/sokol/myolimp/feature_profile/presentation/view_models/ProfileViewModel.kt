@@ -13,8 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -413,23 +415,58 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnLogOut -> {
+
+                _state.update {
+                    it.copy(
+                        isLoaded = false
+                    )
+                }
+
                 viewModelScope.launch {
-                    dataStore.deleteToken()
-
-                    event.navigator.popBackStack()
-                    event.navigator.navigate(BeginAuthenticationScreenDestination)
-
                     try {
+
+                        userRepository.deleteUsers()
+
+                        Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
+
                         repository.logOut(
-                            cookie = dataStore.getToken(COOKIES).first() ?: throw Exception("no refresh"),
+                            cookie = dataStore.getToken(COOKIES).firstOrNull() ?: throw Exception("no refresh"),
                             onResult = {
-                                Log.i(TAG, "completed")
+                                runBlocking {
+                                    dataStore.deleteToken()
+
+                                    _state.update {
+                                        it.copy(
+                                            isLoaded = true
+                                        )
+                                    }
+
+                                    event.navigator.popBackStack()
+                                    event.navigator.navigate(BeginAuthenticationScreenDestination)
+
+                                    Log.i(TAG, "completed")
+
+                                }
                             },
                             onError = {
+                                _state.update { state->
+                                    state.copy(
+                                        isLoaded = true
+                                    )
+                                }
+
                                 Log.i(TAG, "error occurred - $it")
                             }
                         )
+
                     } catch (ex: Exception) {
+
+                        _state.update {
+                            it.copy(
+                                isLoaded = true
+                            )
+                        }
+
                         Log.i(TAG, "exception - ${ex.message}")
                     }
                 }

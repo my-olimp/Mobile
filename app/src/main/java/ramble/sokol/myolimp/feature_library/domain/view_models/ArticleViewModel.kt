@@ -98,10 +98,14 @@ class ArticleViewModel: ViewModel() {
                     )
                 }
             }
+
+            is ArticleEvent.OnFetchArticle -> {
+                fetchArticle(event.id)
+            }
         }
     }
 
-    fun fetchArticle(id: Int = 1) {
+    private fun fetchArticle(id: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(

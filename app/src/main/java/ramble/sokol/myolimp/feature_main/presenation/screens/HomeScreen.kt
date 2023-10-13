@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -49,8 +50,11 @@ import ramble.sokol.myolimp.feature_main.data.models.AdviceArticle
 import ramble.sokol.myolimp.feature_main.data.models.OlympiadModel
 import ramble.sokol.myolimp.feature_main.presenation.components.CompletedPlanItem
 import ramble.sokol.myolimp.feature_main.presenation.components.OlympiadItem
+import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
+import ramble.sokol.myolimp.ui.theme.MainBackground
+import ramble.sokol.myolimp.ui.theme.Transparent
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
@@ -73,7 +77,8 @@ fun HomeScreen(
 
     BottomBarTheme(
         navController = navController,
-        onReload = {}
+        onReload = {},
+        statusBarColor = BackgroundMain,
     ) {
 
         // Today Plans

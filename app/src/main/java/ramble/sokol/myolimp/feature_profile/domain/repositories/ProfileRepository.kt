@@ -9,7 +9,6 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolMod
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
