@@ -52,9 +52,10 @@ fun RegisterEducationScreen(
 
     OlimpTheme(
         isLoading = state.value.isLoading,
+        isError = state.value.isError,
         navigationBarColor = SecondaryScreen,
         onReload = {
-            navigator.navigate(RegisterEducationScreenDestination())
+            navigator.navigate(RegisterEducationScreenDestination(isWorkScreen = isWorkScreen))
         },
         content = {
 
@@ -62,7 +63,7 @@ fun RegisterEducationScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Transparent)
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp),
+                    .blur(if (state.value.isLoading || state.value.isError) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(

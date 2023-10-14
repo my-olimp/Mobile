@@ -1,24 +1,18 @@
 package ramble.sokol.myolimp.feature_authentication.presentation.view_models
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserDocsDataModel
@@ -26,13 +20,12 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationIma
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.feature_profile.database.UserDatabase
-import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
+import ramble.sokol.myolimp.utils.OlimpViewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class RegisterImageViewModel : ViewModel(), KoinComponent {
+class RegisterImageViewModel : OlimpViewModel<RegisterImageState>(RegisterImageState()){
 
     companion object {
         private const val TAG: String = "ViewModelImage"
@@ -40,14 +33,6 @@ class RegisterImageViewModel : ViewModel(), KoinComponent {
 
     private val repository = RegistrationRepository()
     private val profileRepository = ProfileRepository()
-
-    private val context by inject<Context>()
-
-    private val _state = MutableStateFlow(RegisterImageState())
-    val state = _state.asStateFlow()
-
-    private val userDatabase : UserDatabase = UserDatabase.invoke(context)
-    private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
 
     fun onEvent(
         event: RegistrationImageEvent
@@ -73,8 +58,7 @@ class RegisterImageViewModel : ViewModel(), KoinComponent {
 
                 updateLoading(true)
 
-                viewModelScope.launch {
-
+                launchIO {
                     // upload img
                     uploadImg(
                         onResult = {
