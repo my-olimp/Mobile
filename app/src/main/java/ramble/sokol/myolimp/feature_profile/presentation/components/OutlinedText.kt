@@ -29,6 +29,7 @@ import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
+import ramble.sokol.myolimp.utils.dimensions.LocalDimension
 
 @Composable
 fun OutlinedText (
@@ -41,6 +42,8 @@ fun OutlinedText (
     errorText: String = "",
     onTextChanged: (String) -> Unit,
 ) {
+
+    val dimension = LocalDimension.current
 
     var textValue by remember {
         mutableStateOf(previousData)
@@ -90,7 +93,7 @@ fun OutlinedText (
             textValue = it
             onTextChanged(it)
         },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(dimension.roundedCorner),
         isError = isError,
         enabled = isEnabled
     )

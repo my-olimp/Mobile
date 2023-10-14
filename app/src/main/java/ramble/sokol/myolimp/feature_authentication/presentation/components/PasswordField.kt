@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlackProfile
@@ -32,6 +31,7 @@ import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.MessageError
 import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.White
+import ramble.sokol.myolimp.utils.dimensions.LocalDimension
 
 @Composable
 fun PasswordField(
@@ -41,6 +41,8 @@ fun PasswordField(
     errorText: String = "",
     onTextChanged: (String) -> Unit,
 ) {
+
+    val dimension = LocalDimension.current
 
     var textValue by remember {
         mutableStateOf(previousData)
@@ -92,7 +94,7 @@ fun PasswordField(
                 )
             }
         },
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(dimension.roundedCorner),
         isError = isError,
         singleLine = true,
         visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
