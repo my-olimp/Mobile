@@ -1,13 +1,8 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
@@ -16,8 +11,11 @@ import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
+import ramble.sokol.myolimp.utils.OlimpViewModel
 
-class RegisterEducationViewModel : ViewModel() {
+class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
+    RegistrationEducationState()
+) {
 
     companion object {
         private const val TAG : String = "RegistrationEducationViewModel"
@@ -25,11 +23,8 @@ class RegisterEducationViewModel : ViewModel() {
 
     private val repository = RegistrationRepository()
 
-    private val _state = MutableStateFlow(RegistrationEducationState())
-    val state = _state.asStateFlow()
-
     init {
-        onEvent(RegistrationEducationEvent.OnStartLoader)
+        this.updateLoader(true)
         loadRegions()
     }
 
@@ -37,15 +32,6 @@ class RegisterEducationViewModel : ViewModel() {
         event: RegistrationEducationEvent
     ) {
         when(event) {
-
-            is RegistrationEducationEvent.OnStartLoader -> {
-                _state.update { it.copy(isLoading = true) }
-            }
-
-            is RegistrationEducationEvent.OnCancelLoader -> {
-                _state.update { it.copy(isLoading = false) }
-            }
-
             is RegistrationEducationEvent.OnGradeChanged -> {
                 _state.update {
                     it.copy(
@@ -67,10 +53,12 @@ class RegisterEducationViewModel : ViewModel() {
                     it.copy(
                         region = event.region,
                         regionError = false,
-                        isLoading = true
+                        isLoading = true,
+                        cityList = emptyList(),
+                        schoolList = emptyList()
                     )
                 }
-                viewModelScope.launch(Dispatchers.IO) {
+                launchIO {
                     requestCities(event.region.number)
                     requestSchools(event.region.number)
                 }
@@ -86,13 +74,8 @@ class RegisterEducationViewModel : ViewModel() {
             is RegistrationEducationEvent.OnNext -> {
                 if(checkData()) {
                     sendRequest(
-                        onResult = {
-                            event.navigator.navigate(RegisterSubjectsScreenDestination(isWorkScreen = event.isWork))
-                            Log.i(TAG,"request called result")
-                        },
-                        onError = {
-                            Log.i(TAG,"request called error")
-                        }
+                        navigator = event.navigator,
+                        isWork = event.isWork
                     )
                 }
             }
@@ -100,41 +83,31 @@ class RegisterEducationViewModel : ViewModel() {
     }
 
     private fun sendRequest(
-        onResult: () -> Unit,
-        onError: () -> Unit
+        navigator: DestinationsNavigator,
+        isWork: Boolean
     ) {
-
-        _state.update {
-            it.copy(
-                isLoading = true
-            )
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val userData = state.value
-            try {
+        updateLoader(true)
+        launchIO {
+            with(state.value) {
                 repository.registerEducation(
                     data = UserEducationDataModel(
-                        regionId = userData.region.number,
-                        cityId = userData.city.id,
-                        schoolId = userData.school.id,
-                        //grade = userData.grade.toInt() TODO make swap on work spot and vice versa
+                        regionId = region.number,
+                        cityId = city.id,
+                        schoolId = school.id,
+                        grade = if(!isWork)grade.toInt() else 1 /*TODO make work spot*/
                     ),
                     onResult = {
-                        onEvent(RegistrationEducationEvent.OnCancelLoader)
-                        Log.i(TAG,"patch request response: $it")
-                        onResult.invoke()
+                        updateLoader(false)
+                        Log.i(TAG, "patch request response: $it")
+                        if(it != null) {
+                            navigator.navigate(RegisterSubjectsScreenDestination(isWorkScreen = isWork))
+                        } else castError()
                     },
                     onError = {
-                        onEvent(RegistrationEducationEvent.OnCancelLoader)
-                        onError.invoke()
-//                        onResult.invoke()
-                        Log.i(TAG,"patch request exception: ${it.message}")
+                        Log.i(TAG, "patch request exception: ${it.message}")
+                        castError()
                     }
                 )
-            } catch (e: Exception) {
-                onError()
-                Log.i(TAG,"exception: ${e.message}")
             }
         }
     }
@@ -161,34 +134,30 @@ class RegisterEducationViewModel : ViewModel() {
     }
 
     private fun loadRegions() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.getRegions(
-                    onResult = { response ->
-                        Log.i(TAG,"response regions $response")
-                        if(response != null) {
-                            _state.update {
-                                it.copy(
-                                    regionList = response.asListRegion(),
-                                    isLoading = false
-                                )
-                            }
+        launchIO {
+            repository.getRegions(
+                onResult = { response ->
+                    Log.i(TAG, "response regions $response")
+                    if (response != null) {
+                        _state.update {
+                            it.copy(
+                                regionList = response.asListRegion(),
+                            )
+
                         }
-                    },
-                    onError = {
-                        onEvent(RegistrationEducationEvent.OnCancelLoader)
-                        Log.i(TAG,"throwed ${it.message}")
                     }
-                )
-            } catch (e: Exception) {
-                Log.i(TAG,"exception: ${e.message}")
-            }
+                    updateLoader(false)
+                },
+                onError = {
+                    Log.i(TAG, "throwed ${it.message}")
+                    castError()
+                }
+            )
         }
     }
 
     private fun requestCities(regionId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.i(TAG,"try to request with $regionId region id")
+        launchIO {
             repository.getCities(
                 data = regionId,
                 onResult = { list ->
@@ -200,41 +169,37 @@ class RegisterEducationViewModel : ViewModel() {
                                 cityList = list.asListCity()
                             )
                         }
-                        onEvent(RegistrationEducationEvent.OnCancelLoader)
+                        if(state.value.schoolList.isNotEmpty())updateLoader(false)
                     }
                 },
                 onError = {
-                    onEvent(RegistrationEducationEvent.OnCancelLoader)
-
                     Log.i(TAG,"cities request cause $it")
+                    castError()
                 }
             )
         }
     }
 
     private fun requestSchools(regionId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.getSchools(
-                    data = regionId,
-                    onResult = { list ->
-                        Log.i(TAG,"response of school request: $list")
-                        if(list != null) {
-                            _state.update {
-                                it.copy(
-                                    schoolList = list.asListSchool()
-                                )
-                            }
-                            if(state.value.cityList.isNotEmpty()) onEvent(RegistrationEducationEvent.OnCancelLoader)
+        launchIO {
+            repository.getSchools(
+                data = regionId,
+                onResult = { list ->
+                    Log.i(TAG, "response of school request: $list")
+                    if (list != null) {
+                        _state.update {
+                            it.copy(
+                                schoolList = list.asListSchool()
+                            )
                         }
-                    },
-                    onError = {
-                        Log.i(TAG,"school response is exception: ${it.message}")
+                        if(state.value.cityList.isNotEmpty())updateLoader(false)
                     }
-                )
-            } catch(e: Exception) {
-                Log.i(TAG,"school throwed exception ${e.message}")
-            }
+                },
+                onError = {
+                    Log.i(TAG, "school response is exception: ${it.message}")
+                    castError()
+                }
+            )
         }
     }
 }

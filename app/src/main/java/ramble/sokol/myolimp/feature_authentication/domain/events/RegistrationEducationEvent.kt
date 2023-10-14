@@ -7,9 +7,6 @@ import ramble.sokol.myolimp.feature_authentication.data.models.School
 
 sealed interface RegistrationEducationEvent {
 
-    data object OnCancelLoader : RegistrationEducationEvent
-
-    data object OnStartLoader: RegistrationEducationEvent
 
     data class OnNext(val navigator: DestinationsNavigator, val isWork: Boolean) : RegistrationEducationEvent
 

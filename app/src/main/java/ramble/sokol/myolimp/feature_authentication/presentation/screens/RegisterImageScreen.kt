@@ -22,9 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,6 +33,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.RegisterImageScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationImageEvent
 import ramble.sokol.myolimp.feature_authentication.presentation.components.TextHeaderWithCounter
 import ramble.sokol.myolimp.feature_authentication.presentation.view_models.RegisterImageViewModel
@@ -66,13 +67,17 @@ fun RegisterImageScreen(
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
         isLoading = state.isLoading,
-        onReload = {},
+        isError = state.isError,
+        onReload = {
+            navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
+        },
         content = {
             Column(
                 modifier = Modifier
                     .background(Transparent)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .fillMaxSize()
+                    .blur(if (state.isLoading || state.isError) 4.dp else 0.dp),
+            verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     modifier = Modifier
