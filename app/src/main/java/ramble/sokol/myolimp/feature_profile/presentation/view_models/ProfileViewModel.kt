@@ -498,7 +498,7 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
                 updateDatabase(response.body() as ResponseUserModel)
             }
         } catch (e: Exception) {
-            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
+            if(e is UnknownHostException) castError(ViewModelExceptions.Network)
             Log.i(TAG,"error ${e.message}")
         }
     }
