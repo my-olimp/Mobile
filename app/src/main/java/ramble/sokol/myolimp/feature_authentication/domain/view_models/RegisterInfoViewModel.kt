@@ -8,12 +8,12 @@ import ramble.sokol.myolimp.feature_authentication.data.models.UserMainDataModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInfoEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
-import ramble.sokol.myolimp.utils.OlimpViewModel
+import ramble.sokol.myolimp.utils.BaseViewModel
 
 
 
 
-class RegisterInfoViewModel : OlimpViewModel<RegistrationInfoState>(RegistrationInfoState()) {
+class RegisterInfoViewModel : BaseViewModel<RegistrationInfoState>(RegistrationInfoState()) {
 
     companion object {
         private const val TAG : String = "RegistrationInfoViewModel"

@@ -1,19 +1,11 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
-import android.content.Context
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.popUpTo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestLoginModel
@@ -21,28 +13,13 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.LoginEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.LoginRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.LoginState
-import ramble.sokol.myolimp.feature_profile.database.UserDatabase
-import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
-class LoginViewModel : ViewModel(), KoinComponent {
-    companion object {
-        const val TAG = "ViewModelLogin"
-    }
+class LoginViewModel : BaseViewModel<LoginState>(LoginState()) {
 
     private val repository = LoginRepository()
-
-    private val context by inject<Context>()
-    private var database : UserDatabase = UserDatabase.invoke(context)
-    private var userRepository : LocalUserRepository = LocalUserRepository(database = database)
-
-    private val dataStore = CodeDataStore()
-
-    private val _state = MutableStateFlow(
-        LoginState()
-    )
-
-    val state = _state.asStateFlow()
 
     fun onEvent(
         event: LoginEvent
@@ -71,11 +48,7 @@ class LoginViewModel : ViewModel(), KoinComponent {
                 loginToAccount(
                     onSuccess = {
 
-                        _state.update { state->
-                            state.copy(
-                                isLoading = false
-                            )
-                        }
+                        updateLoader(false)
 
                         event.navigator.navigate(
                             HomeScreenDestination()
@@ -105,69 +78,50 @@ class LoginViewModel : ViewModel(), KoinComponent {
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-        _state.update {
-            it.copy(
-                isLoading = true
-            )
-        }
+        updateLoader(true)
 
         if(isDataValid()) {
-            viewModelScope.launch {
-                try {
-                    repository.login(
-                        RequestLoginModel(
-                            email = _state.value.email,
-                            password = _state.value.password,
-                        ),
-                        onResult = {
+            launchIO {
+                repository.login(
+                    RequestLoginModel(
+                        email = state.value.email,
+                        password = state.value.password,
+                    ),
+                    onResult = {
 
-                            // all correct
-                            if (it?.code != null) {
+                        // all correct
+                        if (it?.code != null) {
 
-                                // save token in data store
-                                saveData(
-                                    it.code,
-                                    it.user
-                                )
+                            // save token in data store
+                            saveData(
+                                it.code,
+                                it.user
+                            )
 
-                                // navigate to main screen
-                                onSuccess()
+                            // navigate to main screen
+                            onSuccess()
 
                             // invalid data
-                            } else {
+                        } else {
 
-                                Log.i(TAG, "Error getting code")
-
-                                onError()
-                            }
-                        },
-                        onError = {
-                            // can not get data
-
-                            Log.i(TAG, "Error sending request - $it")
+                            Log.i(TAG, "Error getting code")
 
                             onError()
                         }
-                    )
+                    },
+                    onError = {
+                        // can not get data
+                        castError(ViewModelExceptions.Network)
+                        Log.i(TAG, "Error sending request - $it")
 
-                } catch (ex: Exception) {
-                    // if user not found
-
-                    Log.i(TAG, "exception - ${ex.message}")
-
-                    _state.update {
-                        it.copy(
-                            isError = true
-                        )
                     }
-
-                }
+                )
             }
         }
     }
 
     private fun isDataValid(): Boolean {
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_state.value.email).matches()) {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(state.value.email).matches()) {
             _state.update {
                 it.copy(
                     isEmailError = true,
@@ -178,7 +132,7 @@ class LoginViewModel : ViewModel(), KoinComponent {
             return false
         }
 
-        if (_state.value.password.isEmpty()) {
+        if (state.value.password.isEmpty()) {
             _state.update {
                 it.copy(
                     isPasswordError = true,
@@ -195,7 +149,7 @@ class LoginViewModel : ViewModel(), KoinComponent {
     private fun checkAbilityLogging() {
         _state.update {
             it.copy(
-                isLogging = android.util.Patterns.EMAIL_ADDRESS.matcher(_state.value.email).matches() && _state.value.password.isNotEmpty()
+                isLogging = android.util.Patterns.EMAIL_ADDRESS.matcher(state.value.email).matches() && state.value.password.isNotEmpty()
             )
         }
     }
@@ -206,12 +160,12 @@ class LoginViewModel : ViewModel(), KoinComponent {
     ) {
         runBlocking {
             try {
-                dataStore.setToken(
+                datastore.setToken(
                     key = CodeDataStore.ACCESS_TOKEN,
                     value = token
                 )
     
-                Log.i(TAG, "code - ${dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
+                Log.i(TAG, "code - ${datastore.getToken(CodeDataStore.ACCESS_TOKEN).first()}")
 
                 userRepository.deleteUsers()
 
@@ -221,11 +175,7 @@ class LoginViewModel : ViewModel(), KoinComponent {
 
             } catch (ex : Exception) {
 
-                _state.update {
-                    it.copy(
-                        isError = true
-                    )
-                }
+                castError()
 
                 Log.i(TAG, "exception - ${ex.message}")
             }

@@ -11,9 +11,9 @@ import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
-import ramble.sokol.myolimp.utils.OlimpViewModel
+import ramble.sokol.myolimp.utils.BaseViewModel
 
-class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
+class RegisterEducationViewModel : BaseViewModel<RegistrationEducationState>(
     RegistrationEducationState()
 ) {
 

@@ -10,9 +10,9 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubject
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterSubjectsRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterSubjectsState
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.utils.OlimpViewModel
+import ramble.sokol.myolimp.utils.BaseViewModel
 
-class RegisterSubjectsViewModel : OlimpViewModel<RegisterSubjectsState>(RegisterSubjectsState()) {
+class RegisterSubjectsViewModel : BaseViewModel<RegisterSubjectsState>(RegisterSubjectsState()) {
 
     companion object {
         const val TAG = "ViewModelRegisterSubjects"

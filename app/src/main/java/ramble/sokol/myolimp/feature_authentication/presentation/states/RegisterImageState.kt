@@ -9,10 +9,18 @@ data class RegisterImageState(
 
     val isLoading: Boolean = false,
     val isError: Boolean = false,
+    val isNetworkError: Boolean = false,
     val isWorkScreen: Boolean = false,
 ) : State<RegisterImageState> {
+
+    override val tag: String
+        get() = "RegisterImageState"
     override fun onError(): RegisterImageState {
         return this.copy(isError = true)
+    }
+
+    override fun onNetworkError(): RegisterImageState {
+        return this.copy(isNetworkError = true)
     }
 
     override fun onLoaderUpdate(value: Boolean): RegisterImageState {

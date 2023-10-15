@@ -67,7 +67,7 @@ fun RegisterImageScreen(
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
         isLoading = state.isLoading,
-        isError = state.isError,
+        isError = state.isNetworkError,
         onReload = {
             navigator.navigate(RegisterImageScreenDestination(isWorkScreen = isWorkScreen))
         },
@@ -76,7 +76,7 @@ fun RegisterImageScreen(
                 modifier = Modifier
                     .background(Transparent)
                     .fillMaxSize()
-                    .blur(if (state.isLoading || state.isError) 4.dp else 0.dp),
+                    .blur(if (state.isLoading || state.isNetworkError) 4.dp else 0.dp),
             verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(

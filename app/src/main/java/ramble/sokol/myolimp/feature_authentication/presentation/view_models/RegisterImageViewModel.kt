@@ -21,11 +21,11 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.Registrat
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterImageState
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
-import ramble.sokol.myolimp.utils.OlimpViewModel
+import ramble.sokol.myolimp.utils.BaseViewModel
 import java.io.File
 import java.io.FileOutputStream
 
-class RegisterImageViewModel : OlimpViewModel<RegisterImageState>(RegisterImageState()){
+class RegisterImageViewModel : BaseViewModel<RegisterImageState>(RegisterImageState()){
 
     companion object {
         private const val TAG: String = "ViewModelImage"

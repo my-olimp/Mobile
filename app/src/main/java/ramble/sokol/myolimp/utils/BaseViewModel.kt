@@ -17,19 +17,28 @@ import org.koin.core.component.inject
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
+import java.net.UnknownHostException
 
 
 @Suppress("PropertyName", "SpellCheckingInspection")
-open class OlimpViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComponent{
+open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComponent{
 
     protected val context by inject<Context>()
+
+    protected val TAG = standardState.tag
 
     private val userDatabase : UserDatabase get() =  UserDatabase.invoke(context)
     protected val userRepository : LocalUserRepository get() =  LocalUserRepository(database = userDatabase)
 
+    /**
+     * [UnknownHostException] является ошибкой, в основном когда нет интернета
+     *
+     **/
     private val handler = CoroutineExceptionHandler { _, exception ->
+        if(exception is ViewModelExceptions)castError(exception)
+        else castError()
         Log.i("CoroutineException","coroutine exception ${exception.message}")
-        castError()
     }
 
     protected val _state =  MutableStateFlow(standardState)
@@ -39,6 +48,13 @@ open class OlimpViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinCom
 
     protected fun castError() {
        _state.update { state.value.onError() }
+    }
+
+    protected fun castError(exception: ViewModelExceptions) {
+        when(exception) {
+            is ViewModelExceptions.Network -> _state.update { state.value.onNetworkError() }
+            is ViewModelExceptions.DataValid -> _state.update { state.value.onError() }
+        }
     }
 
     protected fun updateLoader(value: Boolean) {

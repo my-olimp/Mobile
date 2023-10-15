@@ -56,7 +56,7 @@ fun LoginScreen(
 
     OlimpTheme (
         navigationBarColor = SecondaryScreen,
-        isError = state.value.isError,
+        isError = state.value.isNetworkError,
         isLoading = state.value.isLoading,
         onReload = {
             navigator.navigate(LoginScreenDestination)
@@ -67,7 +67,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .background(Transparent)
                     .fillMaxSize()
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp),
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(

@@ -15,10 +15,17 @@ data class RegistrationInfoState(
     val bdateError: Boolean = false,
     val activityTypeError: Boolean = false,
 
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val isNetworkError: Boolean = false
 ) : State<RegistrationInfoState> {
+    override val tag: String
+        get() = "RegistrationInfoState"
     override fun onError(): RegistrationInfoState {
         return this.copy(isError = true)
+    }
+
+    override fun onNetworkError(): RegistrationInfoState {
+        return this.copy(isNetworkError = true)
     }
 
     override fun onLoaderUpdate(value: Boolean): RegistrationInfoState {
