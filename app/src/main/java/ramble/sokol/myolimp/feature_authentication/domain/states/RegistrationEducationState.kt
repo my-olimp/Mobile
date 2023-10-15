@@ -23,10 +23,18 @@ data class RegistrationEducationState(
     val cityList: List<City> = listOf(),
     val schoolList: List<School> = listOf(),
 
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val isNetworkError: Boolean = false
 ) : State<RegistrationEducationState> {
+
+    override val tag: String
+        get() = "RegistrationEducationState"
     override fun onError(): RegistrationEducationState {
         return this.copy(isError = true)
+    }
+
+    override fun onNetworkError(): RegistrationEducationState {
+        return this.copy(isNetworkError = true)
     }
 
     override fun onLoaderUpdate(value: Boolean): RegistrationEducationState {

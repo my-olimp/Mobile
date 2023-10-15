@@ -10,9 +10,10 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegisterSubject
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegisterSubjectsRepository
 import ramble.sokol.myolimp.feature_authentication.presentation.states.RegisterSubjectsState
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.utils.OlimpViewModel
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
-class RegisterSubjectsViewModel : OlimpViewModel<RegisterSubjectsState>(RegisterSubjectsState()) {
+class RegisterSubjectsViewModel : BaseViewModel<RegisterSubjectsState>(RegisterSubjectsState()) {
 
     companion object {
         const val TAG = "ViewModelRegisterSubjects"
@@ -98,7 +99,7 @@ class RegisterSubjectsViewModel : OlimpViewModel<RegisterSubjectsState>(Register
                 },
                 onError = {
                     Log.i(TAG, "error - $it")
-                    castError()
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }
@@ -120,7 +121,7 @@ class RegisterSubjectsViewModel : OlimpViewModel<RegisterSubjectsState>(Register
                 },
                 onError = {
                     Log.i(TAG, "error - $it")
-                    castError()
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }

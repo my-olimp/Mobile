@@ -1,22 +1,17 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
-import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_library.data.repository.LibraryRepositoryImpl
-import ramble.sokol.myolimp.feature_profile.database.UserDatabase
 import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileLoveRepository
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileLoveState
+import ramble.sokol.myolimp.utils.BaseViewModel
 
-class ProfileLoveViewModel(context: Context) : ViewModel() {
+class ProfileLoveViewModel : BaseViewModel<ProfileLoveState>(ProfileLoveState()){
 
     companion object {
         const val TAG = "ViewModelProfileLove"
@@ -25,11 +20,8 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
 
     private val repository = ProfileLoveRepository()
 
-    private val userDatabase: UserDatabase = UserDatabase(context)
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
 
-    private val _state = MutableStateFlow(ProfileLoveState())
-    val state = _state.asStateFlow()
 
     private val timer = object: CountDownTimer(2000, 1000) {
         override fun onTick(millisUntilFinished: Long) {}
@@ -40,6 +32,7 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
     }
 
     init {
+        updateLoader(true)
         viewModelScope.launch {
             extractArticles()
             val subjects = libraryRepository.getUserSubjects()
@@ -50,6 +43,7 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
                     isSubjectLoaded = true
                 )
             }
+            if(state.value.isArticlesLoaded)updateLoader(false)
         }
     }
 
@@ -99,29 +93,25 @@ class ProfileLoveViewModel(context: Context) : ViewModel() {
                 isArticlesLoaded = false
             )
         }
+        launchIO {
+            val response = repository.extractArticles(
+                page = 1,
+                love = LOVE,
+                query = state.value.queryText
+            ).body()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = repository.extractArticles(
-                    page = 1,
-                    love = LOVE,
-                    query = state.value.queryText
-                ).body()
+            Log.i(TAG, "extract response is: $response")
 
-                Log.i(TAG, "extract response is: $response")
-
-                if(response != null) {
-                    _state.update {
-                        it.copy(
-                            listArticles = response.toArticlesList(),
-                            isArticlesLoaded = true
-                        )
-                    }
+            if (response != null) {
+                _state.update {
+                    it.copy(
+                        listArticles = response.toArticlesList(),
+                        isArticlesLoaded = true
+                    )
                 }
-
-            } catch (e: Exception) {
-                Log.i(TAG,"extract throwed ${e.message}")
+                if(state.value.isSubjectLoaded)updateLoader(false)
             }
+
         }
     }
 

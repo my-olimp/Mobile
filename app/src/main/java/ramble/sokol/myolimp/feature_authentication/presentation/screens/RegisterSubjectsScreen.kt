@@ -56,7 +56,7 @@ fun RegisterSubjectsScreen (
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
         isLoading = state.value.isLoading,
-        isError = state.value.isError,
+        isError = state.value.isNetworkError,
         onReload = {
             navigator.navigate(RegisterSubjectsScreenDestination(isWorkScreen))
         },
@@ -66,7 +66,7 @@ fun RegisterSubjectsScreen (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 24.dp, horizontal = 16.dp)
-                    .blur(if (state.value.isLoading || state.value.isError) 4.dp else 0.dp),
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {

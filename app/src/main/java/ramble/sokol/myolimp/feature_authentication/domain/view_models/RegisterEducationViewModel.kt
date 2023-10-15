@@ -4,6 +4,7 @@ import android.util.Log
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.update
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
+import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
@@ -11,15 +12,12 @@ import ramble.sokol.myolimp.feature_authentication.data.models.asListSchool
 import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationEducationEvent
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationEducationState
-import ramble.sokol.myolimp.utils.OlimpViewModel
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
-class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
+class RegisterEducationViewModel : BaseViewModel<RegistrationEducationState>(
     RegistrationEducationState()
 ) {
-
-    companion object {
-        private const val TAG : String = "RegistrationEducationViewModel"
-    }
 
     private val repository = RegistrationRepository()
 
@@ -49,18 +47,20 @@ class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
                 }
             }
             is RegistrationEducationEvent.OnRegionChanged -> {
-                _state.update {
-                    it.copy(
-                        region = event.region,
-                        regionError = false,
-                        isLoading = true,
-                        cityList = emptyList(),
-                        schoolList = emptyList()
-                    )
-                }
-                launchIO {
-                    requestCities(event.region.number)
-                    requestSchools(event.region.number)
+                if(event.region != Region()) {
+                    _state.update {
+                        it.copy(
+                            region = event.region,
+                            regionError = false,
+                            isLoading = true,
+                            cityList = emptyList(),
+                            schoolList = emptyList()
+                        )
+                    }
+                    launchIO {
+                        requestCities(event.region.number)
+                        requestSchools(event.region.number)
+                    }
                 }
             }
             is RegistrationEducationEvent.OnSchoolChanged -> {
@@ -105,7 +105,7 @@ class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
                     },
                     onError = {
                         Log.i(TAG, "patch request exception: ${it.message}")
-                        castError()
+                        castError(ViewModelExceptions.Network)
                     }
                 )
             }
@@ -150,7 +150,7 @@ class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
                 },
                 onError = {
                     Log.i(TAG, "throwed ${it.message}")
-                    castError()
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }
@@ -174,7 +174,7 @@ class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
                 },
                 onError = {
                     Log.i(TAG,"cities request cause $it")
-                    castError()
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }
@@ -197,7 +197,7 @@ class RegisterEducationViewModel : OlimpViewModel<RegistrationEducationState>(
                 },
                 onError = {
                     Log.i(TAG, "school response is exception: ${it.message}")
-                    castError()
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }

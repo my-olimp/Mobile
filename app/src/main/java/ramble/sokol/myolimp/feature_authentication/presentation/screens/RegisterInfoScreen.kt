@@ -64,14 +64,14 @@ fun RegisterInfoScreen(
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
         isLoading = state.value.isLoading,
-        isError = state.value.isError,
+        isError = state.value.isNetworkError,
         onReload = { navigator.navigate(RegisterInfoScreenDestination) },
         content = {
             Column(
                 modifier = Modifier
                     .background(Transparent)
                     .fillMaxSize()
-                    .blur(if (state.value.isLoading || state.value.isError) 4.dp else 0.dp)
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp)
                 ,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
