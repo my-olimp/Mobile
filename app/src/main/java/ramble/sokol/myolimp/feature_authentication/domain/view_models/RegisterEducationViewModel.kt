@@ -19,10 +19,6 @@ class RegisterEducationViewModel : BaseViewModel<RegistrationEducationState>(
     RegistrationEducationState()
 ) {
 
-    companion object {
-        private const val TAG : String = "RegistrationEducationViewModel"
-    }
-
     private val repository = RegistrationRepository()
 
     init {
