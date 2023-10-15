@@ -88,7 +88,8 @@ fun ProfileScreen(
 
     BottomBarTheme(
         navController = navController,
-        isLoading = !state.value.isLoaded,
+        isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
         onReload = {
             navController.navigate(ProfileScreenDestination)
         }
@@ -97,7 +98,7 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(if (!state.value.isLoaded) 4.dp else 0.dp)
+                .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 52.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

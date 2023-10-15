@@ -9,15 +9,10 @@ import ramble.sokol.myolimp.feature_authentication.domain.events.RegistrationInf
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.RegistrationRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.RegistrationInfoState
 import ramble.sokol.myolimp.utils.BaseViewModel
-
-
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
 
 class RegisterInfoViewModel : BaseViewModel<RegistrationInfoState>(RegistrationInfoState()) {
-
-    companion object {
-        private const val TAG : String = "RegistrationInfoViewModel"
-    }
 
     private val repository = RegistrationRepository()
 
@@ -106,7 +101,7 @@ class RegisterInfoViewModel : BaseViewModel<RegistrationInfoState>(RegistrationI
                 },
                 onError = {
                     Log.i(TAG, "exception: ${it.message}")
-                    castError()
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }

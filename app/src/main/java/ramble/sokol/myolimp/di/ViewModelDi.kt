@@ -24,7 +24,7 @@ val viewModelsModule = module {
 
     /* ProfileScreen */
     viewModel {
-        ProfileViewModel(get())
+        ProfileViewModel()
     }
 
     /* Calendar */
@@ -83,7 +83,7 @@ val viewModelsModule = module {
 
     /*Profile love*/
     viewModel {
-        ProfileLoveViewModel(get())
+        ProfileLoveViewModel()
     }
 
     /*Chapter vm*/

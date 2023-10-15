@@ -118,7 +118,8 @@ fun ProfileDataScreen(
 
     BottomBarTheme(
         navController = navController,
-        isLoading = !state.value.isLoaded,
+        isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
         onReload = {
             navController.navigate(ProfileDataScreenDestination)
         }
@@ -126,7 +127,7 @@ fun ProfileDataScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(if (!state.value.isLoaded) 4.dp else 0.dp),
+                .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp),
             contentAlignment = Center
         ) {
 

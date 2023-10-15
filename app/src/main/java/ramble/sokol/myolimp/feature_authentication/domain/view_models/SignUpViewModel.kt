@@ -1,54 +1,29 @@
 package ramble.sokol.myolimp.feature_authentication.domain.view_models
 
-import android.content.Context
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.popUpTo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSendingEmailModel
 import ramble.sokol.myolimp.feature_authentication.data.models.RequestSignUpModel
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
-import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.ACCESS_TOKEN
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.SignUpRepository
 import ramble.sokol.myolimp.feature_authentication.domain.states.SignUpState
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyLetters
 import ramble.sokol.myolimp.feature_authentication.domain.utils.onlyNumbers
-import ramble.sokol.myolimp.feature_profile.database.UserDatabase
-import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
-class SignUpViewModel : ViewModel(), KoinComponent {
-    companion object {
-        private const val TAG = "ViewModelSignUp"
-    }
-
-    private val context by inject<Context>()
+class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
 
     private val repository = SignUpRepository()
-
-    private var database : UserDatabase = UserDatabase.invoke(context)
-    private var userRepository : LocalUserRepository = LocalUserRepository(database = database)
-
-
-    private val _state = MutableStateFlow(
-        SignUpState()
-    )
-    val state = _state.asStateFlow()
-
-    private val dataStore = CodeDataStore()
 
     fun onEvent(
         event: SignUpEvent
@@ -60,7 +35,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
                 sendVerificationCode(
                   onError = {
-                      showSnackbar(context.getString(R.string.register_auth_error_message))
+                      castError(ViewModelExceptions.Network)
                   },
                   onSent = { code->
                       showSnackbar(context.getString(R.string.success_send_code_message))
@@ -104,7 +79,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                               }
                           },
                           onError = {
-                              Log.i(TAG, "error - $it")
+                              castError(ViewModelExceptions.Network)
                           }
                       )
                     }
@@ -291,7 +266,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
 
     private fun checkPasswordCorrectness() : Boolean {
 
-        val password = _state.value.password
+        val password = state.value.password
 
         if (password.contains(" ")) {
             _state.update {
@@ -317,10 +292,11 @@ class SignUpViewModel : ViewModel(), KoinComponent {
         onSent: (String) -> Unit,
         onError: () -> Unit
     ) {
-        viewModelScope.launch {
+        updateLoader(true)
+        launchIO {
             repository.sendVerificationCode(
                 RequestSendingEmailModel(
-                    email = _state.value.email
+                    email = state.value.email
                 ),
                 onResult = {
                     if (it != null) {
@@ -332,6 +308,7 @@ class SignUpViewModel : ViewModel(), KoinComponent {
                             )
                         }
                     }
+                    updateLoader(false)
                 },
                 onError = {
                     onError()
@@ -346,12 +323,12 @@ class SignUpViewModel : ViewModel(), KoinComponent {
         user: LocalUserModel
     ) {
         runBlocking {
-            dataStore.setToken(
+            datastore.setToken(
                 key = ACCESS_TOKEN,
                 value = token
             )
 
-            Log.i(TAG, "code - ${dataStore.getToken(ACCESS_TOKEN).first()}")
+            Log.i(TAG, "code - ${datastore.getToken(ACCESS_TOKEN).first()}")
 
             userRepository.deleteUsers()
 

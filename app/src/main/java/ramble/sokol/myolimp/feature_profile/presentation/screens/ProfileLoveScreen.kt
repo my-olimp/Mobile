@@ -70,7 +70,8 @@ fun ProfileLoveScreen(
         navigationBarColor = SecondaryScreen,
         statusBarColor = BackgroundMain,
         navController = navController,
-        isLoading = !state.value.isSubjectLoaded || !state.value.isArticlesLoaded,
+        isLoading = state.value.isLoading,
+        isError = state.value.isError,
         onReload = {
             navController.navigate(ProfileLoveScreenDestination)
         }
@@ -92,7 +93,7 @@ fun ProfileLoveScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(if (!state.value.isSubjectLoaded || !state.value.isArticlesLoaded) 4.dp else 0.dp)
+                    .blur(if (state.value.isLoading || state.value.isError) 4.dp else 0.dp)
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally

@@ -12,10 +12,6 @@ sealed class ProfileEvent {
     data class OnChangeType(val newType: String) : ProfileEvent()
     /**/
 
-    data object OnCancelEducationLoader: ProfileEvent()
-
-    data object OnStartEducatutionLoader: ProfileEvent()
-
     data object OnEducationInfoSave: ProfileEvent()
     data object OnPersonalInfoSave: ProfileEvent()
     data object OnContactsInfoSave : ProfileEvent()

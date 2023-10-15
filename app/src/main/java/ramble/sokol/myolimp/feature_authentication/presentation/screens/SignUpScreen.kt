@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.LoginScreenDestination
+import ramble.sokol.myolimp.destinations.SignUpScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.SignUpEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SignUpViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.CustomSnackbar
@@ -71,7 +73,9 @@ fun SignUpScreen(
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
-        onReload = {},
+        isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
+        onReload = { navigator.navigate(SignUpScreenDestination) },
         content = {
             if (state.value.isShowingSnackbar) {
                 LaunchedEffect(state.value.isShowingSnackbar) {
@@ -87,7 +91,8 @@ fun SignUpScreen(
             Column (
                 modifier = Modifier
                     .background(Transparent)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ){
                 Column(

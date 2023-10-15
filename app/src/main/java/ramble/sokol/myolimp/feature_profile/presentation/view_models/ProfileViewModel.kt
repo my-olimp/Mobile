@@ -1,12 +1,10 @@
 package ramble.sokol.myolimp.feature_profile.presentation.view_models
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +19,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.destinations.BeginAuthenticationScreenDestination
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
@@ -35,8 +31,6 @@ import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataS
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore.Companion.COOKIES
 import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
 import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
-import ramble.sokol.myolimp.feature_profile.database.UserDatabase
-import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
 import ramble.sokol.myolimp.feature_profile.domain.states.ImgState
 import ramble.sokol.myolimp.feature_profile.domain.states.ProfileContactsState
@@ -46,32 +40,19 @@ import ramble.sokol.myolimp.feature_profile.domain.states.ProfileState
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetNavigation
 import ramble.sokol.myolimp.feature_profile.navigation_sheets.SheetRouter
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 import java.io.File
 import java.io.FileOutputStream
+import java.net.UnknownHostException
 
-class ProfileViewModel (
-    context: Context
-) : ViewModel(), KoinComponent {
-
-    companion object {
-        private const val TAG: String = "ViewModelProfile"
-    }
-
-    private val context by inject<Context>()
+class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
 
     private val dataStore = CodeDataStore()
 
     private val repository = ProfileRepository()
 
-    private val userDatabase : UserDatabase = UserDatabase.invoke(context)
-    private var userRepository : LocalUserRepository = LocalUserRepository(database = userDatabase)
-
     private val _user = userRepository.getUser()
-
-    /*General state*/
-    private val _state = MutableStateFlow(ProfileState())
-    val state = _state.asStateFlow()
-    /**/
 
     /*Image state*/
     private val _imgState = MutableStateFlow(ImgState())
@@ -96,7 +77,6 @@ class ProfileViewModel (
     init {
         viewModelScope.launch {
             Log.i(TAG, "user = ${_user.first()}")
-
             _state.update {
                 it.copy(
                     id = _user.first().id,
@@ -114,7 +94,7 @@ class ProfileViewModel (
                     email = _user.first().email,
                     grade = _user.first().grade,
                     hasThird = _user.first().hasThird,
-                    isLoaded = true
+                    isLoading = false
                 )
             }
             _educationState.update {
@@ -158,10 +138,6 @@ class ProfileViewModel (
                 }
             }
             /**/
-
-            is ProfileEvent.OnCancelEducationLoader -> _educationState.update { it.copy(isLoading = false) }
-
-            is ProfileEvent.OnStartEducatutionLoader -> _educationState.update { it.copy(isLoading = true) }
 
             is ProfileEvent.OnFirstNameChanged -> {
                 _personalState.update {
@@ -253,18 +229,20 @@ class ProfileViewModel (
 
 
             is ProfileEvent.OnRegionChanged -> {
-                _educationState.update {
-                    it.copy(
-                        region = event.region,
-                        regionError = false,
-                        isLoading = true,
-                        cityList = emptyList(),
-                        schoolList = emptyList()
-                    )
-                }
-                viewModelScope.launch {
-                    updateCitiesList()
-                    updateSchoolsList()
+                if (event.region != Region()) {
+                    _educationState.update {
+                        it.copy(
+                            region = event.region,
+                            regionError = false,
+                            isLoading = true,
+                            cityList = emptyList(),
+                            schoolList = emptyList()
+                        )
+                    }
+                    viewModelScope.launch {
+                        updateCitiesList()
+                        updateSchoolsList()
+                    }
                 }
             }
 
@@ -313,13 +291,8 @@ class ProfileViewModel (
             }
 
             is ProfileEvent.OnDeleteImg -> {
-                viewModelScope.launch {
-
-                    _state.update {
-                        it.copy(
-                            isLoaded = false
-                        )
-                    }
+                launchIO {
+                    updateLoader(true)
 
                     deleteImg(
                         onResult = {
@@ -327,11 +300,7 @@ class ProfileViewModel (
                         }
                     )
 
-                    _state.update {
-                        it.copy(
-                            isLoaded = true
-                        )
-                    }
+                    updateLoader(false)
 
                     _imgState.update {
                         it.copy(
@@ -349,7 +318,7 @@ class ProfileViewModel (
                             phone = contactsState.value.phone
                         )
                     }
-                    viewModelScope.launch(Dispatchers.IO) {
+                    launchIO {
                         updateContacts()
                     }
                     SheetRouter.navigateTo(SheetNavigation.Empty())
@@ -380,11 +349,7 @@ class ProfileViewModel (
             is ProfileEvent.OnImgSave -> {
                 viewModelScope.launch {
 
-                    _state.update {
-                        it.copy(
-                            isLoaded = false
-                        )
-                    }
+                    updateLoader(true)
 
                     uploadImg(
                         onResult = {
@@ -397,12 +362,7 @@ class ProfileViewModel (
                             }
                         }
                     )
-
-                    _state.update {
-                        it.copy(
-                            isLoaded = true
-                        )
-                    }
+                    updateLoader(false)
                 }
             }
 
@@ -416,59 +376,36 @@ class ProfileViewModel (
 
             is ProfileEvent.OnLogOut -> {
 
-                _state.update {
-                    it.copy(
-                        isLoaded = false
-                    )
-                }
+                updateLoader(true)
 
-                viewModelScope.launch {
-                    try {
+                launchIO {
+                    userRepository.deleteUsers()
 
-                        userRepository.deleteUsers()
+                    Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
 
-                        Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
+                    repository.logOut(
+                        cookie = dataStore.getToken(COOKIES).firstOrNull()
+                            ?: throw Exception("no refresh"),
+                        onResult = {
+                            runBlocking {
+                                dataStore.deleteToken()
 
-                        repository.logOut(
-                            cookie = dataStore.getToken(COOKIES).firstOrNull() ?: throw Exception("no refresh"),
-                            onResult = {
-                                runBlocking {
-                                    dataStore.deleteToken()
+                                updateLoader(false)
 
-                                    _state.update {
-                                        it.copy(
-                                            isLoaded = true
-                                        )
-                                    }
+                                event.navigator.popBackStack()
+                                event.navigator.navigate(BeginAuthenticationScreenDestination)
 
-                                    event.navigator.popBackStack()
-                                    event.navigator.navigate(BeginAuthenticationScreenDestination)
+                                Log.i(TAG, "completed")
 
-                                    Log.i(TAG, "completed")
-
-                                }
-                            },
-                            onError = {
-                                _state.update { state->
-                                    state.copy(
-                                        isLoaded = true
-                                    )
-                                }
-
-                                Log.i(TAG, "error occurred - $it")
                             }
-                        )
-
-                    } catch (ex: Exception) {
-
-                        _state.update {
-                            it.copy(
-                                isLoaded = true
-                            )
+                        },
+                        onError = {
+                            updateLoader(false)
+                            castError()
+                            Log.i(TAG, "error occurred - $it")
                         }
+                    )
 
-                        Log.i(TAG, "exception - ${ex.message}")
-                    }
                 }
             }
 
@@ -561,6 +498,7 @@ class ProfileViewModel (
                 updateDatabase(response.body() as ResponseUserModel)
             }
         } catch (e: Exception) {
+            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
             Log.i(TAG,"error ${e.message}")
         }
     }
@@ -587,6 +525,7 @@ class ProfileViewModel (
             }
 
         } catch (e: Exception) {
+            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
             Log.i(TAG,"error - ${e.message}")
         }
     }
@@ -610,6 +549,7 @@ class ProfileViewModel (
                 updateDatabase(response.body() as ResponseUserModel)
             }
         } catch(e: Exception) {
+            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
             Log.i(TAG,"error - ${e.message}")
         }
     }
@@ -678,93 +618,83 @@ class ProfileViewModel (
             Log.i(TAG, "response - success")
 
         } catch (ex: Exception) {
+            if(ex is UnknownHostException)castError(ViewModelExceptions.Network)
             Log.i(TAG, "error - $ex")
         }
     }
 
     private fun updateRegionsList() {
-        onEvent(ProfileEvent.OnStartEducatutionLoader)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.getRegions(
-                    auth = dataStore.getToken(ACCESS_TOKEN).first()
-                        ?: throw Exception("no access token"),
-                    onResult = { list ->
-                        Log.i(TAG, "response region list: $list")
-                        if (list != null) {
-                            _educationState.update {
-                                it.copy(
-                                    regionList = list.asListRegion(),
-                                    isLoading = false
-                                )
-                            }
+        updateEducationLoading(true)
+        launchIO {
+            repository.getRegions(
+                auth = dataStore.getToken(ACCESS_TOKEN).first()
+                    ?: throw ViewModelExceptions.Network,
+                onResult = { list ->
+                    Log.i(TAG, "response region list: $list")
+                    if (list != null) {
+                        _educationState.update {
+                            it.copy(
+                                regionList = list.asListRegion(),
+                                cityList = emptyList(),
+                                schoolList = emptyList(),
+                                isLoading = false
+                            )
                         }
-                    },
-                    onError = {
-                        Log.i(TAG, "region exception $it")
-                        onEvent(ProfileEvent.OnCancelEducationLoader)
                     }
-                )
-            } catch (e: Exception) {
-                Log.i(TAG, "region request throw ${e.message}")
-                onEvent(ProfileEvent.OnCancelEducationLoader)
-            }
+                },
+                onError = {
+                    Log.i(TAG, "region exception $it")
+                    castError(ViewModelExceptions.Network)
+                }
+            )
         }
     }
 
     private fun updateCitiesList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.getCities(
-                    auth = dataStore.getToken(ACCESS_TOKEN).first()
-                        ?: throw Exception("no access token"),
-                    regionId = educationState.value.region.number,
-                    onResult = { list ->
-                        Log.i(TAG, "response city list: $list")
-                        if (list != null) {
-                            _educationState.update {
-                                it.copy(cityList = list.asListCity())
-                            }
-                            if(educationState.value.schoolList.isNotEmpty()) onEvent(ProfileEvent.OnCancelEducationLoader)
+        updateEducationLoading(true)
+        launchIO {
+            repository.getCities(
+                auth = dataStore.getToken(ACCESS_TOKEN).first()
+                    ?: throw ViewModelExceptions.Network,
+                regionId = educationState.value.region.number,
+                onResult = { list ->
+                    Log.i(TAG, "response city list: $list")
+                    if (list != null) {
+                        _educationState.update {
+                            it.copy(cityList = list.asListCity())
                         }
-                    },
-                    onError = {
-                        Log.i(TAG, "city exception $it")
-                        onEvent(ProfileEvent.OnCancelEducationLoader)
+                        if (educationState.value.schoolList.isNotEmpty()) updateEducationLoading(false)
                     }
-                )
-            } catch (e: Exception) {
-                Log.i(TAG, "city request throw ${e.message}")
-                onEvent(ProfileEvent.OnCancelEducationLoader)
-            }
+                },
+                onError = {
+                    Log.i(TAG, "city exception $it")
+                    castError(ViewModelExceptions.Network)
+                }
+            )
         }
     }
 
     private fun updateSchoolsList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                repository.getSchools(
-                    auth = dataStore.getToken(ACCESS_TOKEN).first()
-                        ?: throw Exception("no access token"),
-                    regionId = educationState.value.region.number,
-                    onResult = { list ->
-                        Log.i(TAG, "response school list: $list")
-                        if (list != null) {
-                            _educationState.update {
-                                it.copy(schoolList = list.asListSchool())
-                            }
-                            if(educationState.value.cityList.isNotEmpty()) onEvent(ProfileEvent.OnCancelEducationLoader)
+        updateEducationLoading(true)
+        launchIO {
+            repository.getSchools(
+                auth = dataStore.getToken(ACCESS_TOKEN).first()
+                    ?: throw ViewModelExceptions.Network,
+                regionId = educationState.value.region.number,
+                onResult = { list ->
+                    Log.i(TAG, "response school list: $list")
+                    if (list != null) {
+                        _educationState.update {
+                            it.copy(schoolList = list.asListSchool())
                         }
-                    },
-                    onError = {
-                        Log.i(TAG, "school exception $it")
-                        onEvent(ProfileEvent.OnCancelEducationLoader)
+                        if (educationState.value.cityList.isNotEmpty()) updateEducationLoading(false)
                     }
-                )
-            } catch (e: Exception) {
-                Log.i(TAG, "school request throw ${e.message}")
-                onEvent(ProfileEvent.OnCancelEducationLoader)
-            }
+                },
+                onError = {
+                    Log.i(TAG, "school exception $it")
+                    castError(ViewModelExceptions.Network)
+                }
+            )
         }
     }
 
@@ -833,7 +763,7 @@ class ProfileViewModel (
     }
 
     private fun updateMenus() {
-        viewModelScope.launch(Dispatchers.IO) {
+        launchIO {
 
             _educationState.update {
                 it.copy(
@@ -850,5 +780,9 @@ class ProfileViewModel (
                 updateSchoolsList()
             }
         }
+    }
+
+    private fun updateEducationLoading(boolean: Boolean) {
+        _educationState.update { it.copy(isLoading = boolean) }
     }
 }

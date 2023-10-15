@@ -28,7 +28,7 @@ open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComp
 
     protected val TAG = standardState.tag
 
-    private val userDatabase : UserDatabase get() =  UserDatabase.invoke(context)
+    protected val userDatabase : UserDatabase get() =  UserDatabase.invoke(context)
     protected val userRepository : LocalUserRepository get() =  LocalUserRepository(database = userDatabase)
 
     /**
@@ -37,7 +37,10 @@ open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComp
      **/
     private val handler = CoroutineExceptionHandler { _, exception ->
         if(exception is ViewModelExceptions)castError(exception)
-        else castError()
+        else when(exception) {
+            is UnknownHostException -> castError(ViewModelExceptions.Network)
+            else -> castError()
+        }
         Log.i("CoroutineException","coroutine exception ${exception.message}")
     }
 
