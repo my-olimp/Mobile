@@ -470,8 +470,6 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
         }
 
         return isCorrect
-
-
     }
 
 
@@ -500,14 +498,6 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
                     Log.i(TAG, "update personal info error ${it.message}")
                 }
             )
-            Log.i(TAG,"on update personal info response - ${response.body()}")
-
-            if(response.body() != null) {
-                updateDatabase(response.body() as ResponseUserModel)
-            }
-        } catch (e: Exception) {
-            if(e is UnknownHostException) castError(ViewModelExceptions.Network)
-            Log.i(TAG,"error ${e.message}")
         }
     }
 
