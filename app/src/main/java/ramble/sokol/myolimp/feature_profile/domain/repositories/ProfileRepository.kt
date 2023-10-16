@@ -9,6 +9,7 @@ import ramble.sokol.myolimp.feature_authentication.data.models.ResponseSchoolMod
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileApi
 import ramble.sokol.myolimp.feature_profile.data.api.ProfileRetrofitInstance
 import ramble.sokol.myolimp.feature_profile.data.models.RequestUserModel
+import ramble.sokol.myolimp.feature_profile.data.models.ResponseUserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,11 +20,27 @@ class ProfileRepository {
     private val instance = RetrofitBuilder().instance(ProfileApi::class.java)
     private val profileInstance = ProfileRetrofitInstance().instance(ProfileApi::class.java)
 
-    suspend fun updateUser(
-        user: RequestUserModel
-    ) = instance.updateUserData(
-            user = user
+    fun updateUser(
+        user: RequestUserModel,
+        onResult: (ResponseUserModel?) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        instance.updateUserData(user).enqueue(
+            object : Callback<ResponseUserModel> {
+                override fun onResponse(
+                    call: Call<ResponseUserModel>,
+                    response: Response<ResponseUserModel>
+                ) {
+                    onResult(response.body())
+                }
+
+                override fun onFailure(call: Call<ResponseUserModel>, t: Throwable) {
+                    onError(t)
+                }
+
+            }
         )
+    }
 
     suspend fun uploadImg(
         imageBody: MultipartBody.Part,

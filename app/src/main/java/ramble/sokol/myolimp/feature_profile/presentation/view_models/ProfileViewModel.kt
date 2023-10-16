@@ -385,9 +385,9 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
 
                     repository.logOut(
                         cookie = dataStore.getToken(COOKIES).firstOrNull()
-                            ?: throw Exception("no refresh"),
+                            ?: throw ViewModelExceptions.Network,
                         onResult = {
-                            runBlocking {
+                            runBlocking(Dispatchers.Main) {
                                 dataStore.deleteToken()
 
                                 updateLoader(false)
@@ -475,9 +475,8 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
     }
 
 
-    private suspend fun updatePersonalInfo() {
-        try {
-
+    private fun updatePersonalInfo() {
+        launchIO {
             val requestModel = RequestUserModel(
                 firstName = state.value.firstName,
                 secondName = state.value.secondName,
@@ -486,75 +485,77 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
                 snils = state.value.snils,
                 dateOfBirth = state.value.dateOfBirth
             )
+            Log.i(TAG, "on update personal info request - $requestModel")
 
-            Log.i(TAG,"on update personal info request - $requestModel")
-
-            val response = repository.updateUser(
-                user = requestModel
+            repository.updateUser(
+                user = requestModel,
+                onResult = { response ->
+                    Log.i(TAG, "personal info response: $response")
+                    if (response != null) {
+                        updateDatabase(response)
+                    }
+                },
+                onError = {
+                    castError(ViewModelExceptions.Network)
+                    Log.i(TAG, "update personal info error ${it.message}")
+                }
             )
-            Log.i(TAG,"on update personal info response - ${response.body()}")
-
-            if(response.body() != null) {
-                updateDatabase(response.body() as ResponseUserModel)
-            }
-        } catch (e: Exception) {
-            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
-            Log.i(TAG,"error ${e.message}")
         }
     }
 
-    private suspend fun updateEducation() {
-        try {
-            val requestModel = RequestUserModel (
+    private fun updateEducation() {
+        launchIO {
+            val requestModel = RequestUserModel(
                 regionId = state.value.region?.number,
                 schoolId = state.value.school?.id,
                 cityId = state.value.city?.id,
                 grade = state.value.grade
             )
 
-            Log.i(TAG,"on update education info request - $requestModel")
+            Log.i(TAG, "on update education info request - $requestModel")
 
-            val response = repository.updateUser(
-                user = requestModel
+            repository.updateUser(
+                user = requestModel,
+                onResult = { response ->
+                    Log.i(TAG, "personal info response: $response")
+                    if (response != null) {
+                        updateDatabase(response)
+                    }
+                },
+                onError = {
+                    castError(ViewModelExceptions.Network)
+                    Log.i(TAG, "update personal info error ${it.message}")
+                }
             )
-
-            Log.i(TAG,"on update education info response - ${response.body()}")
-
-            if(response.body() != null) {
-                updateDatabase(response.body() as ResponseUserModel)
-            }
-
-        } catch (e: Exception) {
-            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
-            Log.i(TAG,"error - ${e.message}")
         }
     }
 
-    private suspend fun updateContacts() {
-        try {
-            val requestModel = RequestUserModel (
+    private fun updateContacts() {
+        launchIO {
+            val requestModel = RequestUserModel(
                 email = state.value.email,
                 phone = state.value.phone
             )
 
-            Log.i(TAG,"on update contacts info request - $requestModel")
+            Log.i(TAG, "on update contacts info request - $requestModel")
 
-            val response = repository.updateUser(
-                user = requestModel
+            repository.updateUser(
+                user = requestModel,
+                onResult = { response ->
+                    Log.i(TAG, "personal info response: $response")
+                    if (response != null) {
+                        updateDatabase(response)
+                    }
+                },
+                onError = {
+                    castError(ViewModelExceptions.Network)
+                    Log.i(TAG, "update personal info error ${it.message}")
+                }
             )
-
-            Log.i(TAG,"on update contacts info response - ${response.body()}")
-
-            if(response.body() != null) {
-                updateDatabase(response.body() as ResponseUserModel)
-            }
-        } catch(e: Exception) {
-            if(e is UnknownHostException)castError(ViewModelExceptions.Network)
-            Log.i(TAG,"error - ${e.message}")
         }
     }
 
-    private suspend fun updateDatabase(response: ResponseUserModel) {
+    private fun updateDatabase(response: ResponseUserModel) {
         with(response) {
             _state.update { state ->
                 state.copy(
@@ -575,9 +576,11 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
                 )
             }
         }
-        userRepository.updateUser(
-            user = response.toLocalUserModel()
-        )
+        launchIO {
+            userRepository.updateUser(
+                user = response.toLocalUserModel()
+            )
+        }
     }
 
     private suspend fun uploadImg(
@@ -775,7 +778,7 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
             }
 
             updateRegionsList()
-            if (state.value.region?.name != "") {
+            if (state.value.region != Region()) {
                 updateCitiesList()
                 updateSchoolsList()
             }

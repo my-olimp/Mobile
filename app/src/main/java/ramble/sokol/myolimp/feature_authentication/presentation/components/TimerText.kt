@@ -5,11 +5,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -25,37 +20,27 @@ import kotlin.time.Duration.Companion.seconds
 fun MinuteTimerText(
     textIdDisabled: Int = R.string.resend_code_again_disabled,
     textIdEnabled: Int = R.string.resend_code_again,
-    timerValue: Int = 60,
-    needToUpdate: Boolean = false,
+    remainTime: Int = 0,
+    onTick: (Int) -> Unit,
     onClick: () -> Unit
 ) {
 
-    var update by remember { mutableStateOf(needToUpdate) }
-    var remainingTicks by remember { mutableIntStateOf(timerValue) }
-    var isEnabled by remember { mutableStateOf(false) }
-
-    if(needToUpdate != update) {
-        update = !update
-        remainingTicks = timerValue
-    }
-
-    LaunchedEffect(remainingTicks){
-        while(remainingTicks > 0) {
+    LaunchedEffect(remainTime) {
+        while(remainTime > 0) {
             delay(duration = 1.seconds)
-            remainingTicks--
+            onTick.invoke(remainTime.minus(1))
         }
-        if(remainingTicks == 0) isEnabled = true
     }
 
     Text(
         text = timerString(
-            remainTicks = remainingTicks,
+            remainTicks = remainTime,
             idDisabled = textIdDisabled,
             idEnabled = textIdEnabled
         ),
         textAlign = TextAlign.Center,
         style = regularType(color = BlackProfile),
-        modifier = if(remainingTicks == 0) {
+        modifier = if(remainTime == 0) {
             Modifier
                 .clip(RoundedCornerShape(4.dp))
                 .clickable { onClick() } }
