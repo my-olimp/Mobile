@@ -52,8 +52,8 @@ fun OlimpTheme(
     isSplashScreen: Boolean = false,
     isLoading: Boolean = false,
     isError: Boolean = false,
+    onReload: () -> Unit,
     content: @Composable () -> Unit,
-    onReload: () -> Unit
 ) {
 
     val systemUiController = rememberSystemUiController()

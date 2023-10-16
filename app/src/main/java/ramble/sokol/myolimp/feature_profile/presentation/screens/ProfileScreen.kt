@@ -42,6 +42,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.EditorScreenDestination
 import ramble.sokol.myolimp.destinations.NewsScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
@@ -77,7 +78,7 @@ fun ProfileScreen(
             .build()
     )
 
-    val version = "v.0.6.9"
+    val version = "v.0.6.10"
 
     LaunchedEffect(key1 = imgState.value.isImgChanged) {
         painter.onForgotten()
@@ -262,6 +263,14 @@ fun ProfileScreen(
                     isShowBack = false
                 ) {
                     viewModel.onEvent(ProfileEvent.OnLogOut(navigator = navController))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FilledBtn(
+                    text = "Open Editor [BETA]"
+                ) {
+                    navController.navigate(EditorScreenDestination)
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))

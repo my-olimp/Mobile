@@ -181,5 +181,4 @@ class LoginViewModel : BaseViewModel<LoginState>(LoginState()) {
             }
         }
     }
-
 }
