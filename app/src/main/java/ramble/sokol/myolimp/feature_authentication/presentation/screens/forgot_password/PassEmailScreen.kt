@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -23,6 +24,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.PassEmailScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.SendCodeEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SendCodeViewModel
 import ramble.sokol.myolimp.feature_profile.presentation.components.ErrorString
@@ -36,6 +38,8 @@ import ramble.sokol.myolimp.ui.theme.regularType
 
 
 
+
+
 @[Composable Destination]
 fun PassEmailScreen(
     navigator: DestinationsNavigator
@@ -46,14 +50,16 @@ fun PassEmailScreen(
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
-        onReload = {},
+        isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
+        onReload = { navigator.navigate(PassEmailScreenDestination) },
         content = {
-
             Column(
                 modifier = Modifier
                     .background(Transparent)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .fillMaxSize()
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp),
+            verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     modifier = Modifier

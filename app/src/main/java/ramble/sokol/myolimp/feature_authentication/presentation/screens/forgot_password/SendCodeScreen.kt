@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +25,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.destinations.SendCodeScreenDestination
 import ramble.sokol.myolimp.feature_authentication.domain.events.SendCodeEvent
 import ramble.sokol.myolimp.feature_authentication.domain.view_models.SendCodeViewModel
 import ramble.sokol.myolimp.feature_authentication.presentation.components.MinuteTimerText
@@ -40,15 +44,19 @@ fun SendCodeScreen(
 
     val viewModel = getViewModel<SendCodeViewModel>()
     val state = viewModel.state.collectAsState()
+    val remainTime by rememberUpdatedState(newValue = state.value.timer)
 
     OlimpTheme(
         navigationBarColor = SecondaryScreen,
-        onReload = {},
+        isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
+        onReload = { navigator.navigate(SendCodeScreenDestination(email,isRegistering)) },
         content = {
             Column(
                 modifier = Modifier
                     .background(Transparent)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -91,13 +99,14 @@ fun SendCodeScreen(
                     verticalArrangement = Arrangement.Bottom,
                     modifier = Modifier
                         .padding(bottom = 32.dp)
-                        .fillMaxWidth()
-                    ,
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    MinuteTimerText(timerValue = state.value.timer, needToUpdate = state.value.updatedTimer) {
+                    MinuteTimerText(
+                        remainTime = remainTime,
+                        onTick = { viewModel.onEvent(SendCodeEvent.OnUpdateTimer(it)) }
+                    ) {
                        viewModel.onEvent(SendCodeEvent.OnResendCode(navigator, email, isRegistering))
-                        /*TODO нужно придумать как лочить кнопку после отправки запроса*/
                     }
                 }
             }
