@@ -20,6 +20,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.DisabledBlue
 import ramble.sokol.myolimp.ui.theme.White
+import ramble.sokol.myolimp.utils.dimensions.LocalDimension
 
 @Composable
 fun FilledBtn (
@@ -28,11 +29,14 @@ fun FilledBtn (
     padding: Dp = 36.dp,
     onClick: () -> Unit
 ) {
+
+    val dimension = LocalDimension.current
+
     Button(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = padding),
-        shape = RoundedCornerShape(size = 16.dp),
+        shape = RoundedCornerShape(size = dimension.roundedCorner),
         colors = ButtonDefaults.buttonColors(
             containerColor = BlueStart,
             disabledContainerColor = DisabledBlue

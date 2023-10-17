@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_profile.presentation.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
@@ -27,6 +28,7 @@ import ramble.sokol.myolimp.ui.theme.ProfileEditPlaceholder
 import ramble.sokol.myolimp.ui.theme.SuccessStatus
 import ramble.sokol.myolimp.ui.theme.White
 import ramble.sokol.myolimp.ui.theme.mediumType
+import ramble.sokol.myolimp.utils.dimensions.LocalDimension
 
 @Composable
 fun OutlinedText (
@@ -39,6 +41,8 @@ fun OutlinedText (
     errorText: String = "",
     onTextChanged: (String) -> Unit,
 ) {
+
+    val dimension = LocalDimension.current
 
     var textValue by remember {
         mutableStateOf(previousData)
@@ -88,6 +92,7 @@ fun OutlinedText (
             textValue = it
             onTextChanged(it)
         },
+        shape = RoundedCornerShape(dimension.roundedCorner),
         isError = isError,
         enabled = isEnabled
     )
