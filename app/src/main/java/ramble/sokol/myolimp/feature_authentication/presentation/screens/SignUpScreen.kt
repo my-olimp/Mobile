@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -148,20 +149,48 @@ fun SignUpScreen(
                     }
 
                     Spacer(modifier = Modifier.height(6.dp))
-                    if(!state.value.isBadPassword) {
-                        LinearProgressIndicator(
+
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(24.dp)),
+                        progress = state.value.passwordStatus,
+                        trackColor = BackgroundProgressIndicator,
+                        color = when (state.value.passwordStatus) {
+                            1f -> SuccessStatus
+                            0.3f ->  ErrorStatus
+                            0.6f -> MiddleStatus
+                            else -> BackgroundProgressIndicator
+                        }
+                    )
+
+                    if (state.value.passwordStatus != 0f) {
+
+                        Row (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(24.dp)),
-                            progress = state.value.passwordStatus,
-                            trackColor = BackgroundProgressIndicator,
-                            color = when (state.value.passwordStatus) {
-                                1f -> SuccessStatus
-                                0.3f -> ErrorStatus
-                                0.6f -> MiddleStatus
-                                else -> BackgroundProgressIndicator
-                            }
-                        )
+                                .padding(top = 2.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Text(
+                                text = when (state.value.passwordStatus) {
+                                    1f -> "Надежный пароль"
+                                    0.6f -> "Средний пароль"
+                                    else -> "Слабый пароль"
+                                },
+                                style = TextStyle(
+                                    fontSize = 10.sp,
+                                    fontFamily = FontFamily(Font(R.font.regular)),
+                                    fontWeight = FontWeight(400),
+                                    color = when (state.value.passwordStatus) {
+                                        1f -> SuccessStatus
+                                        0.3f ->  ErrorStatus
+                                        0.6f -> MiddleStatus
+                                        else -> BackgroundProgressIndicator
+                                    },
+                                )
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -180,6 +209,7 @@ fun SignUpScreen(
                     FilledBtn(
                         padding = 0.dp,
                         text = stringResource(id = R.string.register),
+                        isEnabled = state.value.isRegistering
                     ) {
                         viewModel.onEvent(SignUpEvent.OnSignUp(navigator = navigator))
                     }

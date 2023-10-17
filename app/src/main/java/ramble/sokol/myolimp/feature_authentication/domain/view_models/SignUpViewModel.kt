@@ -180,12 +180,13 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
 
     private fun setStatus() {
 
-        val password = _state.value.password
+        val password = state.value.password
 
-        val status = if (password.isEmpty()) 0f
-                else if (password.length in 1..7) 0.3f
-                else if (password.onlyLetters() || password.onlyNumbers()) 0.6f
-                else 1f
+        val status =
+            if (password.isEmpty()) 0f
+            else if (password.length in 1..7) 0.3f
+            else if (password.onlyLetters() || password.onlyNumbers()) 0.6f
+            else 1f
 
         _state.update {
             it.copy(
