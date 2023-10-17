@@ -34,6 +34,7 @@ import ramble.sokol.myolimp.ui.theme.White
 
 @Composable
 fun SearchTextField (
+    modifier: Modifier = Modifier,
     state: PlanState,
     onClearFocus: () -> Unit,
     onTextChanged: (String) -> Unit
@@ -54,7 +55,7 @@ fun SearchTextField (
     }
 
     OutlinedTextField(
-        modifier = Modifier
+        modifier = modifier
             .onFocusChanged {
                 hasFocus = it.isFocused
             },

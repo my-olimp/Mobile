@@ -5,19 +5,15 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,10 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.domain.utils.getWeekStartDate
@@ -38,8 +32,7 @@ import ramble.sokol.myolimp.feature_calendar.domain.view_models.CalendarViewMode
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_searching.SearchTextField
 import ramble.sokol.myolimp.feature_calendar.presentation.core.CalendarIntent
 import ramble.sokol.myolimp.feature_calendar.presentation.core.Period
-import ramble.sokol.myolimp.ui.theme.BlueStart
-import ramble.sokol.myolimp.ui.theme.GreyProfileData
+import ramble.sokol.myolimp.feature_library.presenation.components.library.FavoriteIcon
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
@@ -127,6 +120,7 @@ fun ExpandableCalendar(
         ) {
 
             SearchTextField(
+                modifier = Modifier.weight(0.8f),
                 state = state,
                 onClearFocus = {
                     onEvent(Event.CancelSearching)
@@ -139,30 +133,20 @@ fun ExpandableCalendar(
                 }
             )
 
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.weight(0.04f))
 
-            Box(
+
+            FavoriteIcon(
                 modifier = Modifier
                     .fillMaxHeight()
+                    .weight(0.16f)
                     .padding(top = 8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(
-                        color = if (state.isShowingFavourites) BlueStart else White,
-                        shape = RoundedCornerShape(size = 8.dp)
-                    )
-                    .clickable {
-                        onEvent(Event.OnFavouritesShowing(!state.isShowingFavourites))
-                    },
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(12.dp),
-                    painter = painterResource(id = R.drawable.ic_calendar_favourite),
-                    contentDescription = "bookmark",
-                    tint = if (state.isShowingFavourites) White else GreyProfileData,
-                )
-            }
+                    .clip(RoundedCornerShape(8.dp)),
+                onClick = {
+                    onEvent(Event.OnFavouritesShowing(!state.isShowingFavourites))
+                },
+                isActive = state.isShowingFavourites
+            )
         }
 
         Spacer(modifier = Modifier.height(12.dp))
