@@ -72,6 +72,8 @@
     <string name="data_plan">Дата</string>
     <string name="password">Пароль</string>
     <string name="confirm_password">Подтверждение пароля</string>
+    <string name="diff_passwords">Пароли различаются</string>
+    <string name="empty_pass_error">Пароль не должен быть пустым</string>
     <string name="subject">Предмет</string>
     <string name="name_error">Название некорректно</string>
     <string name="data_error">Дата некорректна</string>
@@ -226,4 +228,7 @@
         <item>Доцент</item>
         <item>Старший преподаватель</item>
     </string-array>
+    <string name="pass_your_data">Для создания  учетной записи укажите свои данные:</string>
+    <string name="empty_email_error">Поле почты не должно быть пустым</string>
+    <string name="bad_pattern_email_error">Введена неправильная почта</string>
 </resources>

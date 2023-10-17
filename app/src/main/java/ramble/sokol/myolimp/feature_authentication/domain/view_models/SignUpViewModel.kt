@@ -31,64 +31,66 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
         when (event) {
             is SignUpEvent.OnSignUp -> {
 
-                if (checkPasswordCorrectness())
+                if (isDataValid()) {
 
-                sendVerificationCode(
-                  onError = {
-                      castError(ViewModelExceptions.Network)
-                  },
-                  onSent = { code->
-                      showSnackbar(context.getString(R.string.success_send_code_message))
+                    sendVerificationCode(
+                        onError = {
+                            castError(ViewModelExceptions.Network)
+                        },
+                        onSent = { code ->
+                            showSnackbar(context.getString(R.string.success_send_code_message))
 
-                      repository.signUp(
-                          data = RequestSignUpModel(
-                              code = code,
-                              email = state.value.email,
-                              firstName = "",
-                              secondName = "",
-                              thirdName = "",
-                              password = state.value.password,
-                          ),
-                          onResult = {
-                              Log.i(TAG, "completed - $it")
+                            repository.signUp(
+                                data = RequestSignUpModel(
+                                    code = code,
+                                    email = state.value.email,
+                                    firstName = "",
+                                    secondName = "",
+                                    thirdName = "",
+                                    password = state.value.password,
+                                ),
+                                onResult = {
+                                    Log.i(TAG, "completed - $it")
 
-                              if (it != null) {
+                                    if (it != null) {
 
-                                  // save token in data store
-                                  saveData(
-                                      it.code,
-                                      it.user
-                                  )
+                                        // save token in data store
+                                        saveData(
+                                            it.code,
+                                            it.user
+                                        )
 
-                                  // load user
+                                        // load user
 
-                                  showSnackbar(context.getString(R.string.success_register_message))
+                                        showSnackbar(context.getString(R.string.success_register_message))
 
-                                  event.navigator.navigate(
-                                      RegisterInfoScreenDestination()
-                                  ) {
-                                      popUpTo(NavGraphs.root) {
-                                          saveState = false
-                                      }
-                                      launchSingleTop = false
-                                      restoreState = false
-                                  }
+                                        event.navigator.navigate(
+                                            RegisterInfoScreenDestination()
+                                        ) {
+                                            popUpTo(NavGraphs.root) {
+                                                saveState = false
+                                            }
+                                            launchSingleTop = false
+                                            restoreState = false
+                                        }
 
-                              } else {
-                                  showSnackbar("Не получилось создать аккаунт")
-                              }
-                          },
-                          onError = {
-                              castError(ViewModelExceptions.Network)
-                          }
-                      )
-                    }
-                )
+                                    } else {
+                                        showSnackbar("Не получилось создать аккаунт")
+                                    }
+                                },
+                                onError = {
+                                    castError(ViewModelExceptions.Network)
+                                }
+                            )
+                        }
+                    )
+                }
             }
             is SignUpEvent.OnEmailUpdated -> {
                 _state.update {
                     it.copy(
                         email = event.email,
+                        isEmailError = false
                     )
                 }
                 checkAbilityRegistering()
@@ -97,6 +99,8 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
                 _state.update {
                     it.copy(
                         password = event.password,
+                        isDiffPassword = false,
+                        isBadPassword = false
                     )
                 }
 
@@ -107,6 +111,8 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
                 _state.update {
                     it.copy(
                         confirmedPassword = event.confirmedPassword,
+                        isDiffPassword = false,
+                        isBadPassword = false
                     )
                 }
                 checkAbilityRegistering()
@@ -264,27 +270,69 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
         }
     }
 
+    private fun isDataValid() : Boolean {
+        var isValid = true
+
+        if(state.value.email.isEmpty()) {
+            _state.update {
+                it.copy(
+                    isEmailError = true,
+                    emailError = context.getString(R.string.empty_email_error)
+                )
+            }
+            isValid = false
+        } else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(state.value.email).matches()) {
+            _state.update {
+                it.copy(
+                    isEmailError = true,
+                    emailError = context.getString(R.string.bad_pattern_email_error)
+                )
+            }
+            isValid = false
+        }
+        if(!checkPasswordCorrectness()) isValid = false
+        return isValid
+    }
+
     private fun checkPasswordCorrectness() : Boolean {
 
         val password = state.value.password
+        var isValid = true
 
+        if(password.isEmpty()) {
+            _state.update {
+                it.copy(
+                    passwordError = context.getString(R.string.empty_pass_error),
+                    isBadPassword = true
+                )
+            }
+            isValid = false
+        }
         if (password.contains(" ")) {
             _state.update {
                 it.copy(
                     passwordError = context.getString(R.string.error_password_spaces),
+                    isBadPassword = true
                 )
             }
-            return false
+            isValid = false
         } else if (!password.matches("^[a-zA-Z0-9!@#$%^&*]*$".toRegex())) {
             _state.update {
                 it.copy(
                     passwordError = context.getString(R.string.error_password_letters),
+                    isBadPassword = true
                 )
             }
-            return false
+            isValid = false
+        }
+        if(password != state.value.confirmedPassword) {
+            _state.update {
+                it.copy(isDiffPassword = true)
+            }
+            isValid = false
         }
 
-        return true
+        return isValid
     }
 
 

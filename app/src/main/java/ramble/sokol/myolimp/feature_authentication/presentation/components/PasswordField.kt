@@ -77,7 +77,7 @@ fun PasswordField(
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Font(R.font.regular)),
                         fontWeight = FontWeight(400),
-                        color = if (isError) MessageError else ProfileEditPlaceholder,
+                        color = ProfileEditPlaceholder,
                         letterSpacing = 0.3.sp,
                     )
                 )
