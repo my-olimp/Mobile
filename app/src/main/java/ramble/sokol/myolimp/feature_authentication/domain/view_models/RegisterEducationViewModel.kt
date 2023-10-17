@@ -4,7 +4,9 @@ import android.util.Log
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.update
 import ramble.sokol.myolimp.destinations.RegisterSubjectsScreenDestination
+import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
+import ramble.sokol.myolimp.feature_authentication.data.models.School
 import ramble.sokol.myolimp.feature_authentication.data.models.UserEducationDataModel
 import ramble.sokol.myolimp.feature_authentication.data.models.asListCity
 import ramble.sokol.myolimp.feature_authentication.data.models.asListRegion
@@ -54,7 +56,9 @@ class RegisterEducationViewModel : BaseViewModel<RegistrationEducationState>(
                             regionError = false,
                             isLoading = true,
                             cityList = emptyList(),
-                            schoolList = emptyList()
+                            schoolList = emptyList(),
+                            city = City(),
+                            school = School()
                         )
                     }
                     launchIO {

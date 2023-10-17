@@ -38,7 +38,6 @@ import com.ramcosta.composedestinations.navigation.navigate
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
-import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.destinations.SubjectsChapterScreenDestination
 import ramble.sokol.myolimp.feature_library.domain.events.ChapterEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.SubjectsChapterViewModel
@@ -49,7 +48,6 @@ import ramble.sokol.myolimp.feature_library.presenation.components.library.Libra
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.OlimpTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 
@@ -78,6 +76,7 @@ fun SubjectsChapterScreen (
         navigationBarColor = SecondaryScreen,
         statusBarColor = BackgroundMain,
         isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
         navController = navController,
         onReload = {
             navController.navigate(SubjectsChapterScreenDestination(discipline = subject))
@@ -87,7 +86,7 @@ fun SubjectsChapterScreen (
             modifier = Modifier
                 .fillMaxSize()
                 .blur(
-                    if (state.value.isLoading) 4.dp else 0.dp
+                    if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp
                 )
                 .padding(
                     vertical = 12.dp,

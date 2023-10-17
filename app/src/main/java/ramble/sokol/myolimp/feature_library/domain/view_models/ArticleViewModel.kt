@@ -1,34 +1,21 @@
 package ramble.sokol.myolimp.feature_library.domain.view_models
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.data.models.RequestAnswerModel
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
 import ramble.sokol.myolimp.feature_library.domain.states.TaskState
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
 
-class ArticleViewModel: ViewModel() {
-
-    companion object {
-        const val TAG = "ViewModelArticleLibrary"
-    }
-
-    private val dataStore = CodeDataStore()
+class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
 
     private val repository = LibraryRepository()
-
-    private val _state = MutableStateFlow(ArticleState())
-    val state = _state.asStateFlow()
 
     fun onEvent(
         event: ArticleEvent
@@ -58,15 +45,11 @@ class ArticleViewModel: ViewModel() {
             }
 
             is ArticleEvent.OnFavourites -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    _state.update {
-                        it.copy(
-                            isLoading = true
-                        )
-                    }
+                launchIO {
+                    updateLoader(true)
 
                     repository.addToFavourites(
-                        state.value.article.id,
+                        id = state.value.article.id,
                         onResult = { result->
                             Log.i(TAG, "result - $result")
 
@@ -80,20 +63,11 @@ class ArticleViewModel: ViewModel() {
                                 Log.i(TAG, "null body")
                             }
 
-                            _state.update { state->
-                                state.copy(
-                                    isLoading = false
-                                )
-                            }
+                            updateLoader(false)
                         },
                         onError = {
                             Log.i(TAG, "Error occurred - $it")
-
-                            _state.update { state->
-                                state.copy(
-                                    isLoading = false
-                                )
-                            }
+                            castError(ViewModelExceptions.Network)
                         }
                     )
                 }
@@ -106,12 +80,8 @@ class ArticleViewModel: ViewModel() {
     }
 
     private fun fetchArticle(id: Int = 1) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
+        launchIO {
+            updateLoader(true)
 
             repository.extractArticleById(
                 id = id,
@@ -124,44 +94,32 @@ class ArticleViewModel: ViewModel() {
                         Log.i(TAG,"new article model is: ${_state.value.article}")
                     }
 
-                    _state.update { state->
-                        state.copy(
-                            isLoading = false
-                        )
-                    }
+                    updateLoader(false)
                 },
                 onError = {
                     Log.i(TAG, "response with exception")
-
-                    _state.update { state->
-                        state.copy(
-                            isLoading = false
-                        )
-                    }
+                    castError(ViewModelExceptions.Network)
                 }
             )
         }
     }
 
     private fun checkAnswer(taskId: Int,blockId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                it.copy(
-                    isLoading = true
-                )
-            }
+        launchIO {
+            updateLoader(true)
             repository.checkAnswer(
-                auth = dataStore.getToken(CodeDataStore.ACCESS_TOKEN).first() ?: throw Exception("no access token"),
+                auth = datastore.getToken(CodeDataStore.ACCESS_TOKEN).first()
+                    ?: throw ViewModelExceptions.Network,
                 id = blockId,
                 body = RequestAnswerModel(
                     id = taskId,
                     answer = state.value.answers[taskId]?.answer ?: ""
                 ),
                 onResult = {
-                    Log.i(TAG,"response body $it")
-                    if(it != null) {
+                    Log.i(TAG, "response body $it")
+                    if (it != null) {
                         val map = state.value.answers
-                        when(it.isCorrect) {
+                        when (it.isCorrect) {
                             false -> {
                                 map[taskId]?.let { taskState ->
                                     taskState.isError = true
@@ -174,6 +132,7 @@ class ArticleViewModel: ViewModel() {
                                     )
                                 }
                             }
+
                             true -> {
                                 map[taskId]?.let { taskState ->
                                     taskState.isError = false
@@ -189,23 +148,14 @@ class ArticleViewModel: ViewModel() {
                         }
                     }
 
-                    _state.update { state->
-                        state.copy(
-                            isLoading = false
-                        )
-                    }
+                    updateLoader(false)
                 },
                 onError = {
-                    Log.i(TAG,"response error ${it.message}")
-
-                    _state.update { state->
-                        state.copy(
-                            isLoading = true
-                        )
-                    }
+                    Log.i(TAG, "response error ${it.message}")
+                    castError(ViewModelExceptions.Network)
                 }
             )
-            }
         }
+    }
 
 }

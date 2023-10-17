@@ -2,24 +2,14 @@ package ramble.sokol.myolimp.feature_library.domain.view_models
 
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_library.domain.events.ChapterEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.ChapterRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ChapterState
+import ramble.sokol.myolimp.utils.BaseViewModel
+import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
-class SubjectsChapterViewModel : ViewModel()  {
-
-    companion object {
-        private const val TAG = "ViewModelSubjectsChapter"
-    }
-
-    private val _state = MutableStateFlow(ChapterState())
-    val state = _state.asStateFlow()
+class SubjectsChapterViewModel : BaseViewModel<ChapterState>(ChapterState())  {
 
     private val chapterRepository = ChapterRepository()
 
@@ -75,46 +65,31 @@ class SubjectsChapterViewModel : ViewModel()  {
     }
 
     private fun searchArticles() {
-        _state.update {
-            it.copy(
-                isLoading = true
-            )
-        }
-
-        try {
-            viewModelScope.launch {
-                chapterRepository.getArticles(
-                    subject = state.value.subject ?: throw Exception("no subject"),
-                    page = state.value.currentPage,
-                    isFavourites = state.value.isShowingFavourites,
-                    query = state.value.searchQuery ?: "",
-                    onSuccess = { result->
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                articles = result.articles.map { articles->
-                                    articles.toArticleModel()
-                                },
-                                currentPage = result.currentPage,
-                                amountOfPages = result.pageCount,
-                            )
-                        }
-                        Log.i(TAG, "articles - ${state.value.articles}")
-                    },
-                    onError = { error->
-
-                        Log.i(TAG, "error occurred - $error")
-
-                        _state.update {
-                            it.copy(
-                                isLoading = false
-                            )
-                        }
+        updateLoader(true)
+        launchIO {
+            chapterRepository.getArticles(
+                subject = state.value.subject ?: throw ViewModelExceptions.Network,
+                page = state.value.currentPage,
+                isFavourites = state.value.isShowingFavourites,
+                query = state.value.searchQuery ?: "",
+                onSuccess = { result ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            articles = result.articles.map { articles ->
+                                articles.toArticleModel()
+                            },
+                            currentPage = result.currentPage,
+                            amountOfPages = result.pageCount,
+                        )
                     }
-                )
-            }
-        } catch (ex: Exception) {
-            Log.i(TAG, "ex - ${ex.message}")
+                    Log.i(TAG, "articles - ${state.value.articles}")
+                },
+                onError = { error ->
+                    Log.i(TAG, "error occurred - $error")
+                    castError(ViewModelExceptions.Network)
+                }
+            )
         }
     }
 }

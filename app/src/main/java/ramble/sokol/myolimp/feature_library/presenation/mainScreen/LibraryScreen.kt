@@ -1,7 +1,6 @@
 package ramble.sokol.myolimp.feature_library.presenation.mainScreen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -34,6 +32,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
 import ramble.sokol.myolimp.destinations.LibraryScreenDestination
 import ramble.sokol.myolimp.destinations.SubjectsChapterScreenDestination
+import ramble.sokol.myolimp.feature_authentication.presentation.screens.forgot_password.VerticalSpacer
 import ramble.sokol.myolimp.feature_library.domain.view_models.LibraryViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
@@ -41,7 +40,6 @@ import ramble.sokol.myolimp.feature_library.presenation.components.library.Libra
 import ramble.sokol.myolimp.feature_library.presenation.components.library.SubjectsPickerBottomSheet
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.MainPageBlue
 
 @OptIn(ExperimentalMaterialApi::class)
 @Destination
@@ -56,6 +54,7 @@ fun LibraryScreen(
         navController = navController,
         statusBarColor = BackgroundMain,
         isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
         onReload = {
             navController.navigate(LibraryScreenDestination)
         }
@@ -80,7 +79,7 @@ fun LibraryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp)
                     .padding(horizontal = 16.dp)
             ) {
                 LibrarySearchBar(
@@ -170,21 +169,9 @@ fun LibraryScreen(
                         }
                     }
                 }
+                VerticalSpacer(height = 60.dp)
             }
         }
     }
 }
 
-@Composable
-internal fun LoadingCircular(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            color = MainPageBlue
-        )
-    }
-}

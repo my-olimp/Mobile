@@ -115,7 +115,7 @@ fun SignUpScreen(
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 54.dp),
-                        text = "Для создания  учетной записи укажите свои данные:",
+                        text = stringResource(id = R.string.pass_your_data),
                         style = TextStyle(
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.regular)),
@@ -128,10 +128,10 @@ fun SignUpScreen(
                     Spacer(modifier = Modifier.height(22.dp))
 
                     OutlinedText(
-                        previousData = "",
+                        previousData = state.value.email,
                         label = stringResource(id = R.string.email),
                         isError = state.value.isEmailError,
-                        errorText = stringResource(R.string.email_error_already_in_use)
+                        errorText = state.value.emailError
                     ) {
                         viewModel.onEvent(SignUpEvent.OnEmailUpdated(it))
                     }
@@ -139,35 +139,38 @@ fun SignUpScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     PasswordField(
-                        previousData = "",
+                        previousData = state.value.password,
                         label = stringResource(id = R.string.password),
+                        isError = state.value.isBadPassword,
+                        errorText = state.value.passwordError
                     ) {
                         viewModel.onEvent(SignUpEvent.OnPasswordUpdated(it))
                     }
 
                     Spacer(modifier = Modifier.height(6.dp))
-
-                    LinearProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp)),
-                        progress = state.value.passwordStatus,
-                        trackColor = BackgroundProgressIndicator,
-                        color = when (state.value.passwordStatus) {
-                            1f -> SuccessStatus
-                            0.3f -> ErrorStatus
-                            0.6f -> MiddleStatus
-                            else -> BackgroundProgressIndicator
-                        }
-                    )
+                    if(!state.value.isBadPassword) {
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(24.dp)),
+                            progress = state.value.passwordStatus,
+                            trackColor = BackgroundProgressIndicator,
+                            color = when (state.value.passwordStatus) {
+                                1f -> SuccessStatus
+                                0.3f -> ErrorStatus
+                                0.6f -> MiddleStatus
+                                else -> BackgroundProgressIndicator
+                            }
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     PasswordField(
-                        previousData = "",
+                        previousData = state.value.confirmedPassword,
                         label = stringResource(id = R.string.confirm_password),
-                        isError = state.value.passwordError != null,
-                        errorText = state.value.passwordError ?: ""
+                        isError = state.value.isDiffPassword,
+                        errorText = stringResource(id = R.string.diff_passwords)
                     ) {
                         viewModel.onEvent(SignUpEvent.OnConfirmedPasswordUpdated(it))
                     }
@@ -176,7 +179,6 @@ fun SignUpScreen(
 
                     FilledBtn(
                         padding = 0.dp,
-                        isEnabled = state.value.isRegistering,
                         text = stringResource(id = R.string.register),
                     ) {
                         viewModel.onEvent(SignUpEvent.OnSignUp(navigator = navigator))

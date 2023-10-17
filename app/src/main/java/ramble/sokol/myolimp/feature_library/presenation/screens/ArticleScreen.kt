@@ -28,17 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.navigate
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
@@ -49,10 +42,8 @@ import ramble.sokol.myolimp.feature_library.presenation.components.article.PartI
 import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
 import ramble.sokol.myolimp.feature_library.presenation.components.library.FavoriteIcon
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
-import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
-import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.White
 
 
@@ -75,6 +66,7 @@ fun ArticleScreen(
 
     OlimpTheme(
         isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
         onReload = {
             navController.navigate(ArticleScreenDestination(id))
         },
@@ -84,7 +76,7 @@ fun ArticleScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp)
                     .background(color = BackgroundMain)
             ) {
 
