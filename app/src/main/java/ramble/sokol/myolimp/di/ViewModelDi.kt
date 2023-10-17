@@ -73,7 +73,7 @@ val viewModelsModule = module {
     }
 
     viewModel {
-        LibraryViewModel(get())
+        LibraryViewModel()
     }
 
     /*Forgot password*/

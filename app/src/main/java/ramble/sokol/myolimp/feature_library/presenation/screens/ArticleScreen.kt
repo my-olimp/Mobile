@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -75,6 +74,7 @@ fun ArticleScreen(
 
     OlimpTheme(
         isLoading = state.value.isLoading,
+        isError = state.value.isNetworkError,
         onReload = {
             navController.navigate(ArticleScreenDestination(id))
         },
@@ -84,7 +84,7 @@ fun ArticleScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(if (state.value.isLoading) 4.dp else 0.dp)
+                    .blur(if (state.value.isLoading || state.value.isNetworkError) 4.dp else 0.dp)
                     .background(color = BackgroundMain)
             ) {
 
@@ -202,7 +202,7 @@ fun ArticleScreen(
 }
 
 
-@Preview
+//@Preview
 @Composable
 fun CustomMarkDown() {
 
