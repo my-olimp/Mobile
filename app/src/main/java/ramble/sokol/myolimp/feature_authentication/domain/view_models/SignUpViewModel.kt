@@ -94,6 +94,7 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
                     )
                 }
                 checkAbilityRegistering()
+                checkEmailCorrectness()
             }
             is SignUpEvent.OnPasswordUpdated -> {
                 _state.update {
@@ -103,9 +104,9 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
                         isBadPassword = false
                     )
                 }
-
                 setStatus()
                 checkAbilityRegistering()
+                checkPasswordCorrectness()
             }
             is SignUpEvent.OnConfirmedPasswordUpdated -> {
                 _state.update {
@@ -116,6 +117,7 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
                     )
                 }
                 checkAbilityRegistering()
+                checkPasswordCorrectness()
             }
 
             is SignUpEvent.OnCode1Updated -> {
@@ -274,6 +276,16 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
     private fun isDataValid() : Boolean {
         var isValid = true
 
+        if (!checkEmailCorrectness()) isValid = false
+        if(!checkPasswordCorrectness()) isValid = false
+
+        return isValid
+    }
+
+    private fun checkEmailCorrectness() : Boolean {
+
+        var isValid = true
+
         if(state.value.email.isEmpty()) {
             _state.update {
                 it.copy(
@@ -291,7 +303,7 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
             }
             isValid = false
         }
-        if(!checkPasswordCorrectness()) isValid = false
+
         return isValid
     }
 
