@@ -5,12 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.utils.converters.Converters
 
 @Database(
     entities = [LocalUserModel::class],
-    version = 9,
+    version = 17,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

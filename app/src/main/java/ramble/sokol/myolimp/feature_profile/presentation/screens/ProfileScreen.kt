@@ -48,6 +48,7 @@ import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
 import ramble.sokol.myolimp.destinations.RegisterInfoScreenDestination
+import ramble.sokol.myolimp.destinations.WantToWatchScreenDestination
 import ramble.sokol.myolimp.feature_profile.presentation.components.Reference
 import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileViewModel
 import ramble.sokol.myolimp.feature_profile.utils.ProfileEvent
@@ -234,9 +235,8 @@ fun ProfileScreen(
                     content = stringResource(R.string.profile_watch_content),
                     isVisible = true
                 ) {
-                    navController.navigate(RegisterInfoScreenDestination)
+                    navController.navigate(WantToWatchScreenDestination)
                 }
-
 
                 Reference(
                     icon = R.drawable.ic_profile_news,

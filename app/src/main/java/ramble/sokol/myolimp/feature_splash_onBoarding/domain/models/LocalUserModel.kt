@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 import ramble.sokol.myolimp.feature_authentication.data.models.City
 import ramble.sokol.myolimp.feature_authentication.data.models.Region
 import ramble.sokol.myolimp.feature_authentication.data.models.School
+import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 @Entity(
@@ -30,4 +31,5 @@ data class LocalUserModel(
     @SerializedName("region") @Embedded val region: Region? = null,
     @SerializedName("city") @Embedded val city: City? = null,
     @SerializedName("school") @Embedded val school: School? = null,
+    val savedArticles: List<SavedArticleModel> = emptyList()
 )
