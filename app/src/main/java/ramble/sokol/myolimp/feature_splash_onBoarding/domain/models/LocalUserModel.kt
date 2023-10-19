@@ -31,5 +31,5 @@ data class LocalUserModel(
     @SerializedName("region") @Embedded val region: Region? = null,
     @SerializedName("city") @Embedded val city: City? = null,
     @SerializedName("school") @Embedded val school: School? = null,
-    val savedArticles: List<SavedArticleModel> = emptyList()
+    @SerializedName("saved_articles") val savedArticles: List<SavedArticleModel> = emptyList()
 )

@@ -22,7 +22,7 @@ import java.net.UnknownHostException
 
 
 @Suppress("PropertyName", "SpellCheckingInspection")
-open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComponent{
+open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComponent {
 
     protected val context by inject<Context>()
 

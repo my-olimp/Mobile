@@ -1,14 +1,17 @@
 package ramble.sokol.myolimp.feature_library.domain.view_models
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_library.data.models.RequestAnswerModel
 import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
 import ramble.sokol.myolimp.feature_library.domain.states.TaskState
+import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 import ramble.sokol.myolimp.utils.BaseViewModel
 import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
@@ -16,6 +19,18 @@ import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
 
     private val repository = LibraryRepository()
+    private val _user = userRepository.getUser()
+
+    init {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    savedArticles = _user.first().savedArticles.toMutableList()
+                )
+            }
+            Log.i(TAG, "saved articles - ${state.value.savedArticles}")
+        }
+    }
 
     fun onEvent(
         event: ArticleEvent
@@ -75,6 +90,30 @@ class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
 
             is ArticleEvent.OnFetchArticle -> {
                 fetchArticle(event.id)
+            }
+
+            is ArticleEvent.OnSaveArticleIntoDatabase -> {
+                viewModelScope.launch {
+                    Log.i(TAG, "saved - ${_user.first().savedArticles}")
+
+                    val savedPreviously = _state.value.savedArticles
+
+                    savedPreviously.add(SavedArticleModel(id=event.id, title="title - ${event.id}"))
+
+                    _state.update {
+                        it.copy(
+                            savedArticles = savedPreviously
+                        )
+                    }
+
+                    userRepository.updateUser(
+                        _user.first().copy(
+                            savedArticles = state.value.savedArticles
+                        )
+                    )
+
+                    Log.i(TAG, "saved - ${_user.first().savedArticles}")
+                }
             }
         }
     }

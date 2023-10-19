@@ -105,7 +105,6 @@ fun ArticleScreen(
 
                     Box(
                         modifier = Modifier
-                            //.fillMaxHeight()
                             .weight(0.16f)
                             .clip(RoundedCornerShape(8.dp))
                             .padding(top = 8.dp)
@@ -114,7 +113,7 @@ fun ArticleScreen(
                                 shape = RoundedCornerShape(size = 8.dp)
                             )
                             .clickable {
-                                //viewModel.onEvent(LibraryEvent.OnShowFavourites(!state.value.isShowingFavourites))
+                                viewModel.onEvent(ArticleEvent.OnSaveArticleIntoDatabase(id))
                             },
                     ) {
                         Icon(

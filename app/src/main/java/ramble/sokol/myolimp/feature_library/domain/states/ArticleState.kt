@@ -1,11 +1,14 @@
 package ramble.sokol.myolimp.feature_library.domain.states
 
 import ramble.sokol.myolimp.feature_library.domain.models.ArticleModel
+import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 import ramble.sokol.myolimp.utils.State
 
 data class ArticleState(
     val article: ArticleModel = ArticleModel(),
     val answers: HashMap<Int, TaskState> = hashMapOf(),
+    val savedArticles: MutableList<SavedArticleModel> = mutableListOf(),
+
     val status: Boolean = false, /* to recompose screen */
     val isLoading: Boolean = false,
     val isNetworkError: Boolean = false,

@@ -22,7 +22,6 @@ class ProfileLoveViewModel : BaseViewModel<ProfileLoveState>(ProfileLoveState())
 
     private val libraryRepository = LibraryRepositoryImpl(database = userDatabase)
 
-
     private val timer = object: CountDownTimer(2000, 1000) {
         override fun onTick(millisUntilFinished: Long) {}
 

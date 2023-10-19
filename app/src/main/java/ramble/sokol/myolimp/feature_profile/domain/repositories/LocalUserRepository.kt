@@ -1,10 +1,7 @@
 package ramble.sokol.myolimp.feature_profile.domain.repositories
 
-import android.content.Context
-import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.feature_profile.database.UserDatabase
+import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
 
 class LocalUserRepository (
@@ -13,10 +10,6 @@ class LocalUserRepository (
 
     fun getUser()
             = database.getUserDao().getUser()
-
-//    fun getUserById(id: String) {
-//        database.getUserDao().getUserById(id = id)
-//    }
 
     suspend fun saveUser(user: LocalUserModel)
             = database.getUserDao().saveUser(user = user)
@@ -29,5 +22,8 @@ class LocalUserRepository (
 
     suspend fun deleteUsers()
         = database.getUserDao().deleteAllUsers()
+
+//    suspend fun saveArticle(article: SavedArticleModel)
+//            = database.getUserDao().saveArticle(article = article)
 
 }
