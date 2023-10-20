@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ramble.sokol.myolimp.feature_library.data.repository.LibraryRepositoryImpl
-import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileLoveRepository
 import ramble.sokol.myolimp.feature_profile.domain.states.WantToWatchState
 import ramble.sokol.myolimp.utils.BaseViewModel
 

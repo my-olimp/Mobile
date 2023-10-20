@@ -619,7 +619,7 @@ class ProfileViewModel : BaseViewModel<ProfileState>(ProfileState()) {
             Log.i(TAG, "response - success")
 
         } catch (ex: Exception) {
-            if(ex is UnknownHostException)castError(ViewModelExceptions.Network)
+            if(ex is UnknownHostException) castError(ViewModelExceptions.Network)
             Log.i(TAG, "error - $ex")
         }
     }

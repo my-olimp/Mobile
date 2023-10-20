@@ -1,40 +1,26 @@
 package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models
 
-import android.content.Context
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
-import ramble.sokol.myolimp.feature_profile.database.UserDatabase
-import ramble.sokol.myolimp.feature_profile.domain.repositories.LocalUserRepository
 import ramble.sokol.myolimp.feature_profile.domain.repositories.ProfileRepository
-import ramble.sokol.myolimp.feature_splash_onBoarding.domain.models.LocalUserModel
-import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.LocalUserResult
+import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.SplashState
+import ramble.sokol.myolimp.utils.BaseViewModel
 
-class SplashViewModel : ViewModel(), KoinComponent {
-
-    companion object {
-        const val TAG = "ViewModelSplash"
-    }
-
-    private val context by inject<Context>()
-    private var database : UserDatabase = UserDatabase.invoke(context)
-    private var userRepository : LocalUserRepository = LocalUserRepository(database = database)
+class SplashViewModel : BaseViewModel<SplashState>(SplashState()) {
 
     private val dataStore = CodeDataStore()
     private val apiRepository = ProfileRepository()
 
-    private var _state = MutableStateFlow<LocalUserResult<LocalUserModel>>(LocalUserResult.Loading())
-    val state = _state.asStateFlow()
-
     init {
+        getUser()
+    }
+
+    private fun getUser() {
         viewModelScope.launch {
             try {
                 val token = dataStore.getToken(CodeDataStore.COOKIES).first()
@@ -62,26 +48,35 @@ class SplashViewModel : ViewModel(), KoinComponent {
 
                     Log.i(TAG, "after user - ${userRepository.getUser().firstOrNull()}")
 
-                    _state.value = LocalUserResult.Success(
-                        response.body()?.user ?: throw Exception("empty user body")
-                    )
+                    onSuccess()
                 } else {
-                    try {
-                        // delete user from local storage
-                        userRepository.deleteUsers()
+                    // delete user from local storage
+                    userRepository.deleteUsers()
 
-                        Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
+                    Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
 
-                    } catch (ex: Exception) {
-                        Log.i(TAG, "exception - $ex")
-                    }
-
-                    _state.value = LocalUserResult.Error(response.message())
+                    onError()
                 }
             } catch (ex : Exception) {
                 Log.i(TAG, "exception - ${ex.message}")
-                _state.value = LocalUserResult.Error(ex.message)
+                onError()
             }
+        }
+    }
+
+    private fun onError() {
+        _state.update {
+            it.copy(
+                isError = true
+            )
+        }
+    }
+
+    private fun onSuccess() {
+        _state.update {
+            it.copy(
+                isSuccess = true
+            )
         }
     }
 }

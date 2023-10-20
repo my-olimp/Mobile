@@ -28,7 +28,6 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
-import ramble.sokol.myolimp.feature_splash_onBoarding.domain.states.LocalUserResult
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -38,45 +37,43 @@ import ramble.sokol.myolimp.ui.theme.OlimpTheme
 fun SplashScreen(
     navigator: DestinationsNavigator
 ) {
+
+    val splashViewModel = getViewModel<SplashViewModel>()
+    val state = splashViewModel.state.collectAsState()
+
+    val transition = rememberInfiniteTransition(label = "")
+    val alpha by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000,
+                delayMillis = 500
+            ),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
     OlimpTheme (
         isSplashScreen = true,
-        onReload = {},
+        onReload = {
+            navigator.navigate(OnBoardingScreenDestination)
+        },
         content = {
-            val splashViewModel = getViewModel<SplashViewModel>()
-            val state = splashViewModel.state.collectAsState()
 
-            val transition = rememberInfiniteTransition(label = "")
-            val alpha by transition.animateFloat(
-                initialValue = 0f,
-                targetValue = 1f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        durationMillis = 1000,
-                        delayMillis = 500
-                    ),
-                    repeatMode = RepeatMode.Reverse
-                ), label = ""
-            )
+            if (state.value.isSuccess) {
+                // successfully got user
+                LaunchedEffect(key1 = Unit) {
+                    delay(1000)
 
-            when (state.value) {
-                is LocalUserResult.Error -> {
-                    // error occurred
-                    LaunchedEffect(key1 = Unit){
-                        delay(1000)
-
-                        navigator.navigate(OnBoardingScreenDestination)
-                    }
+                    navigator.navigate(HomeScreenDestination)
                 }
-                is LocalUserResult.Loading -> {
-                    // loading
-                }
-                is LocalUserResult.Success -> {
-                    // successfully got user
-                    LaunchedEffect(key1 = Unit){
-                        delay(1000)
+            } else if (state.value.isError) {
+                // error occurred while getting user
+                LaunchedEffect(key1 = Unit) {
+                    delay(1000)
 
-                        navigator.navigate(HomeScreenDestination)
-                    }
+                    navigator.navigate(OnBoardingScreenDestination)
                 }
             }
 

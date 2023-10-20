@@ -32,9 +32,9 @@ open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComp
     protected val userRepository : LocalUserRepository get() =  LocalUserRepository(database = userDatabase)
 
     /**
-     * [UnknownHostException] является ошибкой, в основном когда нет интернета
-     *
-     **/
+    * [UnknownHostException] when there is no network connection
+    *
+    **/
     private val handler = CoroutineExceptionHandler { _, exception ->
         if(exception is ViewModelExceptions)castError(exception)
         else when(exception) {
@@ -63,21 +63,21 @@ open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComp
     protected fun updateLoader(value: Boolean) {
         _state.update { state.value.onLoaderUpdate(value) }
     }
+
     /**
-     * Прокидывает в [CoroutineExceptionHandler] ошибку только если это происходит
-     * непосредственно в скопе.
-     *
-     * При выбрасывании ошибки лямбды, приложение падает.
-     *
-     * Хоть и [Thread.currentThread] показывает что текущий поток [Dispatchers.Default], в контексте
-     * зашит [Dispatchers.IO], и может быть на самом деле она работает на потоке IO, просто
-     * для операций логирования вызвается дефолт поток
-     **/
+    * Прокидывает в [CoroutineExceptionHandler] ошибку только если это происходит
+    * непосредственно в скопе.
+    *
+    * При выбрасывании ошибки лямбды, приложение падает.
+    *
+    * Хоть и [Thread.currentThread] показывает что текущий поток [Dispatchers.Default], в контексте
+    * зашит [Dispatchers.IO], и может быть на самом деле она работает на потоке IO, просто
+    * для операций логирования вызвается дефолт поток
+    **/
     protected fun launchIO(block: suspend CoroutineScope.() -> Unit): Job {
         return viewModelScope.launch(
             context = handler + Dispatchers.IO,
             block = block
         )
     }
-
 }

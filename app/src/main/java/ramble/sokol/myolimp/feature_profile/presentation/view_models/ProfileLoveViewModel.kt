@@ -108,7 +108,7 @@ class ProfileLoveViewModel : BaseViewModel<ProfileLoveState>(ProfileLoveState())
                         isArticlesLoaded = true
                     )
                 }
-                if(state.value.isSubjectLoaded)updateLoader(false)
+                if(state.value.isSubjectLoaded) updateLoader(false)
             }
 
         }
