@@ -1,6 +1,7 @@
 package ramble.sokol.myolimp.feature_profile.data.models
 
 import ramble.sokol.myolimp.feature_library.domain.models.AuthorModel
+import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 
 data class ArticleModel(
     val id: Int = -1,

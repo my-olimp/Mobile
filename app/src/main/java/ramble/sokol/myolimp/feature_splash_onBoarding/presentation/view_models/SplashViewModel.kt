@@ -47,12 +47,18 @@ class SplashViewModel : ViewModel(), KoinComponent {
                 if (response.isSuccessful) {
                     Log.i(TAG, "user - ${response.body()?.user}")
 
+                    val previousData = userRepository.getUser().first()
+
                     userRepository.deleteUsers()
 
-                    Log.i(TAG, "before user - ${userRepository.getUser().firstOrNull()}")
+                    val result = response.body()?.user ?: throw Exception("empty body")
 
                     // save user in local storage
-                    userRepository.saveUser(response.body()?.user ?: throw Exception("empty body"))
+                    userRepository.saveUser(
+                        result.copy(
+                            savedArticles = previousData.savedArticles
+                        )
+                    )
 
                     Log.i(TAG, "after user - ${userRepository.getUser().firstOrNull()}")
 

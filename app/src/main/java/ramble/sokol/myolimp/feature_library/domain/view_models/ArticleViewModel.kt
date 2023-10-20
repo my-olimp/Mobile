@@ -11,10 +11,14 @@ import ramble.sokol.myolimp.feature_library.domain.events.ArticleEvent
 import ramble.sokol.myolimp.feature_library.domain.repositories.LibraryRepository
 import ramble.sokol.myolimp.feature_library.domain.states.ArticleState
 import ramble.sokol.myolimp.feature_library.domain.states.TaskState
-import ramble.sokol.myolimp.feature_profile.domain.models.SavedArticleModel
 import ramble.sokol.myolimp.utils.BaseViewModel
 import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
+
+/*
+* TODO
+*  - check if article has already been downloaded
+*  - add field // sorting to show ting of the icon*/
 
 class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
 
@@ -98,7 +102,7 @@ class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
 
                     val savedPreviously = _state.value.savedArticles
 
-                    savedPreviously.add(SavedArticleModel(id=event.id, title="title - ${event.id}"))
+                    savedPreviously.add(state.value.article.toSavedArticle())
 
                     _state.update {
                         it.copy(

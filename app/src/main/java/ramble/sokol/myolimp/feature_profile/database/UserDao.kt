@@ -13,8 +13,6 @@ interface UserDao {
     suspend fun saveUser(user: LocalUserModel)
     @Update
     suspend fun updateUser(user: LocalUserModel)
-    @Query("DELETE FROM user WHERE id = :id")
-    suspend fun deleteUser(id: String)
     @Query("SELECT * FROM user LIMIT 1")
     fun getUser(): Flow<LocalUserModel>
     @Query("SELECT * FROM user WHERE id = :id")

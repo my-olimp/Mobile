@@ -32,5 +32,4 @@ data class ProfileLoveState(
     override fun onLoaderUpdate(value: Boolean): ProfileLoveState {
         return this.copy(isLoading = value)
     }
-
 }

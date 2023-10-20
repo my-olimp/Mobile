@@ -113,5 +113,4 @@ class ProfileLoveViewModel : BaseViewModel<ProfileLoveState>(ProfileLoveState())
 
         }
     }
-
 }

@@ -33,14 +33,13 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.ArticleScreenDestination
-import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
+import ramble.sokol.myolimp.destinations.WantToWatchScreenDestination
 import ramble.sokol.myolimp.feature_authentication.presentation.screens.forgot_password.VerticalSpacer
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
-import ramble.sokol.myolimp.feature_profile.domain.events.ProfileLoveEvent
 import ramble.sokol.myolimp.feature_profile.presentation.components.CheckListBottomSheet
 import ramble.sokol.myolimp.feature_profile.presentation.components.LoveTopBar
-import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileLoveViewModel
+import ramble.sokol.myolimp.feature_profile.presentation.view_models.ProfileWantViewModel
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.GreyProfileAchievement
@@ -53,7 +52,7 @@ import ramble.sokol.myolimp.ui.theme.regularType
 fun WantToWatchScreen (
     navController: NavController
 ) {
-    val viewModel = getViewModel<ProfileLoveViewModel>()
+    val viewModel = getViewModel<ProfileWantViewModel>()
     val state = viewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
@@ -64,7 +63,7 @@ fun WantToWatchScreen (
 
     val subjects = state.value.filteredSubjects.ifEmpty { state.value.userSubjects }
 
-    val articles = state.value.listArticles.filter {
+    val articles = state.value.savedArticles.filter {
 //        subjects.contains(it.subject)
         true
     }
@@ -76,7 +75,7 @@ fun WantToWatchScreen (
         isLoading = state.value.isLoading,
         isError = state.value.isError,
         onReload = {
-            navController.navigate(ProfileLoveScreenDestination)
+            navController.navigate(WantToWatchScreenDestination)
         }
     ) {
         ModalBottomSheetLayout(
@@ -89,9 +88,11 @@ fun WantToWatchScreen (
                     subjects = state.value.subjects,
                     onHideSheet = { coroutineScope.launch { sheetState.hide() } },
                     onChooseItem = { key,value ->
-                        viewModel.onEvent(ProfileLoveEvent.OnChooseCheckbox(key,value))
+//                        viewModel.onEvent(ProfileLoveEvent.OnChooseCheckbox(key,value))
                     },
-                    onFilter = { viewModel.onEvent(ProfileLoveEvent.OnFilterSubjects)}
+                    onFilter = {
+//                        viewModel.onEvent(ProfileLoveEvent.OnFilterSubjects)
+                    }
                 )
             }
         ) {
@@ -106,13 +107,13 @@ fun WantToWatchScreen (
 
                 LoveTopBar(
                     onTextChanged = {
-                        viewModel.onEvent(ProfileLoveEvent.OnQueryUpdate(it))
+//                        viewModel.onEvent(ProfileLoveEvent.OnQueryUpdate(it))
                     },
                     onFilterClick = {
                         coroutineScope.launch { sheetState.show() }
                     },
                     onCancelSearching = {
-                        viewModel.onEvent(ProfileLoveEvent.OnEmptyQuery)
+//                        viewModel.onEvent(ProfileLoveEvent.OnEmptyQuery)
                     },
                     itemCount = state.value.filteredSubjects.size,
                     previousData = state.value.queryText
