@@ -43,9 +43,9 @@ import ramble.sokol.myolimp.feature_library.domain.events.ChapterEvent
 import ramble.sokol.myolimp.feature_library.domain.view_models.SubjectsChapterViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.article.Discipline
 import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
-import ramble.sokol.myolimp.feature_library.presenation.components.library.FavoriteIcon
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryBox
 import ramble.sokol.myolimp.feature_library.presenation.components.library.LibraryItem
+import ramble.sokol.myolimp.feature_library.presenation.components.library.WrapperIcon
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
 import ramble.sokol.myolimp.ui.theme.SecondaryScreen
@@ -114,7 +114,7 @@ fun SubjectsChapterScreen (
 
                 Spacer(modifier = Modifier.weight(0.02f))
 
-                FavoriteIcon(
+                WrapperIcon(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(0.15f)
@@ -123,6 +123,7 @@ fun SubjectsChapterScreen (
                     onClick = {
                         viewModel.onEvent(ChapterEvent.OnShowFavourites(!state.value.isShowingFavourites))
                     },
+                    icon = R.drawable.ic_article_favorite,
                     isActive = state.value.isShowingFavourites
                 )
             }

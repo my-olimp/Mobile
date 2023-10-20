@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.states.PlanState
 import ramble.sokol.myolimp.feature_calendar.domain.utils.getWeekStartDate
@@ -32,7 +33,7 @@ import ramble.sokol.myolimp.feature_calendar.domain.view_models.CalendarViewMode
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_searching.SearchTextField
 import ramble.sokol.myolimp.feature_calendar.presentation.core.CalendarIntent
 import ramble.sokol.myolimp.feature_calendar.presentation.core.Period
-import ramble.sokol.myolimp.feature_library.presenation.components.library.FavoriteIcon
+import ramble.sokol.myolimp.feature_library.presenation.components.library.WrapperIcon
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
@@ -135,8 +136,7 @@ fun ExpandableCalendar(
 
             Spacer(modifier = Modifier.weight(0.04f))
 
-
-            FavoriteIcon(
+            WrapperIcon(
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.16f)
@@ -145,6 +145,7 @@ fun ExpandableCalendar(
                 onClick = {
                     onEvent(Event.OnFavouritesShowing(!state.isShowingFavourites))
                 },
+                icon = R.drawable.ic_article_favorite,
                 isActive = state.isShowingFavourites
             )
         }

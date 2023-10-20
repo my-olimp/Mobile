@@ -1,9 +1,8 @@
 package ramble.sokol.myolimp.feature_library.presenation.screens
 
+import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.annotation.Destination
@@ -40,11 +38,9 @@ import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.article.HorizontalLine
 import ramble.sokol.myolimp.feature_library.presenation.components.article.PartItem
 import ramble.sokol.myolimp.feature_library.presenation.components.article.SearchTextField
-import ramble.sokol.myolimp.feature_library.presenation.components.library.FavoriteIcon
+import ramble.sokol.myolimp.feature_library.presenation.components.library.WrapperIcon
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
-import ramble.sokol.myolimp.ui.theme.GreyProfileData
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
-import ramble.sokol.myolimp.ui.theme.White
 
 
 @[Composable Destination]
@@ -59,6 +55,15 @@ fun ArticleScreen(
     var partState by remember {
         mutableIntStateOf(0)
     }
+
+    val context = LocalContext.current
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, "${state.value.article.title}\n\nСкачивай MyOlimp: https://play.google.com/store/apps/details?id=${context.applicationInfo.packageName}")
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, "MyOlimp")
+
 
     LaunchedEffect(key1 = Unit, block = {
         viewModel.onEvent(ArticleEvent.OnFetchArticle(id))
@@ -103,40 +108,31 @@ fun ArticleScreen(
 
                     Spacer(modifier = Modifier.fillMaxWidth(0.02f))
 
-                    Box(
-                        modifier = Modifier
-                            .weight(0.16f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .padding(top = 8.dp)
-                            .background(
-                                color = White,
-                                shape = RoundedCornerShape(size = 8.dp)
-                            )
-                            .clickable {
-                                viewModel.onEvent(ArticleEvent.OnSaveArticleIntoDatabase(id))
-                            },
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(14.dp),
-                            painter = painterResource(id = R.drawable.ic_library_share),
-                            contentDescription = "bookmark",
-                            tint = /* if (state.value.article.isFavourite) White else */  GreyProfileData,
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
-
-                    FavoriteIcon(
+                    WrapperIcon(
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(0.15f)
                             .padding(top = 8.dp)
-                            .clip(RoundedCornerShape(8.dp)), //try remove
+                            .clip(RoundedCornerShape(8.dp)),
+                        onClick = {
+                            context.startActivity(shareIntent)
+                        },
+                        icon = R.drawable.ic_library_share,
+                        isActive = false
+                    )
+
+                    Spacer(modifier = Modifier.fillMaxWidth(0.02f))
+
+                    WrapperIcon(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.15f)
+                            .padding(top = 8.dp)
+                            .clip(RoundedCornerShape(8.dp)),
                         onClick = {
                             viewModel.onEvent(ArticleEvent.OnFavourites(!state.value.article.isFavourite))
                         },
+                        icon = R.drawable.ic_article_favorite,
                         isActive = state.value.article.isFavourite
                     )
                 }
@@ -177,7 +173,6 @@ fun ArticleScreen(
                                 blockId = partState
                             )
                         }
-                        /*TODO на будущее поменять*/
                         else -> {
                             EducationScreen(
                                 viewModel = viewModel,

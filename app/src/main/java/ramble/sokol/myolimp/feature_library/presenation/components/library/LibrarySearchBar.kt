@@ -59,7 +59,7 @@ fun LibrarySearchBar(
 
         Spacer(modifier = Modifier.fillMaxWidth(0.01f))
 
-        FavoriteIcon(
+        WrapperIcon(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(0.15f)
@@ -68,6 +68,7 @@ fun LibrarySearchBar(
             onClick = {
                 onShowFavourites(!isFavoriteActive)
             },
+            icon = R.drawable.ic_article_favorite,
             isActive = isFavoriteActive
         )
     }
