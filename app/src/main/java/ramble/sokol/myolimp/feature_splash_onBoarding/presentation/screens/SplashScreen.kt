@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_splash_onBoarding.presentation.screens
 
+import android.util.Log
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -65,6 +66,8 @@ fun SplashScreen(
                 // successfully got user
                 LaunchedEffect(key1 = Unit) {
                     delay(1000)
+
+//                    Log.i("ViewModelSplash", "stack - ${navigator.}")
 
                     navigator.navigate(HomeScreenDestination)
                 }

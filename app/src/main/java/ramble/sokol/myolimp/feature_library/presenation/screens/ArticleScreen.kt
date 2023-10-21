@@ -99,10 +99,10 @@ fun ArticleScreen(
                             .height(IntrinsicSize.Max)
                             .weight(0.68f),
                         onTextChanged = {
-                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(it))
+                            viewModel.onEvent(ArticleEvent.OnSearchQueryUpdated(it))
                         },
                         onCancelSearching = {
-                            //viewModel.onEvent(LibraryEvent.OnSearchQueryUpdated(""))
+                            viewModel.onEvent(ArticleEvent.OnSearchQueryUpdated(""))
                         }
                     )
 

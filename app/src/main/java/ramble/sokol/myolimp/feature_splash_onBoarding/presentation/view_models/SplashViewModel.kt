@@ -53,7 +53,7 @@ class SplashViewModel : BaseViewModel<SplashState>(SplashState()) {
                     // delete user from local storage
                     userRepository.deleteUsers()
 
-                    Log.i(TAG, "user - ${userRepository.getUser().firstOrNull()}")
+                    Log.i(TAG, "error - ${response.code()}")
 
                     onError()
                 }

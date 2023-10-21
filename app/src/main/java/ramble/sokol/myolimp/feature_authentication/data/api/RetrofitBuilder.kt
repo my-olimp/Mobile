@@ -14,7 +14,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitBuilder : KoinComponent {
 
     private val client = OkHttpClient.Builder()
-//        .addInterceptor(SetCookiesInterceptor(context = context))
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
 
         // get cookie

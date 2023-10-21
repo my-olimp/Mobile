@@ -14,12 +14,6 @@ import ramble.sokol.myolimp.feature_library.domain.states.TaskState
 import ramble.sokol.myolimp.utils.BaseViewModel
 import ramble.sokol.myolimp.utils.exceptions.ViewModelExceptions
 
-
-/*
-* TODO
-*  - check if article has already been downloaded
-*  - add field // sorting to show ting of the icon*/
-
 class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
 
     private val repository = LibraryRepository()
@@ -96,29 +90,45 @@ class ArticleViewModel: BaseViewModel<ArticleState>(ArticleState()) {
                 fetchArticle(event.id)
             }
 
-            is ArticleEvent.OnSaveArticleIntoDatabase -> {
-                viewModelScope.launch {
-                    Log.i(TAG, "saved - ${_user.first().savedArticles}")
-
-                    val savedPreviously = _state.value.savedArticles
-
-                    savedPreviously.add(state.value.article.toSavedArticle())
-
-                    _state.update {
-                        it.copy(
-                            savedArticles = savedPreviously
-                        )
-                    }
-
-                    userRepository.updateUser(
-                        _user.first().copy(
-                            savedArticles = state.value.savedArticles
-                        )
+            is ArticleEvent.OnSearchQueryUpdated -> {
+                _state.update {
+                    it.copy(
+                        searchQuery = event.query
                     )
-
-                    Log.i(TAG, "saved - ${_user.first().savedArticles}")
                 }
             }
+
+            is ArticleEvent.OnCancelSearching -> {
+                _state.update {
+                    it.copy(
+                        searchQuery = ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun saveLocally() {
+        viewModelScope.launch {
+            Log.i(TAG, "saved - ${_user.first().savedArticles}")
+
+            val savedPreviously = _state.value.savedArticles
+
+            savedPreviously.add(state.value.article.toSavedArticle())
+
+            _state.update {
+                it.copy(
+                    savedArticles = savedPreviously
+                )
+            }
+
+            userRepository.updateUser(
+                _user.first().copy(
+                    savedArticles = state.value.savedArticles
+                )
+            )
+
+            Log.i(TAG, "saved - ${_user.first().savedArticles}")
         }
     }
 

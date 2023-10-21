@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.feature_library.presenation.screens
 
+import android.text.util.Linkify
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +32,7 @@ import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.feature_library.domain.view_models.ArticleViewModel
 import ramble.sokol.myolimp.feature_library.presenation.components.article.SubjectItem
 import ramble.sokol.myolimp.ui.theme.BlueStart
+import ramble.sokol.myolimp.ui.theme.GreyProfileAchievement
 import ramble.sokol.myolimp.ui.theme.SheetTitle
 import ramble.sokol.myolimp.ui.theme.mediumType
 import ramble.sokol.myolimp.ui.theme.regularType
@@ -40,75 +46,8 @@ fun EducationScreen(
 
     val state = viewModel.state.collectAsState()
 
-    Column (
-        modifier = Modifier
-            .padding(bottom = 16.dp)
-            .verticalScroll(rememberScrollState())
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.library_test_image),
-            contentDescription = "test image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.height(120.dp)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        /*            after image                    */
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp)
-        ) {
-
-            Text(
-                text = state.value.article.title,
-                style = mediumType(
-                    fontSize = 20.sp
-                )
-            )
-
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = stringResource(
-                    id = R.string.article_author,
-                    state.value.article.author.firstName,
-                    state.value.article.author.secondName,
-                    state.value.article.author.thirdName
-                    ),
-                style = regularType(
-                    fontSize = 12.sp,
-                    letterSpacing = 0.24.sp
-                )
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            FlowRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                state.value.article.tags.forEach {
-                    SubjectItem(subjectText = it)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            /*INTRODUCTION*/
-            MarkDown()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun MarkDown() {
-
     val text = """
+        
 # Алгоритм Дейкстры
 
 > *Программирование калечит мозг, поэтому обучение ему должно трактоваться как преступление.*
@@ -138,7 +77,8 @@ d [j.first] = min (d[j.first], d[i] + d[j.second]).
 
 Искать ближайшую вершину можно либо простым перебором, либо ис- пользуя такие типы данных как *set* и *priority_queue*. Проблема последнего способа заключается в том, что их обновление происходит за *O(log(N))*, и если это происходит часто, то скорость сильно теряется. Поэтому, если граф плотный, то есть
 
-|E| ≈ |V|^2
+|E| ≈ |V|<sup>2</sup>
+<mark>HEY</mark>
 
 то лучше использовать базовую реализацию, иначе через *set*.
 
@@ -192,6 +132,114 @@ for (auto i: V[id])
 Если в графе относительно немного рёбер, то кратчайшие расстояния можно дублировать в *set ds*, чтобы быстро *(O(log(N))* вместо *O(N)* получать ближайшую необработанную вершину. При этом обновление расстояния будет происходить медленно: *O (log(N))* вместо *O(1)*
     """
 
+
+    Column (
+        modifier = Modifier
+            .padding(bottom = 16.dp)
+            .verticalScroll(rememberScrollState())
+    ){
+        if (
+            state.value.searchQuery.isNotEmpty() && text.contains(state.value.searchQuery, ignoreCase = true)
+        ) {
+            val count = countMatches(text, state.value.searchQuery)
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = 4.dp,
+                        horizontal = 16.dp
+                    ),
+                text = if (count == 0 ) "По запросу ${state.value.searchQuery} ничего не найдено" else "По запросу ${state.value.searchQuery} найдено $count совпадения",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.regular)),
+                    fontWeight = FontWeight(400),
+                    color = GreyProfileAchievement,
+                    textAlign = TextAlign.Start,
+                    letterSpacing = 0.5.sp,
+                )
+            )
+        }
+
+        Image(
+            painter = painterResource(id = R.drawable.library_test_image),
+            contentDescription = "test image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.height(120.dp)
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        /*            after image                    */
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+        ) {
+
+            Text(
+                text = state.value.article.title,
+                style = mediumType(
+                    fontSize = 20.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = stringResource(
+                    id = R.string.article_author,
+                    state.value.article.author.firstName,
+                    state.value.article.author.secondName,
+                    state.value.article.author.thirdName
+                    ),
+                style = regularType(
+                    fontSize = 12.sp,
+                    letterSpacing = 0.24.sp
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                state.value.article.tags.forEach {
+                    SubjectItem(subjectText = it)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            MarkDown(
+                text =
+                if (
+                    state.value.searchQuery.isNotEmpty() && text.contains(state.value.searchQuery, ignoreCase = true)
+                ) text.replace(
+                    state.value.searchQuery,
+                    "[${state.value.searchQuery}](${state.value.searchQuery}})",
+                    ignoreCase = true
+                )
+                else text
+            )
+        }
+    }
+}
+
+// check if query in text and add [Link](query)
+
+@Preview
+@Composable
+fun MarkDown(
+    text: String = "[query](text)"
+) {
+
+    Spacer(modifier = Modifier.height(20.dp))
+
     MarkdownText(
         modifier = Modifier
             .fillMaxWidth(),
@@ -203,7 +251,16 @@ for (auto i: V[id])
         lineHeight = 16.sp,
         isTextSelectable = true,
         fontResource = R.font.medium,
+        linkifyMask = Linkify.WEB_URLS,
+        onLinkClicked = {
 
-        )
+        }
+    )
+}
+
+fun countMatches(string: String, pattern: String): Int {
+    return string.split(pattern)
+        .dropLastWhile { it.isEmpty() }
+        .toTypedArray().size - 1
 }
 

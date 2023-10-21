@@ -8,6 +8,7 @@ data class ArticleState(
     val article: ArticleModel = ArticleModel(),
     val answers: HashMap<Int, TaskState> = hashMapOf(),
     val savedArticles: MutableList<SavedArticleModel> = mutableListOf(),
+    val searchQuery: String = "",
 
     val status: Boolean = false, /* to recompose screen */
     val isLoading: Boolean = false,
