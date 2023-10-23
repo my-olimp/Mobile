@@ -299,22 +299,3 @@ fun ProfileScreen(
         }
     }
 }
-
-
-
-@Destination
-@Composable
-fun NewsScreen(
-    navController: NavController
-) {
-    BottomBarTheme(
-        navController = navController,
-        onReload = {
-            navController.navigate(NewsScreenDestination)
-        }
-    ) {
-        Text(
-            modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center, text = "NewsScreen"
-        )
-    }
-}
