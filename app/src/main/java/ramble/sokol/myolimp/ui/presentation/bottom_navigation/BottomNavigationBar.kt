@@ -22,8 +22,10 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.popBackStack
 import com.ramcosta.composedestinations.navigation.popUpTo
 import com.ramcosta.composedestinations.utils.isRouteOnBackStack
+import kotlinx.coroutines.runBlocking
 import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.ui.theme.BlueStart
 import ramble.sokol.myolimp.ui.theme.GreyNavigationText
 import ramble.sokol.myolimp.ui.theme.White
@@ -69,6 +71,14 @@ fun BottomNavigationBar(
 
                         // Restore state when reselecting a previously selected item
                         restoreState = true
+                    }
+
+                    // to save previous destination
+                    runBlocking {
+                        CodeDataStore().setToken(
+                            key = CodeDataStore.DESTINATION,
+                            value = it.direction.route
+                        )
                     }
                 },
                 icon = {

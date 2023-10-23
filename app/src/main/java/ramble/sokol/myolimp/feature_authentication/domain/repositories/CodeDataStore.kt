@@ -19,6 +19,7 @@ class CodeDataStore : KoinComponent {
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("ACCESS_TOKEN")
         val COOKIES = stringPreferencesKey("COOKIE")
+        val DESTINATION = stringPreferencesKey("DESTINATION")
 
         private val Context.dataStore: DataStore<Preferences>
                 by preferencesDataStore(name = "token")

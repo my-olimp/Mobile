@@ -24,11 +24,15 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.popUpTo
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import org.koin.androidx.compose.getViewModel
+import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.HomeScreenDestination
 import ramble.sokol.myolimp.destinations.OnBoardingScreenDestination
+import ramble.sokol.myolimp.feature_authentication.domain.repositories.CodeDataStore
 import ramble.sokol.myolimp.feature_splash_onBoarding.presentation.view_models.SplashViewModel
 import ramble.sokol.myolimp.ui.theme.OlimpTheme
 
@@ -67,16 +71,36 @@ fun SplashScreen(
                 LaunchedEffect(key1 = Unit) {
                     delay(1000)
 
-//                    Log.i("ViewModelSplash", "stack - ${navigator.}")
+                    navigator.popBackStack()
 
-                    navigator.navigate(HomeScreenDestination)
+                    val destination = CodeDataStore().getToken(key = CodeDataStore.DESTINATION).first() ?: HomeScreenDestination.route
+
+                    Log.i("ViewModelSplash", "stack - $destination")
+
+                    navigator.navigate(
+                        destination
+                    ) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
+                        }
+                        launchSingleTop = false
+                        restoreState = false
+                    }
                 }
             } else if (state.value.isError) {
                 // error occurred while getting user
                 LaunchedEffect(key1 = Unit) {
                     delay(1000)
 
-                    navigator.navigate(OnBoardingScreenDestination)
+                    navigator.navigate(
+                        OnBoardingScreenDestination
+                    ) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = false
+                        }
+                        launchSingleTop = false
+                        restoreState = false
+                    }
                 }
             }
 
