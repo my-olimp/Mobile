@@ -50,7 +50,7 @@ open class BaseViewModel<T : State<T>>(standardState: T) : ViewModel(), KoinComp
     val datastore: CodeDataStore get() = CodeDataStore()
 
     protected fun castError() {
-       _state.update { state.value.onError() }
+       _state.update { state.value.onNetworkError() }
     }
 
     protected fun castError(exception: ViewModelExceptions) {

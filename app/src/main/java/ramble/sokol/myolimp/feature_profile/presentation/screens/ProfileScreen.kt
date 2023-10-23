@@ -44,6 +44,7 @@ import org.koin.androidx.compose.getViewModel
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.EditorScreenDestination
 import ramble.sokol.myolimp.destinations.NewsScreenDestination
+import ramble.sokol.myolimp.destinations.OlympiadScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileDataScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileLoveScreenDestination
 import ramble.sokol.myolimp.destinations.ProfileScreenDestination
@@ -216,7 +217,7 @@ fun ProfileScreen(
                     content = stringResource(id = R.string.profile_section_olympiads_content),
                     isVisible = state.value.accountType == "t"
                 ) {
-                    Toast.makeText(context, "It's developing", Toast.LENGTH_SHORT).show()
+                    navController.navigate(OlympiadScreenDestination)
                 }
 
 

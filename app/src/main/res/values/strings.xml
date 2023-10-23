@@ -231,4 +231,5 @@
     <string name="pass_your_data">Для создания  учетной записи укажите свои данные:</string>
     <string name="empty_email_error">Поле почты не должно быть пустым</string>
     <string name="bad_pattern_email_error">Введена неправильная почта</string>
+    <string name="will_participate">Буду участвовать</string>
 </resources>
