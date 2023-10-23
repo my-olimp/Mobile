@@ -69,7 +69,7 @@ fun SplashScreen(
             if (state.value.isSuccess) {
                 // successfully got user
                 LaunchedEffect(key1 = Unit) {
-                    delay(1000)
+                    delay(1500)
 
                     navigator.popBackStack()
 
@@ -90,7 +90,7 @@ fun SplashScreen(
             } else if (state.value.isError) {
                 // error occurred while getting user
                 LaunchedEffect(key1 = Unit) {
-                    delay(1000)
+                    delay(1500)
 
                     navigator.navigate(
                         OnBoardingScreenDestination

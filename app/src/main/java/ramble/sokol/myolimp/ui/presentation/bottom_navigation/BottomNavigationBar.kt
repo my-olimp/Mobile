@@ -1,5 +1,6 @@
 package ramble.sokol.myolimp.ui.presentation.bottom_navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
@@ -72,6 +73,8 @@ fun BottomNavigationBar(
                         // Restore state when reselecting a previously selected item
                         restoreState = true
                     }
+
+                    Log.i("ViewModelSplash", "stack - ${it.direction.route}")
 
                     // to save previous destination
                     runBlocking {
