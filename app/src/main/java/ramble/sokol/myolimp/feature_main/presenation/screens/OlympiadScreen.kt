@@ -53,7 +53,7 @@ fun OlympiadScreen(
 ) {
     BottomBarTheme(
         navController = navController,
-        onReload = { /*TODO fuck*/}
+        onReload = { /*TODO*/}
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.Top,
@@ -71,7 +71,7 @@ fun OlympiadScreen(
                         .padding(horizontal = 54.dp, vertical = 12.dp)
                 )
                 Text(
-                    text = "Высшая проба" /* olympiad name */,
+                    text = "Высшая проба",
                     style = mediumType(
                         color = SheetTitle,
                         fontSize = 25.sp,
@@ -108,40 +108,42 @@ fun OlympiadScreen(
                     }
                 }
             }
-            item {
-                OlympiadHeader(header = "Расписание и этапы")
+            items(5) {
+                when(it) {
+                    0 -> {
+                        OlympiadHeader(header = "Расписание и этапы")
 
-                OlympiadStage(
-                    header = "first",
-                    date = "first",
-                    modifier = Modifier
-                        .background(White, RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
-                        .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 36.dp)
-                        .fillMaxWidth()
-                )
-            }
-            items(3) {
-
-                OlympiadStage(
-                    header = "Header $it",
-                    date = "date $it-${it.plus(4)}-$it",
-                    modifier = Modifier
-                        .background(White)
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 36.dp)
-                )
-            }
-            item {
-                OlympiadStage(
-                    header = "last", date = "last", isLastStage = true, modifier = Modifier
-                        .background(
-                            White,
-                            RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp)
+                        OlympiadStage(
+                            header = "first",
+                            date = "first",
+                            modifier = Modifier
+                                .background(White, RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
+                                .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 36.dp)
                         )
-                        .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
-                        .fillMaxWidth()
-                )
-                VerticalSpacer(height = 12.dp)
+                    }
+                    4 -> {
+                        OlympiadStage(
+                            header = "last", date = "last", isLastStage = true, modifier = Modifier
+                                .background(
+                                    White,
+                                    RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp)
+                                )
+                                .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
+                        )
+                        VerticalSpacer(height = 12.dp)
+                    }
+                    else -> {
+                        OlympiadStage(
+                            header = "Header $it",
+                            date = "date $it-${it.plus(4)}-$it",
+                            modifier = Modifier
+                                .background(White)
+                                .padding(start = 16.dp, end = 16.dp, bottom = 36.dp)
+                        )
+                    }
+
+                }
+
             }
             item {
                 OlympiadSection(header = "Дисциплины") {
@@ -169,35 +171,32 @@ fun OlympiadScreen(
                         OlympiadBenefits(
                             benefit = "first benefit",
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .background(
                                     White,
                                     RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp)
                                 )
-                                .padding(top = 24.dp, bottom = 14.dp, start = 16.dp, end = 40.dp)
+                                .padding(top = 24.dp, bottom = 14.dp, start = 16.dp, end = 60.dp)
                         )
                     }
                     4 -> {
                         OlympiadBenefits(
                             benefit = "last benefit",
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .background(White)
-                                .padding(bottom = 16.dp, start = 16.dp)
+                                .padding(start = 16.dp, end = 60.dp)
                         )
                     }
                     else -> OlympiadBenefits(
-                        benefit = "long fucking benefit das ist deutsch und ich heiße oleg aber ich komme aus russland $it",
+                        benefit = "long benefit das ist deutsch und ich heiße oleg aber ich komme aus russland $it",
                         modifier = Modifier
-                            .fillMaxWidth()
                             .background(White)
-                            .padding(start = 16.dp, end = 40.dp, bottom = 14.dp)
+                            .padding(start = 16.dp, end = 60.dp, bottom = 14.dp)
                     )
                 }
             }
             item {
                 Text(
-                    text = "Important! remark on benefits sie schreiben über das haus und die frau Lindemann ",
+                    text = "Important! remark on benefits sie schreiben über feuer und wasser",
                     style = regularType(
                         fontSize = 10.sp,
                         color = GreyProfileData
@@ -208,6 +207,7 @@ fun OlympiadScreen(
                             RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp)
                         )
                         .padding(16.dp)
+                        .fillMaxWidth()
                 )
                 VerticalSpacer(height = 24.dp)
             }
@@ -268,7 +268,7 @@ fun OlympiadStage(
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     ){
         Column(
             modifier = Modifier.fillMaxWidth(0.1f),
@@ -316,7 +316,7 @@ private fun OlympiadBenefits(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     ){
         Column(
             modifier = Modifier.fillMaxWidth(0.05f),
