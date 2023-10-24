@@ -271,7 +271,7 @@ fun OlympiadStage(
         modifier = modifier.fillMaxWidth()
     ){
         Column(
-            modifier = Modifier.fillMaxWidth(0.1f),
+            modifier = Modifier.fillMaxWidth(0.11f),
             verticalArrangement = Arrangement.Center
         ) {
             Canvas(modifier = Modifier

@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -41,6 +40,7 @@ import ramble.sokol.myolimp.NavGraphs
 import ramble.sokol.myolimp.R
 import ramble.sokol.myolimp.destinations.CreateCalendarScreenDestination
 import ramble.sokol.myolimp.destinations.LibraryScreenDestination
+import ramble.sokol.myolimp.destinations.OlympiadScreenDestination
 import ramble.sokol.myolimp.feature_calendar.domain.events.Event
 import ramble.sokol.myolimp.feature_calendar.domain.view_models.PlansViewModel
 import ramble.sokol.myolimp.feature_calendar.presentation.components.feature_create.ImageWithText
@@ -53,8 +53,6 @@ import ramble.sokol.myolimp.feature_main.presenation.components.OlympiadItem
 import ramble.sokol.myolimp.ui.theme.BackgroundMain
 import ramble.sokol.myolimp.ui.theme.BlackProfile
 import ramble.sokol.myolimp.ui.theme.BottomBarTheme
-import ramble.sokol.myolimp.ui.theme.MainBackground
-import ramble.sokol.myolimp.ui.theme.Transparent
 import ramble.sokol.myolimp.ui.theme.White
 import java.time.LocalDate
 
@@ -109,7 +107,12 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
                     items(olympiads) {
-                        OlympiadItem(item = it)
+                        OlympiadItem(
+                            item = it,
+                            onClick = {
+                                navController.navigate(OlympiadScreenDestination)
+                            }
+                        )
                     }
                 }
             }

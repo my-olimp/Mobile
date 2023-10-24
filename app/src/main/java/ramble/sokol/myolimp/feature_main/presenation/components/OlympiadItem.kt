@@ -2,6 +2,7 @@ package ramble.sokol.myolimp.feature_main.presenation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,14 +27,20 @@ import ramble.sokol.myolimp.ui.theme.regularType
 
 @Composable
 fun OlympiadItem(
-    item: OlympiadModel
+    item: OlympiadModel,
+    onClick: () -> Unit
 ) {
 
     val color = if (item.time == "Завтра") HomeCloseOlympiad else BlueStart
 
     Row (
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .clickable {
+                onClick.invoke()
+            }
     ) {
 
         Row (
