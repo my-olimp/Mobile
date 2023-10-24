@@ -232,4 +232,7 @@
     <string name="empty_email_error">Поле почты не должно быть пустым</string>
     <string name="bad_pattern_email_error">Введена неправильная почта</string>
     <string name="will_participate">Буду участвовать</string>
+    <string name="popular_header">Популярное</string>
+    <string name="show_more">Показать еще</string>
+    <string name="maybe_interesting">Может быть интересно</string>
 </resources>
