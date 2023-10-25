@@ -175,7 +175,10 @@ class SignUpViewModel : BaseViewModel<SignUpState>(SignUpState()) {
     private fun checkAbilityRegistering() {
         _state.update {
             it.copy(
-                isRegistering = android.util.Patterns.EMAIL_ADDRESS.matcher(_state.value.email).matches() && _state.value.password.isNotEmpty() && _state.value.confirmedPassword == _state.value.password
+                isRegistering = android.util.Patterns.EMAIL_ADDRESS.matcher(state.value.email).matches()
+                        && state.value.password.isNotEmpty()
+                        && state.value.confirmedPassword == state.value.password
+                        && state.value.passwordStatus >= 0.6f
             )
         }
     }
